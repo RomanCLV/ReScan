@@ -237,7 +237,7 @@ unsigned int selectStep(char axisName, unsigned int min, unsigned int max)
 unsigned int getSubDivision(double distance, int step)
 {
     unsigned int div = (unsigned int)(abs(distance) / step);
-    if (div * step < distance)
+    if ((double)(div * step) < distance)
     {
         div++;
     }

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ReScanVisualizer
+namespace ReScanVisualizer.Views
 {
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml

@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using ReScanVisualizer.ViewModels;
+using ReScanVisualizer.Views;
 
 namespace ReScanVisualizer
 {
@@ -13,5 +15,18 @@ namespace ReScanVisualizer
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            MainWindow = new MainWindow()
+            {
+                DataContext = new MainViewModel()
+            };
+            MainWindow.Show();
+            base.OnStartup(e);
+        }
     }
 }
