@@ -98,6 +98,9 @@
     <Compile Include="Models\Plan2D.cs" />
     <Compile Include="Models\ScatterGraph.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\PlanModelView.cs" />
+    <Compile Include="ViewModels\Point3DModelView.cs" />
+    <Compile Include="ViewModels\ScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

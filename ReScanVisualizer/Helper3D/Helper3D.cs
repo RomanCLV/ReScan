@@ -9,39 +9,55 @@ using System.Windows.Media;
 
 namespace ReScanVisualizer.Helper3D
 {
-    internal static class Helper3D
+    public static class Helper3D
     {
-        internal static GeometryModel3D BuildSphere(Point3D center, double radius, Brush color)
+        public static GeometryModel3D BuildSphere(Point3D center, double radius, Brush color)
+        {
+            return BuildSphere(center, radius, MaterialHelper.CreateMaterial(color));
+        }
+
+        public static GeometryModel3D BuildSphere(Point3D center, double radius, Material material)
         {
             MeshBuilder builder = new MeshBuilder(false, false);
             builder.AddSphere(center, radius);
-            return BuildMesh(builder, color);
+            return BuildGeometry(builder, material);
         }
 
-        internal static GeometryModel3D BuildArrow(Point3D point1, Point3D point2, double diameter, Brush color)
+        public static GeometryModel3D BuildArrow(Point3D point1, Point3D point2, double diameter, Brush color)
         {
-            return BuildMesh(BuildArrowGeometry(point1, point2, diameter), color);
+            return BuildArrow(point1, point2, diameter, MaterialHelper.CreateMaterial(color));
         }
 
-        internal static Geometry3D BuildArrowGeometry(Point3D point1, Point3D point2, double diameter)
+        public static GeometryModel3D BuildArrow(Point3D point1, Point3D point2, double diameter, Material material)
+        {
+            return BuildGeometry(BuildArrowGeometry(point1, point2, diameter), material);
+        }
+
+        public static Geometry3D BuildArrowGeometry(Point3D point1, Point3D point2, double diameter)
         {
             MeshBuilder builder = new MeshBuilder(false, false);
             builder.AddArrow(point1, point2, diameter);
             return builder.ToMesh(true);
         }
 
-        private static GeometryModel3D BuildMesh(MeshBuilder builder, Brush color)
+        public static GeometryModel3D BuildGeometry(MeshBuilder builder, Brush color)
         {
-            // Create a mesh from the builder (and freeze it)
-            MeshGeometry3D mesh = builder.ToMesh(true);
-            return BuildMesh(mesh, color);
+            return BuildGeometry(builder, MaterialHelper.CreateMaterial(color));
         }
 
-        private static GeometryModel3D BuildMesh(Geometry3D geometry, Brush color)
+        public static GeometryModel3D BuildGeometry(MeshBuilder builder, Material material)
         {
-            // Create some materials
-            Material material = MaterialHelper.CreateMaterial(color);
+            MeshGeometry3D mesh = builder.ToMesh(true);
+            return BuildGeometry(mesh, material);
+        }
 
+        public static GeometryModel3D BuildGeometry(Geometry3D geometry, Brush color)
+        {
+            return BuildGeometry(geometry, MaterialHelper.CreateMaterial(color));
+        }
+
+        public static GeometryModel3D BuildGeometry(Geometry3D geometry, Material material)
+        {
             return new GeometryModel3D
             {
                 Geometry = geometry,

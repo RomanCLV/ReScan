@@ -9,83 +9,43 @@ namespace ReScanVisualizer.Models
 {
     public class Plan
     {
-        private double _a;
-        private double _b;
-        private double _c;
-        private double _d;
+        public double A { get; set; }
+        public double B { get; set; }
+        public double C { get; set; }
+        public double D { get; set; }
 
         public Plan(double a = 0.0, double b = 0.0, double c = 0.0, double d = 0.0)
         {
-            _a = a;
-            _b = b;
-            _c = c;
-            _d = d;
+            A = a;
+            B = b;
+            C = c;
+            D = d;
         }
 
         public Plan(Plan plan)
         {
-            _a = plan._a;
-            _b = plan._b;
-            _c = plan._c;
-            _d = plan._d;
-        }
-
-        public double GetA()
-        {
-            return _a;
-        }
-
-        public void SetA(double a)
-        {
-            _a = a;
-        }
-
-        public double GetB()
-        {
-            return _b;
-        }
-
-        public void SetB(double b)
-        {
-            _b = b;
-        }
-
-        public double GetC()
-        {
-            return _c;
-        }
-
-        public void SetC(double c)
-        {
-            _c = c;
-        }
-
-        public double GetD()
-        {
-            return _d;
-        }
-
-        public void SetD(double d)
-        {
-            _d = d;
+            A = plan.A;
+            B = plan.B;
+            C = plan.C;
+            D = plan.D;
         }
 
         public void SetABCD(double a, double b, double c, double d)
         {
-            SetA(a);
-            SetB(b);
-            SetC(c);
-            SetD(d);
+            A = a;
+            B = b;
+            C = c;
+            D = d;
         }
 
         public Vector3D GetNormal()
         {
-            return new Vector3D(_a, _b, _c);
+            return new Vector3D(A, B, C);
         }
 
         public string ToStr(string begin = "{ ", string end = " }", string sep = " ")
         {
-            return $"{begin}{_a}{sep}{_b}{sep}{_c}{sep}{_d}{end}";
+            return $"{begin}{A}{sep}{B}{sep}{C}{sep}{D}{end}";
         }
 
         public override string ToString()
