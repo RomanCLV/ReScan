@@ -93,6 +93,10 @@
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Converters\ValueNotNullConverter.cs" />
     <Compile Include="Helper3D\Helper3D.cs" />
+    <Compile Include="Models\ItemIndexed.cs" />
+    <Compile Include="Models\Plan.cs" />
+    <Compile Include="Models\Plan2D.cs" />
+    <Compile Include="Models\ScatterGraph.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -127,9 +131,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8.1">
       <Visible>False</Visible>

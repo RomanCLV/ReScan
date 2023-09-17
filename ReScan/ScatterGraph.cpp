@@ -695,5 +695,3 @@ void ScatterGraph::computeAveragePlan(const ScatterGraph& scatterGraph, Plan& av
 }
 
 #pragma endregion
-
-#pragma endregion
