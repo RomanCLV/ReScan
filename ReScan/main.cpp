@@ -290,7 +290,7 @@ void fillSubDivisions(const Point3D& minPoint, const ScatterGraph& graph, std::v
     if (deleteIfEmpty)
     {
         int removed = 0;
-        for (int i = subGraph->size() - 1; i >= 0; i--)
+        for (int i = (int)subGraph->size() - 1; i >= 0; i--)
         {
             if (subGraph->at(i).size() == 0)
             {
