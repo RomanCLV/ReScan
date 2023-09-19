@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class PlanModelView : ViewModelBase
+    public class PlanViewModel : ViewModelBase
     {
         private readonly Plan _plan;
 
@@ -96,13 +96,13 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _geometryModel3D, value);
         }
 
-        public PlanModelView() : this(new Plan(), 0.75, Brushes.White)
+        public PlanViewModel() : this(new Plan(), 0.75, Brushes.White)
         { }
 
-        public PlanModelView(Plan plan) : this(plan, 0.75, Brushes.White)
+        public PlanViewModel(Plan plan) : this(plan, 0.75, Brushes.White)
         { }
 
-        public PlanModelView(Plan plan, double opacity, Brush brush)
+        public PlanViewModel(Plan plan, double opacity, Brush brush)
         {
             _plan = plan;
             _opacity = opacity;

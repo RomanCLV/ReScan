@@ -304,21 +304,14 @@ namespace ReScanVisualizer.Models
                 sZZ += pZ * pZ;
             }
 
-            D = sXX * sYY * sZZ - sXX * sYZ * sYZ - sYY * sXZ * sXZ + 2 * sXY * sXZ * sYZ;
+            D = (sXX * sYY * sZZ) - (sXX * sYZ * sYZ) - (sYY * sXZ * sXZ) + (2.0 * sXY * sXZ * sYZ);
 
-            a = sX * (sYY * sZZ - sYZ * sYZ);
-            a -= sY * (sXY * sZZ - sXZ * sYZ);
-            a += sZ * (sXY * sYZ - sYY * sXZ);
+            a = (sX * (sYY * sZZ - sYZ * sYZ)) - (sY * (sXY * sZZ - sXZ * sYZ)) + (sZ * (sXY * sYZ - sYY * sXZ));
+            b = (sX * (sXY * sZZ - sXZ * sYZ)) - (sY * (sXX * sZZ - sXZ * sXZ)) + (sZ * (sYZ * sXX - sXY * sXZ));
+            c = (sX * (sXY * sYZ - sYY * sXZ)) - (sY * (sXX * sYZ - sXY * sXZ)) + (sZ * (sXX * sYY - sXY * sXY));
+
             a *= (-k / D);
-
-            b = sX * (sXY * sZZ - sXZ * sYZ);
-            b -= sY * (sXX * sZZ - sXZ * sXZ);
-            b += sZ * (sYZ * sXX - sXY * sXZ);
             b *= (k / D);
-
-            c = sX * (sXY * sYZ - sYY * sXZ);
-            c -= sY * (sXX * sZZ - sXZ * sXZ);
-            c += sZ * (sXX * sYY - sXY * sXY);
             c *= (-k / D);
 
             barycenter = ComputeBarycenter();

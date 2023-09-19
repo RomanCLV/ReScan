@@ -28,10 +28,10 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _brush, value);
         }
 
-        public ObservableCollection<Point3DModelView> Points { get; private set; }
+        public ObservableCollection<Point3DViewModel> Points { get; private set; }
 
-        private Point3DModelView _barycenter;
-        public Point3DModelView Barycenter
+        private Point3DViewModel _barycenter;
+        public Point3DViewModel Barycenter
         {
             get => _barycenter;
             set => SetValue(ref _barycenter, value);
@@ -44,8 +44,8 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _isBarycenterVisible, value);
         }
 
-        private PlanModelView _averagePlan;
-        public PlanModelView AveragePlan
+        private PlanViewModel _averagePlan;
+        public PlanViewModel AveragePlan
         {
             get => _averagePlan;
             set => SetValue(ref _averagePlan, value);
@@ -71,10 +71,10 @@ namespace ReScanVisualizer.ViewModels
             _scatterGraph = scatterGraph;
             _pointRadius = pointRadius;
             _brush = brush;
-            Points = new ObservableCollection<Point3DModelView>();
+            Points = new ObservableCollection<Point3DViewModel>();
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
-                Points.Add(new Point3DModelView(_scatterGraph[i], _pointRadius, _brush));
+                Points.Add(new Point3DViewModel(_scatterGraph[i], _pointRadius, _brush));
             }
             _isBarycenterVisible = false;
             _isAveragePlanVisible = false;

@@ -6,57 +6,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Windows.Media;
+using System.Data;
 
 namespace ReScanVisualizer.Helper3D
 {
     public static class Helper3D
     {
-        public static GeometryModel3D BuildSphere(Point3D center, double radius, Brush color)
+        #region Build Model & Geometry
+
+        public static GeometryModel3D BuildModel(MeshBuilder builder, Brush color)
         {
-            return BuildSphere(center, radius, MaterialHelper.CreateMaterial(color));
+            return BuildModel(builder, MaterialHelper.CreateMaterial(color));
         }
 
-        public static GeometryModel3D BuildSphere(Point3D center, double radius, Material material)
+        public static GeometryModel3D BuildModel(MeshBuilder builder, Material material)
         {
-            MeshBuilder builder = new MeshBuilder(false, false);
-            builder.AddSphere(center, radius);
-            return BuildGeometry(builder, material);
+            return BuildModel(builder.ToMesh(true), material);
         }
 
-        public static GeometryModel3D BuildArrow(Point3D point1, Point3D point2, double diameter, Brush color)
+        public static GeometryModel3D BuildModel(Geometry3D geometry, Brush color)
         {
-            return BuildArrow(point1, point2, diameter, MaterialHelper.CreateMaterial(color));
+            return BuildModel(geometry, MaterialHelper.CreateMaterial(color));
         }
 
-        public static GeometryModel3D BuildArrow(Point3D point1, Point3D point2, double diameter, Material material)
-        {
-            return BuildGeometry(BuildArrowGeometry(point1, point2, diameter), material);
-        }
-
-        public static Geometry3D BuildArrowGeometry(Point3D point1, Point3D point2, double diameter)
-        {
-            MeshBuilder builder = new MeshBuilder(false, false);
-            builder.AddArrow(point1, point2, diameter);
-            return builder.ToMesh(true);
-        }
-
-        public static GeometryModel3D BuildGeometry(MeshBuilder builder, Brush color)
-        {
-            return BuildGeometry(builder, MaterialHelper.CreateMaterial(color));
-        }
-
-        public static GeometryModel3D BuildGeometry(MeshBuilder builder, Material material)
-        {
-            MeshGeometry3D mesh = builder.ToMesh(true);
-            return BuildGeometry(mesh, material);
-        }
-
-        public static GeometryModel3D BuildGeometry(Geometry3D geometry, Brush color)
-        {
-            return BuildGeometry(geometry, MaterialHelper.CreateMaterial(color));
-        }
-
-        public static GeometryModel3D BuildGeometry(Geometry3D geometry, Material material)
+        public static GeometryModel3D BuildModel(Geometry3D geometry, Material material)
         {
             return new GeometryModel3D
             {
@@ -66,5 +39,49 @@ namespace ReScanVisualizer.Helper3D
                 Transform = new TranslateTransform3D()
             };
         }
+
+        #endregion
+
+        #region Sphere Model & Geometry
+
+        public static MeshGeometry3D BuildSphereGeometry(Point3D center, double radius)
+        {
+            MeshBuilder builder = new MeshBuilder(false, false);
+            builder.AddSphere(center, radius);
+            return builder.ToMesh(true);
+        }
+
+        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Brush color)
+        {
+            return BuildSphereModel(center, radius, MaterialHelper.CreateMaterial(color));
+        }
+
+        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Material material)
+        {
+            return BuildModel(BuildSphereGeometry(center, radius), material);
+        }
+
+        #endregion
+
+        #region Arrow Model & Geometry
+
+        public static MeshGeometry3D BuildArrowGeometry(Point3D point1, Point3D point2, double diameter)
+        {
+            MeshBuilder builder = new MeshBuilder(false, false);
+            builder.AddArrow(point1, point2, diameter);
+            return builder.ToMesh(true);
+        }
+
+        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Brush color)
+        {
+            return BuildArrowModel(point1, point2, diameter, MaterialHelper.CreateMaterial(color));
+        }
+
+        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Material material)
+        {
+            return BuildModel(BuildArrowGeometry(point1, point2, diameter), material);
+        }
+
+        #endregion
     }
 }
