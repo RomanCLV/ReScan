@@ -36,7 +36,7 @@ public:
 
 	std::string toStr(const char* begin = "{ ", const char* end = " }", const char* sep = " ") const;
 
-	friend std::ostream& operator<<(std::ostream& os, const Vector3D& vector3D);
+	friend std::ostream& operator<<(std::ostream& os, const Plan& plan);
 };
 
 #endif // PLAN_H
