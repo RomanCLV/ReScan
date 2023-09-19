@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="Commands\AsynCommandBase.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Converters\BoolToInverseBoolConverter.cs" />
     <Compile Include="Converters\ValueNotNullConverter.cs" />
     <Compile Include="Helper3D\Helper3D.cs" />
     <Compile Include="Models\I3DElement.cs" />
