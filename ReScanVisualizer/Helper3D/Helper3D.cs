@@ -14,9 +14,14 @@ namespace ReScanVisualizer.Helper3D
     {
         #region Build Model & Geometry
 
-        public static GeometryModel3D BuildModel(MeshBuilder builder, Brush color)
+        public static GeometryModel3D BuildModel(MeshBuilder builder, Color color)
         {
-            return BuildModel(builder, MaterialHelper.CreateMaterial(color));
+            return BuildModel(builder, new SolidColorBrush(color));
+        }
+
+        public static GeometryModel3D BuildModel(MeshBuilder builder, Brush brush)
+        {
+            return BuildModel(builder, MaterialHelper.CreateMaterial(brush));
         }
 
         public static GeometryModel3D BuildModel(MeshBuilder builder, Material material)
@@ -24,9 +29,14 @@ namespace ReScanVisualizer.Helper3D
             return BuildModel(builder.ToMesh(true), material);
         }
 
-        public static GeometryModel3D BuildModel(Geometry3D geometry, Brush color)
+        public static GeometryModel3D BuildModel(Geometry3D geometry, Color color)
         {
-            return BuildModel(geometry, MaterialHelper.CreateMaterial(color));
+            return BuildModel(geometry, new SolidColorBrush(color));
+        }
+
+        public static GeometryModel3D BuildModel(Geometry3D geometry, Brush brush)
+        {
+            return BuildModel(geometry, MaterialHelper.CreateMaterial(brush));
         }
 
         public static GeometryModel3D BuildModel(Geometry3D geometry, Material material)
@@ -51,9 +61,14 @@ namespace ReScanVisualizer.Helper3D
             return builder.ToMesh(true);
         }
 
-        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Brush color)
+        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Color color)
         {
-            return BuildSphereModel(center, radius, MaterialHelper.CreateMaterial(color));
+            return BuildSphereModel(center, radius, new SolidColorBrush(color));
+        }
+
+        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Brush brush)
+        {
+            return BuildSphereModel(center, radius, MaterialHelper.CreateMaterial(brush));
         }
 
         public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Material material)
@@ -72,14 +87,45 @@ namespace ReScanVisualizer.Helper3D
             return builder.ToMesh(true);
         }
 
-        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Brush color)
+        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Color color)
         {
-            return BuildArrowModel(point1, point2, diameter, MaterialHelper.CreateMaterial(color));
+            return BuildArrowModel(point1, point2, diameter, new SolidColorBrush(color));
+        }
+
+        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Brush brush)
+        {
+            return BuildArrowModel(point1, point2, diameter, MaterialHelper.CreateMaterial(brush));
         }
 
         public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Material material)
         {
             return BuildModel(BuildArrowGeometry(point1, point2, diameter), material);
+        }
+
+        #endregion
+
+        #region Plan Model & Geometry
+
+        public static MeshGeometry3D BuildPlanGeometry(Point3D center, Vector3D normal, Vector3D up, double width, double height, double dist = 0.0)
+        {
+            MeshBuilder builder = new MeshBuilder(false, false);
+            builder.AddCubeFace(center, normal, up, dist, width, height);
+            return builder.ToMesh(true);
+        }
+
+        public static GeometryModel3D BuildPlanModel(Point3D center, Vector3D normal, Vector3D up, double width, double height, double dist, Color color)
+        {
+            return BuildPlanModel(center, normal, up, dist, width, height, new SolidColorBrush(color));
+        }
+
+        public static GeometryModel3D BuildPlanModel(Point3D center, Vector3D normal, Vector3D up, double width, double height, double dist, Brush brush)
+        {
+            return BuildPlanModel(center, normal, up, dist, width, height, MaterialHelper.CreateMaterial(brush));
+        }
+
+        public static GeometryModel3D BuildPlanModel(Point3D center, Vector3D normal, Vector3D up, double width, double height, double dist, Material material)
+        {
+            return BuildModel(BuildPlanGeometry(center, normal, up, dist, width, height), material);
         }
 
         #endregion

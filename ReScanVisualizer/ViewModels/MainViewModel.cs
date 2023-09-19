@@ -17,9 +17,9 @@ namespace ReScanVisualizer.ViewModels
         public MainViewModel()
 		{
             OriginModel = new Model3DGroup();
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrow(new Point3D(), new Point3D(1, 0, 0), 0.1, Brushes.Red));
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrow(new Point3D(), new Point3D(0, 1, 0), 0.1, Brushes.Green));
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrow(new Point3D(), new Point3D(0, 0, 1), 0.1, Brushes.Blue));
+            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(1, 0, 0), 0.1, Brushes.Red));
+            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 1, 0), 0.1, Brushes.Green));
+            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 0, 1), 0.1, Brushes.Blue));
         }
 	}
 }

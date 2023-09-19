@@ -3,10 +3,15 @@ using ReScanVisualizer.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
+
+#nullable enable
 
 namespace ReScanVisualizer.ViewModels
 {
@@ -14,19 +19,45 @@ namespace ReScanVisualizer.ViewModels
     {
         private readonly ScatterGraph _scatterGraph;
 
-        private double _pointRadius;
-        public double PointRadius
+        private double _pointsDiameter;
+        public double PointsDiameter
         {
-            get => _pointRadius;
-            set => SetValue(ref _pointRadius, value);
+            get => _pointsDiameter;
+            set => SetValue(ref _pointsDiameter, value);
         }
 
-        private Brush _brush;
-        public Brush Brush
+        public bool IsBarycenterHiden
         {
-            get => _brush;
-            set => SetValue(ref _brush, value);
+            get => Barycenter.IsHiden;
+            set
+            {
+                if (SetValue(Barycenter.IsHiden, value))
+                {
+                    if (!Barycenter.IsHiden && _hasToComputeBarycenter)
+                    {
+                        ComputeBarycenter();
+                    }
+                }
+            }
         }
+
+        public bool IsAveragePlanHiden
+        {
+            get => AveragePlan.IsHiden;
+            set
+            {
+                if (SetValue(AveragePlan.IsHiden, value))
+                {
+                    if (!AveragePlan.IsHiden && _hasToComputeAveragePlan)
+                    {
+                        ComputeAveragePlan();
+                    }
+                }
+            }
+        }
+
+        private bool _hasToComputeBarycenter;
+        private bool _hasToComputeAveragePlan;
 
         public ObservableCollection<Point3DViewModel> Points { get; private set; }
 
@@ -37,13 +68,6 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _barycenter, value);
         }
 
-        private bool _isBarycenterVisible;
-        public bool IsBarycenterVisible
-        {
-            get => _isBarycenterVisible;
-            set => SetValue(ref _isBarycenterVisible, value);
-        }
-
         private PlanViewModel _averagePlan;
         public PlanViewModel AveragePlan
         {
@@ -51,39 +75,240 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _averagePlan, value);
         }
 
-        private bool _isAveragePlanVisible;
-        public bool IsAveragePlanVisible
+        private Color _pointsColor;
+        public Color Color
         {
-            get => _isAveragePlanVisible;
-            set => SetValue(ref _isAveragePlanVisible, value);
+            get => _pointsColor;
+            set
+            {
+                if (SetValue(ref _pointsColor, value))
+                {
+                    OnPropertyChanged(nameof(PointsColorR));
+                    OnPropertyChanged(nameof(PointsColorG));
+                    OnPropertyChanged(nameof(PointsColorB));
+                    OnPropertyChanged(nameof(PointsColorOpacity));
+
+                    UpdatePointsColor();
+                }
+            }
         }
 
-        public ScatterGraphViewModel() : this(new ScatterGraph(), 1.0, Brushes.White)
+        public byte PointsColorR
+        {
+            get => _pointsColor.R;
+            set
+            {
+                if (SetValue(_pointsColor.R, value))
+                {
+                    UpdatePointsColor();
+                }
+            }
+        }
+
+        public byte PointsColorG
+        {
+            get => _pointsColor.G;
+            set
+            {
+                if (SetValue(_pointsColor.G, value))
+                {
+                    UpdatePointsColor();
+                }
+            }
+        }
+
+        public byte PointsColorB
+        {
+            get => _pointsColor.B;
+            set
+            {
+                if (SetValue(_pointsColor.B, value))
+                {
+                    UpdatePointsColor();
+                }
+            }
+        }
+
+        public byte PointsColorOpacity
+        {
+            get => _pointsColor.A;
+            set
+            {
+                if (SetValue(_pointsColor.A, value))
+                {
+                    UpdateOldOpacity();
+                    UpdatePointsColor();
+                }
+            }
+        }
+
+        private byte _oldPointsOpacity;
+        private bool _oldBarycenterIsHiden;
+        private bool _oldAveragePlanIsHiden;
+
+        private bool _isHiden;
+        public bool IsHiden
+        {
+            get => _isHiden;
+            set
+            {
+                if (SetValue(ref _isHiden, value))
+                {
+                    if (_isHiden)
+                    {
+                        UpdateOldOpacity();
+                        PointsColorOpacity = 0;
+                        _oldBarycenterIsHiden = _barycenter.IsHiden;
+                        _oldAveragePlanIsHiden = _averagePlan.IsHiden;
+                    }
+                    else
+                    {
+                        PointsColorOpacity = _oldPointsOpacity;
+                        _barycenter.IsHiden = _oldBarycenterIsHiden;
+                        _averagePlan.IsHiden = _oldAveragePlanIsHiden;
+                    }
+                }
+            }
+        }
+
+        public ScatterGraphViewModel() : this(new ScatterGraph(), 1.0, Colors.White)
         {
         }
 
-        public ScatterGraphViewModel(ScatterGraph scatterGraph) : this(scatterGraph, 1.0, Brushes.White)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph) : this(scatterGraph, 1.0, Colors.White)
         {
         }
 
-        public ScatterGraphViewModel(ScatterGraph scatterGraph, double pointRadius, Brush brush)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph, double pointDiameter, Color color)
         {
             _scatterGraph = scatterGraph;
-            _pointRadius = pointRadius;
-            _brush = brush;
+            _pointsDiameter = pointDiameter;
+            _pointsColor = color;
+            _oldPointsOpacity = _pointsColor.A;
+            _isHiden = _oldPointsOpacity == 0;
+
             Points = new ObservableCollection<Point3DViewModel>();
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
-                Points.Add(new Point3DViewModel(_scatterGraph[i], _pointRadius, _brush));
+                Points.Add(new Point3DViewModel(_scatterGraph[i], _pointsColor, _pointsDiameter));
             }
-            _isBarycenterVisible = false;
-            _isAveragePlanVisible = false;
 
+            Points.CollectionChanged += Points_CollectionChanged;
 
-            // TODO: à utiliser lors de la gestion Hide / Show
-            //_barycenter = new Point3DModelView(_scatterGraph.ComputeBarycenter(), 2 * pointRadius, Brushes.Red);
-            //Plan plan = _scatterGraph.Count >= 3 ? _scatterGraph.ComputeAveragePlan() : new Plan();
-            //_averagePlan = new PlanModelView(plan, 0.75, Brushes.LightBlue);
+            _barycenter = new Point3DViewModel(scatterGraph.ComputeBarycenter(), Colors.Red);
+            _barycenter.Hide();
+            _barycenter.IsHidenChanged += Barycenter_IsHidenChanged;
+            _oldBarycenterIsHiden = _barycenter.IsHiden;
+
+            _averagePlan = new PlanViewModel(Colors.LightBlue.ChangeAlpha(191));
+            _averagePlan.Hide();
+            _averagePlan.IsHidenChanged += AveragePlan_IsHidenChanged;
+            _oldAveragePlanIsHiden = _averagePlan.IsHiden;
+
+            _hasToComputeBarycenter = false;
+            _hasToComputeAveragePlan = false;
+        }
+
+        private void Barycenter_IsHidenChanged(object sender, bool e)
+        {
+            _oldBarycenterIsHiden = _barycenter.IsHiden;
+        }
+
+        private void AveragePlan_IsHidenChanged(object sender, bool e)
+        {
+            _oldAveragePlanIsHiden = _averagePlan.IsHiden;
+        }
+
+        public override void Dispose()
+        {
+            _barycenter.IsHidenChanged -= Barycenter_IsHidenChanged;
+            _averagePlan.IsHidenChanged -= AveragePlan_IsHidenChanged;
+            Points.CollectionChanged -= Points_CollectionChanged;
+            foreach (Point3DViewModel point in Points) 
+            {
+                point.Dispose(); 
+            }
+            Barycenter.Dispose();
+            AveragePlan.Dispose();
+            base.Dispose();
+        }
+
+        private void Points_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            _hasToComputeBarycenter = true;
+            _hasToComputeAveragePlan = true;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+
+                case NotifyCollectionChangedAction.Move: 
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            if (!Barycenter.IsHiden)
+            {
+                ComputeBarycenter();
+            }
+
+            if (!AveragePlan.IsHiden)
+            {
+                ComputeAveragePlan();
+            }
+        }
+
+        private void UpdateOldOpacity()
+        {
+            _oldPointsOpacity = _pointsColor.A;
+        }
+
+        public void Hide()
+        {
+            IsHiden = true;
+        }
+
+        public void Show()
+        {
+            IsHiden = false;
+        }
+
+        private void ComputeBarycenter()
+        {
+            if (_hasToComputeBarycenter)
+            {
+                Barycenter.Point = _scatterGraph.ComputeBarycenter();
+                _hasToComputeBarycenter = false;
+            }
+        }
+
+        private void ComputeAveragePlan()
+        {
+            if (_hasToComputeAveragePlan)
+            {
+                AveragePlan.Plan = _scatterGraph.ComputeAveragePlan();
+                _hasToComputeAveragePlan = false;
+            }
+        }
+
+        private void UpdatePointsColor()
+        {
+            foreach (Point3DViewModel point in Points)
+            {
+                point.Color = _pointsColor;
+            }
         }
     }
 }

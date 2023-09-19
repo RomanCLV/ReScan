@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
+#nullable enable
+
 namespace ReScanVisualizer.Models
 {
     public interface I3DElement
@@ -14,10 +16,16 @@ namespace ReScanVisualizer.Models
 
         public Model3D Model { get; }
 
+        public event EventHandler<bool>? IsHidenChanged;
+
         public bool IsHiden { get; }
 
         public void Hide();
 
         public void Show();
+
+        public void UpdateModelGeometry();
+
+        public void UpdateModelMaterial();
     }
 }

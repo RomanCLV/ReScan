@@ -14,7 +14,22 @@ namespace ReScanVisualizer.ViewModels
 {
     public class Point3DViewModel : ViewModelBase, I3DElement
     {
-        private readonly Point3D _point;
+        private Point3D _point;
+        public Point3D Point 
+        { 
+            get => _point;
+            set
+            {
+                if (SetValue(ref _point, value))
+                {
+                    UpdateModelGeometry();
+
+                    OnPropertyChanged(nameof(X));
+                    OnPropertyChanged(nameof(Y));
+                    OnPropertyChanged(nameof(Z));
+                }
+            }
+        }
 
         public double X
         {
@@ -23,7 +38,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_point.X, value))
                 {
-                    BuildGeometry3D();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -35,7 +50,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_point.Y, value))
                 {
-                    BuildGeometry3D();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -47,7 +62,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_point.Z, value))
                 {
-                    BuildGeometry3D();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -60,7 +75,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _radius, value))
                 {
-                    BuildGeometry3D();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -88,7 +103,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_color.R, value))
                 {
-                    BuildMaterial();
+                    UpdateModelMaterial();
                 }
             }
         }
@@ -100,7 +115,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_color.G, value))
                 {
-                    BuildMaterial();
+                    UpdateModelMaterial();
                 }
             }
         }
@@ -112,7 +127,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_color.B, value))
                 {
-                    BuildMaterial();
+                    UpdateModelMaterial();
                 }
             }
         }
@@ -125,7 +140,7 @@ namespace ReScanVisualizer.ViewModels
                 if (SetValue(_color.A, value))
                 {
                     UpdateOldOpacity();
-                    BuildMaterial();
+                    UpdateModelMaterial();
                 }
             }
         }
@@ -149,9 +164,12 @@ namespace ReScanVisualizer.ViewModels
                     {
                         ColorOpacity = _oldOpacity;
                     }
+                    OnIsHidenChanged();
                 }
             }
         }
+
+        public event EventHandler<bool>? IsHidenChanged;
 
         private Model3D _model;
         public Model3D Model
@@ -159,8 +177,6 @@ namespace ReScanVisualizer.ViewModels
             get => _model;
             set => SetValue(ref _model, value);
         }
-
-        private Geometry3D _modelGeometry;
 
         public Point3DViewModel() : this(new Point3D())
         {
@@ -170,34 +186,28 @@ namespace ReScanVisualizer.ViewModels
         {
         }
 
-        public Point3DViewModel(Point3D point3D) : this(point3D, 1.0, Colors.White)
+        public Point3DViewModel(Point3D point3D) : this(point3D, Colors.White, 1.0)
         {
         }
 
-        public Point3DViewModel(Point3D point3D, double radius, Color color)
+        public Point3DViewModel(Color color) : this(new Point3D(), color, 1.0)
+        {
+        }
+
+        public Point3DViewModel(Point3D point3D, Color color, double radius = 1.0)
         {
             _color = color;
             _oldOpacity = color.A;
+            _isHiden = _oldOpacity == 0;
+
             _point = point3D;
             _radius = radius;
-            _modelGeometry = Helper3D.Helper3D.BuildSphereGeometry(_point, _radius);
-            _model = Helper3D.Helper3D.BuildModel(_modelGeometry, new SolidColorBrush(_color));
+            _model = Helper3D.Helper3D.BuildSphereModel(_point, _radius, _color);
         }
 
         private void UpdateOldOpacity()
         {
             _oldOpacity = _color.A;
-        }
-
-        private void BuildGeometry3D()
-        {
-            _modelGeometry = Helper3D.Helper3D.BuildSphereGeometry(_point, _radius);
-            ((GeometryModel3D)_model).Geometry = _modelGeometry;
-        }
-
-        private void BuildMaterial()
-        {
-            ((GeometryModel3D)_model).Material = MaterialHelper.CreateMaterial(new SolidColorBrush(_color));
         }
 
         public void Hide()
@@ -208,6 +218,23 @@ namespace ReScanVisualizer.ViewModels
         public void Show()
         {
             IsHiden = false;
+        }
+
+        public void UpdateModelGeometry()
+        {
+            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildSphereGeometry(_point, _radius);
+        }
+
+        public void UpdateModelMaterial()
+        {
+            GeometryModel3D model = (GeometryModel3D)_model;
+            model.Material = MaterialHelper.CreateMaterial(new SolidColorBrush(_color));
+            model.BackMaterial = model.Material;
+        }
+
+        private void OnIsHidenChanged()
+        {
+            IsHidenChanged?.Invoke(this, _isHiden);
         }
     }
 }

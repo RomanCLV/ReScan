@@ -6,14 +6,32 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Windows.Media;
+using HelixToolkit.Wpf;
+using System.Windows;
 
 #nullable enable
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class PlanViewModel : ViewModelBase
+    public class PlanViewModel : ViewModelBase, I3DElement
     {
-        private readonly Plan _plan;
+        private Plan _plan;
+        public Plan Plan
+        {
+            get => _plan;
+            set
+            {
+                if (SetValue(ref _plan, value))
+                {
+                    UpdateModelGeometry();
+
+                    OnPropertyChanged(nameof(A));
+                    OnPropertyChanged(nameof(B));
+                    OnPropertyChanged(nameof(C));
+                    OnPropertyChanged(nameof(D));
+                }
+            }
+        }
 
         public double A
         {
@@ -22,7 +40,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_plan.A, value))
                 {
-                    BuildGeometryModel3D();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -34,7 +52,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_plan.B, value))
                 {
-                    BuildGeometryModel3D();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -46,7 +64,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_plan.C, value))
                 {
-                    BuildGeometryModel3D();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -58,60 +76,224 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(_plan.D, value))
                 {
-                    BuildGeometryModel3D();
+                    UpdateModelGeometry();
                 }
             }
         }
 
-        private double _opacity;
-        public double Opacity
+        private Point3D _center;
+        public Point3D Center
         {
-            get => _opacity;
+            get => _center;
             set
             {
-                if (SetValue(ref _opacity, value))
-                {
-                    BuildGeometryModel3D();
-                }
+                _center = value;
+                UpdateModelGeometry();
             }
         }
 
-        private Brush _brush;
-        public Brush Brush
+        private Vector3D _up;
+        public Vector3D Up
         {
-            get => _brush;
+            get => _up;
+            set
+            { 
+                _up = value;
+                UpdateModelGeometry();
+            }
+        }
+
+        private Color _color;
+        public Color Color
+        {
+            get => _color;
             set
             {
-                if (SetValue(ref _brush, value))
+                if (SetValue(ref _color, value))
                 {
-                    BuildGeometryModel3D();
+                    OnPropertyChanged(nameof(ColorR));
+                    OnPropertyChanged(nameof(ColorG));
+                    OnPropertyChanged(nameof(ColorB));
+                    OnPropertyChanged(nameof(ColorOpacity));
                 }
             }
         }
 
-        private GeometryModel3D? _geometryModel3D;
-        public GeometryModel3D? GeometryModel3D
+        private double _dist;
+        public double Dist
         {
-            get => _geometryModel3D;
-            set => SetValue(ref _geometryModel3D, value);
+            get => _dist;
+            set
+            {
+                if (SetValue(ref _dist, value))
+                {
+                    UpdateModelGeometry();
+                }
+            }
         }
 
-        public PlanViewModel() : this(new Plan(), 0.75, Brushes.White)
+        private double _width;
+        public double Width
+        {
+            get => _width;
+            set
+            {
+                if (SetValue(ref _width, value))
+                {
+                    UpdateModelGeometry();
+                }
+            }
+        }
+
+        private double _height;
+        public double Height
+        {
+            get => _height;
+            set
+            {
+                if (SetValue(ref _height, value))
+                {
+                    UpdateModelGeometry();
+                }
+            }
+        }
+
+        public byte ColorR
+        {
+            get => _color.R;
+            set
+            {
+                if (SetValue(_color.R, value))
+                {
+                    UpdateModelMaterial();
+                }
+            }
+        }
+
+        public byte ColorG
+        {
+            get => _color.G;
+            set
+            {
+                if (SetValue(_color.G, value))
+                {
+                    UpdateModelMaterial();
+                }
+            }
+        }
+
+        public byte ColorB
+        {
+            get => _color.B;
+            set
+            {
+                if (SetValue(_color.B, value))
+                {
+                    UpdateModelMaterial();
+                }
+            }
+        }
+
+        public byte ColorOpacity
+        {
+            get => _color.A;
+            set
+            {
+                if (SetValue(_color.A, value))
+                {
+                    UpdateOldOpacity();
+                    UpdateModelMaterial();
+                }
+            }
+        }
+
+        private byte _oldOpacity;
+
+        private bool _isHiden;
+        public bool IsHiden
+        {
+            get => _isHiden;
+            set
+            {
+                if (SetValue(ref _isHiden, value))
+                {
+                    if (_isHiden)
+                    {
+                        UpdateOldOpacity();
+                        ColorOpacity = 0;
+                    }
+                    else
+                    {
+                        ColorOpacity = _oldOpacity;
+                    }
+                    OnIsHidenChanged();
+                }
+            }
+        }
+
+        public event EventHandler<bool>? IsHidenChanged;
+
+        private Model3D _model;
+        public Model3D Model
+        {
+            get => _model;
+            set => SetValue(ref _model, value);
+        }
+
+        public PlanViewModel() : this(new Plan(), new Point3D(), new Vector3D(0, 0, 1), Colors.LightBlue.ChangeAlpha(191))
         { }
 
-        public PlanViewModel(Plan plan) : this(plan, 0.75, Brushes.White)
+        public PlanViewModel(Color color) : this(new Plan(), new Point3D(), new Vector3D(0, 0, 1), color)
         { }
 
-        public PlanViewModel(Plan plan, double opacity, Brush brush)
+        public PlanViewModel(Plan plan, Point3D center, Vector3D up) : this(plan, center, up, Colors.LightBlue.ChangeAlpha(191))
+        { }
+
+        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double width = 10, double height = 10, double dist = 0.0)
         {
             _plan = plan;
-            _opacity = opacity;
-            _brush = brush;
+            _center = center;
+            _up = up;
+            _dist = dist;
+            _width = width;
+            _height = height;
+            _color = color;
+            _oldOpacity = color.A;
+            _isHiden = _oldOpacity == 0;
+
+            _model = Helper3D.Helper3D.BuildPlanModel(_center, _plan.GetNormal(), _up, _width, _height, _dist, _color);
         }
 
-        private void BuildGeometryModel3D()
+        private void UpdateOldOpacity()
         {
-            //GeometryModel3D = Helper3D.Helper3D.BuildSphere(_point, _radius, _brush);
+            _oldOpacity = _color.A;
+        }
+
+        public void Hide()
+        {
+            IsHiden = true;
+        }
+
+        public void Show()
+        {
+            IsHiden = false;
+        }
+
+        public void UpdateModelGeometry()
+        {
+            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildPlanGeometry(_center, _plan.GetNormal(), _up, _width, _height, _dist);
+        }
+
+        public void UpdateModelMaterial()
+        {
+            GeometryModel3D model = (GeometryModel3D)_model;
+            model.Material = MaterialHelper.CreateMaterial(new SolidColorBrush(_color));
+            model.BackMaterial = model.Material;
+        }
+
+        private void OnIsHidenChanged()
+        {
+            IsHidenChanged?.Invoke(this, _isHiden);
         }
     }
 }
