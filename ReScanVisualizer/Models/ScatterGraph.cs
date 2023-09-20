@@ -219,6 +219,26 @@ namespace ReScanVisualizer.Models
             }
         }
 
+        static Point3D GetClosestPoint(ScatterGraph scatterGraph, Point3D point)
+        {
+            int size = scatterGraph.Count;
+            Point3D closestPoint = new Point3D();
+            Point3D currentPoint;
+            double minDistance = double.MaxValue;
+            double currentDistance;
+            for (int i = 0; i < size; i++)
+            {
+                currentPoint = scatterGraph[i];
+                
+                currentDistance = (point - currentPoint).Length;
+                if (currentDistance < minDistance)
+                {
+                    closestPoint = currentPoint;
+                }
+            }
+            return closestPoint;
+        }
+
         public Point3D ComputeBarycenter()
         {
             if (_points.Count == 0)
@@ -317,6 +337,33 @@ namespace ReScanVisualizer.Models
             barycenter = ComputeBarycenter();
 
             return new Plan(a, b, c, -(a * barycenter.X + b * barycenter.Y + c * barycenter.Z));
+        }
+
+        public static Repere3D ComputeRepere3D(ScatterGraph scatterGraph)
+        {
+            Point3D barycenter = scatterGraph.ComputeBarycenter();
+            Plan averagePlan = scatterGraph.ComputeAveragePlan();
+            return ComputeRepere3D(scatterGraph, barycenter, averagePlan);
+        }
+
+        public static Repere3D ComputeRepere3D(ScatterGraph scatterGraph, Point3D origin, Plan averagePlan)
+        {
+            Repere3D repere = new Repere3D(origin, new Vector3D(), new Vector3D(), averagePlan.GetNormal());
+            repere.Z.Normalize();
+
+            // on trouve le point le plus proche de l'origine du repere, on en fait son projet� orthogonal
+            Point3D closestPointFromOrigin = GetClosestPoint(scatterGraph, origin);
+            Point3D projetedPoint = averagePlan.GetOrthogonalProjection(closestPointFromOrigin);
+
+            // On trouve le vecteur entre l'origne et le projet� et on le normalise - On a X
+            repere.X = projetedPoint - repere.Origin;
+            repere.X.Normalize();
+
+            // On fait le produit vectoriel Z*X pour avoir Y, et on normalise
+            repere.Y = Vector3D.CrossProduct(repere.Z, repere.X);
+            repere.Y.Normalize();
+
+            return repere;
         }
 
         #region static functions

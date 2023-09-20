@@ -49,9 +49,21 @@ void Point3D::setXYZ(const double x, const double y, const double z)
 	setZ(z);
 }
 
-void Point3D::getDiff(const Point3D& point, Vector3D& result) const
+void Point3D::setFrom(const Point3D* point)
 {
-	result.setXYZ(point.x - x, point.y - y, point.z - z);
+	setX(point->x);
+	setY(point->y);
+	setZ(point->z);
+}
+
+void Point3D::getDiff(const Point3D* point, Vector3D* result) const
+{
+	result->setXYZ(point->x - x, point->y - y, point->z - z);
+}
+
+double Point3D::distanceBetween(const Point3D* p1, const Point3D* p2)
+{
+	return sqrt((p1->x - p2->x) * (p1->x - p2->x) + (p1->y - p2->y) * (p1->y - p2->y) + (p1->z - p2->z) * (p1->z - p2->z));
 }
 
 std::string Point3D::toStr(const char* begin, const char* end, const char* sep) const
@@ -64,7 +76,7 @@ std::string Point3D::toStr(const char* begin, const char* end, const char* sep) 
 Vector3D operator-(const Point3D& p1, const Point3D& p2)
 {
 	Vector3D vector;
-	p1.getDiff(p2, vector);
+	p1.getDiff(&p2, &vector);
 	return vector;
 }
 

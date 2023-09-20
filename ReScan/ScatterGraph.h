@@ -4,6 +4,7 @@
 #include "Point3D.h"
 #include "Plan.h"
 #include "Plan2D.h"
+#include "Repere3D.h"
 #include <vector>
 #include <string>
 
@@ -83,8 +84,14 @@ public:
 	static int findMax(const ScatterGraph& scatterGraph, double (Point3D::* getter)() const);
 	static void findExtrema(const ScatterGraph& scatterGraph, const Plan2D& plan, double (Point3D::* getters[2])() const, Point3D* minPoint, Point3D* maxPoint);
 
-	static void computeBarycenter(const ScatterGraph& scatterGraph, Point3D& barycenter);
-	static void computeAveragePlan(const ScatterGraph& scatterGraph, Plan& averagePlan);
+	static const Point3D* getClosestPoint(const ScatterGraph* scatterGraph, const Point3D* point);
+
+	static void computeBarycenter(const ScatterGraph* scatterGraph, Point3D* barycenter);
+	static void computeAveragePlan(const ScatterGraph* scatterGraph, Plan* averagePlan);
+
+	static void computeRepere3D(const ScatterGraph* scatterGraph, Repere3D* repere);
+	static void computeRepere3D(const ScatterGraph* scatterGraph, const Point3D* origin, const Plan* averagePlan, Repere3D* repere);
+
 };
 
 #endif // SCATTERGRAPH_H

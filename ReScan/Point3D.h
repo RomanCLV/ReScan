@@ -28,8 +28,11 @@ public:
     void setZ(const double z);
 
     void setXYZ(const double x, const double y, const double z);
+    void setFrom(const Point3D* point);
 
-    void getDiff(const Point3D& point, Vector3D& result) const;
+    void getDiff(const Point3D* point, Vector3D* result) const;
+
+    static double distanceBetween(const Point3D* p1, const Point3D* p2);
 
     std::string toStr(const char* begin = "{ ", const char* end = " }", const char* sep = " ") const;
 

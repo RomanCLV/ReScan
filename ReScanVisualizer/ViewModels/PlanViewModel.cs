@@ -295,5 +295,10 @@ namespace ReScanVisualizer.ViewModels
         {
             IsHidenChanged?.Invoke(this, _isHiden);
         }
+
+        public override string ToString()
+        {
+            return _plan.ToString();
+        }
     }
 }

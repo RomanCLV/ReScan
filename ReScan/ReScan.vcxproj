@@ -132,6 +132,7 @@
     <ClCompile Include="Plan.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Repere3D.cpp" />
     <ClCompile Include="ScatterGraph.cpp" />
     <ClCompile Include="Vector3D.cpp" />
   </ItemGroup>
@@ -140,6 +141,7 @@
     <ClInclude Include="Plan.h" />
     <ClInclude Include="Plan2D.h" />
     <ClInclude Include="Point3D.h" />
+    <ClInclude Include="Repere3D.h" />
     <ClInclude Include="ScatterGraph.h" />
     <ClInclude Include="Vector3D.h" />
   </ItemGroup>

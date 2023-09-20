@@ -4,25 +4,77 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReScanVisualizer.Views"
+        xmlns:itw="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
+        xmlns:viewModels="clr-namespace:ReScanVisualizer.ViewModels"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         mc:Ignorable="d"
         Title="ReScan Visualize" Height="720" Width="1280"
         WindowState="Maximized"
         >
-    <Grid>
-        <HelixToolkit:HelixViewport3D>
-            <!-- Remember to add light to the scene -->
-            <HelixToolkit:SunLight/>
+    <DockPanel>
 
-            <ModelVisual3D Content="{Binding OriginModel}" />
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Edit">
+                <MenuItem Header="Open file" />
+            </MenuItem>
+        </Menu>
+        
+        <Grid>
+            <HelixToolkit:HelixViewport3D>
+                <!-- Remember to add light to the scene -->
+                <HelixToolkit:SunLight/>
 
-            <HelixToolkit:GridLinesVisual3D Width="10" Length="10" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
-            <HelixToolkit:HelixViewport3D.Background>
-                <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
-                    <GradientStop Color="#FF0061FF" Offset="0"/>
-                    <GradientStop Color="DarkBlue"  Offset="1"/>
-                </LinearGradientBrush>
-            </HelixToolkit:HelixViewport3D.Background>
-        </HelixToolkit:HelixViewport3D>
-    </Grid>
+                <ModelVisual3D Content="{Binding OriginModel}" />
+
+                <HelixToolkit:GridLinesVisual3D Width="10" Length="10" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+                <HelixToolkit:HelixViewport3D.Background>
+                    <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
+                        <GradientStop Color="#FF0061FF" Offset="0"/>
+                        <GradientStop Color="DarkBlue"  Offset="1"/>
+                    </LinearGradientBrush>
+                </HelixToolkit:HelixViewport3D.Background>
+            </HelixToolkit:HelixViewport3D>
+
+            <DockPanel 
+                Width="200"
+                HorizontalAlignment="Left" 
+                Background="#19FFFFFF"
+                >
+                <Grid
+                    DockPanel.Dock="Bottom"
+                    Height="200"
+                    >
+                    <Grid.Resources>
+                        <DataTemplate DataType="{x:Type viewModels:Point3DViewModel}">
+                            <local:Point3DView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:PlanViewModel}">
+                            <local:PlanView />
+                        </DataTemplate>
+                    </Grid.Resources>
+
+                    <ContentControl Content="{Binding SelectedViewModel}" />
+                </Grid>
+
+                <ScrollViewer 
+                    HorizontalScrollBarVisibility="Auto" 
+                    VerticalScrollBarVisibility="Auto"
+                    >
+                    <TreeView x:Name="treeView" Background="Transparent" ItemsSource="{Binding ScatterGraphs}">
+                        
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type viewModels:MainViewModel}">
+                                <itw:ScatterGraphItemTreeView />
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+
+                        
+                    </TreeView>
+                    
+                </ScrollViewer>
+
+            </DockPanel>
+        </Grid>
+        
+    </DockPanel>
 </Window>

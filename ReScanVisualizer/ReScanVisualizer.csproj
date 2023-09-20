@@ -81,6 +81,49 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\OpenFileCommand.cs" />
+    <Compile Include="Models\Repere3D.cs" />
+    <Compile Include="Views\ItemTreeViews\AveragePlanItemTreeView.xaml.cs">
+      <DependentUpon>AveragePlanItemTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemTreeViews\BarycenterItemTreeView.xaml.cs">
+      <DependentUpon>BarycenterItemTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemTreeViews\Point3DItemTreeView.xaml.cs">
+      <DependentUpon>Point3DItemTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemTreeViews\PointsItemTreeView.xaml.cs">
+      <DependentUpon>PointsItemTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemTreeViews\ScatterGraphItemTreeView.xaml.cs">
+      <DependentUpon>ScatterGraphItemTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlanView.xaml.cs">
+      <DependentUpon>PlanView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Point3DView.xaml.cs">
+      <DependentUpon>Point3DView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\ItemTreeViews\AveragePlanItemTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\BarycenterItemTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\Point3DItemTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\PointsItemTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\ScatterGraphItemTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -108,6 +151,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\PlanView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Point3DView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

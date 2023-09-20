@@ -1,4 +1,4 @@
-#include "ScatterGraph.h"
+ï»¿#include "ScatterGraph.h"
 #include <iostream>   // for reading / writing files
 #include <fstream>    // for reading / writing files
 #include <sstream>    // for reading / writing files
@@ -203,7 +203,7 @@ void ScatterGraph::populateFromVectorXYZ(const std::vector<float>* vect, Scatter
 
 void ScatterGraph::populateWithRandomPoints(ScatterGraph& scatterGraph, int count, double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
 {
-	srand(static_cast<unsigned int>(time(nullptr))); // Initialisation de la graine du générateur de nombres aléatoires
+	srand(static_cast<unsigned int>(time(nullptr))); // Initialisation de la graine du gÃ©nÃ©rateur de nombres alÃ©atoires
 	for (int i = 0; i < count; i++)
 	{
 		double randomX = minX + static_cast<double>(rand()) / static_cast<double>(RAND_MAX / (maxX - minX));
@@ -218,9 +218,9 @@ void ScatterGraph::populateWithRandomPoints(ScatterGraph& scatterGraph, int coun
 
 void ScatterGraph::populateRectangle2D(ScatterGraph& scatterGraph, Plan2D plane, const Point3D& center, double width, double height, int numPoints)
 {
-	// Vérification du nombre de points minimum
+	// VÃ©rification du nombre de points minimum
 	if (numPoints < 4) {
-		cerr << "Le nombre de points doit être au moins 4." << std::endl;
+		cerr << "Le nombre de points doit Ãªtre au moins 4." << std::endl;
 		return;
 	}
 
@@ -278,9 +278,9 @@ void ScatterGraph::populateRectangle2D(ScatterGraph& scatterGraph, Plan2D plane,
 
 void ScatterGraph::populateRectangle3D(ScatterGraph& scatterGraph, Plan2D plane, const Point3D& center, double width, double height, double depth, int numPoints)
 {
-	// Vérification du nombre de points minimum
+	// VÃ©rification du nombre de points minimum
 	if (numPoints < 8) {
-		std::cerr << "Le nombre de points doit être au moins 8." << std::endl;
+		std::cerr << "Le nombre de points doit Ãªtre au moins 8." << std::endl;
 		return;
 	}
 
@@ -337,9 +337,9 @@ void ScatterGraph::populateRectangle3D(ScatterGraph& scatterGraph, Plan2D plane,
 
 void ScatterGraph::populateDisk(ScatterGraph& scatterGraph, Plan2D plane, const Point3D& center, double radius, int numPoints)
 {
-	// Vérification du nombre de points minimum
+	// VÃ©rification du nombre de points minimum
 	if (numPoints < 4) {
-		std::cerr << "Le nombre de points doit être au moins 4." << std::endl;
+		std::cerr << "Le nombre de points doit Ãªtre au moins 4." << std::endl;
 		return;
 	}
 
@@ -400,7 +400,7 @@ void ScatterGraph::populateDisk(ScatterGraph& scatterGraph, Plan2D plane, const 
 
 bool ScatterGraph::saveCSV(const std::string& filename, const ScatterGraph& scatterGraph, bool replaceIfFileExists, bool writeHeaders)
 {
-	// Vérifier si le nom de fichier se termine par ".csv"
+	// VÃ©rifier si le nom de fichier se termine par ".csv"
 	if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 	{
 		std::cerr << "File is not a .csv" << std::endl;
@@ -443,7 +443,7 @@ bool ScatterGraph::saveCSV(const std::string& filename, const ScatterGraph& scat
 
 bool ScatterGraph::readCSV(const std::string& filename, ScatterGraph* scatterGraph, bool containsHeader)
 {
-	// Vérifier si le nom de fichier se termine par ".csv"
+	// VÃ©rifier si le nom de fichier se termine par ".csv"
 	if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 	{
 		std::cerr << "File is not a .csv" << std::endl;
@@ -474,7 +474,7 @@ bool ScatterGraph::readCSV(const std::string& filename, ScatterGraph* scatterGra
 		std::string cell;
 		std::vector<double> rowData;
 
-		// on lit chaque cellule (qui sont séparés par des virugles) afin de récupérer x, y et z dans le tableau rowData
+		// on lit chaque cellule (qui sont sÃ©parÃ©s par des virugles) afin de rÃ©cupÃ©rer x, y et z dans le tableau rowData
 		while (std::getline(lineStream, cell, ';'))
 		{
 			try
@@ -485,13 +485,13 @@ bool ScatterGraph::readCSV(const std::string& filename, ScatterGraph* scatterGra
 			}
 			catch (const std::exception& e)
 			{
-				// Gérer les erreurs de conversion
+				// GÃ©rer les erreurs de conversion
 				std::cerr << "Cannot parse the cell in double - Line : " << lineN << " - Cell : " << cell << " - " << e.what() << std::endl;
 				return false;
 			}
 		}
 
-		// Vérifier si le nombre de colonnes est valide (3 pour Point3D)
+		// VÃ©rifier si le nombre de colonnes est valide (3 pour Point3D)
 		if (rowData.size() != 3)
 		{
 			std::cerr << "File doesn't contain the expected number of columns (3). Line : " + lineN << std::endl;
@@ -535,7 +535,7 @@ void ScatterGraph::findExtrema(const ScatterGraph& scatterGraph, const Plan2D& p
 	// Tableau pour les 4 index des points extremas (min, min, max, max)
 	int extremas[4] = { 0 };
 
-	// Trouver les index des extremas avec les getters séléctionnés : [min1, max1, min2, max2]
+	// Trouver les index des extremas avec les getters sÃ©lÃ©ctionnÃ©s : [min1, max1, min2, max2]
 	extremas[0] = findMin(scatterGraph, getters[0]);
 	extremas[1] = findMin(scatterGraph, getters[1]);
 	extremas[2] = findMax(scatterGraph, getters[0]);
@@ -577,12 +577,31 @@ void ScatterGraph::findExtrema(const ScatterGraph& scatterGraph, const Plan2D& p
 	}
 }
 
-void ScatterGraph::computeBarycenter(const ScatterGraph& scatterGraph, Point3D& barycenter)
+const Point3D* ScatterGraph::getClosestPoint(const ScatterGraph* scatterGraph, const Point3D* point)
+{
+	int size = (int)scatterGraph->size();
+	const Point3D* closestPoint = nullptr;
+	const Point3D* currentPoint;
+	double minDistance = DBL_MAX;
+	double currentDistance;
+	for (int i = 0; i < size; i++)
+	{
+		currentPoint = scatterGraph->points[i];
+		currentDistance = Point3D::distanceBetween(point, currentPoint);
+		if (currentDistance < minDistance)
+		{
+			closestPoint = currentPoint;
+		}
+	}
+	return closestPoint;
+}
+
+void ScatterGraph::computeBarycenter(const ScatterGraph* scatterGraph, Point3D* barycenter)
 {
 	double x = 0.0f;
 	double y = 0.0f;
 	double z = 0.0f;
-	int size = static_cast<int>(scatterGraph.size());
+	int size = static_cast<int>(scatterGraph->size());
 	double sized = (double)size;
 	const Point3D* point;
 
@@ -590,15 +609,15 @@ void ScatterGraph::computeBarycenter(const ScatterGraph& scatterGraph, Point3D& 
 
 	for (int i = 0; i < size; i++)
 	{
-		point = scatterGraph.at(i);
+		point = scatterGraph->at(i);
 		x += point->getX();
 		y += point->getY();
 		z += point->getZ();
 	}
-	barycenter.setXYZ(x / sized, y / sized, z / sized);
+	barycenter->setXYZ(x / sized, y / sized, z / sized);
 
 	// methode 2 :
-	// calcul des moyennes en "continu" pour éviter d'atteindre les valeurs hors mémoire
+	// calcul des moyennes en "continu" pour Ã©viter d'atteindre les valeurs hors mÃ©moire
 	// si on fait d'abord la somme de tous les x, y et z
 
 	//for (int i = 0; i < size; i++)
@@ -611,11 +630,11 @@ void ScatterGraph::computeBarycenter(const ScatterGraph& scatterGraph, Point3D& 
 	//barycenter.setXYZ(x, y, z);
 }
 
-void ScatterGraph::computeAveragePlan(const ScatterGraph& scatterGraph, Plan& averagePlan)
+void ScatterGraph::computeAveragePlan(const ScatterGraph* scatterGraph, Plan* averagePlan)
 {
 	// based on: https://www.claudeparisel.com/monwiki/data/Karnak/K2/PLAN%20MOYEN.pdf
 
-	int size = (int)scatterGraph.size();
+	int size = (int)scatterGraph->size();
 
 	if (size < 3)
 	{
@@ -654,7 +673,7 @@ void ScatterGraph::computeAveragePlan(const ScatterGraph& scatterGraph, Plan& av
 	// calcul des sommmes
 	for (int i = 0; i < size; i++)
 	{
-		point = scatterGraph.at(i);
+		point = scatterGraph->at(i);
 		pX = point->getX() / 1000.0;
 		pY = point->getY() / 1000.0;
 		pZ = point->getZ() / 1000.0;
@@ -682,9 +701,41 @@ void ScatterGraph::computeAveragePlan(const ScatterGraph& scatterGraph, Plan& av
 	b *= (k / D);
 	c *= (-k / D);
 
-	computeBarycenter(scatterGraph, barycenter);
+	computeBarycenter(scatterGraph, &barycenter);
 
-	averagePlan.setABCD(a, b, c, -(a * barycenter.getX() + b * barycenter.getY() + c * barycenter.getZ()));
+	averagePlan->setABCD(a, b, c, -(a * barycenter.getX() + b * barycenter.getY() + c * barycenter.getZ()));
+}
+
+
+void ScatterGraph::computeRepere3D(const ScatterGraph* scatterGraph, Repere3D* repere)
+{
+	Point3D barycenter;
+	Plan averagePlan;
+	computeBarycenter(scatterGraph, &barycenter);
+	computeAveragePlan(scatterGraph, &averagePlan);
+	computeRepere3D(scatterGraph, &barycenter, &averagePlan, repere);
+}
+
+void ScatterGraph::computeRepere3D(const ScatterGraph* scatterGraph, const Point3D* origin, const Plan* averagePlan, Repere3D* repere)
+{
+	repere->origin.setFrom(origin);
+
+	// on prend la normal donnee par le plan et on la normalise - On a le Z
+	averagePlan->getNormal(repere->z);
+	repere->z.normalize();
+
+	// on trouve le point le plus proche de l'origine du repere, on en fait son projetï¿½ orthogonal
+	const Point3D* closestPointFromOrigin = getClosestPoint(scatterGraph, origin);
+	Point3D projetedPoint;
+	Plan::getOrthogonalProjection(averagePlan, closestPointFromOrigin, &projetedPoint);
+
+	// On trouve le vecteur entre l'origne et le projetï¿½ et on le normalise - On a X
+	origin->getDiff(&projetedPoint, &repere->x);
+	repere->x.normalize();
+
+	// On fait le produit vectoriel Z*X pour avoir Y, et on normalise
+	repere->z.cross(repere->x, repere->y);
+	repere->y.normalize();
 }
 
 #pragma endregion

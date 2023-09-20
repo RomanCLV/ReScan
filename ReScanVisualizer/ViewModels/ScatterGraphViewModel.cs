@@ -171,6 +171,11 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        public int ItemsCount
+        {
+            get => Points.Count + 2; // Points count + barycenter + averplan
+        }
+
         public ScatterGraphViewModel() : this(new ScatterGraph(), 1.0, Colors.White)
         {
         }
@@ -195,12 +200,24 @@ namespace ReScanVisualizer.ViewModels
 
             Points.CollectionChanged += Points_CollectionChanged;
 
-            _barycenter = new Point3DViewModel(scatterGraph.ComputeBarycenter(), Colors.Red);
+            Point3D barycenter = scatterGraph.ComputeBarycenter();
+            Plan averagePlan;
+            try
+            {
+                averagePlan = scatterGraph.ComputeAveragePlan();
+            }
+            catch (InvalidOperationException)
+            {
+                averagePlan = new Plan();
+            }
+            Repere3D repere3D = ScatterGraph.ComputeRepere3D(scatterGraph, barycenter, averagePlan);
+
+            _barycenter = new Point3DViewModel(barycenter, Colors.Red);
             _barycenter.Hide();
             _barycenter.IsHidenChanged += Barycenter_IsHidenChanged;
             _oldBarycenterIsHiden = _barycenter.IsHiden;
 
-            _averagePlan = new PlanViewModel(Colors.LightBlue.ChangeAlpha(191));
+            _averagePlan = new PlanViewModel(averagePlan, barycenter, repere3D.X, Colors.LightBlue.ChangeAlpha(191));
             _averagePlan.Hide();
             _averagePlan.IsHidenChanged += AveragePlan_IsHidenChanged;
             _oldAveragePlanIsHiden = _averagePlan.IsHiden;
@@ -224,9 +241,9 @@ namespace ReScanVisualizer.ViewModels
             _barycenter.IsHidenChanged -= Barycenter_IsHidenChanged;
             _averagePlan.IsHidenChanged -= AveragePlan_IsHidenChanged;
             Points.CollectionChanged -= Points_CollectionChanged;
-            foreach (Point3DViewModel point in Points) 
+            foreach (Point3DViewModel point in Points)
             {
-                point.Dispose(); 
+                point.Dispose();
             }
             Barycenter.Dispose();
             AveragePlan.Dispose();
@@ -252,7 +269,7 @@ namespace ReScanVisualizer.ViewModels
                 case NotifyCollectionChangedAction.Reset:
                     break;
 
-                case NotifyCollectionChangedAction.Move: 
+                case NotifyCollectionChangedAction.Move:
                     break;
 
                 default:
@@ -268,6 +285,8 @@ namespace ReScanVisualizer.ViewModels
             {
                 ComputeAveragePlan();
             }
+
+            OnPropertyChanged(nameof(ItemsCount));
         }
 
         private void UpdateOldOpacity()
