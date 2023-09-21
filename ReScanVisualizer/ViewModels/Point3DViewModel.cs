@@ -14,6 +14,8 @@ namespace ReScanVisualizer.ViewModels
 {
     public class Point3DViewModel : ViewModelBase, I3DElement
     {
+        private const double _scaleFactor = 1;
+        
         private Point3D _point;
         public Point3D Point 
         { 
@@ -30,6 +32,8 @@ namespace ReScanVisualizer.ViewModels
                 }
             }
         }
+
+        private Point3D PointScalled => new Point3D(X * _scaleFactor, Y * _scaleFactor, Z * _scaleFactor);
 
         public double X
         {
@@ -202,7 +206,7 @@ namespace ReScanVisualizer.ViewModels
 
             _point = point3D;
             _radius = radius;
-            _model = Helper3D.Helper3D.BuildSphereModel(_point, _radius, _color);
+            _model = Helper3D.Helper3D.BuildSphereModel(PointScalled, _radius * _scaleFactor, _color);
         }
 
         private void UpdateOldOpacity()
@@ -222,7 +226,7 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildSphereGeometry(_point, _radius);
+            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildSphereGeometry(PointScalled, _radius * _scaleFactor);
         }
 
         public void UpdateModelMaterial()

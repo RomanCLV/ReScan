@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
+using ReScanVisualizer.Views;
+using System.Reflection;
 
 #nullable enable
 
@@ -24,16 +26,68 @@ namespace ReScanVisualizer.ViewModels
 
         public ObservableCollection<ScatterGraphViewModel> ScatterGraphs { get; private set; }
 
+        public Model3DGroup Models { get; private set; }
+
         public MainViewModel()
-		{
+        {
             OriginModel = new Model3DGroup();
             OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(1, 0, 0), 0.1, Brushes.Red));
             OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 1, 0), 0.1, Brushes.Green));
             OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 0, 1), 0.1, Brushes.Blue));
 
+            Models = new Model3DGroup();
             SelectedViewModel = null;
 
             ScatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
+            ScatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
         }
-	}
+
+        private void ScatterGraphs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    foreach (object? item in e.NewItems)
+                    {
+                        if (item is ScatterGraphViewModel graphViewModel)
+                        {
+                            Model3DGroup group = new Model3DGroup();
+                            group.Children.Add(graphViewModel.Barycenter.Model);
+                            group.Children.Add(graphViewModel.AveragePlan.Model);
+                            group.Children.Add(graphViewModel.PointsModel);
+                            Models.Children.Add(group);
+                        }
+                    }
+                    break;
+
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    foreach (object? item in e.NewItems)
+                    {
+                        if (item is ScatterGraphViewModel graphViewModel)
+                        {
+                            for (int i = 0; i < Models.Children.Count; i++)
+                            {
+                                if (Models.Children[i] is Model3DGroup group)
+                                {
+                                    if (group.Children[0].Equals(graphViewModel.Barycenter.Model))
+                                    {
+                                        Models.Children.RemoveAt(i);
+                                        i--;
+                                    }
+                                }
+                                else
+                                {
+                                    throw new NotImplementedException("Model3D was expected to be a Model3DGroup.");
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                    Models.Children.Clear();
+                    break;
+            }
+        }
+    }
 }

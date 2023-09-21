@@ -57,12 +57,16 @@
   <PropertyGroup>
     <StartupObject>ReScanVisualizer.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="HelixToolkit.Wpf, Version=2.24.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.Wpf.2.24.0\lib\net462\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -82,7 +86,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\OpenFileCommand.cs" />
+    <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
+    <Compile Include="Extentions\Extentions.cs" />
     <Compile Include="Models\Repere3D.cs" />
+    <Compile Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml.cs">
+      <DependentUpon>AddScatterGraphView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ItemTreeViews\AveragePlanTreeViewItemHeader.xaml.cs">
       <DependentUpon>AveragePlanTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
@@ -104,6 +113,10 @@
     <Compile Include="Views\Point3DView.xaml.cs">
       <DependentUpon>Point3DView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ItemTreeViews\AveragePlanTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -183,11 +196,24 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\Images\Add.afdesign" />
+    <None Include="Resources\Images\Browse.afdesign" />
+    <None Include="Resources\Images\Close.afdesign" />
+    <None Include="Resources\Images\Config.afdesign" />
+    <None Include="Resources\Images\Delete.afdesign" />
+    <None Include="Resources\Images\Working.afdesign" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Images\Add.png" />
+    <Resource Include="Resources\Images\Browse.png" />
+    <Resource Include="Resources\Images\Close.png" />
+    <Resource Include="Resources\Images\Config.png" />
+    <Resource Include="Resources\Images\Delete.png" />
+    <Resource Include="Resources\Images\Working.png" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8.1">
       <Visible>False</Visible>
@@ -199,6 +225,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -142,8 +142,15 @@
     <ClInclude Include="Plan2D.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="Repere3D.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ScatterGraph.h" />
     <ClInclude Include="Vector3D.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ReScan.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\ReScanVisualizer\Resources\Icon\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

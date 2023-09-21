@@ -75,6 +75,8 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _averagePlan, value);
         }
 
+        public Model3DGroup PointsModel { get; private set; }
+
         private Color _pointsColor;
         public Color Color
         {
@@ -192,12 +194,14 @@ namespace ReScanVisualizer.ViewModels
             _oldPointsOpacity = _pointsColor.A;
             _isHiden = _oldPointsOpacity == 0;
 
+            PointsModel = new Model3DGroup();
             Points = new ObservableCollection<Point3DViewModel>();
+
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
                 Points.Add(new Point3DViewModel(_scatterGraph[i], _pointsColor, _pointsDiameter));
+                PointsModel.Children.Add(Points.Last().Model);
             }
-
             Points.CollectionChanged += Points_CollectionChanged;
 
             Point3D barycenter = scatterGraph.ComputeBarycenter();
@@ -241,6 +245,7 @@ namespace ReScanVisualizer.ViewModels
             _barycenter.IsHidenChanged -= Barycenter_IsHidenChanged;
             _averagePlan.IsHidenChanged -= AveragePlan_IsHidenChanged;
             Points.CollectionChanged -= Points_CollectionChanged;
+            PointsModel.Children.Clear();
             foreach (Point3DViewModel point in Points)
             {
                 point.Dispose();
@@ -254,6 +259,8 @@ namespace ReScanVisualizer.ViewModels
         {
             _hasToComputeBarycenter = true;
             _hasToComputeAveragePlan = true;
+
+            // TODO : gérer l'ajout / la suppression des models de PointsModel
 
             switch (e.Action)
             {

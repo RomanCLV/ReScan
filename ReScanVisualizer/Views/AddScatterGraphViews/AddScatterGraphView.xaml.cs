@@ -1,7 +1,4 @@
-﻿using HelixToolkit.Wpf;
-using ReScanVisualizer.Models;
-using ReScanVisualizer.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,20 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-#nullable enable
-
-namespace ReScanVisualizer.Views
+namespace ReScanVisualizer.Views.AddScatterGraphViews
 {
     /// <summary>
-    /// Logique d'interaction pour MainWindow.xaml
+    /// Logique d'interaction pour AddScatterGraphView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class AddScatterGraphView : Window
     {
-        public MainWindow()
+        public AddScatterGraphView()
         {
             InitializeComponent();
         }

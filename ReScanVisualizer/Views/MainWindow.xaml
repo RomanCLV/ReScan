@@ -6,12 +6,15 @@
         xmlns:local="clr-namespace:ReScanVisualizer.Views"
         xmlns:itw="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
         xmlns:viewModels="clr-namespace:ReScanVisualizer.ViewModels"
+        xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         mc:Ignorable="d"
         Title="ReScan Visualize" Height="720" Width="1280"
         WindowState="Maximized"
-        Loaded="Window_Loaded"
+        Background="{StaticResource backgroundColor}"
         >
+    <Window.Resources>
+    </Window.Resources>
     <DockPanel>
 
         <Menu DockPanel.Dock="Top">
@@ -22,24 +25,23 @@
         
         <Grid>
             <HelixToolkit:HelixViewport3D>
-                <!-- Remember to add light to the scene -->
-                <HelixToolkit:SunLight/>
-
-                <ModelVisual3D Content="{Binding OriginModel}" />
-
-                <HelixToolkit:GridLinesVisual3D Width="10" Length="10" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
                 <HelixToolkit:HelixViewport3D.Background>
                     <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
                         <GradientStop Color="#FF0061FF" Offset="0"/>
                         <GradientStop Color="DarkBlue"  Offset="1"/>
                     </LinearGradientBrush>
                 </HelixToolkit:HelixViewport3D.Background>
+                <!-- Remember to add light to the scene -->
+                <HelixToolkit:SunLight/>
+                <HelixToolkit:GridLinesVisual3D Width="10" Length="10" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+                
+                <ModelVisual3D Content="{Binding OriginModel}" />
+                <ModelVisual3D Content="{Binding Models}"/>
             </HelixToolkit:HelixViewport3D>
 
             <DockPanel 
                 Width="300"
                 HorizontalAlignment="Left" 
-                Background="#19FFFFFF"
                 >
                 <Grid
                     DockPanel.Dock="Bottom"
@@ -61,7 +63,7 @@
                     HorizontalScrollBarVisibility="Auto" 
                     VerticalScrollBarVisibility="Auto"
                     >
-                    <TreeView x:Name="treeView" Background="Transparent"
+                    <TreeView x:Name="treeView" Background="{x:Null}" BorderThickness="0"
                               ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}">
                         <TreeView.ItemTemplate>
                             <DataTemplate>
