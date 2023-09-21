@@ -7,7 +7,7 @@
 
         public ItemIndexed()
         {
-            Item = default(T);
+            Item = default;
             Index = 0;
         }
 

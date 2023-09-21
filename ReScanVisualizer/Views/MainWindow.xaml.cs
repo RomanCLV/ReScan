@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ReScanVisualizer.Models;
+using ReScanVisualizer.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,20 @@ namespace ReScanVisualizer.Views
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            MainViewModel dataContext = ((MainViewModel)DataContext);
+
+            ScatterGraph scatterGraph1 = new ScatterGraph();
+            ScatterGraph.PopulateWithRandomPoints(scatterGraph1, 7, -5, 5, -5, 5, -5, 5);
+
+            ScatterGraph scatterGraph2 = new ScatterGraph();
+            ScatterGraph.PopulateWithRandomPoints(scatterGraph2, 15, -5, 5, -5, 5, -5, 5);
+
+            dataContext.ScatterGraphs.Add(new ScatterGraphViewModel(scatterGraph1));
+            dataContext.ScatterGraphs.Add(new ScatterGraphViewModel(scatterGraph2));
         }
     }
 }

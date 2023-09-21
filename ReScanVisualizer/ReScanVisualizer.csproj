@@ -83,20 +83,20 @@
     </ApplicationDefinition>
     <Compile Include="Commands\OpenFileCommand.cs" />
     <Compile Include="Models\Repere3D.cs" />
-    <Compile Include="Views\ItemTreeViews\AveragePlanItemTreeView.xaml.cs">
-      <DependentUpon>AveragePlanItemTreeView.xaml</DependentUpon>
+    <Compile Include="Views\ItemTreeViews\AveragePlanTreeViewItemHeader.xaml.cs">
+      <DependentUpon>AveragePlanTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemTreeViews\BarycenterItemTreeView.xaml.cs">
-      <DependentUpon>BarycenterItemTreeView.xaml</DependentUpon>
+    <Compile Include="Views\ItemTreeViews\BarycenterTreeViewItemHeader.xaml.cs">
+      <DependentUpon>BarycenterTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemTreeViews\Point3DItemTreeView.xaml.cs">
-      <DependentUpon>Point3DItemTreeView.xaml</DependentUpon>
+    <Compile Include="Views\ItemTreeViews\PointTreeViewItemHeader.xaml.cs">
+      <DependentUpon>PointTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemTreeViews\PointsItemTreeView.xaml.cs">
-      <DependentUpon>PointsItemTreeView.xaml</DependentUpon>
+    <Compile Include="Views\ItemTreeViews\PointsTreeViewItemHeader.xaml.cs">
+      <DependentUpon>PointsTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemTreeViews\ScatterGraphItemTreeView.xaml.cs">
-      <DependentUpon>ScatterGraphItemTreeView.xaml</DependentUpon>
+    <Compile Include="Views\ItemTreeViews\ScatterGraphTreeViewItemHeader.xaml.cs">
+      <DependentUpon>ScatterGraphTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlanView.xaml.cs">
       <DependentUpon>PlanView.xaml</DependentUpon>
@@ -104,23 +104,23 @@
     <Compile Include="Views\Point3DView.xaml.cs">
       <DependentUpon>Point3DView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\ItemTreeViews\AveragePlanItemTreeView.xaml">
+    <Page Include="Views\ItemTreeViews\AveragePlanTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemTreeViews\BarycenterItemTreeView.xaml">
+    <Page Include="Views\ItemTreeViews\BarycenterTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemTreeViews\Point3DItemTreeView.xaml">
+    <Page Include="Views\ItemTreeViews\PointTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemTreeViews\PointsItemTreeView.xaml">
+    <Page Include="Views\ItemTreeViews\PointsTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemTreeViews\ScatterGraphItemTreeView.xaml">
+    <Page Include="Views\ItemTreeViews\ScatterGraphTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

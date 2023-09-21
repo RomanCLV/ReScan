@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ReScanVisualizer.Views.ItemTreeViews.BarycenterItemTreeView"
+﻿<UserControl x:Class="ReScanVisualizer.Views.ItemTreeViews.AveragePlanTreeViewItemHeader"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,12 +7,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel Orientation="Horizontal">
-        <TextBlock Text="Barycenter (" />
-        <TextBlock Text="{Binding X}" />
+        <TextBlock Text="Average Plan (" />
+        <TextBlock Text="{Binding A, StringFormat=N2}" />
         <TextBlock Text=", " />
-        <TextBlock Text="{Binding Y}" />
+        <TextBlock Text="{Binding B, StringFormat=N2}" />
         <TextBlock Text=", " />
-        <TextBlock Text="{Binding Z}" />
+        <TextBlock Text="{Binding C, StringFormat=N2}" />
+        <TextBlock Text=", " />
+        <TextBlock Text="{Binding D, StringFormat=N2}" />
         <TextBlock Text=")" />
     </StackPanel>
 </UserControl>

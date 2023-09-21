@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ReScanVisualizer.Views.ItemTreeViews
 {
     /// <summary>
-    /// Logique d'interaction pour Point3DItemTreeView.xaml
+    /// Logique d'interaction pour AveragePlanItemTreeView.xaml
     /// </summary>
-    public partial class Point3DItemTreeView : UserControl
+    public partial class AveragePlanTreeViewItemHeader : UserControl
     {
-        public Point3DItemTreeView()
+        public AveragePlanTreeViewItemHeader()
         {
             InitializeComponent();
         }

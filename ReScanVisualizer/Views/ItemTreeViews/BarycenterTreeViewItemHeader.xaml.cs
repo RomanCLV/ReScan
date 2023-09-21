@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ReScanVisualizer.Views.ItemTreeViews
 {
     /// <summary>
-    /// Logique d'interaction pour AveragePlanItemTreeView.xaml
+    /// Logique d'interaction pour BarycenterItemTreeView.xaml
     /// </summary>
-    public partial class AveragePlanItemTreeView : UserControl
+    public partial class BarycenterTreeViewItemHeader : UserControl
     {
-        public AveragePlanItemTreeView()
+        public BarycenterTreeViewItemHeader()
         {
             InitializeComponent();
         }

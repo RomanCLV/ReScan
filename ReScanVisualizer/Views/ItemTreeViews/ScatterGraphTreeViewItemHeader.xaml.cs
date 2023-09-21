@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ReScanVisualizer.Views.ItemTreeViews
 {
     /// <summary>
-    /// Logique d'interaction pour PointsItemTreeView.xaml
+    /// Logique d'interaction pour ScatterGraphItemTreeView.xaml
     /// </summary>
-    public partial class PointsItemTreeView : UserControl
+    public partial class ScatterGraphTreeViewItemHeader : UserControl
     {
-        public PointsItemTreeView()
+        public ScatterGraphTreeViewItemHeader()
         {
             InitializeComponent();
         }
