@@ -438,6 +438,14 @@ namespace ReScanVisualizer.Models
             }
         }
 
+        /// <summary>
+        /// Read the given file to create a <see cref="ScatterGraph"/>.
+        /// </summary>
+        /// <param name="filename">The path</param>
+        /// <param name="containsHeader">If the file contains headers</param>
+        /// <returns>A new scatter graph</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
         public static ScatterGraph ReadCSV(string filename, bool containsHeader)
         {
             if (string.IsNullOrWhiteSpace(filename))

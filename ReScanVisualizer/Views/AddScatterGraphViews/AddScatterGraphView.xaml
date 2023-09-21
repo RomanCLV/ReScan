@@ -3,12 +3,68 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ReScanVisualizer.Views"
+        xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
+        xmlns:builders="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraph.Builder"
         mc:Ignorable="d"
-        Title="Add Scatter Graph" Height="450" Width="800"
+        Title="Add scatter graph" 
+        Height="450" Width="800"
+        WindowStartupLocation="CenterOwner"
         Background="{StaticResource backgroundColor}"
         >
-    <Grid>
+    <Window.InputBindings>
+        <KeyBinding x:Name="ValidateCommandKey" 
+            Command="{Binding Path=ValidateCommand.Command}"  
+            Key="{Binding Path=ValidateCommand.Key}" 
+            Modifiers="{Binding Path=ValidateCommand.Modifiers}"
+            />
+        <KeyBinding x:Name="CancelCommandKey" 
+            Command="{Binding Path=CancelCommand.Command}"  
+            Key="{Binding Path=CancelCommand.Key}" 
+            Modifiers="{Binding Path=CancelCommand.Modifiers}"
+            />
+    </Window.InputBindings>
 
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="New Scatter Graph" Style="{StaticResource helpWindowTitle}" Foreground="{StaticResource foregroundColor}"/>
+                <DockPanel Margin="50">
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="OK" Height="30"
+                            ToolTip="{Binding ValidateCommand.Description}"
+                            Command="{Binding ElementName=ValidateCommandKey, Path=Command}"
+                            />
+                        <Button Content="Cancel" Height="30"
+                            ToolTip="{Binding CancelCommand.Description}"
+                            Command="{Binding ElementName=CancelCommandKey, Path=Command}"
+                            />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Choose an option" Foreground="{StaticResource foregroundColor}" Margin="0 0 0 10" />
+                        <RadioButton IsChecked="{Binding IsEmptySelected}"      Content="Empty graph"       Foreground="{StaticResource foregroundColor}" Margin="10 5" />
+                        <RadioButton IsChecked="{Binding IsToPopulateSelected}" Content="Graph to populate" Foreground="{StaticResource foregroundColor}" Margin="10 5" />
+                        <RadioButton IsChecked="{Binding IsToOpenSelected}"     Content="Open a file"       Foreground="{StaticResource foregroundColor}" Margin="10 5" />
+
+                        <Separator Margin="10" />
+                        <StackPanel Margin="10 0">
+                            <StackPanel.Resources>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphEmptyBuilder}">
+                                    <local:ScatterGraphEmptyBuilderView Foreground="{StaticResource foregroundColor}"/>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateRandomBuilder}">
+                                    <local:ScatterGraphPopulateRandomBuilderView Foreground="{StaticResource foregroundColor}"/>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphFilesBuilder}">
+                                    <local:ScatterGraphFilesBuilderView Foreground="{StaticResource foregroundColor}"/>
+                                </DataTemplate>
+                            </StackPanel.Resources>
+
+                            <ContentControl Content="{Binding Builder}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DockPanel>
+            </DockPanel>
+        </ScrollViewer>
     </Grid>
 </Window>

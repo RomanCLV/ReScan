@@ -85,12 +85,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\OpenFileCommand.cs" />
+    <Compile Include="Commands\AddScatterGraphCommand.cs" />
+    <Compile Include="Commands\ActionCommand.cs" />
+    <Compile Include="Commands\ValidateAddingScatterGraphCommand.cs" />
+    <Compile Include="Converters\CommandKeyToInputGestureTextConverter.cs" />
     <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
     <Compile Include="Extentions\Extentions.cs" />
     <Compile Include="Models\Repere3D.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphEmptyBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphModelView.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphBuilderBase.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphFileBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphFilesBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRandomBuilder.cs" />
+    <Compile Include="ViewModels\CommandKey.cs" />
     <Compile Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml.cs">
       <DependentUpon>AddScatterGraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphEmptyBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphFilesBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphFilesBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateRandomBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphPopulateRandomBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemTreeViews\AveragePlanTreeViewItemHeader.xaml.cs">
       <DependentUpon>AveragePlanTreeViewItemHeader.xaml</DependentUpon>
@@ -114,6 +133,18 @@
       <DependentUpon>Point3DView.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphFilesBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateRandomBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -232,5 +263,6 @@
   <ItemGroup>
     <SplashScreen Include="SplashScreen.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,19 +9,40 @@
         xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         mc:Ignorable="d"
-        Title="ReScan Visualize" Height="720" Width="1280"
+        Title="ReScan Visualizer" Height="720" Width="1280"
         WindowState="Maximized"
         Background="{StaticResource backgroundColor}"
         >
     <Window.Resources>
-    </Window.Resources>
-    <DockPanel>
+        <converters:CommandKeyToInputGestureTextConverter x:Key="CommandKeyToInputGestureTextConverter" />
 
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Edit">
-                <MenuItem Header="Open file" />
-            </MenuItem>
-        </Menu>
+        <BitmapImage x:Key="addIcon" UriSource="/ReScanVisualizer;component/Resources/Images/Add.png" />
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding x:Name="AddScatterGraphCommandKey" 
+                    Command="{Binding Path=AddScatterGraphCommand.Command}"  
+                    Key="{Binding Path=AddScatterGraphCommand.Key}" 
+                    Modifiers="{Binding Path=AddScatterGraphCommand.Modifiers}"
+                    />
+    </Window.InputBindings>
+
+    <DockPanel>
+        <StackPanel
+            DockPanel.Dock="Top"
+            Background="{StaticResource backgroundColor}"
+            >
+            <Menu DockPanel.Dock="Top" Background="Transparent">
+                <MenuItem Header="_Edit" ToolTip="Edit" Style="{StaticResource menuItemTitle}">
+                    <MenuItem Header="_Ajouter" ToolTip="{Binding AddScatterGraphCommand.Description}" Style="{StaticResource menuItemItem}"
+                              Command="{Binding ElementName=AddScatterGraphCommandKey, Path=Command}"
+                              InputGestureText="{Binding ElementName=AddScatterGraphCommandKey, Converter={StaticResource CommandKeyToInputGestureTextConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource addIcon}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+        </StackPanel>
         
         <Grid>
             <HelixToolkit:HelixViewport3D>
@@ -67,27 +88,27 @@
                               ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}">
                         <TreeView.ItemTemplate>
                             <DataTemplate>
-                                <TreeViewItem IsExpanded="True" Foreground="White">
+                                <TreeViewItem IsExpanded="True" Foreground="{StaticResource foregroundColor}">
                                     <TreeViewItem.Header>
                                         <itw:ScatterGraphTreeViewItemHeader />
                                     </TreeViewItem.Header>
-                                    <TreeViewItem Foreground="White">
+                                    <TreeViewItem Foreground="{StaticResource foregroundColor}">
                                         <TreeViewItem.Header>
                                             <itw:BarycenterTreeViewItemHeader DataContext="{Binding Barycenter, UpdateSourceTrigger=PropertyChanged}" />
                                         </TreeViewItem.Header>
                                     </TreeViewItem>
-                                    <TreeViewItem Foreground="White">
+                                    <TreeViewItem Foreground="{StaticResource foregroundColor}">
                                         <TreeViewItem.Header>
                                             <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" />
                                         </TreeViewItem.Header>
                                     </TreeViewItem>
-                                    <TreeViewItem Foreground="White" ItemsSource="{Binding Points, UpdateSourceTrigger=PropertyChanged}">
+                                    <TreeViewItem Foreground="{StaticResource foregroundColor}" ItemsSource="{Binding Points, UpdateSourceTrigger=PropertyChanged}">
                                         <TreeViewItem.Header>
                                             <itw:PointsTreeViewItemHeader />
                                         </TreeViewItem.Header>
                                         <TreeViewItem.ItemTemplate>
                                             <DataTemplate>
-                                                <TreeViewItem Foreground="White">
+                                                <TreeViewItem Foreground="{StaticResource foregroundColor}">
                                                     <TreeViewItem.Header>
                                                         <itw:PointTreeViewItemHeader />
                                                     </TreeViewItem.Header>

@@ -3,18 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ReScanVisualizer">
     <Application.Resources>
-        <SolidColorBrush x:Key="textBoxGrey"         Color="#454545" />
-        <SolidColorBrush x:Key="backgroundColor"     Color="#FF202020" />
+        <SolidColorBrush x:Key="textBoxGrey"         Color="#FF454545" />
+        <SolidColorBrush x:Key="backgroundColor"     Color="#FF303030" />
         <SolidColorBrush x:Key="foregroundColor"     Color="#FFFFFFFF" />
         <SolidColorBrush x:Key="foreground2Color"    Color="#FF000000" />
         <SolidColorBrush x:Key="backgroundListColor" Color="#25FFFFFF" />
         <SolidColorBrush x:Key="white24"             Color="#24FFFFFF" />
         <SolidColorBrush x:Key="white10"             Color="#10FFFFFF" />
-        <SolidColorBrush x:Key="gray"                Color="#FF303030" />
         <SolidColorBrush x:Key="gray24"              Color="#24303030" />
         <SolidColorBrush x:Key="linkMouseBlueColor"  Color="#FF2196F3" />
         <SolidColorBrush x:Key="linkMouseOverColor"  Color="#FFF44336" />
-        
+
+        <Style x:Key="menuItemTitle" TargetType="{x:Type MenuItem}">
+            <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
+        </Style>
+        <Style x:Key="menuItemItem" TargetType="{x:Type MenuItem}">
+            <Setter Property="Foreground" Value="{StaticResource foreground2Color}" />
+        </Style>
+
+        <Style TargetType="{x:Type TextBlock}" x:Key="helpWindowTitle">
+            <Setter Property="FontSize" Value="36"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Height" Value="125"/>
+            <Setter Property="Padding" Value="50"/>
+            <Setter Property="Background" Value="{StaticResource backgroundListColor}" />
+        </Style>
+
         <Style TargetType="{x:Type Button}">
             <Setter Property="Margin"      Value="5" />
             <Setter Property="MinWidth"    Value="50" />

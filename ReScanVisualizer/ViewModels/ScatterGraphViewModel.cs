@@ -178,15 +178,15 @@ namespace ReScanVisualizer.ViewModels
             get => Points.Count + 2; // Points count + barycenter + averplan
         }
 
-        public ScatterGraphViewModel() : this(new ScatterGraph(), 1.0, Colors.White)
+        public ScatterGraphViewModel() : this(new ScatterGraph(), Colors.White)
         {
         }
 
-        public ScatterGraphViewModel(ScatterGraph scatterGraph) : this(scatterGraph, 1.0, Colors.White)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph) : this(scatterGraph, Colors.White)
         {
         }
 
-        public ScatterGraphViewModel(ScatterGraph scatterGraph, double pointDiameter, Color color)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double pointDiameter = 1.0)
         {
             _scatterGraph = scatterGraph;
             _pointsDiameter = pointDiameter;

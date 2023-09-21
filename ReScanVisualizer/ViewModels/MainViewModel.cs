@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Collections.ObjectModel;
 using ReScanVisualizer.Views;
 using System.Reflection;
+using ReScanVisualizer.Commands;
+using System.Windows.Input;
 
 #nullable enable
 
@@ -28,8 +30,12 @@ namespace ReScanVisualizer.ViewModels
 
         public Model3DGroup Models { get; private set; }
 
+        public CommandKey AddScatterGraphCommand { get; }
+
         public MainViewModel()
         {
+            AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
+
             OriginModel = new Model3DGroup();
             OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(1, 0, 0), 0.1, Brushes.Red));
             OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 1, 0), 0.1, Brushes.Green));
@@ -52,9 +58,9 @@ namespace ReScanVisualizer.ViewModels
                         if (item is ScatterGraphViewModel graphViewModel)
                         {
                             Model3DGroup group = new Model3DGroup();
+                            group.Children.Add(graphViewModel.PointsModel);
                             group.Children.Add(graphViewModel.Barycenter.Model);
                             group.Children.Add(graphViewModel.AveragePlan.Model);
-                            group.Children.Add(graphViewModel.PointsModel);
                             Models.Children.Add(group);
                         }
                     }
@@ -69,7 +75,7 @@ namespace ReScanVisualizer.ViewModels
                             {
                                 if (Models.Children[i] is Model3DGroup group)
                                 {
-                                    if (group.Children[0].Equals(graphViewModel.Barycenter.Model))
+                                    if (group.Children[0].Equals(graphViewModel.PointsModel))
                                     {
                                         Models.Children.RemoveAt(i);
                                         i--;
