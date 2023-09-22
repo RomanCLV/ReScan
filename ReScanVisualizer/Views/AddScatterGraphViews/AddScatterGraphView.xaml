@@ -47,19 +47,34 @@
                         <RadioButton IsChecked="{Binding IsToOpenSelected}"     Content="Open a file"       Foreground="{StaticResource foregroundColor}" Margin="10 5" />
 
                         <Separator Margin="10" />
-                        <StackPanel Margin="10 0">
+                        <StackPanel Margin="0 10">
                             <StackPanel.Resources>
                                 <DataTemplate DataType="{x:Type builders:ScatterGraphEmptyBuilder}">
                                     <local:ScatterGraphEmptyBuilderView Foreground="{StaticResource foregroundColor}"/>
                                 </DataTemplate>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateRandomBuilder}">
-                                    <local:ScatterGraphPopulateRandomBuilderView Foreground="{StaticResource foregroundColor}"/>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateBuilderBase}">
+                                    <local:ScatterGraphPopulateBuilderBaseView 
+                                        Foreground="{StaticResource foregroundColor}"
+                                        DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:AddScatterGraphView}}}"/>
                                 </DataTemplate>
                                 <DataTemplate DataType="{x:Type builders:ScatterGraphFilesBuilder}">
                                     <local:ScatterGraphFilesBuilderView Foreground="{StaticResource foregroundColor}"/>
                                 </DataTemplate>
                             </StackPanel.Resources>
 
+                            <ContentControl Content="{Binding Builder}" />
+                        </StackPanel>
+                        
+                        <StackPanel Margin="0 10">
+                            <StackPanel.Resources>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateRandomBuilder}">
+                                    <local:ScatterGraphPopulateRandomBuilderView Foreground="{StaticResource foregroundColor}" />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateRectangle2DBuilder}">
+                                    <local:ScatterGraphPopulateRectangle2DBuilderView Foreground="{StaticResource foregroundColor}" />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphBuilderBase}"/>
+                            </StackPanel.Resources>
                             <ContentControl Content="{Binding Builder}" />
                         </StackPanel>
                     </StackPanel>

@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
-    public class ScatterGraphPopulateRandomBuilder : ScatterGraphBuilderBase
+    public class ScatterGraphPopulateRandomBuilder : ScatterGraphPopulateBuilderBase
     {
         private int _count;
         public int Count
@@ -79,13 +79,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         }
 
         /// <summary>
-        /// Build an array of ScatterGraphViewModel
+        /// Build an array of ScatterGraphViewModel using the <see cref="ScatterGraph.PopulateRandom(ScatterGraph, int, double, double, double, double, double, double)"/> method.
         /// </summary>
         /// <returns>Return an array of one ScatterGraph</returns>
         public override ScatterGraphViewModel[] Build()
         {
             ScatterGraph graph = new ScatterGraph();
-            ScatterGraph.PopulateWithRandomPoints(graph, _count, _minX, _maxX, _minY, _maxY, _minZ, _maxZ);
+            ScatterGraph.PopulateRandom(graph, _count, _minX, _maxX, _minY, _maxY, _minZ, _maxZ);
             return new ScatterGraphViewModel[1] { new ScatterGraphViewModel(graph, _color) };
         }
     }

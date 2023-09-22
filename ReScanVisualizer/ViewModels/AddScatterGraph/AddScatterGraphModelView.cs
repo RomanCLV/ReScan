@@ -41,7 +41,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 UnselectAll();
                 if (SetValue(ref _isToPopulateSelected, value))
                 {
-                    Builder = new ScatterGraphPopulateRandomBuilder();
+                    UpdatePopulateBuilder();
                 }
             }
         }
@@ -56,6 +56,19 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 if (SetValue(ref _isToOpenSelected, value))
                 {
                     Builder = new ScatterGraphFilesBuilder();
+                }
+            }
+        }
+
+        private int _populateSelectedIndex;
+        public int PopulateSelectedIndex
+        {
+            get => _populateSelectedIndex;
+            set
+            {
+                if (SetValue(ref _populateSelectedIndex, value))
+                {
+                    UpdatePopulateBuilder();
                 }
             }
         }
@@ -78,7 +91,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                         SetValue(ref _builder, value);
                     }
                 }
-                
             }
         }
 
@@ -91,6 +103,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             _isEmptySelected = false;
             _isToPopulateSelected = false;
             _isToOpenSelected = false;
+            _populateSelectedIndex = 0;
             _mainViewModel = mainViewModel;
 
             ValidateCommand = new CommandKey(new ValidateAddingScatterGraphCommand(addScatterGraphView, this, mainViewModel), Key.Enter, ModifierKeys.None, "Validate");
@@ -106,6 +119,22 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 IsToPopulateSelected = false;
                 IsToOpenSelected = false;
                 _isUnselectingAll = false;
+            }
+        }
+
+        private void UpdatePopulateBuilder()
+        {
+            if (_populateSelectedIndex == 0)
+            {
+                Builder = new ScatterGraphPopulateRandomBuilder();
+            }
+            else if (_populateSelectedIndex == 1)
+            {
+                Builder = new ScatterGraphPopulateRectangle2DBuilder();
+            }
+            else
+            {
+                Builder = null;
             }
         }
     }

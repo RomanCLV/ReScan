@@ -97,7 +97,9 @@
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphBuilderBase.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphFileBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphFilesBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateBuilderBase.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRandomBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRectangle2DBuilder.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
     <Compile Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml.cs">
       <DependentUpon>AddScatterGraphView.xaml</DependentUpon>
@@ -108,8 +110,14 @@
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphFilesBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphFilesBuilderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateBuilderBaseView.xaml.cs">
+      <DependentUpon>ScatterGraphPopulateBuilderBaseView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateRandomBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphPopulateRandomBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateRectangle2DBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphPopulateRectangle2DBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemTreeViews\AveragePlanTreeViewItemHeader.xaml.cs">
       <DependentUpon>AveragePlanTreeViewItemHeader.xaml</DependentUpon>
@@ -144,7 +152,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateBuilderBaseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateRandomBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateRectangle2DBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

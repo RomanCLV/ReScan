@@ -370,7 +370,7 @@ namespace ReScanVisualizer.Models
 
         #region Populate
 
-        public static void PopulateWithRandomPoints(ScatterGraph scatterGraph, int count, double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
+        public static void PopulateRandom(ScatterGraph scatterGraph, int count, double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
         {
             Random random = new Random();
 
@@ -381,6 +381,45 @@ namespace ReScanVisualizer.Models
                 double randomZ = minZ + (maxZ - minZ) * random.NextDouble();
 
                 scatterGraph.AddPoint(new Point3D(randomX, randomY, randomZ));
+            }
+        }
+
+        public static void PopulateRectangle2D(ScatterGraph scatterGraph, Point3D Center, Plan2D plan, double width, double height, double density = 50)
+        {
+            int numPointsX = (int)(width / density);
+            int numPointsY = (int)(height / density);
+
+            double stepX = width / numPointsX;
+            double stepY = height / numPointsY;
+
+            for (int i = 0; i <= numPointsX; i++)
+            {
+                for (int j = 0; j <= numPointsY; j++)
+                {
+                    double x = Center.X;
+                    double y = Center.Y;
+                    double z = Center.Z;
+
+                    switch (plan)
+                    {
+                        case Plan2D.XY:
+                            x += i * stepX - width / 2;
+                            y += j * stepY - height / 2;
+                            break;
+
+                        case Plan2D.XZ:
+                            x += i * stepX - width / 2;
+                            z += j * stepY - height / 2;
+                            break;
+
+                        case Plan2D.YZ:
+                            y += i * stepX - width / 2;
+                            z += j * stepY - height / 2;
+                            break;
+                    }
+
+                    scatterGraph.AddPoint(new Point3D(x, y, z));
+                }
             }
         }
 
