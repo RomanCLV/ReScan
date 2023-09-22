@@ -30,7 +30,7 @@
         
         <!-- Right Column: Controls -->
         <StackPanel Grid.Column="1" x:Name="controlStackPanel" Height="140" VerticalAlignment="Top" Margin="5 0 0 0">
-            <ComboBox Height="26" SelectedValue="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ColorToSolidColorBrushConverter}}" ItemsSource="{Binding AllColors}">
+            <ComboBox x:Name="ColorComboBox" Height="26" SelectedValue="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ColorToSolidColorBrushConverter}}" ItemsSource="{Binding AllColors}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
