@@ -88,10 +88,14 @@
     <Compile Include="Commands\AddScatterGraphCommand.cs" />
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Commands\ValidateAddingScatterGraphCommand.cs" />
+    <Compile Include="Converters\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\CommandKeyToInputGestureTextConverter.cs" />
     <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
     <Compile Include="Extentions\Extentions.cs" />
     <Compile Include="Models\Repere3D.cs" />
+    <Compile Include="UserControls\ColorSelector.xaml.cs">
+      <DependentUpon>ColorSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphEmptyBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphModelView.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphBuilderBase.cs" />
@@ -140,6 +144,10 @@
     <Compile Include="Views\Point3DView.xaml.cs">
       <DependentUpon>Point3DView.xaml</DependentUpon>
     </Compile>
+    <Page Include="UserControls\ColorSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
