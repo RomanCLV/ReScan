@@ -14,7 +14,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public Color Color
         {
             get => _color;
-            set => SetValue(ref _color, value);
+            set
+            {
+                SetValue(ref _color, value);
+            }
         }
 
         public ScatterGraphEmptyBuilder()

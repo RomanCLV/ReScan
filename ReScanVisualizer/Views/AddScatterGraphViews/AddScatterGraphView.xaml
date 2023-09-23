@@ -77,6 +77,16 @@
                             </StackPanel.Resources>
                             <ContentControl Content="{Binding Builder}" />
                         </StackPanel>
+
+                        <StackPanel Margin="0 10">
+                            <StackPanel.Resources>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphBuilderBase}">
+                                    <Separator Margin="10" />
+                                    </DataTemplate>
+                            </StackPanel.Resources>
+                            <ContentControl Content="{Binding Builder}" />
+                        </StackPanel>
+
                     </StackPanel>
                 </DockPanel>
             </DockPanel>

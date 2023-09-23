@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+#nullable enable
+
 namespace ReScanVisualizer.UserControls
 {
     /// <summary>
@@ -22,7 +24,7 @@ namespace ReScanVisualizer.UserControls
     {
         public static readonly DependencyProperty ColorProperty =
             DependencyProperty.Register("Color", typeof(Color), typeof(ColorSelector),
-                new FrameworkPropertyMetadata(Colors.White, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorChanged));
+                new FrameworkPropertyMetadata(Colors.White, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorPropertyChanged));
 
         public static readonly DependencyProperty ColorRedProperty =
             DependencyProperty.Register("ColorRed", typeof(byte), typeof(ColorSelector),
@@ -40,37 +42,85 @@ namespace ReScanVisualizer.UserControls
             DependencyProperty.Register("ColorAlpha", typeof(byte), typeof(ColorSelector),
                 new FrameworkPropertyMetadata((byte)255, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorComponentChanged));
 
+        public EventHandler<Color>? ColorChanged { get; set; }
+
         public Color Color
         {
-            get { return (Color)GetValue(ColorProperty); }
+            get 
+            { 
+                return (Color)GetValue(ColorProperty);
+            }
             set
             {
-                SetValue(ColorProperty, value);
+                if (Color != value) 
+                { 
+                    SetValue(ColorProperty, value);
+                    if (ColorRed != value.R)
+                    {
+                        ColorRed = value.R;
+                    }
+                    if (ColorGreen != value.G)
+                    {
+                        ColorGreen = value.G;
+                    }
+                    if (ColorBlue != value.B)
+                    {
+                        ColorBlue = value.B;
+                    }
+                    if (ColorAlpha != value.A)
+                    {
+                        ColorAlpha = value.A;
+                    }
+                }
             }
         }
 
         public byte ColorRed
         {
             get { return (byte)GetValue(ColorRedProperty); }
-            set { SetValue(ColorRedProperty, value); }
+            set 
+            {
+                if (ColorRed != value)
+                {
+                    SetValue(ColorRedProperty, value);
+                }
+            }
         }
 
         public byte ColorGreen
         {
             get { return (byte)GetValue(ColorGreenProperty); }
-            set { SetValue(ColorGreenProperty, value); }
+            set
+            {
+                if (ColorGreen != value)
+                {
+                    SetValue(ColorGreenProperty, value);
+                }
+            }
         }
 
         public byte ColorBlue
         {
             get { return (byte)GetValue(ColorBlueProperty); }
-            set { SetValue(ColorBlueProperty, value); }
+            set
+            {
+                if (ColorBlue != value)
+                {
+                    SetValue(ColorBlueProperty, value);
+                }
+            }
         }
 
         public byte ColorAlpha
         {
             get { return (byte)GetValue(ColorAlphaProperty); }
-            set { SetValue(ColorAlphaProperty, value); }
+            set
+            {
+                if (ColorAlpha != value)
+                {
+                    SetValue(ColorAlphaProperty, value);
+                }
+            }
         }
 
         public List<KeyValuePair<string, Color>> AllColors { get; private set; }
@@ -121,20 +171,26 @@ namespace ReScanVisualizer.UserControls
             ColorComboBox.SelectedItem = null;
         }
 
+        private void OnColorChanged()
+        {
+            ColorChanged?.Invoke(this, Color);
+        }
+
         private static void OnColorComponentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ColorSelector selector = (ColorSelector)d;
             selector.UpdateColor();
         }
 
-        private static void OnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ColorSelector selector = (ColorSelector)d;
             Color newColor = (Color)e.NewValue;
-            selector.ColorRed = newColor.R;
-            selector.ColorGreen = newColor.G;
-            selector.ColorBlue = newColor.B;
-            selector.ColorAlpha = newColor.A;
+            if (selector.ColorRed   != newColor.R) selector.ColorRed   = newColor.R;
+            if (selector.ColorGreen != newColor.G) selector.ColorGreen = newColor.G;
+            if (selector.ColorBlue  != newColor.B) selector.ColorBlue  = newColor.B;
+            if (selector.ColorAlpha != newColor.A) selector.ColorAlpha = newColor.A;
+            selector.OnColorChanged();
         }
     }
 }

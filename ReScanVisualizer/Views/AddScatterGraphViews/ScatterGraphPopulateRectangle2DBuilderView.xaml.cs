@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         public ScatterGraphPopulateRectangle2DBuilderView()
         {
             InitializeComponent();
+        }
+
+        public void ColorSelector_ColorChanged(object sender, Color c)
+        {
+            if (DataContext is ScatterGraphPopulateRectangle2DBuilder builder)
+            {
+                builder.Color = c;
+            }
         }
     }
 }
