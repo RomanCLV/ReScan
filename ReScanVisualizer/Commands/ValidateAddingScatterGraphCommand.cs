@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.ViewModels.AddScatterGraph;
 using ReScanVisualizer.Views.AddScatterGraphViews;
@@ -56,7 +57,7 @@ namespace ReScanVisualizer.Commands
                 catch (Exception ex)
                 {
                     scatterGraphViewModels = new ScatterGraphViewModel[0];
-                    // TODO : Message box
+                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
                 foreach (ScatterGraphViewModel viewModel in scatterGraphViewModels)

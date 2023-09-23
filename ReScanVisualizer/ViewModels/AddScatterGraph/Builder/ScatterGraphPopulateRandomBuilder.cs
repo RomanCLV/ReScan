@@ -1,62 +1,136 @@
-﻿using ReScanVisualizer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
     public class ScatterGraphPopulateRandomBuilder : ScatterGraphPopulateBuilderBase
     {
-        private int _count;
-        public int Count
+        private uint _count;
+        public uint Count
         {
             get => _count;
-            set => SetValue(ref _count, value);
+            set
+            {
+                if (value > MAX_COUNT)
+                {
+                    value = MAX_COUNT;
+                }
+                SetValue(ref _count, value);
+            }
         }
 
         private double _minX;
         public double MinX
         {
             get => _minX;
-            set => SetValue(ref _minX, value);
+            set
+            {
+                if (value < MIN_X)
+                {
+                    value = MIN_X;
+                }
+                else if (value >= _maxX)
+                {
+                    value = _maxX - 1;
+                }
+                SetValue(ref _minX, value);
+            }
         }
 
         private double _maxX;
         public double MaxX
         {
             get => _maxX;
-            set => SetValue(ref _maxX, value);
+            set
+            {
+                if (value > MAX_X)
+                {
+                    value = MAX_X;
+                }
+                else if (value <= _minX)
+                {
+                    value = _minX + 1;
+                }
+                SetValue(ref _maxX, value);
+            }
         }
 
         private double _minY;
         public double MinY
         {
             get => _minY;
-            set => SetValue(ref _minY, value);
+            set
+            {
+                if (value < MIN_Y)
+                {
+                    value = MIN_Y;
+                }
+                else if (value >= _maxY)
+                {
+                    value = _maxY - 1;
+                }
+                SetValue(ref _minY, value);
+            }
         }
 
         private double _maxY;
         public double MaxY
         {
             get => _maxY;
-            set => SetValue(ref _maxY, value);
+            set
+            {
+                if (value > MAX_Y)
+                {
+                    value = MAX_Y;
+                }
+                else if (value <= _minY)
+                {
+                    value = _minY + 1;
+                }
+                SetValue(ref _maxY, value);
+            }
         }
 
         private double _minZ;
         public double MinZ
         {
             get => _minZ;
-            set => SetValue(ref _minZ, value);
+            set
+            {
+                if (value < MIN_Z)
+                {
+                    value = MIN_Z;
+                }
+                else if (value >= _maxZ)
+                {
+                    value = _maxZ - 1;
+                }
+                SetValue(ref _minZ, value);
+            }
         }
 
         private double _maxZ;
-        public double MazZ
+        public double MaxZ
         {
             get => _maxZ;
-            set => SetValue(ref _maxZ, value);
+            set
+            {
+                if (value > MAX_Z)
+                {
+                    value = MAX_Z;
+                }
+                else if (value <= _minZ)
+                {
+                    value = _minZ + 1;
+                }
+                SetValue(ref _maxZ, value);
+            }
         }
 
         private Color _color;
@@ -70,11 +144,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         {
             _count = 5;
             _minX = -10;
-            _maxX =  10;
+            _maxX = 10;
             _minY = -10;
-            _maxY =  10;
+            _maxY = 10;
             _minZ = -10;
-            _maxZ =  10;
+            _maxZ = 10;
             _color = Colors.White;
         }
 

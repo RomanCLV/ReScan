@@ -4,9 +4,67 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
+             xmlns:ctr="clr-namespace:ReScanVisualizer.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
-        <TextBlock Text="Random" />
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="10">
+            <TextBlock Text="Count:" Margin="10" Style="{StaticResource myTextBlock}"/>
+            <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged}" Width="100" Style="{StaticResource myTextBox}"/>
+        </StackPanel>
+
+        <GroupBox Header="Limits" Margin="10">
+            <Grid Margin="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!-- MinX -->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                    <TextBlock Text="MinX:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox Text="{Binding MinX, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+
+                <!-- MaxX -->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                    <TextBlock Text="MaxX:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox Text="{Binding MaxX, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+
+                <!-- MinY -->
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                    <TextBlock Text="MinY:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox   Text="{Binding MinY, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+
+                <!-- MaxY -->
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                    <TextBlock Text="MaxY:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox Text="{Binding MaxY, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+
+                <!-- MinZ -->
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                    <TextBlock Text="MinZ:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox Text="{Binding MinZ, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+
+                <!-- MaxZ -->
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
+                    <TextBlock Text="MaxZ:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox Text="{Binding MaxZ, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Color" Margin="10">
+            <ctr:ColorSelector ColorChanged="ColorSelector_ColorChanged" Margin="30" />
+        </GroupBox>
     </StackPanel>
 </UserControl>

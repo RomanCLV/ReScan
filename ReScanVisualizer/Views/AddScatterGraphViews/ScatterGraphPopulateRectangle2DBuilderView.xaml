@@ -4,9 +4,82 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
+             xmlns:ctr="clr-namespace:ReScanVisualizer.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
-        <TextBlock Text="Rectangle 2D"/>
+        <GroupBox Header="Center" Margin="10">
+            <Grid Margin="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!-- Center X -->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                    <TextBlock Text="X:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox Text="{Binding CenterX, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+
+                <!-- Center Y -->
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                    <TextBlock Text="Y:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox   Text="{Binding CenterY, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+
+                <!-- Center Z -->
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                    <TextBlock Text="Z:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox Text="{Binding CenterZ, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Dimensions" Margin="10">
+            <Grid Margin="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                    <TextBlock Text="Plan:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <ComboBox Width="100" Height="22" SelectedValue="{Binding Plan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding AllPlans}"/>
+                </StackPanel>
+                
+
+                <!-- Width -->
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                    <TextBlock Text="Width:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox Text="{Binding Width, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+
+                <!-- Height -->
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                    <TextBlock Text="Height:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                    <TextBox   Text="{Binding Height, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="10">
+            <TextBlock Text="Density:" Margin="10" Style="{StaticResource myTextBlock}"/>
+            <TextBox Text="{Binding Density, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+        </StackPanel>
+
+        <GroupBox Header="Color" Margin="10">
+            <ctr:ColorSelector ColorChanged="ColorSelector_ColorChanged" Margin="30" />
+        </GroupBox>
+
     </StackPanel>
 </UserControl>

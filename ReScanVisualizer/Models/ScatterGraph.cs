@@ -370,7 +370,7 @@ namespace ReScanVisualizer.Models
 
         #region Populate
 
-        public static void PopulateRandom(ScatterGraph scatterGraph, int count, double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
+        public static void PopulateRandom(ScatterGraph scatterGraph, uint count, double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
         {
             Random random = new Random();
 

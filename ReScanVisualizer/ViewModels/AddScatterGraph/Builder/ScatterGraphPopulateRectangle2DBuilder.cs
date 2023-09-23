@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -11,8 +12,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
     public class ScatterGraphPopulateRectangle2DBuilder : ScatterGraphPopulateBuilderBase
     {
-        private const double LIMITE = 10000.0;
-
         private Point3D _center;
         public Point3D Center
         {
@@ -28,57 +27,54 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        private double _centerX;
         public double CenterX
         {
-            get => _centerX;
+            get => _center.X;
             set
             {
-                if (value < -LIMITE)
+                if (value < MIN_X)
                 {
-                    value = -LIMITE;
+                    value = MIN_X;
                 }
-                else if (value > LIMITE)
+                else if (value > MAX_X)
                 {
-                    value = LIMITE;
+                    value = MAX_X;
                 }
-                SetValue(ref _centerX, value);
+                SetValue(_center.X, value);
             }
         }
 
-        private double _centerY;
         public double CenterY
         {
-            get => _centerY;
+            get => _center.Y;
             set
             {
-                if (value < -LIMITE)
+                if (value < MIN_Y)
                 {
-                    value = -LIMITE;
+                    value = MIN_Y;
                 }
-                else if (value > LIMITE)
+                else if (value > MAX_Y)
                 {
-                    value = LIMITE;
+                    value = MAX_Y;
                 }
-                SetValue(ref _centerY, value);
+                SetValue(_center.Y, value);
             }
         }
 
-        private double _centerZ;
         public double CenterZ
         {
-            get => _centerZ;
+            get => _center.Z;
             set
             {
-                if (value < -LIMITE)
+                if (value < MIN_Z)
                 {
-                    value = -LIMITE;
+                    value = MIN_Z;
                 }
-                else if (value > LIMITE)
+                else if (value > MAX_Z)
                 {
-                    value = LIMITE;
+                    value = MAX_Z;
                 }
-                SetValue(ref _centerZ, value);
+                SetValue(_center.Z, value);
             }
         }
 
@@ -95,13 +91,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             get => _width;
             set
             {
-                if (value < -LIMITE)
+                if (value < MIN_WIDTH)
                 {
-                    value = -LIMITE;
+                    value = MIN_WIDTH;
                 }
-                else if (value > LIMITE)
+                else if (value > MAX_WIDTH)
                 {
-                    value = LIMITE;
+                    value = MAX_WIDTH;
                 }
                 SetValue(ref _width, value);
             }
@@ -113,13 +109,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             get => _height;
             set
             {
-                if (value < -LIMITE)
+                if (value < MIN_HEIGTH)
                 {
-                    value = -LIMITE;
+                    value = MIN_HEIGTH;
                 }
-                else if (value > LIMITE)
+                else if (value > MAX_HEIGTH)
                 {
-                    value = LIMITE;
+                    value = MAX_HEIGTH;
                 }
                 SetValue(ref _height, value);
             }
@@ -150,6 +146,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             set => SetValue(ref _color, value);
         }
 
+        public List<Plan2D> AllPlans { get; private set; }
+
         public ScatterGraphPopulateRectangle2DBuilder()
         {
             _center = new Point3D(0, 0, 0);
@@ -158,6 +156,18 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _height = 10.0;
             _density = 50.0;
             _color = Colors.White;
+
+            AllPlans = GeneratePlan2DList();
+        }
+
+        private List<Plan2D> GeneratePlan2DList()
+        {
+            List<Plan2D> plans = new List<Plan2D>();
+            foreach (Plan2D plan in typeof(Plan2D).GetEnumValues())
+            {
+                plans.Add(plan);
+            }
+            return plans;
         }
 
         /// <summary>

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ReScanVisualizer.UserControls"
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="140" d:DesignWidth="340"
+             d:DesignHeight="360" d:DesignWidth="480"
              Initialized="UserControl_Initialized"
              >
     <UserControl.Resources>
@@ -15,13 +15,13 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="204"/>
         </Grid.ColumnDefinitions>
 
         <!-- Left Column: Color Preview -->
         <Rectangle x:Name="ColorPreview" VerticalAlignment="Top"
-            Height="{Binding ElementName=controlStackPanel, Path=Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-            Width="{Binding ElementName=controlStackPanel,  Path=Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+            Height="170" 
+            Width ="170" 
             Stroke="Black" StrokeThickness="1">
             <Rectangle.Fill>
                 <SolidColorBrush Color="{Binding Color, UpdateSourceTrigger=PropertyChanged}" />
@@ -29,13 +29,13 @@
         </Rectangle>
         
         <!-- Right Column: Controls -->
-        <StackPanel Grid.Column="1" x:Name="controlStackPanel" Height="140" VerticalAlignment="Top" Margin="5 0 0 0">
+        <StackPanel Grid.Column="1" x:Name="controlStackPanel" VerticalAlignment="Top" Margin="5 0 0 0">
             <ComboBox x:Name="ColorComboBox" Height="26" SelectedValue="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ColorToSolidColorBrushConverter}}" ItemsSource="{Binding AllColors}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <Rectangle Width="16" Height="16" Fill="{Binding Value, Converter={StaticResource ColorToSolidColorBrushConverter}}" Margin="2"/>
-                            <TextBlock Text="{Binding Key}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Key}" VerticalAlignment="Center" />
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
@@ -43,24 +43,24 @@
 
             <StackPanel Margin="5">
                 <StackPanel Orientation="Horizontal" Margin="0 5">
-                    <TextBlock Text="Red:" Width="50"/>
-                    <TextBox Width="50" Text="{Binding ColorRed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <Slider Margin="5 0" Minimum="0" Maximum="255" Width="64" Value="{Binding ColorRed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Red:" Width="50" Style="{StaticResource myTextBlock}" />
+                    <TextBox Width="50" Text="{Binding ColorRed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
+                    <Slider Margin="5" Minimum="0" Maximum="255" Width="64" Value="{Binding ColorRed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0 5">
-                    <TextBlock Text="Green:" Width="50"/>
-                    <TextBox Width="50" Text="{Binding ColorGreen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <Slider Margin="5 0" Minimum="0" Maximum="255" Width="64" Value="{Binding ColorGreen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Green:" Width="50" Style="{StaticResource myTextBlock}" />
+                    <TextBox Width="50" Text="{Binding ColorGreen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
+                    <Slider Margin="5" Minimum="0" Maximum="255" Width="64" Value="{Binding ColorGreen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0 5">
-                    <TextBlock Text="Blue:" Width="50"/>
-                    <TextBox Width="50" Text="{Binding ColorBlue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <Slider Margin="5 0" Minimum="0" Maximum="255" Width="64" Value="{Binding ColorBlue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Blue:" Width="50" Style="{StaticResource myTextBlock}" />
+                    <TextBox Width="50" Text="{Binding ColorBlue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
+                    <Slider Margin="5" Minimum="0" Maximum="255" Width="64" Value="{Binding ColorBlue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0 5">
-                    <TextBlock Text="Alpha:" Width="50"/>
-                    <TextBox Width="50" Text="{Binding ColorAlpha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <Slider Margin="5 0" Minimum="0" Maximum="255" Width="64" Value="{Binding ColorAlpha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Alpha:" Width="50" Style="{StaticResource myTextBlock}" />
+                    <TextBox Width="50" Text="{Binding ColorAlpha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
+                    <Slider Margin="5" Minimum="0" Maximum="255" Width="64" Value="{Binding ColorAlpha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>
