@@ -10,6 +10,7 @@
         Height="450" Width="800"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource backgroundColor}"
+        Foreground="{StaticResource foregroundColor}"
         >
     <Window.InputBindings>
         <KeyBinding x:Name="ValidateCommandKey" 
@@ -27,7 +28,7 @@
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="New Scatter Graph" Style="{StaticResource helpWindowTitle}" Foreground="{StaticResource foregroundColor}"/>
+                <TextBlock DockPanel.Dock="Top" Text="New Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
                 <DockPanel Margin="50">
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="OK" Height="30"
@@ -41,24 +42,23 @@
                     </StackPanel>
 
                     <StackPanel>
-                        <TextBlock Text="Choose an option" Foreground="{StaticResource foregroundColor}" Margin="0 0 0 10" />
-                        <RadioButton IsChecked="{Binding IsEmptySelected}"      Content="Empty graph"       Foreground="{StaticResource foregroundColor}" Margin="10 5" />
-                        <RadioButton IsChecked="{Binding IsToPopulateSelected}" Content="Graph to populate" Foreground="{StaticResource foregroundColor}" Margin="10 5" />
-                        <RadioButton IsChecked="{Binding IsToOpenSelected}"     Content="Open a file"       Foreground="{StaticResource foregroundColor}" Margin="10 5" />
+                        <TextBlock Text="Choose an option" Margin="0 0 0 10" />
+                        <RadioButton IsChecked="{Binding IsEmptySelected}"      Foreground="{StaticResource foregroundColor}" Content="Empty graph"       Margin="10 5" />
+                        <RadioButton IsChecked="{Binding IsToPopulateSelected}" Foreground="{StaticResource foregroundColor}" Content="Graph to populate" Margin="10 5" />
+                        <RadioButton IsChecked="{Binding IsToOpenSelected}"     Foreground="{StaticResource foregroundColor}" Content="Open a file"       Margin="10 5" />
 
                         <Separator Margin="10" />
                         <StackPanel Margin="0 10">
                             <StackPanel.Resources>
                                 <DataTemplate DataType="{x:Type builders:ScatterGraphEmptyBuilder}">
-                                    <local:ScatterGraphEmptyBuilderView Foreground="{StaticResource foregroundColor}"/>
+                                    <local:ScatterGraphEmptyBuilderView/>
                                 </DataTemplate>
                                 <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateBuilderBase}">
                                     <local:ScatterGraphPopulateBuilderBaseView 
-                                        Foreground="{StaticResource foregroundColor}"
                                         DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:AddScatterGraphView}}}"/>
                                 </DataTemplate>
                                 <DataTemplate DataType="{x:Type builders:ScatterGraphFilesBuilder}">
-                                    <local:ScatterGraphFilesBuilderView Foreground="{StaticResource foregroundColor}"/>
+                                    <local:ScatterGraphFilesBuilderView/>
                                 </DataTemplate>
                             </StackPanel.Resources>
 

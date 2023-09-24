@@ -12,6 +12,7 @@ namespace ReScanVisualizer.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
+        public bool IsDisposed { get; protected set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

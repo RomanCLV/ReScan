@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,8 +16,10 @@ using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class ScatterGraphViewModel : ViewModelBase
+    public class ScatterGraphViewModel : ViewModelBase, I3DElement
     {
+        public event EventHandler<bool>? IsHidenChanged;
+
         private readonly ScatterGraph _scatterGraph;
 
         private double _pointsDiameter;
@@ -59,10 +62,10 @@ namespace ReScanVisualizer.ViewModels
         private bool _hasToComputeBarycenter;
         private bool _hasToComputeAveragePlan;
 
-        public ObservableCollection<Point3DViewModel> Points { get; private set; }
+        public ObservableCollection<SampleViewModel> Samples { get; private set; }
 
-        private Point3DViewModel _barycenter;
-        public Point3DViewModel Barycenter
+        private SampleViewModel _barycenter;
+        public SampleViewModel Barycenter
         {
             get => _barycenter;
             set => SetValue(ref _barycenter, value);
@@ -75,75 +78,10 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _averagePlan, value);
         }
 
-        public Model3DGroup PointsModel { get; private set; }
+        public Model3D Model { get; private set; }
 
-        private Color _pointsColor;
-        public Color Color
-        {
-            get => _pointsColor;
-            set
-            {
-                if (SetValue(ref _pointsColor, value))
-                {
-                    OnPropertyChanged(nameof(PointsColorR));
-                    OnPropertyChanged(nameof(PointsColorG));
-                    OnPropertyChanged(nameof(PointsColorB));
-                    OnPropertyChanged(nameof(PointsColorOpacity));
-
-                    UpdatePointsColor();
-                }
-            }
-        }
-
-        public byte PointsColorR
-        {
-            get => _pointsColor.R;
-            set
-            {
-                if (SetValue(_pointsColor.R, value))
-                {
-                    UpdatePointsColor();
-                }
-            }
-        }
-
-        public byte PointsColorG
-        {
-            get => _pointsColor.G;
-            set
-            {
-                if (SetValue(_pointsColor.G, value))
-                {
-                    UpdatePointsColor();
-                }
-            }
-        }
-
-        public byte PointsColorB
-        {
-            get => _pointsColor.B;
-            set
-            {
-                if (SetValue(_pointsColor.B, value))
-                {
-                    UpdatePointsColor();
-                }
-            }
-        }
-
-        public byte PointsColorOpacity
-        {
-            get => _pointsColor.A;
-            set
-            {
-                if (SetValue(_pointsColor.A, value))
-                {
-                    UpdateOldOpacity();
-                    UpdatePointsColor();
-                }
-            }
-        }
-
+        public ColorViewModel Color { get; set; }
+        
         private byte _oldPointsOpacity;
         private bool _oldBarycenterIsHiden;
         private bool _oldAveragePlanIsHiden;
@@ -159,13 +97,15 @@ namespace ReScanVisualizer.ViewModels
                     if (_isHiden)
                     {
                         UpdateOldOpacity();
-                        PointsColorOpacity = 0;
+                        Color.A = 0;
                         _oldBarycenterIsHiden = _barycenter.IsHiden;
                         _oldAveragePlanIsHiden = _averagePlan.IsHiden;
+                        _barycenter.Hide();
+                        _averagePlan.Hide();
                     }
                     else
                     {
-                        PointsColorOpacity = _oldPointsOpacity;
+                        Color.A = _oldPointsOpacity;
                         _barycenter.IsHiden = _oldBarycenterIsHiden;
                         _averagePlan.IsHiden = _oldAveragePlanIsHiden;
                     }
@@ -175,7 +115,7 @@ namespace ReScanVisualizer.ViewModels
 
         public int ItemsCount
         {
-            get => Points.Count + 2; // Points count + barycenter + averplan
+            get => Samples.Count + 2; // Points count + barycenter + averplan
         }
 
         public ScatterGraphViewModel() : this(new ScatterGraph(), Colors.White)
@@ -188,21 +128,21 @@ namespace ReScanVisualizer.ViewModels
 
         public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double pointDiameter = 1.0)
         {
+            IsDisposed = false;
             _scatterGraph = scatterGraph;
             _pointsDiameter = pointDiameter;
-            _pointsColor = color;
-            _oldPointsOpacity = _pointsColor.A;
+            Color = new ColorViewModel(color);
+            _oldPointsOpacity = Color.A;
             _isHiden = _oldPointsOpacity == 0;
 
-            PointsModel = new Model3DGroup();
-            Points = new ObservableCollection<Point3DViewModel>();
+            Model = new Model3DGroup();
+            Samples = new ObservableCollection<SampleViewModel>();
 
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
-                Points.Add(new Point3DViewModel(_scatterGraph[i], _pointsColor, _pointsDiameter));
-                PointsModel.Children.Add(Points.Last().Model);
+                Samples.Add(new SampleViewModel(_scatterGraph[i], Color.Color, _pointsDiameter));
+                ((Model3DGroup)Model).Children.Add(Samples.Last().Model);
             }
-            Points.CollectionChanged += Points_CollectionChanged;
 
             Point3D barycenter = scatterGraph.ComputeBarycenter();
             Plan averagePlan;
@@ -216,18 +156,62 @@ namespace ReScanVisualizer.ViewModels
             }
             Repere3D repere3D = ScatterGraph.ComputeRepere3D(scatterGraph, barycenter, averagePlan);
 
-            _barycenter = new Point3DViewModel(barycenter, Colors.Red);
+            _barycenter = new SampleViewModel(barycenter, Colors.Red);
             _barycenter.Hide();
-            _barycenter.IsHidenChanged += Barycenter_IsHidenChanged;
             _oldBarycenterIsHiden = _barycenter.IsHiden;
 
             _averagePlan = new PlanViewModel(averagePlan, barycenter, repere3D.X, Colors.LightBlue.ChangeAlpha(191));
             _averagePlan.Hide();
-            _averagePlan.IsHidenChanged += AveragePlan_IsHidenChanged;
             _oldAveragePlanIsHiden = _averagePlan.IsHiden;
 
             _hasToComputeBarycenter = false;
             _hasToComputeAveragePlan = false;
+
+            Color.PropertyChanged += Color_PropertyChanged;
+            Samples.CollectionChanged += Points_CollectionChanged;
+            _barycenter.IsHidenChanged += Barycenter_IsHidenChanged;
+            _averagePlan.IsHidenChanged += AveragePlan_IsHidenChanged;
+        }
+
+        ~ScatterGraphViewModel()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                IsDisposed = true;
+                Color.PropertyChanged -= Color_PropertyChanged;
+                _barycenter.IsHidenChanged -= Barycenter_IsHidenChanged;
+                _averagePlan.IsHidenChanged -= AveragePlan_IsHidenChanged;
+                Samples.CollectionChanged -= Points_CollectionChanged;
+                try
+                {
+                    ((Model3DGroup)Model).Children.Clear();
+                }
+                catch (InvalidOperationException)
+                { 
+                }
+
+                foreach (SampleViewModel point in Samples)
+                {
+                    point.Dispose();
+                }
+                Barycenter.Dispose();
+                AveragePlan.Dispose();
+                base.Dispose();
+            }
+        }
+
+        private void Color_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Color.A))
+            {
+                UpdateOldOpacity();
+            }
+            UpdateModelMaterial();
         }
 
         private void Barycenter_IsHidenChanged(object sender, bool e)
@@ -238,21 +222,6 @@ namespace ReScanVisualizer.ViewModels
         private void AveragePlan_IsHidenChanged(object sender, bool e)
         {
             _oldAveragePlanIsHiden = _averagePlan.IsHiden;
-        }
-
-        public override void Dispose()
-        {
-            _barycenter.IsHidenChanged -= Barycenter_IsHidenChanged;
-            _averagePlan.IsHidenChanged -= AveragePlan_IsHidenChanged;
-            Points.CollectionChanged -= Points_CollectionChanged;
-            PointsModel.Children.Clear();
-            foreach (Point3DViewModel point in Points)
-            {
-                point.Dispose();
-            }
-            Barycenter.Dispose();
-            AveragePlan.Dispose();
-            base.Dispose();
         }
 
         private void Points_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -298,7 +267,7 @@ namespace ReScanVisualizer.ViewModels
 
         private void UpdateOldOpacity()
         {
-            _oldPointsOpacity = _pointsColor.A;
+            _oldPointsOpacity = Color.A;
         }
 
         public void Hide()
@@ -315,7 +284,7 @@ namespace ReScanVisualizer.ViewModels
         {
             if (_hasToComputeBarycenter)
             {
-                Barycenter.Point = _scatterGraph.ComputeBarycenter();
+                Barycenter.Point.Set(_scatterGraph.ComputeBarycenter());
                 _hasToComputeBarycenter = false;
             }
         }
@@ -329,11 +298,14 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private void UpdatePointsColor()
+        public void UpdateModelGeometry()
+        { }
+
+        public void UpdateModelMaterial()
         {
-            foreach (Point3DViewModel point in Points)
+            foreach (SampleViewModel point in Samples)
             {
-                point.Color = _pointsColor;
+                point.Color.Set(Color.Color);
             }
         }
     }

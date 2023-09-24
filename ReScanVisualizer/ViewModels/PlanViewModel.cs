@@ -8,6 +8,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Media;
 using HelixToolkit.Wpf;
 using System.Windows;
+using System.ComponentModel;
 
 #nullable enable
 
@@ -97,25 +98,9 @@ namespace ReScanVisualizer.ViewModels
         {
             get => _up;
             set
-            { 
+            {
                 _up = value;
                 UpdateModelGeometry();
-            }
-        }
-
-        private Color _color;
-        public Color Color
-        {
-            get => _color;
-            set
-            {
-                if (SetValue(ref _color, value))
-                {
-                    OnPropertyChanged(nameof(ColorR));
-                    OnPropertyChanged(nameof(ColorG));
-                    OnPropertyChanged(nameof(ColorB));
-                    OnPropertyChanged(nameof(ColorOpacity));
-                }
             }
         }
 
@@ -158,54 +143,7 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public byte ColorR
-        {
-            get => _color.R;
-            set
-            {
-                if (SetValue(_color.R, value))
-                {
-                    UpdateModelMaterial();
-                }
-            }
-        }
-
-        public byte ColorG
-        {
-            get => _color.G;
-            set
-            {
-                if (SetValue(_color.G, value))
-                {
-                    UpdateModelMaterial();
-                }
-            }
-        }
-
-        public byte ColorB
-        {
-            get => _color.B;
-            set
-            {
-                if (SetValue(_color.B, value))
-                {
-                    UpdateModelMaterial();
-                }
-            }
-        }
-
-        public byte ColorOpacity
-        {
-            get => _color.A;
-            set
-            {
-                if (SetValue(_color.A, value))
-                {
-                    UpdateOldOpacity();
-                    UpdateModelMaterial();
-                }
-            }
-        }
+        public ColorViewModel Color { get; set; }
 
         private byte _oldOpacity;
 
@@ -220,11 +158,11 @@ namespace ReScanVisualizer.ViewModels
                     if (_isHiden)
                     {
                         UpdateOldOpacity();
-                        ColorOpacity = 0;
+                        Color.A = 0;
                     }
                     else
                     {
-                        ColorOpacity = _oldOpacity;
+                        Color.A = _oldOpacity;
                     }
                     OnIsHidenChanged();
                 }
@@ -251,22 +189,49 @@ namespace ReScanVisualizer.ViewModels
 
         public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double width = 10, double height = 10, double dist = 0.0)
         {
+            IsDisposed = false;
             _plan = plan;
             _center = center;
             _up = up;
             _dist = dist;
             _width = width;
             _height = height;
-            _color = color;
-            _oldOpacity = color.A;
+            Color = new ColorViewModel(color);
+            _oldOpacity = Color.A;
             _isHiden = _oldOpacity == 0;
 
-            _model = Helper3D.Helper3D.BuildPlanModel(_center, _plan.GetNormal(), _up, _width, _height, _dist, _color);
+            _model = Helper3D.Helper3D.BuildPlanModel(_center, _plan.GetNormal(), _up, _width, _height, _dist, Color.Color);
+
+            Color.PropertyChanged += Color_PropertyChanged;
+        }
+
+        ~PlanViewModel()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                IsDisposed = true;
+                Color.PropertyChanged -= Color_PropertyChanged;
+                base.Dispose();
+            }
+        }
+
+        private void Color_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Color.A))
+            {
+                UpdateOldOpacity();
+            }
+            UpdateModelMaterial();
         }
 
         private void UpdateOldOpacity()
         {
-            _oldOpacity = _color.A;
+            _oldOpacity = Color.A;
         }
 
         public void Hide()
@@ -287,7 +252,7 @@ namespace ReScanVisualizer.ViewModels
         public void UpdateModelMaterial()
         {
             GeometryModel3D model = (GeometryModel3D)_model;
-            model.Material = MaterialHelper.CreateMaterial(new SolidColorBrush(_color));
+            model.Material = MaterialHelper.CreateMaterial(new SolidColorBrush(Color.Color));
             model.BackMaterial = model.Material;
         }
 

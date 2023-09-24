@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ReScanVisualizer.Views.ItemTreeViews
+namespace ReScanVisualizer.Views.Forms
 {
     /// <summary>
-    /// Logique d'interaction pour PointsItemTreeView.xaml
+    /// Logique d'interaction pour LimitsForm.xaml
     /// </summary>
-    public partial class PointsTreeViewItemHeader : UserControl
+    public partial class LimitsForm : UserControl
     {
-        public PointsTreeViewItemHeader()
+        public LimitsForm()
         {
             InitializeComponent();
         }

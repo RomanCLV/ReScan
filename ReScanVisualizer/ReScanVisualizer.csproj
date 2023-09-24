@@ -104,7 +104,9 @@
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateBuilderBase.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRandomBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRectangle2DBuilder.cs" />
+    <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
+    <Compile Include="ViewModels\Point3DViewModel.cs" />
     <Compile Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml.cs">
       <DependentUpon>AddScatterGraphView.xaml</DependentUpon>
     </Compile>
@@ -123,17 +125,23 @@
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateRectangle2DBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphPopulateRectangle2DBuilderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Forms\LimitsForm.xaml.cs">
+      <DependentUpon>LimitsForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Forms\PointForm.xaml.cs">
+      <DependentUpon>PointForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ItemTreeViews\AveragePlanTreeViewItemHeader.xaml.cs">
       <DependentUpon>AveragePlanTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemTreeViews\BarycenterTreeViewItemHeader.xaml.cs">
       <DependentUpon>BarycenterTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemTreeViews\PointTreeViewItemHeader.xaml.cs">
-      <DependentUpon>PointTreeViewItemHeader.xaml</DependentUpon>
+    <Compile Include="Views\ItemTreeViews\SampleTreeViewItemHeader.xaml.cs">
+      <DependentUpon>SampleTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemTreeViews\PointsTreeViewItemHeader.xaml.cs">
-      <DependentUpon>PointsTreeViewItemHeader.xaml</DependentUpon>
+    <Compile Include="Views\ItemTreeViews\SamplesTreeViewItemHeader.xaml.cs">
+      <DependentUpon>SamplesTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemTreeViews\ScatterGraphTreeViewItemHeader.xaml.cs">
       <DependentUpon>ScatterGraphTreeViewItemHeader.xaml</DependentUpon>
@@ -141,8 +149,8 @@
     <Compile Include="Views\PlanView.xaml.cs">
       <DependentUpon>PlanView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Point3DView.xaml.cs">
-      <DependentUpon>Point3DView.xaml</DependentUpon>
+    <Compile Include="Views\SampleView.xaml.cs">
+      <DependentUpon>SampleView.xaml</DependentUpon>
     </Compile>
     <Page Include="UserControls\ColorSelector.xaml">
       <SubType>Designer</SubType>
@@ -172,6 +180,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Forms\LimitsForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Forms\PointForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ItemTreeViews\AveragePlanTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -180,11 +196,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemTreeViews\PointTreeViewItemHeader.xaml">
+    <Page Include="Views\ItemTreeViews\SampleTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemTreeViews\PointsTreeViewItemHeader.xaml">
+    <Page Include="Views\ItemTreeViews\SamplesTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -212,7 +228,7 @@
     <Compile Include="Models\ScatterGraph.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PlanViewModel.cs" />
-    <Compile Include="ViewModels\Point3DViewModel.cs" />
+    <Compile Include="ViewModels\SampleViewModel.cs" />
     <Compile Include="ViewModels\ScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -223,7 +239,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Point3DView.xaml">
+    <Page Include="Views\SampleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

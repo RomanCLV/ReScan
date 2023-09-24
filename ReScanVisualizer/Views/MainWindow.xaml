@@ -69,8 +69,8 @@
                     Height="200"
                     >
                     <Grid.Resources>
-                        <DataTemplate DataType="{x:Type viewModels:Point3DViewModel}">
-                            <local:Point3DView />
+                        <DataTemplate DataType="{x:Type viewModels:SampleViewModel}">
+                            <local:SampleView />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:PlanViewModel}">
                             <local:PlanView />
@@ -102,15 +102,15 @@
                                             <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" />
                                         </TreeViewItem.Header>
                                     </TreeViewItem>
-                                    <TreeViewItem Foreground="{StaticResource foregroundColor}" ItemsSource="{Binding Points, UpdateSourceTrigger=PropertyChanged}">
+                                    <TreeViewItem Foreground="{StaticResource foregroundColor}" ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
                                         <TreeViewItem.Header>
-                                            <itw:PointsTreeViewItemHeader />
+                                            <itw:SamplesTreeViewItemHeader />
                                         </TreeViewItem.Header>
                                         <TreeViewItem.ItemTemplate>
                                             <DataTemplate>
                                                 <TreeViewItem Foreground="{StaticResource foregroundColor}">
                                                     <TreeViewItem.Header>
-                                                        <itw:PointTreeViewItemHeader />
+                                                        <itw:SampleTreeViewItemHeader />
                                                     </TreeViewItem.Header>
                                                 </TreeViewItem>
                                             </DataTemplate>

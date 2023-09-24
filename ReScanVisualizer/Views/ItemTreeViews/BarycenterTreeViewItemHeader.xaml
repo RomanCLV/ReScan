@@ -8,11 +8,11 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel Orientation="Horizontal">
         <TextBlock Text="Barycenter (" />
-        <TextBlock Text="{Binding X, StringFormat=N2}" />
+        <TextBlock Text="{Binding Point.X, StringFormat=N2}" />
         <TextBlock Text=", " />
-        <TextBlock Text="{Binding Y, StringFormat=N2}" />
+        <TextBlock Text="{Binding Point.Y, StringFormat=N2}" />
         <TextBlock Text=", " />
-        <TextBlock Text="{Binding Z, StringFormat=N2}" />
+        <TextBlock Text="{Binding Point.Z, StringFormat=N2}" />
         <TextBlock Text=")" />
     </StackPanel>
 </UserControl>

@@ -26,6 +26,7 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="Height" Value="125"/>
             <Setter Property="Padding" Value="50"/>
+            <Setter Property="Foreground" Value="{StaticResource foregroundColor}"/>
             <Setter Property="Background" Value="{StaticResource backgroundListColor}" />
         </Style>
 

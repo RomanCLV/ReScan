@@ -58,12 +58,12 @@ namespace ReScanVisualizer.ViewModels
 
         public bool CanExecute(object parameter)
         {
-            throw new NotImplementedException();
+            return Command.CanExecute(parameter);
         }
 
         public void Execute(object parameter)
         {
-            throw new NotImplementedException();
+            Command.Execute(parameter);
         }
     }
 }

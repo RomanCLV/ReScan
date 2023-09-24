@@ -18,9 +18,9 @@ namespace ReScanVisualizer.Views
     /// <summary>
     /// Logique d'interaction pour Point3DView.xaml
     /// </summary>
-    public partial class Point3DView : UserControl
+    public partial class SampleView : UserControl
     {
-        public Point3DView()
+        public SampleView()
         {
             InitializeComponent();
         }

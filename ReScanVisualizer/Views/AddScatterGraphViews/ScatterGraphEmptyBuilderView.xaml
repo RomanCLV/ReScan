@@ -7,6 +7,7 @@
              xmlns:ctr="clr-namespace:ReScanVisualizer.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
+             Foreground="{StaticResource foregroundColor}"
              >
     <StackPanel>
         <GroupBox Header="Color">

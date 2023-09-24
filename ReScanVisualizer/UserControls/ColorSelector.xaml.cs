@@ -42,7 +42,7 @@ namespace ReScanVisualizer.UserControls
             DependencyProperty.Register("ColorAlpha", typeof(byte), typeof(ColorSelector),
                 new FrameworkPropertyMetadata((byte)255, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorComponentChanged));
 
-        public EventHandler<Color>? ColorChanged { get; set; }
+        public event EventHandler<Color>? ColorChanged;
 
         public Color Color
         {

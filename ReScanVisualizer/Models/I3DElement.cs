@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace ReScanVisualizer.Models
 {
     public interface I3DElement
     {
-        public Color Color { get; set; }
+        public ColorViewModel Color { get; set; }
 
         public Model3D Model { get; }
 
