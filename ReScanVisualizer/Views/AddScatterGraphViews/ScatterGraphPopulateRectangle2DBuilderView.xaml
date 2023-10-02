@@ -18,7 +18,7 @@
         <GroupBox Header="Dimensions" Margin="10">
             <Grid Margin="30">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="75" />
+                    <ColumnDefinition Width="125" />
                     <ColumnDefinition Width="125" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -26,19 +26,23 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Plan:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Plan:" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
                 <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" Height="22" SelectedValue="{Binding Plan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding AllPlans}"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Width:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Width:" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Text="{Binding Width, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Height:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Height:" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
                 <TextBox   Grid.Row="2" Grid.Column="1" Text="{Binding Height, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Density:" Margin="10" Style="{StaticResource myTextBlock}"/>
-                <TextBox   Grid.Row="3" Grid.Column="1" Text="{Binding Density, StringFormat=N3}" Width="100" Style="{StaticResource myTextBox}"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Num. points width:" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
+                <TextBox   Grid.Row="3" Grid.Column="1" Text="{Binding NumPointsWidth}" Width="100" Style="{StaticResource myTextBox}"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Num. points height:" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
+                <TextBox   Grid.Row="4" Grid.Column="1" Text="{Binding NumPointsHeight}" Width="100" Style="{StaticResource myTextBox}"/>
             </Grid>
         </GroupBox>
 

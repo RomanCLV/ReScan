@@ -36,7 +36,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = MAX_WIDTH;
                 }
-                SetValue(ref _width, value);
+                if (SetValue(ref _width, value))
+                {
+                    NumPointsWidth = (uint)_width + 1;
+                }
             }
         }
 
@@ -54,25 +57,46 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = MAX_HEIGTH;
                 }
-                SetValue(ref _height, value);
+                if (SetValue(ref _height, value))
+                {
+                    NumPointsHeight = (uint)_height + 1;
+                }
             }
         }
 
-        private double _density;
-        public double Density
+        private uint _numPointsWidth;
+        public uint NumPointsWidth
         {
-            get => _density;
+            get => _numPointsWidth;
             set
             {
-                if (value < 1.0)
+                if (value < 2)
                 {
-                    value = 1.0;
+                    value = 2;
                 }
-                else if (value > 100.0)
+                else if (value > 5 * _width)
                 {
-                    value = 100.0;
+                    value = (uint)(5 * _width);
                 }
-                SetValue(ref _density, value);
+                SetValue(ref _numPointsWidth, value);
+            }
+        }
+
+        private uint _numPointsHeight;
+        public uint NumPointsHeight
+        {
+            get => _numPointsHeight;
+            set
+            {
+                if (value < 2)
+                {
+                    value = 2;
+                }
+                else if (value > 5 * _height)
+                {
+                    value = (uint)(5 * _height);
+                }
+                SetValue(ref _numPointsHeight, value);
             }
         }
 
@@ -96,7 +120,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _plan = Plan2D.XY;
             _width = 10.0;
             _height = 10.0;
-            _density = 50.0;
+            _numPointsWidth = (uint)_width + 1;
+            _numPointsHeight = (uint)_height + 1;
             _color = Colors.White;
 
             AllPlans = GeneratePlan2DList();
@@ -119,7 +144,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public override ScatterGraphViewModel[] Build()
         {
             ScatterGraph graph = new ScatterGraph();
-            ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _density);
+            ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _numPointsWidth, _numPointsHeight);
             return new ScatterGraphViewModel[1] { new ScatterGraphViewModel(graph, _color) };
         }
 

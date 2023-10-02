@@ -22,11 +22,11 @@ namespace ReScanVisualizer.ViewModels
 
         private readonly ScatterGraph _scatterGraph;
 
-        private double _pointsDiameter;
-        public double PointsDiameter
+        private double _pointsRadius;
+        public double PointsRadius
         {
-            get => _pointsDiameter;
-            set => SetValue(ref _pointsDiameter, value);
+            get => _pointsRadius;
+            set => SetValue(ref _pointsRadius, value);
         }
 
         public bool IsBarycenterHiden
@@ -129,11 +129,11 @@ namespace ReScanVisualizer.ViewModels
         {
         }
 
-        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double pointDiameter = 1.0)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double pointRadius = 0.25, bool hideBarycenter = false, bool hideAveragePlan = false)
         {
             IsDisposed = false;
             _scatterGraph = scatterGraph;
-            _pointsDiameter = pointDiameter;
+            _pointsRadius = pointRadius;
             Color = new ColorViewModel(color);
             _oldPointsOpacity = Color.A;
             _isHiden = _oldPointsOpacity == 0;
@@ -143,7 +143,7 @@ namespace ReScanVisualizer.ViewModels
 
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
-                Samples.Add(new SampleViewModel(_scatterGraph[i], Color.Color, _pointsDiameter));
+                Samples.Add(new SampleViewModel(_scatterGraph[i], Color.Color, _pointsRadius));
                 ((Model3DGroup)Model).Children.Add(Samples.Last().Model);
             }
 
@@ -159,12 +159,12 @@ namespace ReScanVisualizer.ViewModels
             }
             Repere3D repere3D = ScatterGraph.ComputeRepere3D(scatterGraph, barycenter, averagePlan);
 
-            _barycenter = new SampleViewModel(barycenter, Colors.Red);
-            _barycenter.Hide();
+            _barycenter = new SampleViewModel(barycenter, Colors.Red, _pointsRadius);
+            _barycenter.IsHiden = hideBarycenter;
             _oldBarycenterIsHiden = _barycenter.IsHiden;
 
             _averagePlan = new PlanViewModel(averagePlan, barycenter, repere3D.X, Colors.LightBlue.ChangeAlpha(191));
-            _averagePlan.Hide();
+            _averagePlan.IsHiden = hideAveragePlan;
             _oldAveragePlanIsHiden = _averagePlan.IsHiden;
 
             _hasToComputeBarycenter = false;

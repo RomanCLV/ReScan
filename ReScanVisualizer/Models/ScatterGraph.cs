@@ -10,7 +10,7 @@ namespace ReScanVisualizer.Models
 {
     public class ScatterGraph
     {
-        private List<Point3D> _points;
+        private readonly List<Point3D> _points;
 
         public int Count => _points.Count;
 
@@ -384,41 +384,51 @@ namespace ReScanVisualizer.Models
             }
         }
 
-        public static void PopulateRectangle2D(ScatterGraph scatterGraph, Point3D Center, Plan2D plan, double width, double height, double density = 50)
+        public static void PopulateRectangle2D(ScatterGraph scatterGraph, Point3D Center, Plan2D plan, double width, double height, uint numPointsWidth, uint numPointsHeight)
         {
-            int numPointsX = (int)(width / density);
-            int numPointsY = (int)(height / density);
-
-            double stepX = width / numPointsX;
-            double stepY = height / numPointsY;
-
-            for (int i = 0; i <= numPointsX; i++)
+            if (numPointsWidth < 2)
             {
-                for (int j = 0; j <= numPointsY; j++)
+                throw new ArgumentException("2 points minimum are required.", nameof(numPointsWidth));
+            }
+            if (numPointsHeight < 2)
+            {
+                throw new ArgumentException("2 points minimum are required.", nameof(numPointsHeight));
+            }
+
+            double stepWidth = width / (numPointsWidth - 1);
+            double stepHeight = height / (numPointsHeight - 1);
+
+            double halfWidth = width / 2.0;
+            double halfHeight = height / 2.0;
+
+            for (int i = 0; i < numPointsWidth; i++)
+            {
+                for (int j = 0; j < numPointsHeight; j++)
                 {
-                    double x = Center.X;
-                    double y = Center.Y;
-                    double z = Center.Z;
+                    Point3D p = new Point3D();
 
                     switch (plan)
                     {
                         case Plan2D.XY:
-                            x += i * stepX - width / 2;
-                            y += j * stepY - height / 2;
+                            p.X = Center.X - halfWidth + i * stepWidth;
+                            p.Y = Center.Y - halfHeight + j * stepHeight;
+                            p.Z = Center.Z;
                             break;
 
                         case Plan2D.XZ:
-                            x += i * stepX - width / 2;
-                            z += j * stepY - height / 2;
+                            p.X = Center.X - halfWidth + i * stepWidth;
+                            p.Y = Center.Y;
+                            p.Z = Center.Z - halfHeight + j * stepHeight;
                             break;
 
                         case Plan2D.YZ:
-                            y += i * stepX - width / 2;
-                            z += j * stepY - height / 2;
+                            p.X = Center.X;
+                            p.Y = Center.Y - halfWidth + i * stepWidth;
+                            p.Z = Center.Z - halfHeight + j * stepHeight;
                             break;
                     }
 
-                    scatterGraph.AddPoint(new Point3D(x, y, z));
+                    scatterGraph.AddPoint(p);
                 }
             }
         }

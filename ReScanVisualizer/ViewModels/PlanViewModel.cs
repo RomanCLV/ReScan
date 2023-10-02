@@ -155,6 +155,8 @@ namespace ReScanVisualizer.ViewModels
 
         private byte _oldOpacity;
 
+        private bool _isHidenChanging;
+
         private bool _isHiden;
         public bool IsHiden
         {
@@ -163,6 +165,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _isHiden, value))
                 {
+                    _isHidenChanging = true;
                     if (_isHiden)
                     {
                         UpdateOldOpacity();
@@ -172,6 +175,7 @@ namespace ReScanVisualizer.ViewModels
                     {
                         Color.A = _oldOpacity;
                     }
+                    _isHidenChanging = false;
                     OnIsHidenChanged();
                 }
             }
@@ -206,6 +210,7 @@ namespace ReScanVisualizer.ViewModels
             _height = height;
             Color = new ColorViewModel(color);
             _oldOpacity = Color.A;
+            _isHidenChanging = false;
             _isHiden = _oldOpacity == 0;
 
             _model = Helper3D.Helper3D.BuildPlanModel(_center, _plan.GetNormal(), _up, _width, _height, _dist, Color.Color);
@@ -232,9 +237,19 @@ namespace ReScanVisualizer.ViewModels
         {
             if (e.PropertyName == nameof(Color.A))
             {
-                UpdateOldOpacity();
+                if (!_isHidenChanging)
+                {
+                    UpdateOldOpacity();
+                    if (_isHiden && Color.A != 0)
+                    {
+                        IsHiden = false;
+                    }
+                }
             }
-            UpdateModelMaterial();
+            if (e.PropertyName == nameof(Color.Color))
+            {
+                UpdateModelMaterial();
+            }
         }
 
         private void UpdateOldOpacity()

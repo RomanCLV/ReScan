@@ -39,6 +39,8 @@ namespace ReScanVisualizer.ViewModels
 
         private byte _oldOpacity;
 
+        private bool _isHidenChanging;
+
         private bool _isHiden;
         public bool IsHiden
         {
@@ -47,6 +49,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _isHiden, value))
                 {
+                    _isHidenChanging = true;
                     if (_isHiden)
                     {
                         UpdateOldOpacity();
@@ -56,6 +59,7 @@ namespace ReScanVisualizer.ViewModels
                     {
                         Color.A = _oldOpacity;
                     }
+                    _isHidenChanging = false;
                     OnIsHidenChanged();
                 }
             }
@@ -78,19 +82,20 @@ namespace ReScanVisualizer.ViewModels
         {
         }
 
-        public SampleViewModel(Point3D point3D) : this(point3D, Colors.White, 1.0)
+        public SampleViewModel(Point3D point3D) : this(point3D, Colors.White, 0.5)
         {
         }
 
-        public SampleViewModel(Color color) : this(new Point3D(), color, 1.0)
+        public SampleViewModel(Color color) : this(new Point3D(), color, 0.5)
         {
         }
 
-        public SampleViewModel(Point3D point3D, Color color, double radius = 1.0)
+        public SampleViewModel(Point3D point3D, Color color, double radius = 0.5)
         {
             IsDisposed = false;
             Color = new ColorViewModel(color);
             _oldOpacity = color.A;
+            _isHidenChanging = false;
             _isHiden = _oldOpacity == 0;
 
             _radius = radius;
@@ -127,9 +132,19 @@ namespace ReScanVisualizer.ViewModels
         {
             if (e.PropertyName == nameof(Color.A))
             {
-                UpdateOldOpacity();
+                if (!_isHidenChanging)
+                {
+                    UpdateOldOpacity();
+                    if (_isHiden && Color.A != 0)
+                    {
+                        IsHiden = false;
+                    }
+                }
             }
-            UpdateModelMaterial();
+            if (e.PropertyName == nameof(Color.Color))
+            {
+                UpdateModelMaterial();
+            }
         }
 
         private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
