@@ -159,7 +159,7 @@ namespace ReScanVisualizer.UserControls
 
         private void UpdateComboBoxSelection()
         {
-            Color selectedColor = Color.FromRgb(ColorRed, ColorGreen, ColorBlue);
+            Color selectedColor = Color.FromArgb(ColorAlpha, ColorRed, ColorGreen, ColorBlue);
             foreach (KeyValuePair<string, Color> item in ColorComboBox.Items)
             {
                 if (item.Value == selectedColor)

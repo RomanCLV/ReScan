@@ -7,7 +7,7 @@
         xmlns:builders="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraph.Builder"
         mc:Ignorable="d"
         Title="Add scatter graph" 
-        Height="450" Width="800"
+        Height="720" Width="1280"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource backgroundColor}"
         Foreground="{StaticResource foregroundColor}"
