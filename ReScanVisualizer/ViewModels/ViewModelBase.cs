@@ -50,29 +50,6 @@ namespace ReScanVisualizer.ViewModels
             return true;
         }
 
-        /// <summary>
-        /// Try to set the value if <paramref name="value"/> is not equal to <paramref name="backingField"/>.
-        /// <br />
-        /// If yes, it calls the <see cref="ViewModelBase.OnPropertyChanged(string?)"/> to refresh UI.
-        /// <br />
-        /// By default, <paramref name="propertyName"/> is set to null to call the <seealso cref="CallerMemberNameAttribute"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of the property.</typeparam>
-        /// <param name="backingField">The private property.</param>
-        /// <param name="value">The new value to apply.</param>
-        /// <param name="propertyName">The name of the public property used in binding.</param>
-        /// <returns>Returns true if the values are differents, else returns false.</returns>
-        protected bool SetValue<T>(T backingField, T value, [CallerMemberName] string? propertyName = null)
-        {
-            if (Equals(backingField, value))
-            {
-                return false;
-            }
-            backingField = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
         public virtual void Dispose() { }
     }
 }

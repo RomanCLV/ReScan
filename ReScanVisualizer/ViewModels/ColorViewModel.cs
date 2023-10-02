@@ -30,8 +30,9 @@ namespace ReScanVisualizer.ViewModels
             get => _color.R;
             set
             {
-                if (SetValue(_color.R, value))
+                if (_color.R != value)
                 {
+                    OnPropertyChanged(nameof(R));
                     OnPropertyChanged(nameof(Color));
                 }
             }
@@ -42,8 +43,9 @@ namespace ReScanVisualizer.ViewModels
             get => _color.G;
             set
             {
-                if (SetValue(_color.G, value))
+                if (_color.G != value)
                 {
+                    OnPropertyChanged(nameof(G));
                     OnPropertyChanged(nameof(Color));
                 }
             }
@@ -54,8 +56,9 @@ namespace ReScanVisualizer.ViewModels
             get => _color.B;
             set
             {
-                if (SetValue(_color.B, value))
+                if (_color.B != value)
                 {
+                    OnPropertyChanged(nameof(B));
                     OnPropertyChanged(nameof(Color));
                 }
             }
@@ -66,8 +69,9 @@ namespace ReScanVisualizer.ViewModels
             get => _color.A;
             set
             {
-                if (SetValue(_color.A, value))
+                if (_color.A != value)
                 {
+                    OnPropertyChanged(nameof(A));
                     OnPropertyChanged(nameof(Color));
                 }
             }

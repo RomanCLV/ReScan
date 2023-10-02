@@ -39,8 +39,10 @@ namespace ReScanVisualizer.ViewModels
             get => _plan.A;
             set
             {
-                if (SetValue(_plan.A, value))
+                if (_plan.A != value)
                 {
+                    OnPropertyChanged(nameof(A));
+                    OnPropertyChanged(nameof(Plan));
                     UpdateModelGeometry();
                 }
             }
@@ -51,8 +53,10 @@ namespace ReScanVisualizer.ViewModels
             get => _plan.B;
             set
             {
-                if (SetValue(_plan.B, value))
+                if (_plan.B != value)
                 {
+                    OnPropertyChanged(nameof(B));
+                    OnPropertyChanged(nameof(Plan));
                     UpdateModelGeometry();
                 }
             }
@@ -63,8 +67,10 @@ namespace ReScanVisualizer.ViewModels
             get => _plan.C;
             set
             {
-                if (SetValue(_plan.C, value))
+                if (_plan.C != value)
                 {
+                    OnPropertyChanged(nameof(C));
+                    OnPropertyChanged(nameof(Plan));
                     UpdateModelGeometry();
                 }
             }
@@ -75,8 +81,10 @@ namespace ReScanVisualizer.ViewModels
             get => _plan.D;
             set
             {
-                if (SetValue(_plan.D, value))
+                if (_plan.D != value)
                 {
+                    OnPropertyChanged(nameof(D));
+                    OnPropertyChanged(nameof(Plan));
                     UpdateModelGeometry();
                 }
             }

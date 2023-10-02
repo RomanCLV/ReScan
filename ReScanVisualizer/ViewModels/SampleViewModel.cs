@@ -1,5 +1,6 @@
 ﻿using HelixToolkit.Wpf;
 using ReScanVisualizer.Models;
+using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -93,7 +94,13 @@ namespace ReScanVisualizer.ViewModels
             _isHiden = _oldOpacity == 0;
 
             _radius = radius;
-            Point = new Point3DViewModel(point3D);
+            Point = new Point3DViewModel(point3D)
+            {
+                CorrectX = CorrectX,
+                CorrectY = CorrectY,
+                CorrectZ = CorrectZ
+            };
+
             _model = Helper3D.Helper3D.BuildSphereModel(PointScalled, _radius * _scaleFactor, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;
@@ -160,6 +167,45 @@ namespace ReScanVisualizer.ViewModels
         private void OnIsHidenChanged()
         {
             IsHidenChanged?.Invoke(this, _isHiden);
+        }
+
+        private double CorrectX(double x)
+        {
+            if (x < ScatterGraphBuilderBase.MIN_X)
+            {
+                x = ScatterGraphBuilderBase.MIN_X;
+            }
+            else if (x > ScatterGraphBuilderBase.MAX_X)
+            {
+                x = ScatterGraphBuilderBase.MAX_X;
+            }
+            return x;
+        }
+
+        private double CorrectY(double y)
+        {
+            if (y < ScatterGraphBuilderBase.MIN_Y)
+            {
+                y = ScatterGraphBuilderBase.MIN_Y;
+            }
+            else if (y > ScatterGraphBuilderBase.MAX_Y)
+            {
+                y = ScatterGraphBuilderBase.MAX_Y;
+            }
+            return y;
+        }
+
+        private double CorrectZ(double z)
+        {
+            if (z < ScatterGraphBuilderBase.MIN_Z)
+            {
+                z = ScatterGraphBuilderBase.MIN_Z;
+            }
+            else if (z > ScatterGraphBuilderBase.MAX_Z)
+            {
+                z = ScatterGraphBuilderBase.MAX_Z;
+            }
+            return z;
         }
 
         public override string ToString()

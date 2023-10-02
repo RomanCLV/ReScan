@@ -34,8 +34,10 @@ namespace ReScanVisualizer.ViewModels
             get => Barycenter.IsHiden;
             set
             {
-                if (SetValue(Barycenter.IsHiden, value))
+                if (Barycenter.IsHiden != value)
                 {
+                    Barycenter.IsHiden = value;
+                    OnPropertyChanged(nameof(Barycenter.IsHiden));
                     if (!Barycenter.IsHiden && _hasToComputeBarycenter)
                     {
                         ComputeBarycenter();
@@ -49,8 +51,9 @@ namespace ReScanVisualizer.ViewModels
             get => AveragePlan.IsHiden;
             set
             {
-                if (SetValue(AveragePlan.IsHiden, value))
+                if (AveragePlan.IsHiden != value)
                 {
+                    AveragePlan.IsHiden = value;
                     if (!AveragePlan.IsHiden && _hasToComputeAveragePlan)
                     {
                         ComputeAveragePlan();
@@ -81,7 +84,7 @@ namespace ReScanVisualizer.ViewModels
         public Model3D Model { get; private set; }
 
         public ColorViewModel Color { get; set; }
-        
+
         private byte _oldPointsOpacity;
         private bool _oldBarycenterIsHiden;
         private bool _oldAveragePlanIsHiden;
@@ -192,7 +195,7 @@ namespace ReScanVisualizer.ViewModels
                     ((Model3DGroup)Model).Children.Clear();
                 }
                 catch (InvalidOperationException)
-                { 
+                {
                 }
 
                 foreach (SampleViewModel point in Samples)

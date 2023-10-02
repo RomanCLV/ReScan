@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels
 {
     public class Point3DViewModel : ViewModelBase
@@ -16,6 +18,19 @@ namespace ReScanVisualizer.ViewModels
             get => _point;
             set
             {
+                if (CorrectX != null)
+                {
+                    value.X = CorrectX(value.X);
+                }
+                if (CorrectY != null)
+                {
+                    value.Y = CorrectY(value.Y);
+                }
+                if (CorrectZ != null)
+                {
+                    value.Z = CorrectZ(value.Z);
+                }
+
                 if (SetValue(ref _point, value))
                 {
                     OnPropertyChanged(nameof(X));
@@ -28,20 +43,60 @@ namespace ReScanVisualizer.ViewModels
         public double X
         {
             get => _point.X;
-            set => SetValue(_point.X, value);
+            set
+            {
+                if (CorrectX != null) 
+                {
+                    value = CorrectX(value);
+                }
+                if (_point.X != value)
+                {
+                    _point.X = value;
+                    OnPropertyChanged(nameof(X));
+                    OnPropertyChanged(nameof(Point));
+                }
+            }
         }
 
         public double Y
         {
             get => _point.Y;
-            set => SetValue(_point.Y, value);
+            set
+            {
+                if (CorrectY != null)
+                {
+                    value = CorrectY(value);
+                }
+                if (_point.Y != value)
+                {
+                    _point.Y = value;
+                    OnPropertyChanged(nameof(Y));
+                    OnPropertyChanged(nameof(Point));
+                }
+            }
         }
 
         public double Z
         {
             get => _point.Z;
-            set => SetValue(_point.Z, value);
+            set
+            {
+                if (CorrectZ != null)
+                {
+                    value = CorrectZ(value);
+                }
+                if (_point.Z != value)
+                {
+                    _point.Z = value;
+                    OnPropertyChanged(nameof(Z));
+                    OnPropertyChanged(nameof(Point));
+                }
+            }
         }
+
+        public Func<double, double>? CorrectX { get; set; }
+        public Func<double, double>? CorrectY { get; set; }
+        public Func<double, double>? CorrectZ { get; set; }
 
         public Point3DViewModel() : this(new Point3D())
         { }

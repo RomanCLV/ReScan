@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
@@ -12,71 +13,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
     public class ScatterGraphPopulateRectangle2DBuilder : ScatterGraphPopulateBuilderBase
     {
-        private Point3D _center;
-        public Point3D Center
-        {
-            get => _center;
-            set
-            {
-                if (SetValue(ref _center, value))
-                {
-                    OnPropertyChanged(nameof(CenterX));
-                    OnPropertyChanged(nameof(CenterY));
-                    OnPropertyChanged(nameof(CenterZ));
-                }
-            }
-        }
-
-        public double CenterX
-        {
-            get => _center.X;
-            set
-            {
-                if (value < MIN_X)
-                {
-                    value = MIN_X;
-                }
-                else if (value > MAX_X)
-                {
-                    value = MAX_X;
-                }
-                SetValue(_center.X, value);
-            }
-        }
-
-        public double CenterY
-        {
-            get => _center.Y;
-            set
-            {
-                if (value < MIN_Y)
-                {
-                    value = MIN_Y;
-                }
-                else if (value > MAX_Y)
-                {
-                    value = MAX_Y;
-                }
-                SetValue(_center.Y, value);
-            }
-        }
-
-        public double CenterZ
-        {
-            get => _center.Z;
-            set
-            {
-                if (value < MIN_Z)
-                {
-                    value = MIN_Z;
-                }
-                else if (value > MAX_Z)
-                {
-                    value = MAX_Z;
-                }
-                SetValue(_center.Z, value);
-            }
-        }
+        public Point3DViewModel Center { get; private set; }
 
         private Plan2D _plan;
         public Plan2D Plan
@@ -150,7 +87,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public ScatterGraphPopulateRectangle2DBuilder()
         {
-            _center = new Point3D(0, 0, 0);
+            Center = new Point3DViewModel
+            {
+                CorrectX = CorrectX,
+                CorrectY = CorrectY,
+                CorrectZ = CorrectZ
+            };
             _plan = Plan2D.XY;
             _width = 10.0;
             _height = 10.0;
@@ -177,8 +119,47 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public override ScatterGraphViewModel[] Build()
         {
             ScatterGraph graph = new ScatterGraph();
-            ScatterGraph.PopulateRectangle2D(graph, _center, _plan, _width, _height, _density);
+            ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _density);
             return new ScatterGraphViewModel[1] { new ScatterGraphViewModel(graph, _color) };
+        }
+
+        private double CorrectX(double x)
+        {
+            if (x < MIN_X)
+            {
+                x = MIN_X;
+            }
+            else if (x > MAX_X)
+            {
+                x = MAX_X;
+            }
+            return x;
+        }
+
+        private double CorrectY(double y)
+        {
+            if (y < MIN_Y)
+            {
+                y = MIN_Y;
+            }
+            else if (y > MAX_Y)
+            {
+                y = MAX_Y;
+            }
+            return y;
+        }
+
+        private double CorrectZ(double z)
+        {
+            if (z < MIN_Z)
+            {
+                z = MIN_Z;
+            }
+            else if (z > MAX_Z)
+            {
+                z = MAX_Z;
+            }
+            return z;
         }
     }
 }
