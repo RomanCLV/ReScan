@@ -68,7 +68,7 @@ namespace ReScanVisualizer.Models
 	        Maintenant qu'on a t, on peut trouver les coordonnees du point A' en le mettant dans S1.
 	        */
 
-            double t = -(A * point.X + B * point.Y + C * point.Z + D) / (A * A + B* B + C * C);
+            double t = -(A * point.X + B * point.Y + C * point.Z + D) / (A * A + B * B + C * C);
             return new Point3D(
                 A * t + point.X,
                 B * t + point.Y,
@@ -76,17 +76,17 @@ namespace ReScanVisualizer.Models
             );
         }
 
-        static double getDistanceFrom(Plan plan, Point3D point)
+        static double GetDistanceFrom(Plan plan, Point3D point)
         {
-	        /*
+            /*
 			         | a*Xm + b*Ym + c*Zm + d  |
 	        D(P,M) = | ----------------------- |
 			         |    sqrt(a^2+b^2+c^2)	   |
 	        */
-	        return Math.Abs((plan.A * point.X + plan.B * point.Y + plan.C * point.Z + plan.D) / Math.Sqrt(plan.A * plan.A + plan.B * plan.B + plan.C * plan.C));
+            return Math.Abs((plan.A * point.X + plan.B * point.Y + plan.C * point.Z + plan.D) / Math.Sqrt(plan.A * plan.A + plan.B * plan.B + plan.C * plan.C));
         }
 
-    public string ToStr(string begin = "{ ", string end = " }", string sep = " ")
+        public string ToStr(string begin = "{ ", string end = " }", string sep = " ")
         {
             return $"{begin}{A}{sep}{B}{sep}{C}{sep}{D}{end}";
         }

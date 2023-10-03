@@ -264,7 +264,26 @@ namespace ReScanVisualizer.Models
             return new Point3D(centerX, centerY, centerZ);
         }
 
-        public bool IsCoplanar()
+        public bool ArePointsColinear()
+        {
+            if (_points.Count < 2)
+            {
+                throw new InvalidOperationException("Need at least 2 points to compute the linearity of a graph.");
+            }
+
+            Point3D p0 = _points[0];
+            Vector3D vector1 = _points[1] - p0;
+            for (int i = 2; i < _points.Count; i++)
+            {
+                if (!Tools.AreVectorsColinear(vector1, _points[i] - p0))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool ArePointsCoplanar()
         {
             if (_points.Count < 3)
             {
@@ -278,15 +297,18 @@ namespace ReScanVisualizer.Models
             Vector3D vector1 = _points[1] - p0;
             Vector3D vector2 = _points[2] - p0;
             Vector3D vector3;
+            bool isCoplanar = true;
             for (int i = 3; i < _points.Count; i++)
             {
                 vector3 = _points[i] - p0;
-                if (Math.Abs(Tools.MixteProduct(vector1, vector2, vector3)) < 0.001)
+
+                isCoplanar = Math.Abs(Tools.MixteProduct(vector1, vector2, vector3)) < Const.ZERO_CLAMP;
+                if (!isCoplanar)
                 {
-                    return false;
+                    break;
                 }
             }
-            return true;
+            return isCoplanar;
         }
 
         public Plan ComputeAveragePlan()
@@ -302,13 +324,28 @@ namespace ReScanVisualizer.Models
 
             Point3D barycenter = ComputeBarycenter();
 
-            if (IsCoplanar())
+            if (ArePointsCoplanar())
             {
-
-                //Vector3D x = GetClosestPoint(this, barycenter) - barycenter;
-                //Vector3D z = Vector3D.
-
-                return new Plan();
+                Vector3D x = _points[1] - _points[0];
+                Vector3D y = new Vector3D(0, 1, 0);
+                Vector3D z;
+                if (ArePointsColinear())
+                {
+                    // TODO : find y
+                }
+                else
+                {
+                    for (int i = 2; i < size; i++)
+                    {
+                        y = _points[i] - _points[0];
+                        if (!Tools.AreVectorsColinear(x, y))
+                        {
+                            break;
+                        }
+                    }
+                }
+                z = Vector3D.CrossProduct(x, y);
+                return new Plan(z.X, z.Y, z.Z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
             }
 
             double sX = 0.0;
@@ -463,6 +500,34 @@ namespace ReScanVisualizer.Models
 
                     scatterGraph.AddPoint(p);
                 }
+            }
+        }
+
+        public static void PopulateLine(ScatterGraph scatterGraph, Point3D start, Point3D end, uint numPoints)
+        {
+            if (numPoints < 2)
+            {
+                throw new ArgumentException("At least 2 points are required.", nameof(numPoints));
+            }
+
+            if (start == end)
+            {
+                throw new ArgumentException("Start and end points must be different.", nameof(numPoints));
+            }
+
+            double step = 1.0 / (numPoints - 1);
+
+            for (int i = 0; i < numPoints; i++)
+            {
+                double t = i * step;
+                Point3D p = new Point3D
+                {
+                    X = start.X + (end.X - start.X) * t,
+                    Y = start.Y + (end.Y - start.Y) * t,
+                    Z = start.Z + (end.Z - start.Z) * t
+                };
+
+                scatterGraph.AddPoint(p);
             }
         }
 

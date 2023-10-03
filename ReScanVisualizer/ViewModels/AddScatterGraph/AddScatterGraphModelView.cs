@@ -14,7 +14,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 {
     public class AddScatterGraphModelView : ViewModelBase
     {
-        private readonly MainViewModel _mainViewModel;
+        //private readonly MainViewModel _mainViewModel;
 
         private bool _isUnselectingAll;
 
@@ -104,7 +104,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             _isToPopulateSelected = false;
             _isToOpenSelected = false;
             _populateSelectedIndex = 0;
-            _mainViewModel = mainViewModel;
+            //_mainViewModel = mainViewModel;
 
             ValidateCommand = new CommandKey(new ValidateAddingScatterGraphCommand(addScatterGraphView, this, mainViewModel), Key.Enter, ModifierKeys.None, "Validate");
             CancelCommand = new CommandKey(new ActionCommand(addScatterGraphView.Close), Key.Escape, ModifierKeys.None, "Cancel");
@@ -131,6 +131,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             else if (_populateSelectedIndex == 1)
             {
                 Builder = new ScatterGraphPopulateRectangle2DBuilder();
+            }
+            else if (_populateSelectedIndex == 2)
+            {
+                Builder = new ScatterGraphPopulateLineBuilder();
             }
             else
             {
