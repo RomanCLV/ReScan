@@ -219,7 +219,7 @@ namespace ReScanVisualizer.Models
             }
         }
 
-        static Point3D GetClosestPoint(ScatterGraph scatterGraph, Point3D point)
+        public static Point3D GetClosestPoint(ScatterGraph scatterGraph, Point3D point)
         {
             int size = scatterGraph.Count;
             Point3D closestPoint = new Point3D();
@@ -264,6 +264,31 @@ namespace ReScanVisualizer.Models
             return new Point3D(centerX, centerY, centerZ);
         }
 
+        public bool IsCoplanar()
+        {
+            if (_points.Count < 3)
+            {
+                throw new InvalidOperationException("Need at least 3 points to compute the coplanarity of a graph.");
+            }
+            else if (_points.Count == 3)
+            {
+                return true;
+            }
+            Point3D p0 = _points[0];
+            Vector3D vector1 = _points[1] - p0;
+            Vector3D vector2 = _points[2] - p0;
+            Vector3D vector3;
+            for (int i = 3; i < _points.Count; i++)
+            {
+                vector3 = _points[i] - p0;
+                if (Math.Abs(Tools.MixteProduct(vector1, vector2, vector3)) < 0.001)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public Plan ComputeAveragePlan()
         {
             // based on: https://www.claudeparisel.com/monwiki/data/Karnak/K2/PLAN%20MOYEN.pdf
@@ -273,6 +298,17 @@ namespace ReScanVisualizer.Models
             if (size < 3)
             {
                 throw new InvalidOperationException("Need at least 3 points to compute the average plan.");
+            }
+
+            Point3D barycenter = ComputeBarycenter();
+
+            if (IsCoplanar())
+            {
+
+                //Vector3D x = GetClosestPoint(this, barycenter) - barycenter;
+                //Vector3D z = Vector3D.
+
+                return new Plan();
             }
 
             double sX = 0.0;
@@ -298,7 +334,6 @@ namespace ReScanVisualizer.Models
             double pY;
             double pZ;
 
-            Point3D barycenter;
             double a;
             double b;
             double c;
@@ -333,8 +368,6 @@ namespace ReScanVisualizer.Models
             a *= (-k / D);
             b *= (k / D);
             c *= (-k / D);
-
-            barycenter = ComputeBarycenter();
 
             return new Plan(a, b, c, -(a * barycenter.X + b * barycenter.Y + c * barycenter.Z));
         }

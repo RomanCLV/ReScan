@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer
 {
