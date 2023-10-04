@@ -4,9 +4,55 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
+             xmlns:converter="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converter:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+    </UserControl.Resources>
     <StackPanel>
-        <TextBlock Text="Files" />
+        <Button Content="Select files" HorizontalAlignment="Left" Command="{Binding SelectFilesCommand}" ToolTip="Select files" />
+        <ListView 
+            ItemsSource="{Binding Builders}" 
+            Background="{StaticResource backgroundListColor}" 
+            KeyUp="ListView_KeyUp"
+            Margin="10">
+            <ListView.View>
+                <GridView>
+                    <!-- Colonne Contains Header -->
+                    <GridViewColumn Header="Contains Header" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding ContainsHeader}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Colonne Color -->
+                    <GridViewColumn Header="Color" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black" Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" Width="16" Height="16" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <!-- Colonne Filename -->
+                    <GridViewColumn Header="Filename" Width="600">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding FileName}" Style="{StaticResource myTextBlock}">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding Path}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <!--<local:ScatterGraphFileBuilderView DataContext="{Binding ElementName=listView, Path=SelectedValue}" />-->
     </StackPanel>
 </UserControl>

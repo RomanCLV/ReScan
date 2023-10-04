@@ -13,6 +13,11 @@
         Foreground="{StaticResource foregroundColor}"
         >
     <Window.InputBindings>
+        <KeyBinding x:Name="ValidateCommandKey" 
+            Command="{Binding Path=ValidateCommand.Command}"  
+            Key="{Binding Path=ValidateCommand.Key}" 
+            Modifiers="{Binding Path=ValidateCommand.Modifiers}"
+            />
         <KeyBinding x:Name="CancelCommandKey" 
             Command="{Binding Path=CancelCommand.Command}"  
             Key="{Binding Path=CancelCommand.Key}" 
@@ -23,14 +28,6 @@
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <DockPanel>
-                <DockPanel.InputBindings>
-                    <KeyBinding x:Name="ValidateCommandKey" 
-                        Command="{Binding Path=ValidateCommand.Command}"  
-                        Key="{Binding Path=ValidateCommand.Key}" 
-                        Modifiers="{Binding Path=ValidateCommand.Modifiers}"
-                        />
-                </DockPanel.InputBindings>
-                
                 <TextBlock DockPanel.Dock="Top" Text="New Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
                 <DockPanel Margin="50">
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -92,7 +89,6 @@
                             </StackPanel.Resources>
                             <ContentControl Content="{Binding Builder}" />
                         </StackPanel>
-
                     </StackPanel>
                 </DockPanel>
             </DockPanel>

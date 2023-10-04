@@ -15,8 +15,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public string Path
         {
             get => _path;
-            set => SetValue(ref _path, value);
+            set
+            {
+                if (SetValue(ref _path, value))
+                {
+                    OnPropertyChanged(nameof(FileName));
+                }
+            }
         }
+
+        public string FileName => System.IO.Path.GetFileName(_path);
 
         private Color _color;
         public Color Color

@@ -87,6 +87,7 @@
     </ApplicationDefinition>
     <Compile Include="Commands\AddScatterGraphCommand.cs" />
     <Compile Include="Commands\ActionCommand.cs" />
+    <Compile Include="Commands\SelectFilesCommand.cs" />
     <Compile Include="Commands\ValidateAddingScatterGraphCommand.cs" />
     <Compile Include="Converters\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\CommandKeyToInputGestureTextConverter.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Repere3D.cs" />
     <Compile Include="Others\Tools.cs" />
+    <Compile Include="Service\ISelectFilesService.cs" />
     <Compile Include="UserControls\ColorSelector.xaml.cs">
       <DependentUpon>ColorSelector.xaml</DependentUpon>
     </Compile>
@@ -115,6 +117,9 @@
     </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphEmptyBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphFileBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphFileBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphFilesBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphFilesBuilderView.xaml</DependentUpon>
@@ -167,6 +172,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphFileBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

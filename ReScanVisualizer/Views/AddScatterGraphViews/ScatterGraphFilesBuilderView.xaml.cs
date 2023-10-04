@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,24 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         public ScatterGraphFilesBuilderView()
         {
             InitializeComponent();
+        }
+
+        private void ListView_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sender is ListView listView)
+            {
+                if (e.Key == Key.Delete || e.Key == Key.Back)
+                {
+                    if (listView.SelectedItem != null)
+                    {
+                        ScatterGraphFileBuilder selectedBuilder = (ScatterGraphFileBuilder)listView.SelectedItem;
+                        if (DataContext is  ScatterGraphFilesBuilder builder)
+                        {
+                            builder.Builders.Remove(selectedBuilder);
+                        }
+                    }
+                }
+            }
         }
     }
 }
