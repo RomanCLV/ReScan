@@ -692,11 +692,11 @@ void ScatterGraph::computeAveragePlan(const ScatterGraph* scatterGraph, Plan* av
 	}
 
 	D = (sXX * sYY * sZZ) - (sXX * sYZ * sYZ) - (sYY * sXZ * sXZ) + (2.0 * sXY * sXZ * sYZ);
-	
+
 	a = (sX * (sYY * sZZ - sYZ * sYZ)) - (sY * (sXY * sZZ - sXZ * sYZ)) + (sZ * (sXY * sYZ - sYY * sXZ));
 	b = (sX * (sXY * sZZ - sXZ * sYZ)) - (sY * (sXX * sZZ - sXZ * sXZ)) + (sZ * (sYZ * sXX - sXY * sXZ));
 	c = (sX * (sXY * sYZ - sYY * sXZ)) - (sY * (sXX * sYZ - sXY * sXZ)) + (sZ * (sXX * sYY - sXY * sXY));
-	
+
 	a *= (-k / D);
 	b *= (k / D);
 	c *= (-k / D);

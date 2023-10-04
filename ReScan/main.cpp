@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     Plan2D plan;
 
     // Tableau de pointeurs de membres pour les getters désirés
-    double (Point3D:: * getters[2])() const;
+    double (Point3D:: * getters[2])() const; {}
 
     Point3D minPoint;
     Point3D maxPoint;

@@ -45,10 +45,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public void SelectFiles()
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Select files";
-            ofd.DefaultExt = ".csv";
-            ofd.Multiselect = true;
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Title = "Select files",
+                DefaultExt = ".csv",
+                Multiselect = true
+            };
             if (ofd.ShowDialog() != null)
             {
                 foreach (string file in ofd.FileNames)

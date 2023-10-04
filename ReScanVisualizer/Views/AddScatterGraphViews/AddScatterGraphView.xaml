@@ -32,13 +32,15 @@
                 <DockPanel Margin="50">
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="OK" Height="30"
-                            ToolTip="{Binding ValidateCommand.Description}"
-                            Command="{Binding ElementName=ValidateCommandKey, Path=Command}"
-                            />
+                                Style="{StaticResource myButton}"
+                                ToolTip="{Binding ValidateCommand.Description}"
+                                Command="{Binding ElementName=ValidateCommandKey, Path=Command}"
+                                />
                         <Button Content="Cancel" Height="30"
-                            ToolTip="{Binding CancelCommand.Description}"
-                            Command="{Binding ElementName=CancelCommandKey, Path=Command}"
-                            />
+                                Style="{StaticResource myButton}"
+                                ToolTip="{Binding CancelCommand.Description}"
+                                Command="{Binding ElementName=CancelCommandKey, Path=Command}"
+                                />
                     </StackPanel>
 
                     <StackPanel>

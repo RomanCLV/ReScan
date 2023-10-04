@@ -118,9 +118,6 @@
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphEmptyBuilderView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddScatterGraphViews\ScatterGraphFileBuilderView.xaml.cs">
-      <DependentUpon>ScatterGraphFileBuilderView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphFilesBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphFilesBuilderView.xaml</DependentUpon>
     </Compile>
@@ -172,10 +169,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\AddScatterGraphViews\ScatterGraphFileBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

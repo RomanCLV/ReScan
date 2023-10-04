@@ -54,7 +54,7 @@
                 </HelixToolkit:HelixViewport3D.Background>
                 <!-- Remember to add light to the scene -->
                 <HelixToolkit:SunLight/>
-                <HelixToolkit:GridLinesVisual3D Width="10" Length="10" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+                <HelixToolkit:GridLinesVisual3D Width="30" Length="30" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
                 
                 <ModelVisual3D Content="{Binding OriginModel}" />
                 <ModelVisual3D Content="{Binding Models}"/>

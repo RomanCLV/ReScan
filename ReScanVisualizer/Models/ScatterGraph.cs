@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -569,13 +570,13 @@ namespace ReScanVisualizer.Models
                     if (writeHeaders)
                     {
                         // Écrire les en-têtes CSV
-                        writer.WriteLine("X,Y,Z");
+                        writer.WriteLine("X;Y;Z");
                     }
 
                     foreach (Point3D point in scatterGraph._points)
                     {
                         // Écrire chaque point CSV
-                        writer.WriteLine($"{point.X},{point.Y},{point.Z}");
+                        writer.WriteLine($"{point.X};{point.Y};{point.Z}");
                     }
                 }
             }
@@ -626,7 +627,7 @@ namespace ReScanVisualizer.Models
 
                     while ((line = reader.ReadLine()) != null)
                     {
-                        string[] values = line.Split(',');
+                        string[] values = (line.Replace('.', ',')).Split(';');
                         if (values.Length >= 3 &&
                             double.TryParse(values[0], out double x) &&
                             double.TryParse(values[1], out double y) &&

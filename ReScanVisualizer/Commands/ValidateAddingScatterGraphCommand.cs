@@ -47,6 +47,7 @@ namespace ReScanVisualizer.Commands
 
         public override void Execute(object? parameter)
         {
+            bool autoClose = true;
             if (_addScatterGraphModelView.Builder != null)
             {
                 ScatterGraphViewModel[] scatterGraphViewModels;
@@ -56,16 +57,22 @@ namespace ReScanVisualizer.Commands
                 }
                 catch (Exception ex)
                 {
+                    autoClose = false;
                     scatterGraphViewModels = new ScatterGraphViewModel[0];
                     MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
                 foreach (ScatterGraphViewModel viewModel in scatterGraphViewModels)
                 {
+                    // TODO : check if Count > 1000 --> want to reduce ?
+
                     _mainViewModel.ScatterGraphs.Add(viewModel);
                 }
             }
-            _addScatterGraphView.Close();
+            if (autoClose)
+            {
+                _addScatterGraphView.Close();
+            }
         }
     }
 }

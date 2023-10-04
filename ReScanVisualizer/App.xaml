@@ -30,7 +30,7 @@
             <Setter Property="Background" Value="{StaticResource backgroundListColor}" />
         </Style>
 
-        <Style TargetType="{x:Type Button}">
+        <Style TargetType="{x:Type Button}" x:Key="myButton">
             <Setter Property="Margin"      Value="5" />
             <Setter Property="MinWidth"    Value="50" />
             <Setter Property="Foreground"  Value="White" />
@@ -61,6 +61,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
         <Style TargetType="{x:Type Button}" x:Key="myButtonIcon">
             <Setter Property="Margin"      Value="5" />
             <Setter Property="Width"       Value="30" />
@@ -90,6 +91,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
         <Style TargetType="{x:Type TextBlock}" x:Key="myTextBlock">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment"   Value="Center" />
@@ -104,6 +106,7 @@
         <Style TargetType="{x:Type TextBlock}" x:Key="myTextBlockRight" BasedOn="{StaticResource myTextBlock}" >
             <Setter Property="HorizontalAlignment" Value="Right" />
         </Style>
+        
         <Style TargetType="{x:Type TextBox}"   x:Key="myTextBox">
             <Setter Property="HorizontalContentAlignment"   Value="Center" />
             <Setter Property="VerticalContentAlignment"     Value="Center" />
@@ -123,6 +126,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
         <Style TargetType="{x:Type ToggleButton}" x:Key="toggleSwitch">
             <Setter Property="Template">
                 <Setter.Value>
@@ -146,6 +150,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <Style TargetType="{x:Type ComboBox}" x:Key="myComboBox">
             <Setter Property="Margin" Value="5" />
             <Setter Property="MinWidth" Value="150" />
