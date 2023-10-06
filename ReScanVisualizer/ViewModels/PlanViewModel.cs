@@ -16,6 +16,13 @@ namespace ReScanVisualizer.ViewModels
 {
     public class PlanViewModel : ViewModelBase, I3DElement
     {
+        private double _scaleFactor;
+        public double ScaleFactor
+        {
+            get => _scaleFactor;
+            set => SetValue(ref _scaleFactor, value);
+        }
+
         private Plan _plan;
         public Plan Plan
         {
@@ -100,6 +107,9 @@ namespace ReScanVisualizer.ViewModels
                 UpdateModelGeometry();
             }
         }
+
+        private Point3D CenterScalled => _center.Multiply(_scaleFactor);
+
 
         private Vector3D _up;
         public Vector3D Up
@@ -202,6 +212,7 @@ namespace ReScanVisualizer.ViewModels
         public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double width = 10, double height = 10, double dist = 0.0)
         {
             IsDisposed = false;
+            _scaleFactor = 1.0;
             _plan = plan;
             _center = center;
             _up = up;
@@ -269,7 +280,7 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildPlanGeometry(_center, _plan.GetNormal(), _up, _width, _height, _dist);
+            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, _width, _height, _dist);
         }
 
         public void UpdateModelMaterial()

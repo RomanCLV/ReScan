@@ -31,7 +31,7 @@
                 <TextBlock DockPanel.Dock="Top" Text="New Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
                 <DockPanel Margin="50">
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="OK" Height="30"
+                        <Button Content="Load" Height="30"
                                 Style="{StaticResource myButton}"
                                 ToolTip="{Binding ValidateCommand.Description}"
                                 Command="{Binding ElementName=ValidateCommandKey, Path=Command}"

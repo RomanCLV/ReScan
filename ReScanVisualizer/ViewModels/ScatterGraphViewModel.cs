@@ -18,9 +18,12 @@ namespace ReScanVisualizer.ViewModels
 {
     public class ScatterGraphViewModel : ViewModelBase, I3DElement
     {
-        public const double SCALE_FACTOR = 0.001;
-
-        private const double EFFECTIVE_FACTOR = MainViewModel.SCALE_FACTOR * SCALE_FACTOR;
+        private double _scale_factor;
+        public double ScaleFactor
+        {
+            get => _scale_factor;
+            set => SetValue(ref _scale_factor, value); // todo: rebuild all
+        }
 
         public event EventHandler<bool>? IsHidenChanged;
 
@@ -138,7 +141,7 @@ namespace ReScanVisualizer.ViewModels
         {
             IsDisposed = false;
             _scatterGraph = scatterGraph;
-            _pointsRadius = pointRadius * EFFECTIVE_FACTOR;
+            _pointsRadius = pointRadius;
             Color = new ColorViewModel(color);
             _oldPointsOpacity = Color.A;
             _isHiden = _oldPointsOpacity == 0;
@@ -148,7 +151,7 @@ namespace ReScanVisualizer.ViewModels
 
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
-                Samples.Add(new SampleViewModel(_scatterGraph[i].Multiply(EFFECTIVE_FACTOR), Color.Color, _pointsRadius));
+                Samples.Add(new SampleViewModel(_scatterGraph[i], Color.Color, _pointsRadius));
                 ((Model3DGroup)Model).Children.Add(Samples.Last().Model);
             }
 

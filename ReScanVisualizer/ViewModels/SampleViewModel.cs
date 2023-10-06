@@ -16,11 +16,16 @@ namespace ReScanVisualizer.ViewModels
 {
     public class SampleViewModel : ViewModelBase, I3DElement
     {
-        private const double _scaleFactor = 1;
+        private double _scaleFactor;
+        public double ScaleFactor
+        {
+            get => _scaleFactor;
+            set => SetValue(ref _scaleFactor, value); // todo: rebuild all
+        }
 
         public Point3DViewModel Point { get; private set; }
 
-        private Point3D PointScalled => new Point3D(Point.X * _scaleFactor, Point.Y * _scaleFactor, Point.Z * _scaleFactor);
+        private Point3D PointScalled => Point.Point.Multiply(_scaleFactor);
 
         private double _radius;
         public double Radius
@@ -94,6 +99,7 @@ namespace ReScanVisualizer.ViewModels
         {
             IsDisposed = false;
             Color = new ColorViewModel(color);
+            _scaleFactor = 1.0;
             _oldOpacity = color.A;
             _isHidenChanging = false;
             _isHiden = _oldOpacity == 0;

@@ -13,6 +13,8 @@ namespace ReScanVisualizer.Models
 {
     public interface I3DElement
     {
+        public double ScaleFactor { get; set; }
+
         public ColorViewModel Color { get; set; }
 
         public Model3D Model { get; }

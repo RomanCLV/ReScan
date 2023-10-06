@@ -18,8 +18,6 @@ namespace ReScanVisualizer.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        public const double SCALE_FACTOR = 10.0;
-
         public Model3DGroup OriginModel { get; private set; }
 
         private ViewModelBase? _selectedViewModel;
@@ -41,9 +39,9 @@ namespace ReScanVisualizer.ViewModels
             AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
 
             OriginModel = new Model3DGroup();
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), (new Point3D(1, 0, 0)).Multiply(SCALE_FACTOR), 0.1, Brushes.Red));
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), (new Point3D(0, 1, 0)).Multiply(SCALE_FACTOR), 0.1, Brushes.Green));
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), (new Point3D(0, 0, 1)).Multiply(SCALE_FACTOR), 0.1, Brushes.Blue));
+            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(1, 0, 0), 0.1, Brushes.Red));
+            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 1, 0), 0.1, Brushes.Green));
+            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 0, 1), 0.1, Brushes.Blue));
 
             Models = new Model3DGroup();
             SelectedViewModel = null;
