@@ -26,13 +26,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public string FileName => System.IO.Path.GetFileName(_path);
 
-        private Color _color;
-        public Color Color
-        {
-            get => _color;
-            set => SetValue(ref _color, value);
-        }
-
         private bool _containsHeader;
         public bool ContainsHeader
         {
@@ -40,26 +33,37 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             set => SetValue(ref _containsHeader, value);
         }
 
-        public ScatterGraphFileBuilder(string path, Color color, bool containsHeader)
+        public ScatterGraphFileBuilder(string path, Color color, bool containsHeader) : base(color)
         {
             _path = path;
-            _color = color;
             _containsHeader = containsHeader;
         }
 
         /// <summary>
-        /// Build an array of ScatterGraphViewModel
+        /// Build an array of <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.ReadCSV(string, bool)"/> method.
         /// </summary>
-        /// <returns>Return an array of one ScatterGraph</returns>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="FileNotFoundException"></exception>
-        public override ScatterGraphViewModel[] Build()
+        /// <returns>Return an array of one <see cref="ScatterGraphBuildResult"/></returns>
+        public override ScatterGraphBuildResult[] Build()
         {
+            ScatterGraphBuildResult[] scatterGraphBuildResults = new ScatterGraphBuildResult[1];
             if (!File.Exists(_path))
             {
-                throw new FileNotFoundException("File not found!", _path);
+                scatterGraphBuildResults[1] = new ScatterGraphBuildResult(Color, new FileNotFoundException("File not found!", _path));
             }
-            return new ScatterGraphViewModel[1] { new ScatterGraphViewModel(ScatterGraph.ReadCSV(_path, _containsHeader), _color) };
+            else
+            {
+                ScatterGraph graph;
+                try
+                {
+                    graph = ScatterGraph.ReadCSV(_path, _containsHeader);
+                    scatterGraphBuildResults[1] = new ScatterGraphBuildResult(Color, graph);
+                }
+                catch (Exception e)
+                {
+                    scatterGraphBuildResults[1] = new ScatterGraphBuildResult(Color, e);
+                }
+            }
+            return scatterGraphBuildResults;
         }
     }
 }

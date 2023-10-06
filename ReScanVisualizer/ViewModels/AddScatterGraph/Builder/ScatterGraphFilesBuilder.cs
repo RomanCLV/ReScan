@@ -46,13 +46,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         }
 
         /// <summary>
-        /// Build an array of ScatterGraphViewModel
+        /// Build an array of <see cref="ScatterGraphBuildResult"/>
         /// </summary>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="FileNotFoundException"></exception>
-        public override ScatterGraphViewModel[] Build()
+        /// <returns>Return an array of <see cref="ScatterGraphBuildResult"/></returns>
+        public override ScatterGraphBuildResult[] Build()
         {
-            ScatterGraphViewModel[] scatterGraphViewModels = new ScatterGraphViewModel[Builders.Count];
+            ScatterGraphBuildResult[] scatterGraphViewModels = new ScatterGraphBuildResult[Builders.Count];
             for (int i = 0; i < Builders.Count; i++)
             {
                 scatterGraphViewModels[i] = Builders[i].Build()[0];

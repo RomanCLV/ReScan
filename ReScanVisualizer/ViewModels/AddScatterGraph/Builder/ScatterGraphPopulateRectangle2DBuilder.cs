@@ -100,16 +100,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        private Color _color;
-        public Color Color
-        {
-            get => _color;
-            set => SetValue(ref _color, value);
-        }
-
         public List<Plan2D> AllPlans { get; private set; }
 
-        public ScatterGraphPopulateRectangle2DBuilder()
+        public ScatterGraphPopulateRectangle2DBuilder() : base(Colors.White)
         {
             Center = new Point3DViewModel
             {
@@ -122,7 +115,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _height = 10.0;
             _numPointsWidth = (uint)_width + 1;
             _numPointsHeight = (uint)_height + 1;
-            _color = Colors.White;
 
             AllPlans = GeneratePlan2DList();
         }
@@ -138,14 +130,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         }
 
         /// <summary>
-        /// Build an array of ScatterGraphViewModel using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, double)"/> method.
+        /// Build an array of <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, uint, uint)"/> method.
         /// </summary>
-        /// <returns>Return an array of one ScatterGraph</returns>
-        public override ScatterGraphViewModel[] Build()
+        /// <returns>Return an array of one  <see cref="ScatterGraphBuildResult"/></returns>
+        public override ScatterGraphBuildResult[] Build()
         {
             ScatterGraph graph = new ScatterGraph();
             ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _numPointsWidth, _numPointsHeight);
-            return new ScatterGraphViewModel[1] { new ScatterGraphViewModel(graph, _color) };
+            return new ScatterGraphBuildResult[1] { new ScatterGraphBuildResult(Color, graph) };
         }
 
         private double CorrectX(double x)

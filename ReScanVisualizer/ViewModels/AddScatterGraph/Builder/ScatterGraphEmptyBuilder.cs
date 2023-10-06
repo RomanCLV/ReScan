@@ -1,6 +1,7 @@
 ﻿using ReScanVisualizer.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,28 +11,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
     public class ScatterGraphEmptyBuilder : ScatterGraphBuilderBase
     {
-        private Color _color;
-        public Color Color
+        public ScatterGraphEmptyBuilder() : base(Colors.White)
         {
-            get => _color;
-            set
-            {
-                SetValue(ref _color, value);
-            }
-        }
-
-        public ScatterGraphEmptyBuilder()
-        {
-            _color = Colors.White;
         }
 
         /// <summary>
-        /// Build an array of ScatterGraphViewModel
+        /// Build an array of <see cref="ScatterGraphBuildResult"/>
         /// </summary>
-        /// <returns>Return an array of one ScatterGraph</returns>
-        public override ScatterGraphViewModel[] Build()
+        /// <returns>Return an array of one <see cref="ScatterGraphBuildResult"/></returns>
+        public override ScatterGraphBuildResult[] Build()
         {
-            return new ScatterGraphViewModel[1] { new ScatterGraphViewModel(new ScatterGraph(), _color) };
+            return new ScatterGraphBuildResult[1] { new ScatterGraphBuildResult(Color, new ScatterGraph()) };
         }
     }
 }

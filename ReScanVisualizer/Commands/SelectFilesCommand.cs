@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace ReScanVisualizer.Commands
 {
     internal class SelectFilesCommand : CommandBase
@@ -17,7 +19,7 @@ namespace ReScanVisualizer.Commands
             _selectFilesService = selectFilesService;
         }
 
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             _selectFilesService.SelectFiles();
         }

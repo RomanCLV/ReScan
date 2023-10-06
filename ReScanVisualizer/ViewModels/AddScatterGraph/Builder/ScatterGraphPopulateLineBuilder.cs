@@ -36,13 +36,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        private Color _color;
-        public Color Color
-        {
-            get => _color;
-            set => SetValue(ref _color, value);
-        }
-
         private bool _isDisposed;
 
         public ScatterGraphPopulateLineBuilder()
@@ -51,7 +44,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             Start = new Point3DViewModel();
             End = new Point3DViewModel(new Point3D(1, 0, 0));
             _numPoints = 2;
-            _color = Colors.White;
             UpdateWidth();
 
             Start.PropertyChanged += StartEnd_PropertyChanged;
@@ -81,11 +73,15 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        public override ScatterGraphViewModel[] Build()
+        /// <summary>
+        /// Build an array of <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateLine(ScatterGraph, Point3D, Point3D, uint)"/> method.
+        /// </summary>
+        /// <returns>Return an array of one  <see cref="ScatterGraphBuildResult"/></returns>
+        public override ScatterGraphBuildResult[] Build()
         {
             ScatterGraph graph = new ScatterGraph();
             ScatterGraph.PopulateLine(graph, Start.Point, End.Point, _numPoints);
-            return new ScatterGraphViewModel[1] { new ScatterGraphViewModel(graph, _color) };
+            return new ScatterGraphBuildResult[1] { new ScatterGraphBuildResult(Color, graph) };
         }
 
         public override void Dispose()

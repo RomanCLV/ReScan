@@ -27,21 +27,15 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         {
             if (_builder != null)
             {
-                ScatterGraphViewModel[] scatterGraphViewModels;
-                try
-                {
-                    scatterGraphViewModels = _builder.Build();
-                }
-                catch (Exception ex)
-                {
-                    scatterGraphViewModels = new ScatterGraphViewModel[0];
-                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                ScatterGraphBuildResult[] scatterGraphViewModels = _builder.Build();
 
-                foreach (ScatterGraphViewModel viewModel in scatterGraphViewModels)
+                foreach (ScatterGraphBuildResult result in scatterGraphViewModels)
                 {
                     // TODO : check if Count > 1000 --> want to reduce ?
-                    _mainViewModel.ScatterGraphs.Add(viewModel);
+                    if (result.IsSuccess)
+                    {
+                        _mainViewModel.ScatterGraphs.Add(new ScatterGraphViewModel(result.ScatterGraph, result.Color));
+                    }
                 }
             }
         }

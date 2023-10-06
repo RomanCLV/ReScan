@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
@@ -21,6 +22,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public const double MIN_HEIGTH = 1.0;
         public const double MAX_HEIGTH = 10000.0;
 
+        private Color _color;
+        public Color Color
+        {
+            get => _color;
+            set => SetValue(ref _color, value);
+        }
+
         private bool _canBuild;
         public bool CanBuild
         {
@@ -30,16 +38,19 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         // TODO : implémenter tous les can buid
 
-        public ScatterGraphBuilderBase()
+        public ScatterGraphBuilderBase() : this(Colors.White)
         {
+        }
+
+        public ScatterGraphBuilderBase(Color color)
+        {
+            _color = color;
             _canBuild = true;
         }
 
         /// <summary>
-        /// Build an array of ScatterGraphViewModel
+        /// Build an array of <see cref="ScatterGraphBuildResult"/>
         /// </summary>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="FileNotFoundException"></exception>
-        public abstract ScatterGraphViewModel[] Build();
+        public abstract ScatterGraphBuildResult[] Build();
     }
 }

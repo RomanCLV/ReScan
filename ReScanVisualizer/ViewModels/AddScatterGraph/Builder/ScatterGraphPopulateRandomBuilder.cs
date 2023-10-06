@@ -133,14 +133,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        private Color _color;
-        public Color Color
-        {
-            get => _color;
-            set => SetValue(ref _color, value);
-        }
-
-        public ScatterGraphPopulateRandomBuilder()
+        public ScatterGraphPopulateRandomBuilder() : base(Colors.White)
         {
             _count = 5;
             _minX = -10;
@@ -149,18 +142,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _maxY = 10;
             _minZ = -10;
             _maxZ = 10;
-            _color = Colors.White;
         }
 
         /// <summary>
-        /// Build an array of ScatterGraphViewModel using the <see cref="ScatterGraph.PopulateRandom(ScatterGraph, int, double, double, double, double, double, double)"/> method.
+        /// Build an array of <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRandom(ScatterGraph, uint, double, double, double, double, double, double)"/> method.
         /// </summary>
-        /// <returns>Return an array of one ScatterGraph</returns>
-        public override ScatterGraphViewModel[] Build()
+        /// <returns>Return an array of one  <see cref="ScatterGraphBuildResult"/></returns>
+        public override ScatterGraphBuildResult[] Build()
         {
             ScatterGraph graph = new ScatterGraph();
             ScatterGraph.PopulateRandom(graph, _count, _minX, _maxX, _minY, _maxY, _minZ, _maxZ);
-            return new ScatterGraphViewModel[1] { new ScatterGraphViewModel(graph, _color) };
+            return new ScatterGraphBuildResult[1] { new ScatterGraphBuildResult(Color, graph) };
         }
     }
 }
