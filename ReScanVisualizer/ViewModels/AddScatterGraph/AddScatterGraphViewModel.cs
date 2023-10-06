@@ -12,7 +12,7 @@ using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph
 {
-    public class AddScatterGraphModelView : ViewModelBase
+    public class AddScatterGraphViewModel : ViewModelBase
     {
         private bool _isUnselectingAll;
 
@@ -95,7 +95,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         public CommandKey ValidateCommand { get; }
         public CommandKey CancelCommand { get; }
 
-        public AddScatterGraphModelView(AddScatterGraphView addScatterGraphView, MainViewModel mainViewModel)
+        public AddScatterGraphViewModel(AddScatterGraphView addScatterGraphView, MainViewModel mainViewModel)
         {
             _isUnselectingAll = false;
             _isEmptySelected = false;

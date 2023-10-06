@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
@@ -19,6 +20,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public const double MAX_WIDTH = 10000.0;
         public const double MIN_HEIGTH = 1.0;
         public const double MAX_HEIGTH = 10000.0;
+
+        private bool _canBuild;
+        public bool CanBuild
+        {
+            get => _canBuild;
+            set => SetValue(ref _canBuild, value);
+        }
+
+        // TODO : implémenter tous les can buid
+
+        public ScatterGraphBuilderBase()
+        {
+            _canBuild = true;
+        }
 
         /// <summary>
         /// Build an array of ScatterGraphViewModel

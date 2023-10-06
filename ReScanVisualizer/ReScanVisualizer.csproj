@@ -101,7 +101,7 @@
       <DependentUpon>ColorSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphEmptyBuilder.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphModelView.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphBuilderBase.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphFileBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphFilesBuilder.cs" />
@@ -109,11 +109,15 @@
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateLineBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRandomBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRectangle2DBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\LoadScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
     <Compile Include="ViewModels\Point3DViewModel.cs" />
     <Compile Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml.cs">
       <DependentUpon>AddScatterGraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\LoadScatterGraphView.xaml.cs">
+      <DependentUpon>LoadScatterGraphView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphEmptyBuilderView.xaml</DependentUpon>
@@ -165,6 +169,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\LoadScatterGraphView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

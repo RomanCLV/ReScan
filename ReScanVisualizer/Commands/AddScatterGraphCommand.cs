@@ -27,7 +27,7 @@ namespace ReScanVisualizer.Commands
             {
                 Owner = Application.Current.MainWindow,
             };
-            view.DataContext = new AddScatterGraphModelView(view, _mainViewModel);
+            view.DataContext = new AddScatterGraphViewModel(view, _mainViewModel);
             view.ShowDialog();
         }
     }

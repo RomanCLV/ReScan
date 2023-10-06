@@ -28,21 +28,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             Builders = new ObservableCollection<ScatterGraphFileBuilder>();
         }
 
-        /// <summary>
-        /// Build an array of ScatterGraphViewModel
-        /// </summary>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="FileNotFoundException"></exception>
-        public override ScatterGraphViewModel[] Build()
-        {
-            ScatterGraphViewModel[] scatterGraphViewModels = new ScatterGraphViewModel[Builders.Count];
-            for (int i = 0; i < Builders.Count; i++)
-            {
-                scatterGraphViewModels[i] = Builders[i].Build()[0];
-            }
-            return scatterGraphViewModels;
-        }
-
         public void SelectFiles()
         {
             OpenFileDialog ofd = new OpenFileDialog
@@ -58,6 +43,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                     Builders.Add(new ScatterGraphFileBuilder(file, Colors.White, true));
                 }
             }
+        }
+
+        /// <summary>
+        /// Build an array of ScatterGraphViewModel
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        public override ScatterGraphViewModel[] Build()
+        {
+            ScatterGraphViewModel[] scatterGraphViewModels = new ScatterGraphViewModel[Builders.Count];
+            for (int i = 0; i < Builders.Count; i++)
+            {
+                scatterGraphViewModels[i] = Builders[i].Build()[0];
+            }
+            return scatterGraphViewModels;
         }
     }
 }
