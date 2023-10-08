@@ -14,23 +14,63 @@ namespace ReScanVisualizer
             string resourceName = parameter.ToString();
             switch (resourceName)
             {
-                #region ACTION : Add, Close, Delete, Browse, Working
-                case "Add":
-                    image.LoadFromBitmap(Resources.Add);
+                case "add":
+                    image.LoadFromBitmap(Resources.add);
                     break;
-                case "Close":
-                    image.LoadFromBitmap(Resources.Close);
+                case "available":
+                    image.LoadFromBitmap(Resources.available);
                     break;
-                case "Delete":
-                    image.LoadFromBitmap(Resources.Delete);
+                case "browse":
+                    image.LoadFromBitmap(Resources.browse);
                     break;
-                case "Browse":
-                    image.LoadFromBitmap(Resources.Browse);
+                case "close":
+                    image.LoadFromBitmap(Resources.close);
                     break;
-                case "Working":
-                    image.LoadFromBitmap(Resources.Working);
+                case "config":
+                    image.LoadFromBitmap(Resources.config);
                     break;
-                #endregion
+                case "delete":
+                    image.LoadFromBitmap(Resources.delete);
+                    break;
+                case "help":
+                    image.LoadFromBitmap(Resources.help);
+                    break;
+                case "icon":
+                    image.LoadFromBitmap(Resources.icon);
+                    break;
+                case "play":
+                    image.LoadFromBitmap(Resources.play);
+                    break;
+                case "save-csv":
+                    image.LoadFromBitmap(Resources.save_csv);
+                    break;
+                case "save-json":
+                    image.LoadFromBitmap(Resources.save_json);
+                    break;
+                case "save-xml":
+                    image.LoadFromBitmap(Resources.save_xml);
+                    break;
+                case "save...":
+                    image.LoadFromBitmap(Resources.save___);
+                    break;
+                case "save":
+                    image.LoadFromBitmap(Resources.save);
+                    break;
+                case "shortcut":
+                    image.LoadFromBitmap(Resources.shortcut);
+                    break;
+                case "stop":
+                    image.LoadFromBitmap(Resources.stop);
+                    break;
+                case "unvailable":
+                    image.LoadFromBitmap(Resources.unvailable);
+                    break;
+                case "update":
+                    image.LoadFromBitmap(Resources.update);
+                    break;
+                case "working":
+                    image.LoadFromBitmap(Resources.working);
+                    break;
 
                 default:
                     throw new NotImplementedException($"Resource name {resourceName} is not expected!");
