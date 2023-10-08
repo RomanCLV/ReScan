@@ -11,6 +11,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
     public class ScatterGraphEmptyBuilder : ScatterGraphBuilderBase
     {
+        public override string Name => "Empty";
+
         public ScatterGraphEmptyBuilder() : base(Colors.White)
         {
         }
@@ -18,6 +20,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> with an empty <see cref="ScatterGraph"/></returns>
         public override ScatterGraphBuildResult Build()
         {
+            State = ScatterGraphBuilderState.Success;
             return new ScatterGraphBuildResult(new ScatterGraph());
         }
     }

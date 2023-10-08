@@ -1,4 +1,5 @@
 ﻿using ReScanVisualizer.ViewModels.AddScatterGraph;
+using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+
+#nullable enable
 
 namespace ReScanVisualizer.Views.AddScatterGraphViews
 {
@@ -20,8 +24,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
     /// </summary>
     public partial class AddScatterGraphView : Window
     {
+
+        private ScatterGraphBuilderBase? _selectedBuilder;
+        private Popup? _openedPopup;
+
         public AddScatterGraphView()
         {
+            _selectedBuilder = null;
+            _openedPopup = null;
             InitializeComponent();
         }
 
@@ -35,7 +45,62 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private void ListView_KeyUp(object sender, KeyEventArgs e)
         {
-            // TODO : ListView_KeyUp
+            if (sender is ListView listView)
+            {
+                if (e.Key == Key.Delete || e.Key == Key.Back)
+                {
+                    if (listView.SelectedItem != null)
+                    {
+                        ScatterGraphBuilderBase selectedBuilder = (ScatterGraphBuilderBase)listView.SelectedItem;
+                        if (DataContext is AddScatterGraphViewModel model)
+                        {
+                            model.Builders.Remove(selectedBuilder);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Rectangle_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Rectangle rect)
+            {
+                StackPanel panel = (StackPanel)rect.Parent;
+                Popup popup = (Popup)panel.Children[1];
+                if (popup.DataContext is ScatterGraphBuilderBase builder)
+                {
+                    _selectedBuilder = builder;
+                    _openedPopup = popup;
+                    popup.Child.MouseLeave += Child_MouseLeave;
+                    popup.IsOpen = true;
+                }
+                else
+                {
+                    _selectedBuilder = null;
+                }
+            }
+        }
+
+        private void Child_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (_openedPopup != null)
+            {
+                _openedPopup.Child.MouseLeave -= Child_MouseLeave;
+                _openedPopup.IsOpen = false;
+            }
+        }
+
+        private void ColorPopup_Closed(object sender, EventArgs e)
+        {
+            _selectedBuilder = null;
+        }
+
+        private void ColorSelector_ColorChanged(object sender, Color e)
+        {
+            if (_selectedBuilder != null)
+            {
+                _selectedBuilder.Color = e;
+            }
         }
     }
 }

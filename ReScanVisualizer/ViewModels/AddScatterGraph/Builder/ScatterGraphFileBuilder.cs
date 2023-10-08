@@ -33,6 +33,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             set => SetValue(ref _containsHeader, value);
         }
 
+        public override string Name => base.Name + $" ({FileName})";
+
+        public override string FullName => base.Name + $" ({Path})";
+
         public ScatterGraphFileBuilder(string path, Color color, bool containsHeader) : base(color)
         {
             _path = path;
@@ -42,15 +46,18 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.ReadCSV(string, bool)"/> method.</returns>
         public override ScatterGraphBuildResult Build()
         {
+            State = ScatterGraphBuilderState.Working;
             ScatterGraphBuildResult scatterGraphBuildResult;
             try
             {
                 ScatterGraph graph = ScatterGraph.ReadCSV(_path, _containsHeader);
                 scatterGraphBuildResult = new ScatterGraphBuildResult(graph);
+                State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)
             {
                 scatterGraphBuildResult = new ScatterGraphBuildResult(e);
+                State = ScatterGraphBuilderState.Error;
             }
             return scatterGraphBuildResult;
         }

@@ -10,6 +10,8 @@ using ReScanVisualizer.Commands;
 using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels.AddScatterGraph
 {
     public class AddScatterGraphViewModel : ViewModelBase
@@ -19,7 +21,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         
         public ObservableCollection<ScatterGraphBuilderBase> Builders { get; private set; }
 
-        private readonly Dictionary<ScatterGraphBuilderBase, ScatterGraphBuildResult> _results;
+        public Dictionary<ScatterGraphBuilderBase, ScatterGraphBuildResult?> Results { get; private set; }
 
         public CommandKey AddScatterGraphBuilderCommand { get; private set; }
         public CommandKey LoadScatterGraphCommand { get; private set; }
@@ -30,7 +32,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             _view = view;
             _mainViewModel = mainViewModel;
             Builders = new ObservableCollection<ScatterGraphBuilderBase>();
-            _results = new Dictionary<ScatterGraphBuilderBase, ScatterGraphBuildResult>();
+            Results = new Dictionary<ScatterGraphBuilderBase, ScatterGraphBuildResult?>();
 
             Builders.CollectionChanged += Builders_CollectionChanged;
 
@@ -56,21 +58,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 
         private void Builders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            _results.Clear();
+            Results.Clear();
             foreach (ScatterGraphBuilderBase builder in Builders)
             {
-                _results.Add(builder, null);
+                Results.Add(builder, null);
             }
         }
 
         // TODO : rendre la méthode async
         private void Build()
         {
-            foreach (KeyValuePair<ScatterGraphBuilderBase, ScatterGraphBuildResult> keyValue in _results)
+            foreach (KeyValuePair<ScatterGraphBuilderBase, ScatterGraphBuildResult?> keyValue in Results)
             {
                 if (keyValue.Value is null || !keyValue.Value.IsSuccess)
                 {
-                    _results[keyValue.Key] = keyValue.Key.Build();
+                    Results[keyValue.Key] = keyValue.Key.Build();
                 }
             }
         }
@@ -78,9 +80,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         // TODO : rendre la méthode async
         public void Load()
         {
-            foreach (KeyValuePair<ScatterGraphBuilderBase, ScatterGraphBuildResult> keyValue in _results)
+            foreach (KeyValuePair<ScatterGraphBuilderBase, ScatterGraphBuildResult?> keyValue in Results)
             {
-                if (keyValue.Value.IsSuccess)
+                if (keyValue.Value != null && keyValue.Value.IsSuccess && keyValue.Value.ScatterGraph != null)
                 {
                     _mainViewModel.ScatterGraphs.Add(new ScatterGraphViewModel(keyValue.Value.ScatterGraph, keyValue.Key.Color));
                 }

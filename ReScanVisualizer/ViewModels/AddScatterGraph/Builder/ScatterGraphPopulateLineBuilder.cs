@@ -57,14 +57,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             if (e.PropertyName == nameof(Point3DViewModel.Point))
             {
                 UpdateWidth();
-                CanBuild = Start.Point != End.Point;
+                State = Start.Point != End.Point ? ScatterGraphBuilderState.Ready : ScatterGraphBuilderState.Error;
                 if (CanBuild)
                 {
                     Message = string.Empty;
+                    State = ScatterGraphBuilderState.Ready;
                 }
                 else
                 {
                     Message = "Start point and End point must be different!";
+                    State = ScatterGraphBuilderState.Error;
                 }
             }
         }
@@ -82,16 +84,19 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateLine(ScatterGraph, Point3D, Point3D, uint)"/> method.</returns>
         public override ScatterGraphBuildResult Build()
         {
+            State = ScatterGraphBuilderState.Working;
             ScatterGraphBuildResult scatterGraphBuildResult;
             try
             {
                 ScatterGraph graph = new ScatterGraph();
                 ScatterGraph.PopulateLine(graph, Start.Point, End.Point, _numPoints);
                 scatterGraphBuildResult = new ScatterGraphBuildResult(graph);
+                State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)
             {
                 scatterGraphBuildResult = new ScatterGraphBuildResult(e);
+                State = ScatterGraphBuilderState.Error;
             }
             return scatterGraphBuildResult;
         }

@@ -152,16 +152,19 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRandom(ScatterGraph, uint, double, double, double, double, double, double)"/> method.</returns>
         public override ScatterGraphBuildResult Build()
         {
+            State = ScatterGraphBuilderState.Working;
             ScatterGraphBuildResult scatterGraphBuildResult;
             try
             {
                 ScatterGraph graph = new ScatterGraph();
                 ScatterGraph.PopulateRandom(graph, _numPoints, _minX, _maxX, _minY, _maxY, _minZ, _maxZ);
                 scatterGraphBuildResult = new ScatterGraphBuildResult(graph);
+                State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)
             {
                 scatterGraphBuildResult = new ScatterGraphBuildResult(e);
+                State = ScatterGraphBuilderState.Error;
             }
             return scatterGraphBuildResult;
         }

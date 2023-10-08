@@ -93,6 +93,8 @@
     <Compile Include="Converters\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\CommandKeyToInputGestureTextConverter.cs" />
     <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
+    <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
+    <Compile Include="Converters\ScatterGraphBuilderToScatterGraphResultConverter.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Repere3D.cs" />
@@ -290,23 +292,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\Images\Add.afdesign" />
-    <None Include="Resources\Images\Browse.afdesign" />
-    <None Include="Resources\Images\Close.afdesign" />
-    <None Include="Resources\Images\Config.afdesign" />
-    <None Include="Resources\Images\Delete.afdesign" />
-    <None Include="Resources\Images\Working.afdesign" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Add.png" />
-    <Resource Include="Resources\Images\Browse.png" />
-    <Resource Include="Resources\Images\Close.png" />
-    <Resource Include="Resources\Images\Config.png" />
-    <Resource Include="Resources\Images\Delete.png" />
-    <Resource Include="Resources\Images\Working.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8.1">
@@ -326,6 +314,27 @@
   <ItemGroup>
     <SplashScreen Include="SplashScreen.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Images\add.png" />
+    <Resource Include="Resources\Images\available.png" />
+    <Resource Include="Resources\Images\browse.png" />
+    <Resource Include="Resources\Images\close.png" />
+    <Resource Include="Resources\Images\config.png" />
+    <Resource Include="Resources\Images\delete.png" />
+    <Resource Include="Resources\Images\help.png" />
+    <Resource Include="Resources\Images\icon.png" />
+    <Resource Include="Resources\Images\play.png" />
+    <Resource Include="Resources\Images\save-csv.png" />
+    <Resource Include="Resources\Images\save-json.png" />
+    <Resource Include="Resources\Images\save-unknow.png" />
+    <Resource Include="Resources\Images\save-xml.png" />
+    <Resource Include="Resources\Images\save....png" />
+    <Resource Include="Resources\Images\save.png" />
+    <Resource Include="Resources\Images\shortcut.png" />
+    <Resource Include="Resources\Images\stop.png" />
+    <Resource Include="Resources\Images\unvailable.png" />
+    <Resource Include="Resources\Images\update.png" />
+    <Resource Include="Resources\Images\working.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

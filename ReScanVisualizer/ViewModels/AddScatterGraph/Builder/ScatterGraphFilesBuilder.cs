@@ -25,7 +25,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public ScatterGraphFilesBuilder()
         {
-            CanBuild = false;
+            State = ScatterGraphBuilderState.Error;
             SelectFilesCommand = new SelectFilesCommand(this);
             _builders = new ObservableCollection<ScatterGraphFileBuilder>();
             Builders = _builders;
@@ -40,14 +40,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         private void Builders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            CanBuild = Builders.All(x =>
+            State = Builders.All(x =>
             {
                 if (!x.CanBuild)
                 {
                     Message = x.Message;
                 }
                 return x.CanBuild;
-            });
+            }) ? ScatterGraphBuilderState.Ready : ScatterGraphBuilderState.Error;
         }
 
         public void Remove(ScatterGraphFileBuilder builder)

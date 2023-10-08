@@ -4,7 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
+        xmlns:vm="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraph"
         xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+        xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
         mc:Ignorable="d"
         Title="Add scatter graph" 
         Height="720" Width="1280"
@@ -14,7 +16,9 @@
         Loaded="Window_Loaded"
         >
     <Window.Resources>
-
+        <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+        <converters:ScatterGraphBuilderStateToBitmapImageConverter x:Key="ScatterGraphBuilderStateToBitmapImageConverter"/>
+        <converters:ScatterGraphBuilderToScatterGraphResultConverter x:Key="ScatterGraphBuilderToScatterGraphResultConverter" />
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
@@ -54,7 +58,7 @@
                                 ToolTip="{Binding CancelCommand.Description}"/>
                     </StackPanel>
                     <ListView 
-                        ItemsSource="{Binding Builders}" 
+                        ItemsSource="{Binding Builders}"
                         Background="{StaticResource backgroundListColor}" 
                         KeyUp="ListView_KeyUp"
                         FocusVisualStyle="{x:Null}"
@@ -73,7 +77,85 @@
                                 </Style.Triggers>
                             </Style>
                         </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <!-- Colonne Contains Header -->
+                                <GridViewColumn Header="State" Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image 
+                                                Source="{Binding State, Converter={StaticResource ScatterGraphBuilderStateToBitmapImageConverter}}"
+                                                Width="25" Height="25"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
+                                <!-- Colonne Color -->
+                                <GridViewColumn Header="Color" Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <!-- Rectangle for Color Display -->
+                                                <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                                                           MouseUp="Rectangle_MouseUp"
+                                                           Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" Width="16" Height="16" />
+
+                                                <Popup x:Name="ColorPopup" PlacementTarget="{Binding ElementName=ColorButton}" Placement="Bottom" Closed="ColorPopup_Closed">
+                                                    <uc:ColorSelector 
+                                                        Background="{StaticResource backgroundColor}"
+                                                        BorderBrush="Black"
+                                                        BorderThickness="1"
+                                                        Padding="5"
+                                                        ColorChanged="ColorSelector_ColorChanged" />
+                                                </Popup>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Name -->
+                                <GridViewColumn Header="Name" Width="400">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" Style="{StaticResource myTextBlockLeft}">
+                                                <TextBlock.ToolTip>
+                                                    <ToolTip Content="{Binding FullName}" />
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Details -->
+                                <GridViewColumn Header="Details" Width="150">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Details}" Style="{StaticResource myTextBlockLeft}">
+                                                <TextBlock.ToolTip>
+                                                    <ToolTip Content="{Binding Details}" />
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Count -->
+                                <GridViewColumn Header="Count" Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding ConverterParameter="Count" Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultConverter}">
+                                                        <Binding Path="." />
+                                                        <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
                     </ListView>
                 </DockPanel>
             </DockPanel>

@@ -118,16 +118,19 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, uint, uint)"/> method.</returns>
         public override ScatterGraphBuildResult Build()
         {
+            State = ScatterGraphBuilderState.Working;
             ScatterGraphBuildResult scatterGraphBuildResult;
             try
             {
                 ScatterGraph graph = new ScatterGraph();
                 ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _numPointsWidth, _numPointsHeight);
                 scatterGraphBuildResult = new ScatterGraphBuildResult(graph);
+                State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)
             {
                 scatterGraphBuildResult = new ScatterGraphBuildResult(e);
+                State = ScatterGraphBuilderState.Error;
             }
             return scatterGraphBuildResult;
         }

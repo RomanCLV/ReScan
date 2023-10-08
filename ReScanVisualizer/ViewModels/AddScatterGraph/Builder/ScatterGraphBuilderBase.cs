@@ -8,6 +8,14 @@ using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
+    public enum ScatterGraphBuilderState
+    {
+        Ready,
+        Working,
+        Success,
+        Error
+    }
+
     public abstract class ScatterGraphBuilderBase : ViewModelBase
     {
         public const uint   MIN_COUNT =    1;
@@ -35,11 +43,22 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             set => SetValue(ref _color, value);
         }
 
-        private bool _canBuild;
+        private ScatterGraphBuilderState _state;
+        public ScatterGraphBuilderState State
+        {
+            get => _state;
+            protected set
+            {
+                if (SetValue(ref _state, value))
+                {
+                    OnPropertyChanged(nameof(CanBuild));
+                }
+            }
+        }
+
         public bool CanBuild
         {
-            get => _canBuild;
-            protected set => SetValue(ref _canBuild, value);
+            get => _state is ScatterGraphBuilderState.Ready;
         }
 
         private string _message;
@@ -49,15 +68,22 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             protected set => SetValue(ref _message, value);
         }
 
+        public virtual string Name => GetType().Name;
+
+        public virtual string FullName => Name;
+
+        public virtual string Details => string.Empty;
+
         public ScatterGraphBuilderBase() : this(Colors.White)
         {
         }
 
         public ScatterGraphBuilderBase(Color color)
         {
+            _state = ScatterGraphBuilderState.Ready;
             _message = string.Empty;
             _color = color;
-            _canBuild = true;
+            //_canBuild = true;
         }
 
         /// <summary>

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace ReScanVisualizer.Commands
 {
     public class AddScatterGraphBuilderCommand : CommandBase
@@ -19,7 +21,7 @@ namespace ReScanVisualizer.Commands
             _addScatterGraphViewModel = addScatterGraphViewModel;
         }
 
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             AddScatterGraphBuilderView view = new AddScatterGraphBuilderView()
             {
