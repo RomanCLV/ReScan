@@ -39,31 +39,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _containsHeader = containsHeader;
         }
 
-        /// <summary>
-        /// Build an array of <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.ReadCSV(string, bool)"/> method.
-        /// </summary>
-        /// <returns>Return an array of one <see cref="ScatterGraphBuildResult"/></returns>
-        public override ScatterGraphBuildResult[] Build()
+        /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.ReadCSV(string, bool)"/> method.</returns>
+        public override ScatterGraphBuildResult Build()
         {
-            ScatterGraphBuildResult[] scatterGraphBuildResults = new ScatterGraphBuildResult[1];
-            if (!File.Exists(_path))
+            ScatterGraphBuildResult scatterGraphBuildResult;
+            try
             {
-                scatterGraphBuildResults[1] = new ScatterGraphBuildResult(Color, new FileNotFoundException("File not found!", _path));
+                ScatterGraph graph = ScatterGraph.ReadCSV(_path, _containsHeader);
+                scatterGraphBuildResult = new ScatterGraphBuildResult(graph);
             }
-            else
+            catch (Exception e)
             {
-                ScatterGraph graph;
-                try
-                {
-                    graph = ScatterGraph.ReadCSV(_path, _containsHeader);
-                    scatterGraphBuildResults[1] = new ScatterGraphBuildResult(Color, graph);
-                }
-                catch (Exception e)
-                {
-                    scatterGraphBuildResults[1] = new ScatterGraphBuildResult(Color, e);
-                }
+                scatterGraphBuildResult = new ScatterGraphBuildResult(e);
             }
-            return scatterGraphBuildResults;
+            return scatterGraphBuildResult;
         }
     }
 }

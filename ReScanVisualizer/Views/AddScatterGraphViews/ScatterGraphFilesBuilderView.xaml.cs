@@ -45,7 +45,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                         ScatterGraphFileBuilder selectedBuilder = (ScatterGraphFileBuilder)listView.SelectedItem;
                         if (DataContext is ScatterGraphFilesBuilder builder)
                         {
-                            builder.Builders.Remove(selectedBuilder);
+                            builder.Remove(selectedBuilder);
                         }
                     }
                 }

@@ -29,13 +29,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        private Color _color;
-        public Color Color
-        {
-            get => _color;
-            set => SetValue(ref _color, value);
-        }
-
         private Exception? _exception;
         public Exception? Exception
         {
@@ -59,17 +52,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             get => _scatterGraph != null;
         }
 
-        public ScatterGraphBuildResult(Color color, ScatterGraph graph) : this(color, graph, null)
+        public ScatterGraphBuildResult(ScatterGraph graph) : this(graph, null)
         { 
         }
 
-        public ScatterGraphBuildResult(Color color, Exception ex) : this(color, null, ex)
+        public ScatterGraphBuildResult(Exception ex) : this(null, ex)
         {
         }
 
-        public ScatterGraphBuildResult(Color color, ScatterGraph? graph, Exception? ex)
+        public ScatterGraphBuildResult(ScatterGraph? graph, Exception? ex)
         {
-            _color = color;
             _scatterGraph = graph;
             _exception = ex;
         }

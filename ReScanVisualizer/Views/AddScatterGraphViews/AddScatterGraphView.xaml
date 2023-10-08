@@ -4,95 +4,77 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
-        xmlns:builders="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraph.Builder"
+        xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
         mc:Ignorable="d"
         Title="Add scatter graph" 
         Height="720" Width="1280"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource backgroundColor}"
         Foreground="{StaticResource foregroundColor}"
+        Loaded="Window_Loaded"
         >
-    <Window.InputBindings>
-        <KeyBinding x:Name="ValidateCommandKey" 
-            Command="{Binding Path=ValidateCommand.Command}"  
-            Key="{Binding Path=ValidateCommand.Key}" 
-            Modifiers="{Binding Path=ValidateCommand.Modifiers}"
-            />
-        <KeyBinding x:Name="CancelCommandKey" 
-            Command="{Binding Path=CancelCommand.Command}"  
-            Key="{Binding Path=CancelCommand.Key}" 
-            Modifiers="{Binding Path=CancelCommand.Modifiers}"
-            />
-    </Window.InputBindings>
+    <Window.Resources>
 
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
+                    Command="{Binding Path=AddScatterGraphBuilderCommand.Command}"  
+                    Key="{Binding Path=AddScatterGraphBuilderCommand.Key}" 
+                    Modifiers="{Binding Path=AddScatterGraphBuilderCommand.Modifiers}"
+                    />
+        <KeyBinding x:Name="LoadScatterGraphCommandKey" 
+                    Command="{Binding Path=LoadScatterGraphCommand.Command}"  
+                    Key="{Binding Path=LoadScatterGraphCommand.Key}" 
+                    Modifiers="{Binding Path=LoadScatterGraphCommand.Modifiers}"
+                    />
+        <KeyBinding x:Name="CancelCommandKey" 
+                    Command="{Binding Path=CancelCommand.Command}"  
+                    Key="{Binding Path=CancelCommand.Key}" 
+                    Modifiers="{Binding Path=CancelCommand.Modifiers}"
+                    />
+    </Window.InputBindings>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="New Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
+                <TextBlock DockPanel.Dock="Top" Text="Add Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
                 <DockPanel Margin="50">
+                    <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                        <Button Content="Add scatter graph builder" Style="{StaticResource myButton}"
+                                Command="{Binding ElementName=AddScatterGraphBuilderCommandKey, Path=Command}"
+                                ToolTip="{Binding AddScatterGraphBuilderCommand.Description}"
+                                />
+                    </StackPanel>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Load" Height="30"
-                                Style="{StaticResource myButton}"
-                                ToolTip="{Binding ValidateCommand.Description}"
-                                Command="{Binding ElementName=ValidateCommandKey, Path=Command}"
+                        <Button Content="Load" Style="{StaticResource myButton}" 
+                                Command="{Binding ElementName=LoadScatterGraphCommandKey, Path=Command}"
+                                ToolTip="{Binding LoadScatterGraphCommand.Description}"
                                 />
-                        <Button Content="Cancel" Height="30"
-                                Style="{StaticResource myButton}"
-                                ToolTip="{Binding CancelCommand.Description}"
+                        <Button Content="Cancel" Style="{StaticResource myButton}"
                                 Command="{Binding ElementName=CancelCommandKey, Path=Command}"
-                                />
+                                ToolTip="{Binding CancelCommand.Description}"/>
                     </StackPanel>
+                    <ListView 
+                        ItemsSource="{Binding Builders}" 
+                        Background="{StaticResource backgroundListColor}" 
+                        KeyUp="ListView_KeyUp"
+                        FocusVisualStyle="{x:Null}"
+                        >
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
 
-                    <StackPanel>
-                        <TextBlock Text="Choose an option" Margin="0 0 0 10" />
-                        <RadioButton IsChecked="{Binding IsEmptySelected}"      Foreground="{StaticResource foregroundColor}" Content="Empty graph"       Margin="10 5" />
-                        <RadioButton IsChecked="{Binding IsToPopulateSelected}" Foreground="{StaticResource foregroundColor}" Content="Graph to populate" Margin="10 5" />
-                        <RadioButton IsChecked="{Binding IsToOpenSelected}"     Foreground="{StaticResource foregroundColor}" Content="Open a file"       Margin="10 5" />
-
-                        <Separator Margin="10" />
-                        <StackPanel Margin="0 10">
-                            <StackPanel.Resources>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphEmptyBuilder}">
-                                    <local:ScatterGraphEmptyBuilderView/>
-                                </DataTemplate>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateBuilderBase}">
-                                    <local:ScatterGraphPopulateBuilderBaseView 
-                                        DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:AddScatterGraphView}}}"/>
-                                </DataTemplate>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphFilesBuilder}">
-                                    <local:ScatterGraphFilesBuilderView/>
-                                </DataTemplate>
-                            </StackPanel.Resources>
-
-                            <ContentControl Content="{Binding Builder}" />
-                        </StackPanel>
-                        
-                        <StackPanel Margin="0 10">
-                            <StackPanel.Resources>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateRandomBuilder}">
-                                    <local:ScatterGraphPopulateRandomBuilderView Foreground="{StaticResource foregroundColor}" />
-                                </DataTemplate>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateRectangle2DBuilder}">
-                                    <local:ScatterGraphPopulateRectangle2DBuilderView Foreground="{StaticResource foregroundColor}" />
-                                </DataTemplate>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateLineBuilder}">
-                                    <local:ScatterGraphPopulateLineBuilderView Foreground="{StaticResource foregroundColor}" />
-                                </DataTemplate>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphBuilderBase}"/>
-                            </StackPanel.Resources>
-                            <ContentControl Content="{Binding Builder}" />
-                        </StackPanel>
-
-                        <StackPanel Margin="0 10">
-                            <StackPanel.Resources>
-                                <DataTemplate DataType="{x:Type builders:ScatterGraphBuilderBase}">
-                                    <Separator Margin="10" />
-                                    </DataTemplate>
-                            </StackPanel.Resources>
-                            <ContentControl Content="{Binding Builder}" />
-                        </StackPanel>
-                        <TextBlock Text="{Binding Builder.Message}" Style="{StaticResource myTextBlockLeftError}"  />
-                    </StackPanel>
+                    </ListView>
                 </DockPanel>
             </DockPanel>
         </ScrollViewer>

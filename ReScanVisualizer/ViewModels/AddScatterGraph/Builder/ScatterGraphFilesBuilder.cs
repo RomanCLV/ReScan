@@ -15,19 +15,22 @@ using System.Windows.Media;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
-    public class ScatterGraphFilesBuilder : ScatterGraphBuilderBase, ISelectFilesService
+    public class ScatterGraphFilesBuilder : ScatterGraphBuilderBase, ISelectFilesService, IScatterGraphBuilderGroup
     {
-        public ObservableCollection<ScatterGraphFileBuilder> Builders { get; private set; }
+        public IEnumerable<ScatterGraphBuilderBase> Builders { get; }
+
+        private readonly ObservableCollection<ScatterGraphFileBuilder> _builders;
 
         public ICommand SelectFilesCommand { get; private set; }
 
         public ScatterGraphFilesBuilder()
         {
+            CanBuild = false;
             SelectFilesCommand = new SelectFilesCommand(this);
+            _builders = new ObservableCollection<ScatterGraphFileBuilder>();
+            Builders = _builders;
 
-            Builders = new ObservableCollection<ScatterGraphFileBuilder>();
-
-            Builders.CollectionChanged += Builders_CollectionChanged;
+            _builders.CollectionChanged += Builders_CollectionChanged;
         }
 
         ~ScatterGraphFilesBuilder()
@@ -37,7 +40,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         private void Builders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            Count = Builders.Count;
             CanBuild = Builders.All(x =>
             {
                 if (!x.CanBuild)
@@ -48,12 +50,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             });
         }
 
+        public void Remove(ScatterGraphFileBuilder builder)
+        {
+            _builders.Remove(builder);
+        }
+
         public void SelectFiles()
         {
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Title = "Select files",
-                Filter = ".csv",
+                Filter = "Fichiers csv (*.csv)|*.csv;|Tous les fichiers (*.*)|*.*",
                 DefaultExt = ".csv",
                 Multiselect = true
             };
@@ -61,30 +68,27 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             {
                 foreach (string file in ofd.FileNames)
                 {
-                    Builders.Add(new ScatterGraphFileBuilder(file, Colors.White, true));
+                    _builders.Add(new ScatterGraphFileBuilder(file, Colors.White, true));
                 }
             }
         }
 
         /// <summary>
-        /// Build an array of <see cref="ScatterGraphBuildResult"/>
+        /// Throw a <see cref="InvalidOperationException"/>.
+        /// <br />
+        /// Instead of call <see cref="Build"/>, use <see cref="Builders"/>.<see cref="ScatterGraphFileBuilder.Build"/>.
         /// </summary>
-        /// <returns>Return an array of <see cref="ScatterGraphBuildResult"/></returns>
-        public override ScatterGraphBuildResult[] Build()
+        /// <exception cref="InvalidOperationException"></exception>
+        public override ScatterGraphBuildResult Build()
         {
-            ScatterGraphBuildResult[] scatterGraphViewModels = new ScatterGraphBuildResult[Builders.Count];
-            for (int i = 0; i < Builders.Count; i++)
-            {
-                scatterGraphViewModels[i] = Builders[i].Build()[0];
-            }
-            return scatterGraphViewModels;
+            throw new InvalidOperationException("To build a ScatterGraphFilesBuilder, call Builder.Build()");
         }
 
         public override void Dispose()
         {
             if (!IsDisposed)
             {
-                Builders.CollectionChanged -= Builders_CollectionChanged;
+                _builders.CollectionChanged -= Builders_CollectionChanged;
                 base.Dispose();
                 IsDisposed = true;
             }

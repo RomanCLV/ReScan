@@ -15,13 +15,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         {
         }
 
-        /// <summary>
-        /// Build an array of <see cref="ScatterGraphBuildResult"/>
-        /// </summary>
-        /// <returns>Return an array of one <see cref="ScatterGraphBuildResult"/></returns>
-        public override ScatterGraphBuildResult[] Build()
+        /// <returns>Return a <see cref="ScatterGraphBuildResult"/> with an empty <see cref="ScatterGraph"/></returns>
+        public override ScatterGraphBuildResult Build()
         {
-            return new ScatterGraphBuildResult[1] { new ScatterGraphBuildResult(Color, new ScatterGraph()) };
+            return new ScatterGraphBuildResult(new ScatterGraph());
         }
     }
 }

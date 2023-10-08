@@ -1,5 +1,4 @@
-﻿using ReScanVisualizer.ViewModels.AddScatterGraph;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,21 +15,13 @@ using System.Windows.Shapes;
 namespace ReScanVisualizer.Views.AddScatterGraphViews
 {
     /// <summary>
-    /// Logique d'interaction pour LoadScatterGraphView.xaml
+    /// Logique d'interaction pour AddScatterGraphView.xaml
     /// </summary>
-    public partial class LoadScatterGraphView : Window
+    public partial class AddScatterGraphBuilderView : Window
     {
-        public LoadScatterGraphView()
+        public AddScatterGraphBuilderView()
         {
             InitializeComponent();
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is LoadScatterGraphViewModel viewModel)
-            {
-                viewModel.Load();
-            }
         }
     }
 }

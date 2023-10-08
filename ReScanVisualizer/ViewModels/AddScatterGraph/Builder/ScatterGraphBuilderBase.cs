@@ -49,28 +49,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             protected set => SetValue(ref _message, value);
         }
 
-        private int _count;
-        public int Count
-        {
-            get => _count;
-            protected set => SetValue(ref _count, value);
-        }
-
         public ScatterGraphBuilderBase() : this(Colors.White)
         {
         }
 
         public ScatterGraphBuilderBase(Color color)
         {
-            _count = 1;
             _message = string.Empty;
             _color = color;
             _canBuild = true;
         }
 
         /// <summary>
-        /// Build an array of <see cref="ScatterGraphBuildResult"/>
+        /// Build a <see cref="ScatterGraphBuildResult"/>.
         /// </summary>
-        public abstract ScatterGraphBuildResult[] Build();
+        public abstract ScatterGraphBuildResult Build();
     }
 }

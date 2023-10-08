@@ -1,0 +1,100 @@
+﻿<Window x:Class="ReScanVisualizer.Views.AddScatterGraphViews.AddScatterGraphBuilderView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
+        xmlns:builders="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraph.Builder"
+        mc:Ignorable="d"
+        Title="Add scatter graph builder" 
+        Height="720" Width="1280"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource backgroundColor}"
+        Foreground="{StaticResource foregroundColor}"
+        >
+    <Window.InputBindings>
+        <KeyBinding x:Name="ValidateCommandKey" 
+            Command="{Binding Path=ValidateCommand.Command}"  
+            Key="{Binding Path=ValidateCommand.Key}" 
+            Modifiers="{Binding Path=ValidateCommand.Modifiers}"
+            />
+        <KeyBinding x:Name="CancelCommandKey" 
+            Command="{Binding Path=CancelCommand.Command}"  
+            Key="{Binding Path=CancelCommand.Key}" 
+            Modifiers="{Binding Path=CancelCommand.Modifiers}"
+            />
+    </Window.InputBindings>
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="New Scatter Graph builder" Style="{StaticResource helpWindowTitle}"/>
+                <DockPanel Margin="50">
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Add" Height="30"
+                                Style="{StaticResource myButton}"
+                                ToolTip="{Binding ValidateCommand.Description}"
+                                Command="{Binding ElementName=ValidateCommandKey, Path=Command}"
+                                />
+                        <Button Content="Cancel" Height="30"
+                                Style="{StaticResource myButton}"
+                                ToolTip="{Binding CancelCommand.Description}"
+                                Command="{Binding ElementName=CancelCommandKey, Path=Command}"
+                                />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Choose an option" Margin="0 0 0 10" />
+                        <RadioButton IsChecked="{Binding IsEmptySelected}"      Foreground="{StaticResource foregroundColor}" Content="Empty graph"       Margin="10 5" />
+                        <RadioButton IsChecked="{Binding IsToPopulateSelected}" Foreground="{StaticResource foregroundColor}" Content="Graph to populate" Margin="10 5" />
+                        <RadioButton IsChecked="{Binding IsToOpenSelected}"     Foreground="{StaticResource foregroundColor}" Content="Open a file"       Margin="10 5" />
+
+                        <Separator Margin="10" />
+                        <StackPanel Margin="0 10">
+                            <StackPanel.Resources>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphEmptyBuilder}">
+                                    <local:ScatterGraphEmptyBuilderView/>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateBuilderBase}">
+                                    <local:ScatterGraphPopulateBuilderBaseView 
+                                        DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:AddScatterGraphBuilderView}}}"/>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphFilesBuilder}">
+                                    <local:ScatterGraphFilesBuilderView/>
+                                </DataTemplate>
+                            </StackPanel.Resources>
+
+                            <ContentControl Content="{Binding Builder}" />
+                        </StackPanel>
+                        
+                        <StackPanel Margin="0 10">
+                            <StackPanel.Resources>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateRandomBuilder}">
+                                    <local:ScatterGraphPopulateRandomBuilderView Foreground="{StaticResource foregroundColor}" />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateRectangle2DBuilder}">
+                                    <local:ScatterGraphPopulateRectangle2DBuilderView Foreground="{StaticResource foregroundColor}" />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateLineBuilder}">
+                                    <local:ScatterGraphPopulateLineBuilderView Foreground="{StaticResource foregroundColor}" />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphBuilderBase}"/>
+                            </StackPanel.Resources>
+                            <ContentControl Content="{Binding Builder}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0 10">
+                            <StackPanel.Resources>
+                                <DataTemplate DataType="{x:Type builders:ScatterGraphBuilderBase}">
+                                    <Separator Margin="10" />
+                                    </DataTemplate>
+                            </StackPanel.Resources>
+                            <ContentControl Content="{Binding Builder}" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding Builder.Message}" Style="{StaticResource myTextBlockLeftError}"  />
+                    </StackPanel>
+                </DockPanel>
+            </DockPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

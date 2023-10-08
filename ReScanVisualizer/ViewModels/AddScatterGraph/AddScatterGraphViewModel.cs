@@ -1,142 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using ReScanVisualizer.Commands;
-using ReScanVisualizer.Views.AddScatterGraphViews;
 using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
-
-#nullable enable
+using ReScanVisualizer.Views.AddScatterGraphViews;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph
 {
     public class AddScatterGraphViewModel : ViewModelBase
     {
-        private bool _isUnselectingAll;
+        private readonly AddScatterGraphView _view;
+        private readonly MainViewModel _mainViewModel;
+        
+        public ObservableCollection<ScatterGraphBuilderBase> Builders { get; private set; }
 
-        private bool _isEmptySelected;
-        public bool IsEmptySelected
+        private readonly Dictionary<ScatterGraphBuilderBase, ScatterGraphBuildResult> _results;
+
+        public CommandKey AddScatterGraphBuilderCommand { get; private set; }
+        public CommandKey LoadScatterGraphCommand { get; private set; }
+        public CommandKey CancelCommand { get; private set; }
+
+        public AddScatterGraphViewModel(AddScatterGraphView view, MainViewModel mainViewModel)
         {
-            get => _isEmptySelected;
-            set
+            _view = view;
+            _mainViewModel = mainViewModel;
+            Builders = new ObservableCollection<ScatterGraphBuilderBase>();
+            _results = new Dictionary<ScatterGraphBuilderBase, ScatterGraphBuildResult>();
+
+            Builders.CollectionChanged += Builders_CollectionChanged;
+
+            AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Alt, "Add a new builder");
+            LoadScatterGraphCommand = new CommandKey(new ActionCommand(Build), Key.Enter, ModifierKeys.None, "Load");
+            CancelCommand = new CommandKey(new ActionCommand(_view.Close), Key.Escape, ModifierKeys.None, "Cancel");
+        }
+
+        ~AddScatterGraphViewModel()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
             {
-                UnselectAll();
-                if (SetValue(ref _isEmptySelected, value))
+                Builders.CollectionChanged -= Builders_CollectionChanged;
+                base.Dispose();
+                IsDisposed = true;
+            }
+        }
+
+        private void Builders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            _results.Clear();
+            foreach (ScatterGraphBuilderBase builder in Builders)
+            {
+                _results.Add(builder, null);
+            }
+        }
+
+        // TODO : rendre la méthode async
+        private void Build()
+        {
+            foreach (KeyValuePair<ScatterGraphBuilderBase, ScatterGraphBuildResult> keyValue in _results)
+            {
+                if (keyValue.Value is null || !keyValue.Value.IsSuccess)
                 {
-                    Builder = new ScatterGraphEmptyBuilder();
+                    _results[keyValue.Key] = keyValue.Key.Build();
                 }
             }
         }
 
-        private bool _isToPopulateSelected;
-        public bool IsToPopulateSelected
+        // TODO : rendre la méthode async
+        public void Load()
         {
-            get => _isToPopulateSelected;
-            set
+            foreach (KeyValuePair<ScatterGraphBuilderBase, ScatterGraphBuildResult> keyValue in _results)
             {
-                UnselectAll();
-                if (SetValue(ref _isToPopulateSelected, value))
+                if (keyValue.Value.IsSuccess)
                 {
-                    UpdatePopulateBuilder();
+                    _mainViewModel.ScatterGraphs.Add(new ScatterGraphViewModel(keyValue.Value.ScatterGraph, keyValue.Key.Color));
                 }
             }
-        }
-
-        private bool _isToOpenSelected;
-        public bool IsToOpenSelected
-        {
-            get => _isToOpenSelected;
-            set
-            {
-                UnselectAll();
-                if (SetValue(ref _isToOpenSelected, value))
-                {
-                    Builder = new ScatterGraphFilesBuilder();
-                }
-            }
-        }
-
-        private int _populateSelectedIndex;
-        public int PopulateSelectedIndex
-        {
-            get => _populateSelectedIndex;
-            set
-            {
-                if (SetValue(ref _populateSelectedIndex, value))
-                {
-                    UpdatePopulateBuilder();
-                }
-            }
-        }
-
-        private ScatterGraphBuilderBase? _builder;
-        public ScatterGraphBuilderBase? Builder
-        {
-            get => _builder;
-            set
-            {
-                if (_builder == null)
-                {
-                    SetValue(ref _builder, value);
-                }
-                else
-                {
-                    if (!_builder.Equals(value))
-                    {
-                        _builder.Dispose();
-                        SetValue(ref _builder, value);
-                    }
-                }
-            }
-        }
-
-        public CommandKey ValidateCommand { get; }
-        public CommandKey CancelCommand { get; }
-
-        public AddScatterGraphViewModel(AddScatterGraphView addScatterGraphView, MainViewModel mainViewModel)
-        {
-            _isUnselectingAll = false;
-            _isEmptySelected = false;
-            _isToPopulateSelected = false;
-            _isToOpenSelected = false;
-            _populateSelectedIndex = 0;
-
-            ValidateCommand = new CommandKey(new ValidateAddingScatterGraphCommand(addScatterGraphView, this, mainViewModel), Key.Enter, ModifierKeys.None, "Load graph(s)");
-            CancelCommand = new CommandKey(new ActionCommand(addScatterGraphView.Close), Key.Escape, ModifierKeys.None, "Cancel");
-        }
-
-        private void UnselectAll()
-        {
-            if (!_isUnselectingAll)
-            {
-                _isUnselectingAll = true;
-                IsEmptySelected = false;
-                IsToPopulateSelected = false;
-                IsToOpenSelected = false;
-                _isUnselectingAll = false;
-            }
-        }
-
-        private void UpdatePopulateBuilder()
-        {
-            if (_populateSelectedIndex == 0)
-            {
-                Builder = new ScatterGraphPopulateRandomBuilder();
-            }
-            else if (_populateSelectedIndex == 1)
-            {
-                Builder = new ScatterGraphPopulateRectangle2DBuilder();
-            }
-            else if (_populateSelectedIndex == 2)
-            {
-                Builder = new ScatterGraphPopulateLineBuilder();
-            }
-            else
-            {
-                Builder = null;
-            }
+            _view.Close();
         }
     }
 }

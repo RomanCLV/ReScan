@@ -115,15 +115,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _numPointsHeight = (uint)_height + 1;
         }
 
-        /// <summary>
-        /// Build an array of <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, uint, uint)"/> method.
-        /// </summary>
-        /// <returns>Return an array of one  <see cref="ScatterGraphBuildResult"/></returns>
-        public override ScatterGraphBuildResult[] Build()
+        /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, uint, uint)"/> method.</returns>
+        public override ScatterGraphBuildResult Build()
         {
-            ScatterGraph graph = new ScatterGraph();
-            ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _numPointsWidth, _numPointsHeight);
-            return new ScatterGraphBuildResult[1] { new ScatterGraphBuildResult(Color, graph) };
+            ScatterGraphBuildResult scatterGraphBuildResult;
+            try
+            {
+                ScatterGraph graph = new ScatterGraph();
+                ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _numPointsWidth, _numPointsHeight);
+                scatterGraphBuildResult = new ScatterGraphBuildResult(graph);
+            }
+            catch (Exception e)
+            {
+                scatterGraphBuildResult = new ScatterGraphBuildResult(e);
+            }
+            return scatterGraphBuildResult;
         }
 
         private double CorrectX(double x)

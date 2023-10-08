@@ -79,15 +79,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        /// <summary>
-        /// Build an array of <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateLine(ScatterGraph, Point3D, Point3D, uint)"/> method.
-        /// </summary>
-        /// <returns>Return an array of one  <see cref="ScatterGraphBuildResult"/></returns>
-        public override ScatterGraphBuildResult[] Build()
+        /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateLine(ScatterGraph, Point3D, Point3D, uint)"/> method.</returns>
+        public override ScatterGraphBuildResult Build()
         {
-            ScatterGraph graph = new ScatterGraph();
-            ScatterGraph.PopulateLine(graph, Start.Point, End.Point, _numPoints);
-            return new ScatterGraphBuildResult[1] { new ScatterGraphBuildResult(Color, graph) };
+            ScatterGraphBuildResult scatterGraphBuildResult;
+            try
+            {
+                ScatterGraph graph = new ScatterGraph();
+                ScatterGraph.PopulateLine(graph, Start.Point, End.Point, _numPoints);
+                scatterGraphBuildResult = new ScatterGraphBuildResult(graph);
+            }
+            catch (Exception e)
+            {
+                scatterGraphBuildResult = new ScatterGraphBuildResult(e);
+            }
+            return scatterGraphBuildResult;
         }
 
         public override void Dispose()
