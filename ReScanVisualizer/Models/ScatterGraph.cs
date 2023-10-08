@@ -536,6 +536,16 @@ namespace ReScanVisualizer.Models
 
         #region Read & Save
 
+        /// <summary>
+        /// Save the current graph. Columns are X, Y and Z.
+        /// </summary>
+        /// <param name="filename">The path</param>
+        /// <param name="scatterGraph">THe graph to save</param>
+        /// <param name="replaceIfFileExists">Rewrite the existing file</param>
+        /// <param name="writeHeaders">If the file contains headers</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public static void SaveCSV(string filename, ScatterGraph scatterGraph, bool replaceIfFileExists, bool writeHeaders)
         {
             if (scatterGraph == null)
@@ -587,7 +597,7 @@ namespace ReScanVisualizer.Models
         }
 
         /// <summary>
-        /// Read the given file to create a <see cref="ScatterGraph"/>.
+        /// Read the given file to create a <see cref="ScatterGraph"/>. Columns must be x, y and z.
         /// </summary>
         /// <param name="filename">The path</param>
         /// <param name="containsHeader">If the file contains headers</param>

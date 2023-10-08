@@ -13,12 +13,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
     {
         private readonly LoadScatterGraphView _loadScatterGraphView;
         private readonly MainViewModel _mainViewModel;
+        private readonly AddScatterGraphView _addScatterGraphView;
         private readonly ScatterGraphBuilderBase _builder;
 
-        public LoadScatterGraphViewModel(LoadScatterGraphView view, MainViewModel mainViewModel, ScatterGraphBuilderBase builder)
+        public LoadScatterGraphViewModel(LoadScatterGraphView view, MainViewModel mainViewModel, AddScatterGraphView addScatterGraphView, ScatterGraphBuilderBase builder)
         {
             _loadScatterGraphView = view;
             _mainViewModel = mainViewModel;
+            _addScatterGraphView = addScatterGraphView;
             _builder = builder;
         }
 
@@ -37,6 +39,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                         _mainViewModel.ScatterGraphs.Add(new ScatterGraphViewModel(result.ScatterGraph, result.Color));
                     }
                 }
+                _addScatterGraphView.Close();
+
             }
         }
     }

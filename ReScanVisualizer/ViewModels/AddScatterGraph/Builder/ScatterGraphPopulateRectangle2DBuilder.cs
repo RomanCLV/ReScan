@@ -100,8 +100,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        public List<Plan2D> AllPlans { get; private set; }
-
         public ScatterGraphPopulateRectangle2DBuilder() : base(Colors.White)
         {
             Center = new Point3DViewModel
@@ -115,18 +113,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _height = 10.0;
             _numPointsWidth = (uint)_width + 1;
             _numPointsHeight = (uint)_height + 1;
-
-            AllPlans = GeneratePlan2DList();
-        }
-
-        private List<Plan2D> GeneratePlan2DList()
-        {
-            List<Plan2D> plans = new List<Plan2D>();
-            foreach (Plan2D plan in typeof(Plan2D).GetEnumValues())
-            {
-                plans.Add(plan);
-            }
-            return plans;
         }
 
         /// <summary>

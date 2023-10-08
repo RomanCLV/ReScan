@@ -26,6 +26,26 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             SelectFilesCommand = new SelectFilesCommand(this);
 
             Builders = new ObservableCollection<ScatterGraphFileBuilder>();
+
+            Builders.CollectionChanged += Builders_CollectionChanged;
+        }
+
+        ~ScatterGraphFilesBuilder()
+        {
+            Dispose();
+        }
+
+        private void Builders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Count = Builders.Count;
+            CanBuild = Builders.All(x =>
+            {
+                if (!x.CanBuild)
+                {
+                    Message = x.Message;
+                }
+                return x.CanBuild;
+            });
         }
 
         public void SelectFiles()
@@ -33,6 +53,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Title = "Select files",
+                Filter = ".csv",
                 DefaultExt = ".csv",
                 Multiselect = true
             };
@@ -57,6 +78,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 scatterGraphViewModels[i] = Builders[i].Build()[0];
             }
             return scatterGraphViewModels;
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                Builders.CollectionChanged -= Builders_CollectionChanged;
+                base.Dispose();
+                IsDisposed = true;
+            }
         }
     }
 }

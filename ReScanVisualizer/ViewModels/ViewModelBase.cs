@@ -12,7 +12,17 @@ namespace ReScanVisualizer.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
-        public bool IsDisposed { get; protected set; }
+        private bool _isDisposed;
+        public bool IsDisposed 
+        {
+            get => _isDisposed;
+            protected set => _isDisposed = value;
+        }
+
+        public ViewModelBase()
+        {
+            _isDisposed = false;
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -50,7 +60,13 @@ namespace ReScanVisualizer.ViewModels
             return true;
         }
 
-        public virtual void Dispose() { }
+        public virtual void Dispose() 
+        {
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+            }
+        }
     }
 }
 

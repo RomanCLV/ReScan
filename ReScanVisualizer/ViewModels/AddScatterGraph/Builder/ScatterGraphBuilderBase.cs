@@ -10,15 +10,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
     public abstract class ScatterGraphBuilderBase : ViewModelBase
     {
-        public const uint   MAX_COUNT = 10000;
+        public const uint   MIN_COUNT =    1;
+        public const uint   MAX_COUNT = 1000;
+
         public const double MIN_X = -10000.0;
         public const double MAX_X =  10000.0;
+
         public const double MIN_Y = -10000.0;
         public const double MAX_Y =  10000.0;
+
         public const double MIN_Z = -10000.0;
         public const double MAX_Z =  10000.0;
+
         public const double MIN_WIDTH = 1.0;
         public const double MAX_WIDTH = 10000.0;
+
         public const double MIN_HEIGTH = 1.0;
         public const double MAX_HEIGTH = 10000.0;
 
@@ -33,10 +39,22 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public bool CanBuild
         {
             get => _canBuild;
-            set => SetValue(ref _canBuild, value);
+            protected set => SetValue(ref _canBuild, value);
         }
 
-        // TODO : implémenter tous les can buid
+        private string _message;
+        public string Message
+        {
+            get => _message;
+            protected set => SetValue(ref _message, value);
+        }
+
+        private int _count;
+        public int Count
+        {
+            get => _count;
+            protected set => SetValue(ref _count, value);
+        }
 
         public ScatterGraphBuilderBase() : this(Colors.White)
         {
@@ -44,6 +62,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public ScatterGraphBuilderBase(Color color)
         {
+            _count = 1;
+            _message = string.Empty;
             _color = color;
             _canBuild = true;
         }

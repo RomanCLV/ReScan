@@ -11,17 +11,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
     public class ScatterGraphPopulateRandomBuilder : ScatterGraphPopulateBuilderBase
     {
-        private uint _count;
-        public uint Count
+        private uint _numPoints;
+        public uint NumPoints
         {
-            get => _count;
+            get => _numPoints;
             set
             {
                 if (value > MAX_COUNT)
                 {
                     value = MAX_COUNT;
                 }
-                SetValue(ref _count, value);
+                else if (value < 1)
+                {
+                    value = 1;
+                }
+                SetValue(ref _numPoints, value);
             }
         }
 
@@ -135,7 +139,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public ScatterGraphPopulateRandomBuilder() : base(Colors.White)
         {
-            _count = 5;
+            _numPoints = 5;
             _minX = -10;
             _maxX = 10;
             _minY = -10;
@@ -151,7 +155,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public override ScatterGraphBuildResult[] Build()
         {
             ScatterGraph graph = new ScatterGraph();
-            ScatterGraph.PopulateRandom(graph, _count, _minX, _maxX, _minY, _maxY, _minZ, _maxZ);
+            ScatterGraph.PopulateRandom(graph, _numPoints, _minX, _maxX, _minY, _maxY, _minZ, _maxZ);
             return new ScatterGraphBuildResult[1] { new ScatterGraphBuildResult(Color, graph) };
         }
     }

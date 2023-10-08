@@ -82,17 +82,13 @@ namespace ReScanVisualizer.Commands
         {
             if (CanExecute(parameter))
             {
-                _addScatterGraphView.Close();
-                Application.Current.MainWindow.Dispatcher.InvokeAsync(() =>
+                LoadScatterGraphView loadView = new LoadScatterGraphView()
                 {
-                    LoadScatterGraphView loadView = new LoadScatterGraphView()
-                    {
-                        Owner = Application.Current.MainWindow
-                    };
+                    Owner = Application.Current.MainWindow
+                };
 
-                    loadView.DataContext = new LoadScatterGraphViewModel(loadView, _mainViewModel, _addScatterGraphModelView.Builder);
-                    loadView.ShowDialog();
-                });
+                loadView.DataContext = new LoadScatterGraphViewModel(loadView, _mainViewModel, _addScatterGraphView, _addScatterGraphModelView.Builder);
+                loadView.ShowDialog();
             }
         }
     }

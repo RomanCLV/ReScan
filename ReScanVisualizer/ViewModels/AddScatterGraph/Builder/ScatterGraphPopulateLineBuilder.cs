@@ -36,11 +36,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
-        private bool _isDisposed;
-
         public ScatterGraphPopulateLineBuilder()
         {
-            _isDisposed= false;
             Start = new Point3DViewModel();
             End = new Point3DViewModel(new Point3D(1, 0, 0));
             _numPoints = 2;
@@ -60,6 +57,15 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             if (e.PropertyName == nameof(Point3DViewModel.Point))
             {
                 UpdateWidth();
+                CanBuild = Start.Point != End.Point;
+                if (CanBuild)
+                {
+                    Message = string.Empty;
+                }
+                else
+                {
+                    Message = "Start point and End point must be different!";
+                }
             }
         }
 
@@ -86,12 +92,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public override void Dispose()
         {
-            if (!_isDisposed)
+            if (!IsDisposed)
             {
-                _isDisposed = true;
                 Start.PropertyChanged -= StartEnd_PropertyChanged;
                 End.PropertyChanged -= StartEnd_PropertyChanged;
                 base.Dispose();
+                IsDisposed = true;
             }
         }
     }

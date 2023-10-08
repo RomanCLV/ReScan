@@ -13,6 +13,7 @@
         <SolidColorBrush x:Key="gray24"              Color="#24303030" />
         <SolidColorBrush x:Key="linkMouseBlueColor"  Color="#FF2196F3" />
         <SolidColorBrush x:Key="linkMouseOverColor"  Color="#FFF44336" />
+        <SolidColorBrush x:Key="errorColor"          Color="#FFED4337" />
 
         <Style x:Key="menuItemTitle" TargetType="{x:Type MenuItem}">
             <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
@@ -106,7 +107,17 @@
         <Style TargetType="{x:Type TextBlock}" x:Key="myTextBlockRight" BasedOn="{StaticResource myTextBlock}" >
             <Setter Property="HorizontalAlignment" Value="Right" />
         </Style>
-        
+
+        <Style TargetType="{x:Type TextBlock}" x:Key="myTextBlockError" BasedOn="{StaticResource myTextBlock}" >
+            <Setter Property="Foreground" Value="{StaticResource errorColor}" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="myTextBlockLeftError" BasedOn="{StaticResource myTextBlockLeft}" >
+            <Setter Property="Foreground" Value="{StaticResource errorColor}" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="myTextBlockRightError" BasedOn="{StaticResource myTextBlockRight}" >
+            <Setter Property="Foreground" Value="{StaticResource errorColor}" />
+        </Style>
+
         <Style TargetType="{x:Type TextBox}"   x:Key="myTextBox">
             <Setter Property="HorizontalContentAlignment"   Value="Center" />
             <Setter Property="VerticalContentAlignment"     Value="Center" />
