@@ -68,11 +68,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         // TODO : rendre la méthode async
         private void Build()
         {
-            foreach (KeyValuePair<ScatterGraphBuilderBase, ScatterGraphBuildResult?> keyValue in Results)
+            ScatterGraphBuilderBase scatterGraphBuilderBase;
+            ScatterGraphBuildResult? scatterGraphBuildResult;
+
+            for (int i = 0; i < Builders.Count; i++)
             {
-                if (keyValue.Value is null || !keyValue.Value.IsSuccess)
+                scatterGraphBuilderBase = Builders[i];
+                scatterGraphBuildResult = Results[scatterGraphBuilderBase];
+                if (scatterGraphBuildResult is null || !scatterGraphBuildResult.IsSuccess)
                 {
-                    Results[keyValue.Key] = keyValue.Key.Build();
+                    Results[scatterGraphBuilderBase] = scatterGraphBuilderBase.Build();
                 }
             }
         }

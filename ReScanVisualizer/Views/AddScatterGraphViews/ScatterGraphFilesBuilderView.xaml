@@ -55,7 +55,7 @@
                                                MouseUp="Rectangle_MouseUp"
                                                Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" Width="16" Height="16" />
                                     
-                                    <Popup x:Name="ColorPopup" PlacementTarget="{Binding ElementName=ColorButton}" Placement="Bottom" Closed="ColorPopup_Closed">
+                                    <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
                                         <uc:ColorSelector 
                                             Background="{StaticResource backgroundColor}"
                                             BorderBrush="Black"

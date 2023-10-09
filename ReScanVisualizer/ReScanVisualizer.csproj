@@ -95,6 +95,7 @@
     <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderToScatterGraphResultConverter.cs" />
+    <Compile Include="Converters\ScatterGraphBuilderToScatterGraphResultCountConverter.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Repere3D.cs" />

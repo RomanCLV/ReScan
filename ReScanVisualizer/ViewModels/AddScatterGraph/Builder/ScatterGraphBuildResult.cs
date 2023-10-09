@@ -25,6 +25,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (IsSuccess)
                 {
                     Exception = null;
+                    ComputeMinReductionFactor();
                 }
             }
         }
@@ -43,7 +44,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     OnPropertyChanged(nameof(IsSuccess));
                 }
-
             }
         }
 
@@ -51,6 +51,66 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         {
             get => _scatterGraph != null;
         }
+
+        private bool _hasToReduce;
+        public bool HasToReduce
+        {
+            get => _hasToReduce || _hasToReduceForced;
+            set
+            {
+                if (_hasToReduceForced)
+                {
+                    value = true;
+                }
+                SetValue(ref _hasToReduce, value);
+            }
+        }
+
+        private bool _hasToReduceForced;
+        public bool HasToReduceForced
+        {
+            get => _hasToReduceForced;
+            set
+            {
+                if (SetValue(ref _hasToReduceForced, value))
+                {
+                    OnPropertyChanged(nameof(HasToReduce));
+                }
+            }
+        }
+
+        private double _minReductionFactor;
+        public double MinReductionFactor
+        {
+            get => _minReductionFactor;
+            set
+            {
+                if (SetValue(ref _minReductionFactor, value))
+                {
+                    if (_reductionFactor < _minReductionFactor)
+                    {
+                        ReductionFactor = _minReductionFactor;
+                    }
+                }
+            }
+        }
+
+        private double _reductionFactor;
+        public double ReductionFactor
+        {
+            get => _reductionFactor;
+            set
+            {
+                if (SetValue(ref _reductionFactor, value))
+                {
+                    OnPropertyChanged(nameof(ReducedCount));
+                }
+            }
+        }
+
+        public int Count => IsSuccess ? _scatterGraph!.Count : 0;
+
+        public int ReducedCount => IsSuccess ? (int)(_scatterGraph!.Count * (_reductionFactor / 100.0)) : 0;
 
         public ScatterGraphBuildResult(ScatterGraph graph) : this(graph, null)
         { 
@@ -64,6 +124,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         {
             _scatterGraph = graph;
             _exception = ex;
+            _hasToReduce = false;
+            _reductionFactor = 0.0;
+            ComputeMinReductionFactor();
+        }
+
+        private void ComputeMinReductionFactor()
+        {
+            if (_scatterGraph != null)
+            {
+                if (_scatterGraph.Count > ScatterGraphBuilderBase.MAX_COUNT)
+                {
+                    MinReductionFactor = ScatterGraphBuilderBase.MAX_COUNT / _scatterGraph.Count;
+                    HasToReduceForced = true;
+                }
+            }
         }
     }
 }

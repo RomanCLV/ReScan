@@ -19,6 +19,7 @@
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
         <converters:ScatterGraphBuilderStateToBitmapImageConverter x:Key="ScatterGraphBuilderStateToBitmapImageConverter"/>
         <converters:ScatterGraphBuilderToScatterGraphResultConverter x:Key="ScatterGraphBuilderToScatterGraphResultConverter" />
+        <converters:ScatterGraphBuilderToScatterGraphResultCountConverter x:Key="ScatterGraphBuilderToScatterGraphResultCountConverter" />
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
@@ -100,7 +101,7 @@
                                                            MouseUp="Rectangle_MouseUp"
                                                            Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" Width="16" Height="16" />
 
-                                                <Popup x:Name="ColorPopup" PlacementTarget="{Binding ElementName=ColorButton}" Placement="Bottom" Closed="ColorPopup_Closed">
+                                                <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
                                                     <uc:ColorSelector 
                                                         Background="{StaticResource backgroundColor}"
                                                         BorderBrush="Black"
@@ -140,7 +141,7 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Count -->
-                                <GridViewColumn Header="Count" Width="50">
+                                <!--<GridViewColumn Header="Count" Width="50">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock>
@@ -148,12 +149,50 @@
                                                     <MultiBinding ConverterParameter="Count" Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultConverter}">
                                                         <Binding Path="." />
                                                         <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" />
+                                                        <Binding Path="Count" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>-->
+                                <GridViewColumn Header="Count" Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultCountConverter}">
+                                                        <Binding Path="." />
+                                                        <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" Path="DataContext.Results[]" />
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+                                
+
+                                <!-- Colonne Reduction enabled -->
+                                <!--<GridViewColumn Header="Reduction enabled" Width="130">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox>
+                                                <CheckBox.IsEnabled>
+                                                    <MultiBinding ConverterParameter="IsEnabled" Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultConverter}">
+                                                        <Binding Path="." />
+                                                        <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" />
+                                                    </MultiBinding>
+                                                </CheckBox.IsEnabled>
+                                                <CheckBox.IsChecked>
+                                                    <MultiBinding ConverterParameter="HasToReduce" Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultConverter}">
+                                                        <Binding Path="." />
+                                                        <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" />
+                                                    </MultiBinding>
+                                                </CheckBox.IsChecked>
+                                            </CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>-->
                             </GridView>
                         </ListView.View>
                     </ListView>

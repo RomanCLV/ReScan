@@ -15,9 +15,9 @@ namespace ReScanVisualizer.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length != 2)
+            if (values.Length != 3)
             {
-                return "2 binding sources required";
+                return "3 binding sources required";
             }
 
             string propertyName = parameter as string;
@@ -28,17 +28,23 @@ namespace ReScanVisualizer.Converters
             {
                 if (viewModel.Results.TryGetValue(builder, out var result))
                 {
-                    string ret;
                     switch (propertyName)
                     {
                         case "Count":
-                            ret = result != null && result.ScatterGraph != null ? result.ScatterGraph.Count.ToString() : "0";
-                            break;
+                            return (result != null && result.IsSuccess) ? result.Count.ToString() : string.Empty;
+
+                        case "IsEnabled":
+                            return (result != null && result.IsSuccess && !result.HasToReduceForced);
+
+                        case "HasToReduce":
+                            return (result != null && result.HasToReduce);
+
+                        case "ReducedCount":
+                            return (result != null && result.IsSuccess) ? result.ReducedCount.ToString() : string.Empty;
+
                         default:
-                            ret = "Unexpected property: " + propertyName;
-                            break;
+                            return "Unexpected property: " + propertyName;
                     }
-                    return ret;
                 }
             }
 
