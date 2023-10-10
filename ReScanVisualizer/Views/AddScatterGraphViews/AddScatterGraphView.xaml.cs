@@ -1,4 +1,5 @@
-﻿using ReScanVisualizer.ViewModels.AddScatterGraph;
+﻿using ReScanVisualizer.ViewModels;
+using ReScanVisualizer.ViewModels.AddScatterGraph;
 using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 using System;
 using System.Collections.Generic;
@@ -51,10 +52,10 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 {
                     if (listView.SelectedItem != null)
                     {
-                        ScatterGraphBuilderBase selectedBuilder = (ScatterGraphBuilderBase)listView.SelectedItem;
+                        KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?> selectedItem = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>)listView.SelectedItem;
                         if (DataContext is AddScatterGraphViewModel model)
                         {
-                            model.Builders.Remove(selectedBuilder);
+                            model.Items.Remove(selectedItem);
                         }
                     }
                 }

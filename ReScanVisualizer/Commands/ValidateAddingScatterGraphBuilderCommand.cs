@@ -104,7 +104,7 @@ namespace ReScanVisualizer.Commands
                 }
                 else
                 {
-                    _addScatterGraphViewModel.Builders.Add(builder);
+                    _addScatterGraphViewModel.AddBuilder(builder);
                 }
             }
         }

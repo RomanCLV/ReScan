@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels
 {
     public class CommandKey : ViewModelBase
@@ -61,7 +63,7 @@ namespace ReScanVisualizer.ViewModels
             return Command.CanExecute(parameter);
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             Command.Execute(parameter);
         }

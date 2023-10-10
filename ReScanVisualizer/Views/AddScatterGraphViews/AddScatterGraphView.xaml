@@ -17,9 +17,8 @@
         >
     <Window.Resources>
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+        <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter" />
         <converters:ScatterGraphBuilderStateToBitmapImageConverter x:Key="ScatterGraphBuilderStateToBitmapImageConverter"/>
-        <converters:ScatterGraphBuilderToScatterGraphResultConverter x:Key="ScatterGraphBuilderToScatterGraphResultConverter" />
-        <converters:ScatterGraphBuilderToScatterGraphResultCountConverter x:Key="ScatterGraphBuilderToScatterGraphResultCountConverter" />
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
@@ -27,11 +26,21 @@
                     Key="{Binding Path=AddScatterGraphBuilderCommand.Key}" 
                     Modifiers="{Binding Path=AddScatterGraphBuilderCommand.Modifiers}"
                     />
-        <KeyBinding x:Name="LoadScatterGraphCommandKey" 
-                    Command="{Binding Path=LoadScatterGraphCommand.Command}"  
-                    Key="{Binding Path=LoadScatterGraphCommand.Key}" 
-                    Modifiers="{Binding Path=LoadScatterGraphCommand.Modifiers}"
+        <KeyBinding x:Name="BuildCommandKey" 
+            Command="{Binding Path=BuildCommand.Command}"  
+            Key="{Binding Path=BuildCommand.Key}" 
+            Modifiers="{Binding Path=BuildCommand.Modifiers}"
+            />
+        <KeyBinding x:Name="LoadCommandKey" 
+                    Command="{Binding Path=LoadCommand.Command}"  
+                    Key="{Binding Path=LoadCommand.Key}" 
+                    Modifiers="{Binding Path=LoadCommand.Modifiers}"
                     />
+        <KeyBinding x:Name="LoadAndCloseCommandKey" 
+            Command="{Binding Path=LoadAndCloseCommand.Command}"  
+            Key="{Binding Path=LoadAndCloseCommand.Key}" 
+            Modifiers="{Binding Path=LoadAndCloseCommand.Modifiers}"
+            />
         <KeyBinding x:Name="CancelCommandKey" 
                     Command="{Binding Path=CancelCommand.Command}"  
                     Key="{Binding Path=CancelCommand.Key}" 
@@ -50,16 +59,24 @@
                                 />
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Build" Style="{StaticResource myButton}" 
+                                Command="{Binding ElementName=BuildCommandKey, Path=Command}"
+                                ToolTip="{Binding BuildCommand.Description}"
+                                />
                         <Button Content="Load" Style="{StaticResource myButton}" 
-                                Command="{Binding ElementName=LoadScatterGraphCommandKey, Path=Command}"
-                                ToolTip="{Binding LoadScatterGraphCommand.Description}"
+                                Command="{Binding ElementName=LoadCommandKey, Path=Command}"
+                                ToolTip="{Binding LoadCommand.Description}"
+                                />
+                        <Button Content="Load and close" Style="{StaticResource myButton}" 
+                                Command="{Binding ElementName=LoadAndCloseCommandKey, Path=Command}"
+                                ToolTip="{Binding LoadAndCloseCommand.Description}"
                                 />
                         <Button Content="Cancel" Style="{StaticResource myButton}"
                                 Command="{Binding ElementName=CancelCommandKey, Path=Command}"
                                 ToolTip="{Binding CancelCommand.Description}"/>
                     </StackPanel>
                     <ListView 
-                        ItemsSource="{Binding Builders}"
+                        ItemsSource="{Binding Items}"
                         Background="{StaticResource backgroundListColor}" 
                         KeyUp="ListView_KeyUp"
                         FocusVisualStyle="{x:Null}"
@@ -85,7 +102,8 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Image 
-                                                Source="{Binding State, Converter={StaticResource ScatterGraphBuilderStateToBitmapImageConverter}}"
+                                                Source="{Binding Key.State, Converter={StaticResource ScatterGraphBuilderStateToBitmapImageConverter}}"
+                                                ToolTip="{Binding Key.State}"
                                                 Width="25" Height="25"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -99,7 +117,7 @@
                                                 <!-- Rectangle for Color Display -->
                                                 <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                                                            MouseUp="Rectangle_MouseUp"
-                                                           Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" Width="16" Height="16" />
+                                                           Fill="{Binding Key.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" Width="16" Height="16" />
 
                                                 <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
                                                     <uc:ColorSelector 
@@ -115,12 +133,12 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Name -->
-                                <GridViewColumn Header="Name" Width="400">
+                                <GridViewColumn Header="Name" Width="200">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Name}" Style="{StaticResource myTextBlockLeft}">
+                                            <TextBlock Text="{Binding Key.Name}" Style="{StaticResource myTextBlockLeft}">
                                                 <TextBlock.ToolTip>
-                                                    <ToolTip Content="{Binding FullName}" />
+                                                    <ToolTip Content="{Binding Key.FullName}" />
                                                 </TextBlock.ToolTip>
                                             </TextBlock>
                                         </DataTemplate>
@@ -131,9 +149,9 @@
                                 <GridViewColumn Header="Details" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Details}" Style="{StaticResource myTextBlockLeft}">
+                                            <TextBlock Text="{Binding Key.Details}" Style="{StaticResource myTextBlockLeft}">
                                                 <TextBlock.ToolTip>
-                                                    <ToolTip Content="{Binding Details}" />
+                                                    <ToolTip Content="{Binding Key.Details}" />
                                                 </TextBlock.ToolTip>
                                             </TextBlock>
                                         </DataTemplate>
@@ -141,58 +159,43 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Count -->
-                                <!--<GridViewColumn Header="Count" Width="50">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding ConverterParameter="Count" Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultConverter}">
-                                                        <Binding Path="." />
-                                                        <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" />
-                                                        <Binding Path="Count" />
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>-->
                                 <GridViewColumn Header="Count" Width="50">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultCountConverter}">
-                                                        <Binding Path="." />
-                                                        <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" Path="DataContext.Results[]" />
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
+                                            <TextBlock Text="{Binding Value.Count}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                
 
                                 <!-- Colonne Reduction enabled -->
-                                <!--<GridViewColumn Header="Reduction enabled" Width="130">
+                                <GridViewColumn Header="Reduction enabled" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <CheckBox>
-                                                <CheckBox.IsEnabled>
-                                                    <MultiBinding ConverterParameter="IsEnabled" Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultConverter}">
-                                                        <Binding Path="." />
-                                                        <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" />
-                                                    </MultiBinding>
-                                                </CheckBox.IsEnabled>
-                                                <CheckBox.IsChecked>
-                                                    <MultiBinding ConverterParameter="HasToReduce" Converter="{StaticResource ScatterGraphBuilderToScatterGraphResultConverter}">
-                                                        <Binding Path="." />
-                                                        <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:AddScatterGraphView}}" />
-                                                    </MultiBinding>
-                                                </CheckBox.IsChecked>
-                                            </CheckBox>
+                                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Value.HasToReduce}" IsEnabled="{Binding Value.HasToReduceForced, Converter={StaticResource BoolToInverseBoolConverter}}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
-                                </GridViewColumn>-->
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Reduction factor" Width="200">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBox Text="{Binding Value.ReductionFactor, StringFormat=N2}" Style="{StaticResource myTextBox}" Width="50" />
+                                                <Slider  Value="{Binding Value.ReductionFactor}" Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="120" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Count reduced -->
+                                <GridViewColumn Header="Reduced Count" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Value.ReducedCount}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
                             </GridView>
                         </ListView.View>
                     </ListView>

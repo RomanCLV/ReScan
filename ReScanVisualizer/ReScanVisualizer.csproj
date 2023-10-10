@@ -94,8 +94,6 @@
     <Compile Include="Converters\CommandKeyToInputGestureTextConverter.cs" />
     <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
-    <Compile Include="Converters\ScatterGraphBuilderToScatterGraphResultConverter.cs" />
-    <Compile Include="Converters\ScatterGraphBuilderToScatterGraphResultCountConverter.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Repere3D.cs" />
@@ -116,6 +114,7 @@
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRandomBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRectangle2DBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphViewModel.cs" />
+    <Compile Include="ViewModels\KeyValueObservable.cs" />
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
     <Compile Include="ViewModels\Point3DViewModel.cs" />

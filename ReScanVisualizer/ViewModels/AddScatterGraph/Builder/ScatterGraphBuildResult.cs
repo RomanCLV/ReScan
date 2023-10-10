@@ -104,6 +104,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _reductionFactor, value))
                 {
                     OnPropertyChanged(nameof(ReducedCount));
+                    HasToReduce = true;
                 }
             }
         }
@@ -111,6 +112,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public int Count => IsSuccess ? _scatterGraph!.Count : 0;
 
         public int ReducedCount => IsSuccess ? (int)(_scatterGraph!.Count * (_reductionFactor / 100.0)) : 0;
+
+        private bool _isAdded;
+        public bool IsAdded
+        {
+            get => _isAdded;
+            private set => SetValue(ref _isAdded, value);
+        }
 
         public ScatterGraphBuildResult(ScatterGraph graph) : this(graph, null)
         { 
@@ -139,6 +147,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                     HasToReduceForced = true;
                 }
             }
+        }
+
+        public void SetAddedToTrue()
+        {
+            IsAdded = true;
         }
     }
 }
