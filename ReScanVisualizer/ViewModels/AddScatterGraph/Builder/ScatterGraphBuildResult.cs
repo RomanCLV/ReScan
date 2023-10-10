@@ -111,7 +111,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public int Count => IsSuccess ? _scatterGraph!.Count : 0;
 
-        public int ReducedCount => IsSuccess ? (int)(_scatterGraph!.Count * (_reductionFactor / 100.0)) : 0;
+        public int ReducedCount => IsSuccess ? (int)(_scatterGraph!.Count * ((100.0 - _reductionFactor) / 100.0)) : 0;
 
         private bool _isAdded;
         public bool IsAdded
@@ -132,8 +132,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         {
             _scatterGraph = graph;
             _exception = ex;
-            _hasToReduce = false;
-            _reductionFactor = 0.0;
+            _hasToReduceForced = false;
+            _hasToReduce = _hasToReduceForced;
+            _minReductionFactor = 0.0;
+            _reductionFactor = _minReductionFactor;
             ComputeMinReductionFactor();
         }
 

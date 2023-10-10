@@ -19,6 +19,9 @@
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
         <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter" />
         <converters:ScatterGraphBuilderStateToBitmapImageConverter x:Key="ScatterGraphBuilderStateToBitmapImageConverter"/>
+        <converters:ScatterGraphBuilderResultReductionEnabledConverter x:Key="ScatterGraphBuilderResultReductionEnabledConverter" />
+        <converters:ScatterGraphBuilderResultReductionFactorEnabledConverter x:Key="ScatterGraphBuilderResultReductionFactorEnabledConverter" />
+        <converters:AvailablePropertyConverter x:Key="AvailablePropertyConverter" />
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
@@ -163,6 +166,13 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Value.Count}" />
+                                            <!--<TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
+                                                        <Binding Path="Value.Count" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>-->
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -171,7 +181,14 @@
                                 <GridViewColumn Header="Reduction enabled" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Value.HasToReduce}" IsEnabled="{Binding Value.HasToReduceForced, Converter={StaticResource BoolToInverseBoolConverter}}" />
+                                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Value.HasToReduce}">
+                                                <CheckBox.IsEnabled>
+                                                    <MultiBinding Converter="{StaticResource ScatterGraphBuilderResultReductionEnabledConverter}">
+                                                        <Binding Path="Value.IsSuccess" />
+                                                        <Binding Path="Value.HasToReduceForced" />
+                                                    </MultiBinding>
+                                                </CheckBox.IsEnabled>
+                                            </CheckBox>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -180,8 +197,30 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBox Text="{Binding Value.ReductionFactor, StringFormat=N2}" Style="{StaticResource myTextBox}" Width="50" />
-                                                <Slider  Value="{Binding Value.ReductionFactor}" Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="120" VerticalAlignment="Center" />
+                                                <TextBox Style="{StaticResource myTextBox}" Width="50">
+                                                    <TextBox.IsEnabled>
+                                                        <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
+                                                            <Binding Path="Binding Value.IsSuccess" />
+                                                        </MultiBinding>
+                                                    </TextBox.IsEnabled>
+                                                    <TextBox.Text>
+                                                        <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
+                                                            <Binding Path="Binding Value.ReductionFactor" />
+                                                        </MultiBinding>
+                                                    </TextBox.Text>
+                                                </TextBox>
+                                                <Slider Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="120" VerticalAlignment="Center">
+                                                    <Slider.IsEnabled>
+                                                        <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
+                                                            <Binding Path="Binding Value.IsSuccess" />
+                                                        </MultiBinding>
+                                                    </Slider.IsEnabled>
+                                                    <Slider.Value>
+                                                        <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
+                                                            <Binding Path="Binding Value.ReductionFactor" />
+                                                        </MultiBinding>
+                                                    </Slider.Value>
+                                                </Slider>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -192,6 +231,13 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Value.ReducedCount}" />
+                                            <!--<TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
+                                                        <Binding Path="Binding Value.ReducedCount" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>-->
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

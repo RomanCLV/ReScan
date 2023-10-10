@@ -90,9 +90,12 @@
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Commands\SelectFilesCommand.cs" />
     <Compile Include="Commands\ValidateAddingScatterGraphBuilderCommand.cs" />
+    <Compile Include="Converters\AvailablePropertyConverter.cs" />
     <Compile Include="Converters\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\CommandKeyToInputGestureTextConverter.cs" />
     <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
+    <Compile Include="Converters\ScatterGraphBuilderResultReductionEnabledConverter.cs" />
+    <Compile Include="Converters\ScatterGraphBuilderResultReductionFactorEnabledConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />

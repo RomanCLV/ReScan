@@ -68,9 +68,9 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             {
                 StackPanel panel = (StackPanel)rect.Parent;
                 Popup popup = (Popup)panel.Children[1];
-                if (popup.DataContext is ScatterGraphBuilderBase builder)
+                if (popup.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?> item)
                 {
-                    _selectedBuilder = builder;
+                    _selectedBuilder = item.Key;
                     _openedPopup = popup;
                     popup.Child.MouseLeave += Child_MouseLeave;
                     popup.IsOpen = true;
