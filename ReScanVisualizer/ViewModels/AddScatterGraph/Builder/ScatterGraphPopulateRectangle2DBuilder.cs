@@ -19,7 +19,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public Plan2D Plan
         {
             get => _plan;
-            set => SetValue(ref _plan, value);
+            set
+            {
+                if (SetValue(ref _plan, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
+            }
         }
 
         private double _width;
@@ -39,6 +45,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _width, value))
                 {
                     NumPointsWidth = (uint)_width + 1;
+                    OnPropertyChanged(nameof(Details));
                 }
             }
         }
@@ -60,6 +67,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _height, value))
                 {
                     NumPointsHeight = (uint)_height + 1;
+                    OnPropertyChanged(nameof(Details));
                 }
             }
         }
@@ -78,7 +86,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = (uint)(5 * _width);
                 }
-                SetValue(ref _numPointsWidth, value);
+                if (SetValue(ref _numPointsWidth, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
 
@@ -96,9 +107,22 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = (uint)(5 * _height);
                 }
-                SetValue(ref _numPointsHeight, value);
+                if (SetValue(ref _numPointsHeight, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
+
+        public override string Name => "Rectange2D builder";
+
+        public override string Details => 
+            $"Plan: {_plan}\n" +
+            $"Center ({Math.Round(Center.X, 2)}, {Math.Round(Center.Y, 2)}, {Math.Round(Center.Z, 2)}\n" +
+            $"Width: {Math.Round(_width, 2)}\n" +
+            $"Height: {Math.Round(_height, 2)}\n" +
+            $"Num points width: {NumPointsWidth}\n" +
+            $"Num points height: {NumPointsHeight}";
 
         public ScatterGraphPopulateRectangle2DBuilder() : base(Colors.White)
         {

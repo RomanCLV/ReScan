@@ -25,7 +25,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _scatterGraph, value))
                 {
                     OnPropertyChanged(nameof(IsSuccess));
+                    OnPropertyChanged(nameof(Count));
                     ComputeMinReductionFactor();
+                    OnPropertyChanged(nameof(ReducedCount));
                 }
             }
         }

@@ -36,6 +36,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
+        public override string Name => "Line builder";
+
+        public override string Details => 
+            $"Start: {Start}\n" +
+            $"End: {End}\n" +
+            $"Num points: {NumPoints}";
+
         public ScatterGraphPopulateLineBuilder()
         {
             Start = new Point3DViewModel();
@@ -68,6 +75,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                     Message = "Start point and End point must be different!";
                     State = ScatterGraphBuilderState.Error;
                 }
+                OnPropertyChanged(nameof(Details));
             }
         }
 

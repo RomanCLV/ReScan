@@ -53,7 +53,10 @@
                                     <!-- Rectangle for Color Display -->
                                     <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                                                MouseUp="Rectangle_MouseUp"
-                                               Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" Width="16" Height="16" />
+                                               Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" 
+                                               Width="16" Height="16" 
+                                               ToolTip="{Binding Key.Color}"
+                                               ToolTipService.Placement="Top"/>
                                     
                                     <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
                                         <uc:ColorSelector 

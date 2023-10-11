@@ -26,7 +26,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = 1;
                 }
-                SetValue(ref _numPoints, value);
+                if (SetValue(ref _numPoints, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
 
@@ -44,7 +47,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = _maxX - 1;
                 }
-                SetValue(ref _minX, value);
+                if (SetValue(ref _minX, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
 
@@ -62,7 +68,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = _minX + 1;
                 }
-                SetValue(ref _maxX, value);
+                if (SetValue(ref _maxX, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
 
@@ -80,7 +89,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = _maxY - 1;
                 }
-                SetValue(ref _minY, value);
+                if (SetValue(ref _minY, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
 
@@ -98,7 +110,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = _minY + 1;
                 }
-                SetValue(ref _maxY, value);
+                if (SetValue(ref _maxY, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
 
@@ -116,7 +131,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = _maxZ - 1;
                 }
-                SetValue(ref _minZ, value);
+                if (SetValue(ref _minZ, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
 
@@ -134,9 +152,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = _minZ + 1;
                 }
-                SetValue(ref _maxZ, value);
+                if (SetValue(ref _maxZ, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
+
+        public override string Name => "Random builder";
+
+        public override string Details => $"Limits: " +
+            $"{Math.Round(_minX, 2)} {Math.Round(_maxX, 2)} " +
+            $"{Math.Round(_minY, 2)} {Math.Round(_maxY, 2)} " +
+            $"{Math.Round(_minZ, 2)} {Math.Round(_maxZ, 2)}\n" +
+            $"Num points: {NumPoints}";
 
         public ScatterGraphPopulateRandomBuilder() : base(Colors.White)
         {

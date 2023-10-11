@@ -23,6 +23,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public ICommand SelectFilesCommand { get; private set; }
 
+        public override string Name => "Files builder";
+
+        public override string Details => $"{_builders.Count} file{(_builders.Count == 0 ? "" : "s")}";
+
         public ScatterGraphFilesBuilder()
         {
             State = ScatterGraphBuilderState.Error;
@@ -48,6 +52,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 }
                 return x.CanBuild;
             }) ? ScatterGraphBuilderState.Ready : ScatterGraphBuilderState.Error;
+            OnPropertyChanged(nameof(Details));
         }
 
         public void Remove(ScatterGraphFileBuilder builder)

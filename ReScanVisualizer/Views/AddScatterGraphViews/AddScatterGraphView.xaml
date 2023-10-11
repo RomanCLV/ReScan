@@ -22,6 +22,7 @@
         <converters:ScatterGraphBuilderResultReductionEnabledConverter x:Key="ScatterGraphBuilderResultReductionEnabledConverter" />
         <converters:ScatterGraphBuilderResultReductionFactorEnabledConverter x:Key="ScatterGraphBuilderResultReductionFactorEnabledConverter" />
         <converters:AvailablePropertyConverter x:Key="AvailablePropertyConverter" />
+        <converters:BuilderStateNotWorkingToBoolConverter x:Key="BuilderStateNotWorkingToBoolConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
@@ -56,13 +57,20 @@
                 <TextBlock DockPanel.Dock="Top" Text="Add Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
                 <DockPanel Margin="50">
                     <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
-                        <Button Content="Add scatter graph builder" Style="{StaticResource myButton}"
+                        <Button Style="{StaticResource myButton}"
                                 Command="{Binding ElementName=AddScatterGraphBuilderCommandKey, Path=Command}"
                                 ToolTip="{Binding AddScatterGraphBuilderCommand.Description}"
-                                />
+                                >
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource add}" Width="24" Height="24" />
+                                    <TextBlock Text="Add scatter graph builder" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Build" Style="{StaticResource myButton}" 
+                        <Button Content="Build all" Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=BuildCommandKey, Path=Command}"
                                 ToolTip="{Binding BuildCommand.Description}"
                                 />
@@ -88,6 +96,7 @@
                             <Style TargetType="{x:Type ListViewItem}">
                                 <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="ToolTip" Value="Double click to edit"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="Transparent" />
@@ -120,7 +129,10 @@
                                                 <!-- Rectangle for Color Display -->
                                                 <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                                                            MouseUp="Rectangle_MouseUp"
-                                                           Fill="{Binding Key.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" Width="16" Height="16" />
+                                                           Fill="{Binding Key.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                                                           Width="16" Height="16"
+                                                           ToolTip="{Binding Key.Color}"
+                                                           ToolTipService.Placement="Top"/>
 
                                                 <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
                                                     <uc:ColorSelector 
@@ -149,7 +161,7 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Details -->
-                                <GridViewColumn Header="Details" Width="150">
+                                <GridViewColumn Header="Details" Width="200">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Key.Details}" Style="{StaticResource myTextBlockLeft}">
@@ -165,14 +177,7 @@
                                 <GridViewColumn Header="Count" Width="50">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Value.Count}" />
-                                            <!--<TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
-                                                        <Binding Path="Value.Count" />
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>-->
+                                            <TextBlock Text="{Binding Value.Count}" HorizontalAlignment="Center" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -193,34 +198,18 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Reduction factor" Width="200">
+                                <!-- Colonne Reduction factor -->
+                                <GridViewColumn Header="Reduction factor" Width="180">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBox Style="{StaticResource myTextBox}" Width="50">
-                                                    <TextBox.IsEnabled>
-                                                        <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
-                                                            <Binding Path="Binding Value.IsSuccess" />
-                                                        </MultiBinding>
-                                                    </TextBox.IsEnabled>
-                                                    <TextBox.Text>
-                                                        <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
-                                                            <Binding Path="Binding Value.ReductionFactor" />
-                                                        </MultiBinding>
-                                                    </TextBox.Text>
-                                                </TextBox>
-                                                <Slider Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="120" VerticalAlignment="Center">
-                                                    <Slider.IsEnabled>
-                                                        <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
-                                                            <Binding Path="Binding Value.IsSuccess" />
-                                                        </MultiBinding>
-                                                    </Slider.IsEnabled>
-                                                    <Slider.Value>
-                                                        <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
-                                                            <Binding Path="Binding Value.ReductionFactor" />
-                                                        </MultiBinding>
-                                                    </Slider.Value>
-                                                </Slider>
+                                                <TextBox  Style="{StaticResource myTextBox}" Width="50"
+                                                          IsEnabled="{Binding Value.IsSuccess}"
+                                                          Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                                                
+                                                <Slider   Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="120" VerticalAlignment="Center"
+                                                          IsEnabled="{Binding Value.IsSuccess}"
+                                                          Value="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -230,18 +219,34 @@
                                 <GridViewColumn Header="Reduced Count" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Value.ReducedCount}" />
-                                            <!--<TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding Converter="{StaticResource AvailablePropertyConverter}">
-                                                        <Binding Path="Binding Value.ReducedCount" />
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>-->
+                                            <TextBlock Text="{Binding Value.ReducedCount}" HorizontalAlignment="Center" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
+                                <GridViewColumn Header="Actions" Width="150">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding Key.State, Converter={StaticResource BuilderStateNotWorkingToBoolConverter}}">
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Build" Click="BuildButton_Click">
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource play}" />
+                                                    </Button.Content>
+                                                </Button>
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Edit" Click="EditButton_Click">
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource config}" />
+                                                    </Button.Content>
+                                                </Button>
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Delete" Click="DeleteButton_Click">
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource delete}" />
+                                                    </Button.Content>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                             </GridView>
                         </ListView.View>
                     </ListView>

@@ -33,9 +33,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             set => SetValue(ref _containsHeader, value);
         }
 
-        public override string Name => base.Name + $" ({FileName})";
-
-        public override string FullName => base.Name + $" ({Path})";
+        public override string Name => $"File builder";
+        public override string FullName => $"{Name} ({Path})";
+        public override string Details => FileName;
 
         public ScatterGraphFileBuilder(string path, Color color, bool containsHeader) : base(color)
         {

@@ -20,7 +20,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         private readonly AddScatterGraphView _view;
         private readonly MainViewModel _mainViewModel;
         
-        public ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>> Items { get; private set; }
+        public ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> Items { get; private set; }
 
         public CommandKey AddScatterGraphBuilderCommand { get; private set; }
         public CommandKey BuildCommand { get; private set; }
@@ -32,14 +32,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         {
             _view = view;
             _mainViewModel = mainViewModel;
-            Items = new ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>>();
+            Items = new ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>();
 
             Items.CollectionChanged += Items_CollectionChanged;
 
             AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Alt, "Add a new builder");
-            BuildCommand = new CommandKey(new ActionCommand(Build), Key.Enter, ModifierKeys.None, "Build");
-            LoadCommand = new CommandKey(new ActionCommand(Load), Key.Enter, ModifierKeys.None, "Load");
-            LoadAndCloseCommand = new CommandKey(new ActionCommand(LoadAndClose), Key.Enter, ModifierKeys.None, "Load and close");
+            BuildCommand = new CommandKey(new ActionCommand(Build), Key.B, ModifierKeys.Control, "Build");
+            LoadCommand = new CommandKey(new ActionCommand(Load), Key.L, ModifierKeys.Control, "Load");
+            LoadAndCloseCommand = new CommandKey(new ActionCommand(LoadAndClose), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
             CancelCommand = new CommandKey(new ActionCommand(_view.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
@@ -64,8 +64,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 bool firstFound = false;
-                List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>> toRemove = new List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>>(Items.Count);
-                KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?> v = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>)e.NewItems[0];
+                List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> toRemove = new List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>(Items.Count);
+                KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> v = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>)e.NewItems[0];
                 foreach (var item in Items)
                 {
                     // find if item or item key is many times in the list
@@ -136,7 +136,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                     }
                     else
                     {
-                        Items[i].Value.Set(result);
+                        Items[i].Value!.Set(result);
                     }
                 }
             }

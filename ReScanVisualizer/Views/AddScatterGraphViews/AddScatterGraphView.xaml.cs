@@ -52,7 +52,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 {
                     if (listView.SelectedItem != null)
                     {
-                        KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?> selectedItem = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>)listView.SelectedItem;
+                        KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> selectedItem = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>)listView.SelectedItem;
                         if (DataContext is AddScatterGraphViewModel model)
                         {
                             model.Items.Remove(selectedItem);
@@ -68,7 +68,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             {
                 StackPanel panel = (StackPanel)rect.Parent;
                 Popup popup = (Popup)panel.Children[1];
-                if (popup.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?> item)
+                if (popup.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
                 {
                     _selectedBuilder = item.Key;
                     _openedPopup = popup;
@@ -101,6 +101,27 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             if (_selectedBuilder != null)
             {
                 _selectedBuilder.Color = e;
+            }
+        }
+
+        private void BuildButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
+            {
+                if (DataContext is AddScatterGraphViewModel model)
+                {
+                    model.Items.Remove(item);
+                }
             }
         }
     }

@@ -88,6 +88,7 @@
     <Compile Include="Commands\AddScatterGraphBuilderCommand.cs" />
     <Compile Include="Commands\AddScatterGraphCommand.cs" />
     <Compile Include="Commands\ActionCommand.cs" />
+    <Compile Include="Converters\BuilderStateNotWorkingToBoolConverter.cs" />
     <Compile Include="Commands\SelectFilesCommand.cs" />
     <Compile Include="Commands\ValidateAddingScatterGraphBuilderCommand.cs" />
     <Compile Include="Converters\AvailablePropertyConverter.cs" />
