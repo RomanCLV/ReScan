@@ -37,7 +37,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             Items.CollectionChanged += Items_CollectionChanged;
 
             AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Alt, "Add a new builder");
-            BuildCommand = new CommandKey(new ActionCommand(Build), Key.B, ModifierKeys.Control, "Build");
+            BuildCommand = new CommandKey(new ActionCommand(BuildAll), Key.B, ModifierKeys.Control, "Build");
             LoadCommand = new CommandKey(new ActionCommand(Load), Key.L, ModifierKeys.Control, "Load");
             LoadAndCloseCommand = new CommandKey(new ActionCommand(LoadAndClose), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
             CancelCommand = new CommandKey(new ActionCommand(_view.Close), Key.Escape, ModifierKeys.None, "Cancel");
@@ -103,7 +103,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                     return;
                 }
             }
-            Items.Add(new KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>(builder, new ScatterGraphBuildResult()));
+            Items.Add(new KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>(builder, new ScatterGraphBuildResult()));
         }
 
         public void RemoveBuilder(ScatterGraphBuilderBase selectedBuilder)
@@ -117,30 +117,62 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-        // TODO : rendre la méthode async
-        private void Build()
+        private void BuildAll()
         {
-            ScatterGraphBuilderBase scatterGraphBuilderBase;
-            ScatterGraphBuildResult? scatterGraphBuildResult;
-
-            for (int i = 0; i < Items.Count; i++)
+            foreach (var item in Items)
             {
-                scatterGraphBuilderBase = Items[i].Key;
-                scatterGraphBuildResult = Items[i].Value;
-                if (scatterGraphBuildResult is null || !scatterGraphBuildResult.IsSuccess)
+                if (item.Value is null || !item.Value.IsSuccess)
                 {
-                    ScatterGraphBuildResult result = scatterGraphBuilderBase.Build();
-                    if (Items[i].Value is null)
-                    {
-                        Items[i].Value = result;
-                    }
-                    else
-                    {
-                        Items[i].Value!.Set(result);
-                    }
+                    Build(item);
                 }
             }
         }
+
+        public void Build(KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
+        {
+            ScatterGraphBuilderBase scatterGraphBuilderBase = item.Key;
+            ScatterGraphBuildResult result = scatterGraphBuilderBase.Build();
+            if (item.Value is null)
+            {
+                item.Value = result;
+            }
+            else
+            {
+                item.Value.Set(result);
+            }
+        }
+
+        private async void BuildAllAsync()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Value is null || !item.Value.IsSuccess)
+                {
+                    await BuildAsync(item);
+                }
+            }
+        }
+
+        public async Task BuildAsync(KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
+        {
+            ScatterGraphBuilderBase scatterGraphBuilderBase = item.Key;
+            ScatterGraphBuildResult result = await scatterGraphBuilderBase.BuildAsync();
+            if (item.Value is null)
+            {
+                item.Value = result;
+            }
+            else
+            {
+                item.Value.Set(result);
+            }
+        }
+
+        private void LoadAndClose()
+        {
+            Load();
+            _view.Close();
+        }
+
 
         // TODO : rendre la méthode async
         private void Load()
@@ -155,10 +187,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-        private void LoadAndClose()
-        {
-            Load();
-            _view.Close();
-        }
+        
     }
 }

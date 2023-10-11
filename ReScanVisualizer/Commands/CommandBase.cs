@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 #nullable enable
@@ -22,7 +23,7 @@ namespace ReScanVisualizer.Commands
 
 		protected void OnCanExecuteChanged()
 		{
-			CanExecuteChanged?.Invoke(this, new EventArgs());
+			Application.Current.Dispatcher.Invoke(() => CanExecuteChanged?.Invoke(this, new EventArgs()));
 		}
 	}
 }

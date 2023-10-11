@@ -90,5 +90,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// Build a <see cref="ScatterGraphBuildResult"/>.
         /// </summary>
         public abstract ScatterGraphBuildResult Build();
+
+        public async Task<ScatterGraphBuildResult> BuildAsync()
+        {
+            return await Task.Run(() => Build());
+        }
     }
 }

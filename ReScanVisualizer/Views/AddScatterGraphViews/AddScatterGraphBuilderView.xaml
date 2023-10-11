@@ -28,7 +28,7 @@
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="New Scatter Graph builder" Style="{StaticResource helpWindowTitle}"/>
+                <TextBlock DockPanel.Dock="Top" Text="Add Scatter Graph builder" Style="{StaticResource helpWindowTitle}"/>
                 <DockPanel Margin="50">
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="Add" Height="30"

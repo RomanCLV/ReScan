@@ -91,12 +91,10 @@
     <Compile Include="Converters\BuilderStateNotWorkingToBoolConverter.cs" />
     <Compile Include="Commands\SelectFilesCommand.cs" />
     <Compile Include="Commands\ValidateAddingScatterGraphBuilderCommand.cs" />
-    <Compile Include="Converters\AvailablePropertyConverter.cs" />
     <Compile Include="Converters\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\CommandKeyToInputGestureTextConverter.cs" />
     <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderResultReductionEnabledConverter.cs" />
-    <Compile Include="Converters\ScatterGraphBuilderResultReductionFactorEnabledConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
@@ -248,7 +246,6 @@
     <Compile Include="Commands\AsynCommandBase.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Converters\BoolToInverseBoolConverter.cs" />
-    <Compile Include="Converters\ValueNotNullConverter.cs" />
     <Compile Include="Helper3D\Helper3D.cs" />
     <Compile Include="Models\I3DElement.cs" />
     <Compile Include="Models\ItemIndexed.cs" />

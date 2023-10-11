@@ -104,9 +104,18 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             }
         }
 
-        private void BuildButton_Click(object sender, RoutedEventArgs e)
+        private async void BuildButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (sender is Button b)
+            {
+                if (b.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
+                {
+                    if (DataContext is AddScatterGraphViewModel model)
+                    {
+                        await model.BuildAsync(item);
+                    }
+                }
+            }
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -116,11 +125,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
+            if (sender is Button b)
             {
-                if (DataContext is AddScatterGraphViewModel model)
+                if (b.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
                 {
-                    model.Items.Remove(item);
+                    if (DataContext is AddScatterGraphViewModel model)
+                    {
+                        model.Items.Remove(item);
+                    }
                 }
             }
         }

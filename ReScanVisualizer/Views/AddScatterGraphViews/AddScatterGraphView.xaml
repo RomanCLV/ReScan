@@ -20,8 +20,6 @@
         <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter" />
         <converters:ScatterGraphBuilderStateToBitmapImageConverter x:Key="ScatterGraphBuilderStateToBitmapImageConverter"/>
         <converters:ScatterGraphBuilderResultReductionEnabledConverter x:Key="ScatterGraphBuilderResultReductionEnabledConverter" />
-        <converters:ScatterGraphBuilderResultReductionFactorEnabledConverter x:Key="ScatterGraphBuilderResultReductionFactorEnabledConverter" />
-        <converters:AvailablePropertyConverter x:Key="AvailablePropertyConverter" />
         <converters:BuilderStateNotWorkingToBoolConverter x:Key="BuilderStateNotWorkingToBoolConverter"/>
     </Window.Resources>
     <Window.InputBindings>
@@ -70,18 +68,39 @@
                         </Button>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Build all" Style="{StaticResource myButton}" 
+                        <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=BuildCommandKey, Path=Command}"
                                 ToolTip="{Binding BuildCommand.Description}"
-                                />
-                        <Button Content="Load" Style="{StaticResource myButton}" 
+                                >
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource play}" Width="24" Height="24" />
+                                    <TextBlock Text="Build all" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=LoadCommandKey, Path=Command}"
                                 ToolTip="{Binding LoadCommand.Description}"
-                                />
-                        <Button Content="Load and close" Style="{StaticResource myButton}" 
+                                >
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource update}" Width="24" Height="24" />
+                                    <TextBlock Text="Load" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=LoadAndCloseCommandKey, Path=Command}"
                                 ToolTip="{Binding LoadAndCloseCommand.Description}"
-                                />
+                                >
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource update}" Width="24" Height="24" />
+                                    <TextBlock Text="Load and close" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
                         <Button Content="Cancel" Style="{StaticResource myButton}"
                                 Command="{Binding ElementName=CancelCommandKey, Path=Command}"
                                 ToolTip="{Binding CancelCommand.Description}"/>

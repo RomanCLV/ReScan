@@ -12,7 +12,14 @@
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
     </UserControl.Resources>
     <StackPanel>
-        <Button Content="Select files" HorizontalAlignment="Left" Command="{Binding SelectFilesCommand}" Style="{StaticResource myButton}" ToolTip="Select files" />
+        <Button HorizontalAlignment="Left" Command="{Binding SelectFilesCommand}" Style="{StaticResource myButton}" ToolTip="Select files">
+            <Button.Content>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{StaticResource browse}" Width="24" Height="24" />
+                    <TextBlock Text="Select files" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                </StackPanel>
+            </Button.Content>
+        </Button>
         <ListView 
             ItemsSource="{Binding Builders}" 
             Background="{StaticResource backgroundListColor}" 
