@@ -18,13 +18,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             get => _scatterGraph;
             set
             {
+                if (value != null)
+                {
+                    Exception = null;
+                }
                 if (SetValue(ref _scatterGraph, value))
                 {
                     OnPropertyChanged(nameof(IsSuccess));
-                }
-                if (IsSuccess)
-                {
-                    Exception = null;
                     ComputeMinReductionFactor();
                 }
             }
@@ -120,8 +120,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             private set => SetValue(ref _isAdded, value);
         }
 
+        public ScatterGraphBuildResult() : this(null, null)
+        {
+        }
+
         public ScatterGraphBuildResult(ScatterGraph graph) : this(graph, null)
-        { 
+        {
         }
 
         public ScatterGraphBuildResult(Exception ex) : this(null, ex)
@@ -154,6 +158,24 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public void SetAddedToTrue()
         {
             IsAdded = true;
+        }
+
+        public void Set(ScatterGraphBuildResult result)
+        {
+            if (!Equals(result))
+            {
+                if (result is null)
+                {
+                    Exception = null;
+                    ScatterGraph = null;
+                }
+                else
+                {
+                    Exception = result.Exception;
+                    ScatterGraph = result.ScatterGraph;
+                    ComputeMinReductionFactor();
+                }
+            }
         }
     }
 }

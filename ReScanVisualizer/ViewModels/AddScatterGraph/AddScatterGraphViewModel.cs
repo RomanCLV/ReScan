@@ -103,7 +103,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                     return;
                 }
             }
-            Items.Add(new KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>(builder));
+            Items.Add(new KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>(builder, new ScatterGraphBuildResult()));
         }
 
         public void RemoveBuilder(ScatterGraphBuilderBase selectedBuilder)
@@ -129,7 +129,15 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 scatterGraphBuildResult = Items[i].Value;
                 if (scatterGraphBuildResult is null || !scatterGraphBuildResult.IsSuccess)
                 {
-                    Items[i].Value = scatterGraphBuilderBase.Build();
+                    ScatterGraphBuildResult result = scatterGraphBuilderBase.Build();
+                    if (Items[i].Value is null)
+                    {
+                        Items[i].Value = result;
+                    }
+                    else
+                    {
+                        Items[i].Value.Set(result);
+                    }
                 }
             }
         }
