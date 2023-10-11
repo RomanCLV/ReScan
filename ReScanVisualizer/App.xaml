@@ -4,12 +4,13 @@
              xmlns:local="clr-namespace:ReScanVisualizer">
     <Application.Resources>
 
-        <BitmapImage x:Key="add"    UriSource="/ReScanVisualizer;component/Resources/Images/add.png" />
-        <BitmapImage x:Key="play"   UriSource="/ReScanVisualizer;component/Resources/Images/play.png" />
-        <BitmapImage x:Key="config" UriSource="/ReScanVisualizer;component/Resources/Images/config.png" />
-        <BitmapImage x:Key="delete" UriSource="/ReScanVisualizer;component/Resources/Images/delete.png" />
-        <BitmapImage x:Key="update" UriSource="/ReScanVisualizer;component/Resources/Images/update.png" />
-        <BitmapImage x:Key="browse" UriSource="/ReScanVisualizer;component/Resources/Images/browse.png" />
+        <BitmapImage x:Key="add"     UriSource="/ReScanVisualizer;component/Resources/Images/add.png" />
+        <BitmapImage x:Key="play"    UriSource="/ReScanVisualizer;component/Resources/Images/play.png" />
+        <BitmapImage x:Key="config"  UriSource="/ReScanVisualizer;component/Resources/Images/config.png" />
+        <BitmapImage x:Key="delete"  UriSource="/ReScanVisualizer;component/Resources/Images/delete.png" />
+        <BitmapImage x:Key="update"  UriSource="/ReScanVisualizer;component/Resources/Images/update.png" />
+        <BitmapImage x:Key="browse"  UriSource="/ReScanVisualizer;component/Resources/Images/browse.png" />
+        <BitmapImage x:Key="working" UriSource="/ReScanVisualizer;component/Resources/Images/working.png" />
 
         <SolidColorBrush x:Key="textBoxGrey"         Color="#FF454545" />
         <SolidColorBrush x:Key="backgroundColor"     Color="#FF303030" />

@@ -88,6 +88,8 @@
     <Compile Include="Commands\AddScatterGraphBuilderCommand.cs" />
     <Compile Include="Commands\AddScatterGraphCommand.cs" />
     <Compile Include="Commands\ActionCommand.cs" />
+    <Compile Include="Commands\BuildScatterGraphCommand.cs" />
+    <Compile Include="Commands\LoadScatterGraphCommand.cs" />
     <Compile Include="Converters\BuilderStateNotWorkingToBoolConverter.cs" />
     <Compile Include="Commands\SelectFilesCommand.cs" />
     <Compile Include="Commands\ValidateAddingScatterGraphBuilderCommand.cs" />
@@ -243,7 +245,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Commands\AsynCommandBase.cs" />
+    <Compile Include="Commands\AsyncCommandBase.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Converters\BoolToInverseBoolConverter.cs" />
     <Compile Include="Helper3D\Helper3D.cs" />

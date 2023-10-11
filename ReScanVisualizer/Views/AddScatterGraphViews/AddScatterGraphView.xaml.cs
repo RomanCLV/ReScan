@@ -120,7 +120,12 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO : edit
+        }
 
+        private void ReduceButton_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO : reduce
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)

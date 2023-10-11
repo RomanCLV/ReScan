@@ -106,6 +106,7 @@
                                 ToolTip="{Binding CancelCommand.Description}"/>
                     </StackPanel>
                     <ListView 
+                        x:Name="lv"
                         ItemsSource="{Binding Items}"
                         Background="{StaticResource backgroundListColor}" 
                         KeyUp="ListView_KeyUp"
@@ -218,7 +219,7 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Reduction factor -->
-                                <GridViewColumn Header="Reduction factor" Width="180">
+                                <GridViewColumn Header="Reduction factor" Width="175">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
@@ -226,7 +227,7 @@
                                                           IsEnabled="{Binding Value.IsSuccess}"
                                                           Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                                                 
-                                                <Slider   Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="120" VerticalAlignment="Center"
+                                                <Slider   Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="100" VerticalAlignment="Center"
                                                           IsEnabled="{Binding Value.IsSuccess}"
                                                           Value="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged}"/>
                                             </StackPanel>
@@ -243,7 +244,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Actions" Width="150">
+                                <GridViewColumn Header="Actions" Width="165">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" IsEnabled="{Binding Key.State, Converter={StaticResource BuilderStateNotWorkingToBoolConverter}}">
@@ -255,6 +256,11 @@
                                                 <Button Style="{StaticResource myButtonIcon}" ToolTip="Edit" Click="EditButton_Click">
                                                     <Button.Content>
                                                         <Image Source="{StaticResource config}" />
+                                                    </Button.Content>
+                                                </Button>
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Reduce" Click="ReduceButton_Click">
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource working}" />
                                                     </Button.Content>
                                                 </Button>
                                                 <Button Style="{StaticResource myButtonIcon}" ToolTip="Delete" Click="DeleteButton_Click">

@@ -36,10 +36,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 
             Items.CollectionChanged += Items_CollectionChanged;
 
-            AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Alt, "Add a new builder");
-            BuildCommand = new CommandKey(new ActionCommand(BuildAll), Key.B, ModifierKeys.Control, "Build");
-            LoadCommand = new CommandKey(new ActionCommand(Load), Key.L, ModifierKeys.Control, "Load");
-            LoadAndCloseCommand = new CommandKey(new ActionCommand(LoadAndClose), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
+            AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new builder");
+            BuildCommand = new CommandKey(new BuildScatterGraphCommand(view, this), Key.B, ModifierKeys.Control, "Build");
+            LoadCommand = new CommandKey(new LoadScatterGraphCommand(view, this, false), Key.L, ModifierKeys.Control, "Load");
+            LoadAndCloseCommand = new CommandKey(new LoadScatterGraphCommand(view, this, true), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
             CancelCommand = new CommandKey(new ActionCommand(_view.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
@@ -117,7 +117,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-        private void BuildAll()
+        public void BuildAll()
         {
             foreach (var item in Items)
             {
@@ -142,7 +142,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-        private async void BuildAllAsync()
+        public async Task BuildAllAsync()
         {
             foreach (var item in Items)
             {
@@ -167,26 +167,19 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-        private void LoadAndClose()
+        public Task LoadAsync()
         {
-            Load();
-            _view.Close();
-        }
-
-
-        // TODO : rendre la méthode async
-        private void Load()
-        {
-            foreach (var item in Items)
+            return Task.Run(() =>
             {
-                if (item.Value != null && item.Key.State is ScatterGraphBuilderState.Success && !item.Value.IsAdded)
+                foreach (var item in Items)
                 {
-                    _mainViewModel.ScatterGraphs.Add(new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color));
-                    item.Value.SetAddedToTrue();
+                    if (item.Value != null && item.Key.State is ScatterGraphBuilderState.Success && !item.Value.IsAdded)
+                    {
+                        _mainViewModel.ScatterGraphs.Add(new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color));
+                        item.Value.SetAddedToTrue();
+                    }
                 }
-            }
+            });
         }
-
-        
     }
 }
