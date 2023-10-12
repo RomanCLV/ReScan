@@ -52,7 +52,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 {
                     if (listView.SelectedItem != null)
                     {
-                        KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> selectedItem = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult?>)listView.SelectedItem;
+                        KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> selectedItem = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>)listView.SelectedItem;
                         if (DataContext is AddScatterGraphViewModel model)
                         {
                             model.Items.Remove(selectedItem);

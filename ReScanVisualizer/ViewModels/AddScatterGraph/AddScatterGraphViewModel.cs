@@ -37,7 +37,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             Items.CollectionChanged += Items_CollectionChanged;
 
             AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new builder");
-            BuildCommand = new CommandKey(new BuildScatterGraphCommand(view, this), Key.B, ModifierKeys.Control, "Build");
+            BuildCommand = new CommandKey(new BuildScatterGraphCommand(this), Key.B, ModifierKeys.Control, "Build");
             LoadCommand = new CommandKey(new LoadScatterGraphCommand(view, this, false), Key.L, ModifierKeys.Control, "Load");
             LoadAndCloseCommand = new CommandKey(new LoadScatterGraphCommand(view, this, true), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
             CancelCommand = new CommandKey(new ActionCommand(_view.Close), Key.Escape, ModifierKeys.None, "Cancel");
@@ -167,19 +167,26 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-        public Task LoadAsync()
+        public void Load(bool closeWindow = false)
         {
-            return Task.Run(() =>
+            foreach (var item in Items)
             {
-                foreach (var item in Items)
+                if (item.Value != null && item.Key.State is ScatterGraphBuilderState.Success && !item.Value.IsAdded)
                 {
-                    if (item.Value != null && item.Key.State is ScatterGraphBuilderState.Success && !item.Value.IsAdded)
-                    {
-                        _mainViewModel.ScatterGraphs.Add(new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color));
-                        item.Value.SetAddedToTrue();
-                    }
+                    _mainViewModel.AddScatterGraph(new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color));
+                    item.Value.SetAddedToTrue();
                 }
-            });
+            }
+            if (closeWindow)
+            {
+                _view.Close();
+            }
+        }
+
+
+        public Task LoadAsync(bool closeWindow = false)
+        {
+            return Task.Run(() => Load(closeWindow));
         }
     }
 }

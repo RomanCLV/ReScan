@@ -11,6 +11,7 @@ using System.Reflection;
 using ReScanVisualizer.Commands;
 using System.Windows.Input;
 using HelixToolkit.Wpf;
+using System.Windows;
 
 #nullable enable
 
@@ -65,6 +66,14 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        public void AddScatterGraph(ScatterGraphViewModel scatterGraphViewModel)
+        {
+            if (scatterGraphViewModel != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => ScatterGraphs.Add(scatterGraphViewModel));
+            }
+        }
+
         private void ScatterGraphs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -74,11 +83,14 @@ namespace ReScanVisualizer.ViewModels
                     {
                         if (item is ScatterGraphViewModel graphViewModel)
                         {
-                            Model3DGroup group = new Model3DGroup();
-                            group.Children.Add(graphViewModel.Model);
-                            group.Children.Add(graphViewModel.Barycenter.Model);
-                            group.Children.Add(graphViewModel.AveragePlan.Model);
-                            Models.Children.Add(group);
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                Model3DGroup group = new Model3DGroup();
+                                group.Children.Add(graphViewModel.Model);
+                                group.Children.Add(graphViewModel.Barycenter.Model);
+                                group.Children.Add(graphViewModel.AveragePlan.Model);
+                                Models.Children.Add(group);
+                            });
                         }
                     }
                     break;

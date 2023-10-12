@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ReScanVisualizer.Commands
 {
-    internal class LoadScatterGraphCommand : AsyncCommandBase
+    internal class LoadScatterGraphCommand : CommandBase
     {
         private readonly AddScatterGraphView _view;
         private readonly AddScatterGraphViewModel _viewModel;
@@ -40,9 +40,9 @@ namespace ReScanVisualizer.Commands
             return base.CanExecute(parameter) && _viewModel.Items.Count > 0;
         }
 
-        public override Task ExecuteAsync(object? parameter)
+        public override void Execute(object? parameter)
         {
-            return _viewModel.LoadAsync();
+            _viewModel.Load(_closeAfterExecture);
         }
     }
 }

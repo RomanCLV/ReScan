@@ -10,15 +10,12 @@ using System.Threading.Tasks;
 
 namespace ReScanVisualizer.Commands
 {
-    internal class BuildScatterGraphCommand : AsyncCommandBase
+    public class BuildScatterGraphCommand : AsyncCommandBase
     {
-        private readonly AddScatterGraphView _view;
         private readonly AddScatterGraphViewModel _viewModel;
-        bool _closeAfterExecture;
 
-        public BuildScatterGraphCommand(AddScatterGraphView view, AddScatterGraphViewModel viewModel)
+        public BuildScatterGraphCommand(AddScatterGraphViewModel viewModel)
         {
-            _view = view;
             _viewModel = viewModel;
 
             _viewModel.Items.CollectionChanged += Items_CollectionChanged;
