@@ -580,7 +580,7 @@ void ScatterGraph::findExtrema(const ScatterGraph& scatterGraph, const Plan2D& p
 const Point3D* ScatterGraph::getClosestPoint(const ScatterGraph* scatterGraph, const Point3D* point)
 {
 	int size = (int)scatterGraph->size();
-	const Point3D* closestPoint = nullptr;
+	const Point3D* closestPoint = point;
 	const Point3D* currentPoint;
 	double minDistance = DBL_MAX;
 	double currentDistance;
@@ -590,11 +590,33 @@ const Point3D* ScatterGraph::getClosestPoint(const ScatterGraph* scatterGraph, c
 		currentDistance = Point3D::distanceBetween(point, currentPoint);
 		if (currentDistance < minDistance)
 		{
+			minDistance = currentDistance;
 			closestPoint = currentPoint;
 		}
 	}
 	return closestPoint;
 }
+
+const Point3D* ScatterGraph::getFarthestPoint(const ScatterGraph* scatterGraph, const Point3D* point)
+{
+	int size = (int)scatterGraph->size();
+	const Point3D* farthestPoint = point;
+	const Point3D* currentPoint;
+	double maxDistance = DBL_MIN;
+	double currentDistance;
+	for (int i = 0; i < size; i++)
+	{
+		currentPoint = scatterGraph->points[i];
+		currentDistance = Point3D::distanceBetween(point, currentPoint);
+		if (currentDistance > maxDistance)
+		{
+			maxDistance = currentDistance;
+			farthestPoint = currentPoint;
+		}
+	}
+	return farthestPoint;
+}
+
 
 void ScatterGraph::computeBarycenter(const ScatterGraph* scatterGraph, Point3D* barycenter)
 {

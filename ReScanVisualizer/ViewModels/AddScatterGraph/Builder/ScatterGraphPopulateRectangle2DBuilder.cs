@@ -118,7 +118,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public override string Details => 
             $"Plan: {_plan}\n" +
-            $"Center ({Math.Round(Center.X, 2)}, {Math.Round(Center.Y, 2)}, {Math.Round(Center.Z, 2)}\n" +
+            $"Center ({Math.Round(Center.X, 2)}, {Math.Round(Center.Y, 2)}, {Math.Round(Center.Z, 2)})\n" +
             $"Width: {Math.Round(_width, 2)}\n" +
             $"Height: {Math.Round(_height, 2)}\n" +
             $"Num points width: {NumPointsWidth}\n" +

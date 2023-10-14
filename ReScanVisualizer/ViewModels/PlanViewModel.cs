@@ -20,7 +20,17 @@ namespace ReScanVisualizer.ViewModels
         public double ScaleFactor
         {
             get => _scaleFactor;
-            set => SetValue(ref _scaleFactor, value);
+            set
+            {
+                if (value <= 0.0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Scale factor must be greater than 0.");
+                }
+                if (SetValue(ref _scaleFactor, value))
+                {
+                    // TODO: rebuild all
+                }
+            }
         }
 
         private Plan _plan;
@@ -209,10 +219,14 @@ namespace ReScanVisualizer.ViewModels
         public PlanViewModel(Plan plan, Point3D center, Vector3D up) : this(plan, center, up, Colors.LightBlue.ChangeAlpha(191))
         { }
 
-        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double width = 10, double height = 10, double dist = 0.0)
+        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double scaleFactor = 1.0, double width = 10, double height = 10, double dist = 0.0)
         {
+            if (scaleFactor <= 0.0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
+            }
             IsDisposed = false;
-            _scaleFactor = 1.0;
+            _scaleFactor = scaleFactor;
             _plan = plan;
             _center = center;
             _up = up;

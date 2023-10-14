@@ -38,6 +38,9 @@ namespace ReScanVisualizer
                 case "icon":
                     image.LoadFromBitmap(Resources.icon);
                     break;
+                case "load":
+                    image.LoadFromBitmap(Resources.load);
+                    break;
                 case "play":
                     image.LoadFromBitmap(Resources.play);
                     break;

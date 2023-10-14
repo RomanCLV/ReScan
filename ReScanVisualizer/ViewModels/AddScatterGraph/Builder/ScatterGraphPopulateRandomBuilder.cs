@@ -162,9 +162,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         public override string Name => "Random builder";
 
         public override string Details => $"Limits: " +
-            $"{Math.Round(_minX, 2)} {Math.Round(_maxX, 2)} " +
-            $"{Math.Round(_minY, 2)} {Math.Round(_maxY, 2)} " +
-            $"{Math.Round(_minZ, 2)} {Math.Round(_maxZ, 2)}\n" +
+            $"{Math.Round(_minX, 2)}, {Math.Round(_maxX, 2)}\n" +
+            $"{Math.Round(_minY, 2)}, {Math.Round(_maxY, 2)}\n" +
+            $"{Math.Round(_minZ, 2)}, {Math.Round(_maxZ, 2)}\n" +
             $"Num points: {NumPoints}";
 
         public ScatterGraphPopulateRandomBuilder() : base(Colors.White)

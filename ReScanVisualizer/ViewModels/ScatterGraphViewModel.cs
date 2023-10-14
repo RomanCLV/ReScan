@@ -18,11 +18,21 @@ namespace ReScanVisualizer.ViewModels
 {
     public class ScatterGraphViewModel : ViewModelBase, I3DElement
     {
-        private double _scale_factor;
+        private double _scaleFactor;
         public double ScaleFactor
         {
-            get => _scale_factor;
-            set => SetValue(ref _scale_factor, value); // todo: rebuild all
+            get => _scaleFactor;
+            set
+            {
+                if (value <= 0.0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Scale factor must be greater than 0.");
+                }
+                if (SetValue(ref _scaleFactor, value))
+                {
+                    // TODO: rebuild all
+                }
+            }
         }
 
         public event EventHandler<bool>? IsHidenChanged;
@@ -137,9 +147,14 @@ namespace ReScanVisualizer.ViewModels
         {
         }
 
-        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double pointRadius = 0.25, bool hideBarycenter = false, bool hideAveragePlan = false)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double pointRadius = 0.25, bool hideBarycenter = false, bool hideAveragePlan = false)
         {
+            if (scaleFactor <= 0.0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
+            }
             IsDisposed = false;
+            _scaleFactor = scaleFactor;
             _scatterGraph = scatterGraph;
             _pointsRadius = pointRadius;
             Color = new ColorViewModel(color);
@@ -151,7 +166,7 @@ namespace ReScanVisualizer.ViewModels
 
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
-                Samples.Add(new SampleViewModel(_scatterGraph[i], Color.Color, _pointsRadius));
+                Samples.Add(new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius));
                 ((Model3DGroup)Model).Children.Add(Samples.Last().Model);
             }
 
@@ -167,9 +182,9 @@ namespace ReScanVisualizer.ViewModels
             }
             Repere3D repere3D = ScatterGraph.ComputeRepere3D(scatterGraph, barycenter, averagePlan);
 
-            _barycenter = new SampleViewModel(barycenter, Colors.Red, _pointsRadius);
-            _averagePlan = new PlanViewModel(averagePlan, barycenter, repere3D.X, Colors.LightBlue.ChangeAlpha(191));
-            
+            _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius);
+            _averagePlan = new PlanViewModel(averagePlan, barycenter, repere3D.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor);
+
             _barycenter.IsHiden = hideBarycenter;
             _averagePlan.IsHiden = hideAveragePlan;
 

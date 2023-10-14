@@ -89,6 +89,8 @@
     <Compile Include="Commands\AddScatterGraphCommand.cs" />
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Commands\BuildScatterGraphCommand.cs" />
+    <Compile Include="Converters\ReduceItemButtonEnabledMultiConverter.cs" />
+    <Compile Include="Converters\LoadItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Commands\LoadScatterGraphCommand.cs" />
     <Compile Include="Converters\BuilderStateNotWorkingToBoolConverter.cs" />
     <Compile Include="Commands\SelectFilesCommand.cs" />
@@ -98,6 +100,7 @@
     <Compile Include="Converters\ResourceNameToBitmapImageConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderResultReductionEnabledConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
+    <Compile Include="Converters\StringConcaterMultiConverter.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Repere3D.cs" />
@@ -338,6 +341,9 @@
     <Resource Include="Resources\Images\unvailable.png" />
     <Resource Include="Resources\Images\update.png" />
     <Resource Include="Resources\Images\working.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\load.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -75,6 +75,17 @@ namespace ReScanVisualizer.Models
             _points.Clear();
         }
 
+        /// <summary>
+        /// Reduce the number of points by the given factor.<br />
+	    /// If percent isn't valid, the process is canceled, return false, else return true<br />
+        /// <br />
+	    /// Examples:<br />
+	    /// percent:  10 -> reduced by  10% - if you have 100 points, you will now have 90<br />
+        /// percent:  80 -> reduced by  80% - if you have 100 points, you will now have 20<br />
+        /// percent:   0 -> reduced by   0% - no changes<br />
+        /// percent: 100 -> reduced by 100% - cleared<br />
+        /// </summary>
+        /// <param name="percent">Percentage of reduction (between 0.0 and 100.0).</param>
         public void ReducePercent(double percent)
         {
             if (percent > 0.0 && percent <= 100.0)
@@ -102,6 +113,13 @@ namespace ReScanVisualizer.Models
             }
         }
 
+        /// <summary>
+        /// Reduce the number of points by skipping points.<br />
+        /// <br />
+        /// Examples:<br />
+	    /// percent: 10 -> reduce by 10 - if you have 100 points, you will now have 10<br />
+        /// </summary>
+        /// <param name="skipped">between 2 and number of points</param>
         public void Reduce(int skipped)
         {
             int size = _points.Count;
@@ -120,6 +138,10 @@ namespace ReScanVisualizer.Models
             }
         }
 
+        /// <summary>
+        /// Get a new <see cref="ScatterGraph"/> to which the <see cref="ReducePercent(double)"/> method has been applied.
+        /// </summary>
+        /// <param name="percent">Percentage of reduction (between 0.0 and 100.0).</param>
         public ScatterGraph GetReducedPercent(double percent)
         {
             ScatterGraph graph = new ScatterGraph(this);
@@ -127,6 +149,10 @@ namespace ReScanVisualizer.Models
             return graph;
         }
 
+        /// <summary>
+        /// Get a new <see cref="ScatterGraph"/> to which the <see cref="Reduce(int)"/> method has been applied.
+        /// </summary>
+        /// <param name="skipped">between 2 and number of points</param>
         public ScatterGraph GetReduced(int skipped)
         {
             ScatterGraph graph = new ScatterGraph(this);
@@ -223,21 +249,41 @@ namespace ReScanVisualizer.Models
         public static Point3D GetClosestPoint(ScatterGraph scatterGraph, Point3D point)
         {
             int size = scatterGraph.Count;
-            Point3D closestPoint = new Point3D();
+            Point3D closestPoint = point;
             Point3D currentPoint;
             double minDistance = double.MaxValue;
             double currentDistance;
             for (int i = 0; i < size; i++)
             {
                 currentPoint = scatterGraph[i];
-                
                 currentDistance = (point - currentPoint).Length;
                 if (currentDistance < minDistance)
                 {
+                    minDistance = currentDistance;
                     closestPoint = currentPoint;
                 }
             }
             return closestPoint;
+        }
+
+        public static Point3D GetFarthestPoint(ScatterGraph scatterGraph, Point3D point)
+        {
+            int size = scatterGraph.Count;
+            Point3D farthestPoint = point;
+            Point3D currentPoint;
+            double maxDistance = double.MinValue;
+            double currentDistance;
+            for (int i = 0; i < size; i++)
+            {
+                currentPoint = scatterGraph[i];
+                currentDistance = (point - currentPoint).Length;
+                if (currentDistance > maxDistance)
+                {
+                    maxDistance = currentDistance;
+                    farthestPoint = currentPoint;
+                }
+            }
+            return farthestPoint;
         }
 
         public Point3D ComputeBarycenter()

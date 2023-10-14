@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using ReScanVisualizer.Models;
 
 #nullable enable
@@ -45,6 +46,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _exception, value))
                 {
                     OnPropertyChanged(nameof(IsSuccess));
+                    OnPropertyChanged(nameof(Details));
                 }
             }
         }
@@ -103,10 +105,18 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             get => _reductionFactor;
             set
             {
+                if (value < _minReductionFactor)
+                {
+                    value = _minReductionFactor;
+                }
+                else if (value > 100.0)
+                {
+                    value = 100.0;
+                }
                 if (SetValue(ref _reductionFactor, value))
                 {
                     OnPropertyChanged(nameof(ReducedCount));
-                    HasToReduce = true;
+                    HasToReduce = _reductionFactor != 0;
                 }
             }
         }
@@ -121,6 +131,27 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             get => _isAdded;
             private set => SetValue(ref _isAdded, value);
         }
+
+        private double _farthestPointLength;
+        private double _suggestedScaleFactor;
+
+        private double _scaleFactor;
+        public double ScaleFactor
+        {
+            get => _scaleFactor;
+            set
+            {
+                if (value <= 0.0)
+                {
+                    value = 1.0;
+                }
+                SetValue(ref _scaleFactor, value);
+            }
+        }
+
+        public string Details =>
+            (_suggestedScaleFactor == 0.0 ? "" : $"Farthest point from origin: {(int)_farthestPointLength}. Suggested scale factor: {Math.Round(_suggestedScaleFactor, 4)}") +
+            (_exception is null ? "" : $"\n\n{_exception.Message}");
 
         public ScatterGraphBuildResult() : this(null, null)
         {
@@ -142,6 +173,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _hasToReduce = _hasToReduceForced;
             _minReductionFactor = 0.0;
             _reductionFactor = _minReductionFactor;
+            _scaleFactor = 1.0;
+            _suggestedScaleFactor = 0.0;
+            _farthestPointLength = 0.0;
+            _isAdded = false;
             ComputeMinReductionFactor();
         }
 
@@ -151,9 +186,39 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             {
                 if (_scatterGraph.Count > ScatterGraphBuilderBase.MAX_COUNT)
                 {
-                    MinReductionFactor = ScatterGraphBuilderBase.MAX_COUNT / _scatterGraph.Count;
+                    MinReductionFactor = 100.0 * ( 1.0 - (double)ScatterGraphBuilderBase.MAX_COUNT / _scatterGraph.Count);
                     HasToReduceForced = true;
                 }
+            }
+        }
+
+        public void ComputeScaleFactor()
+        {
+            if (IsSuccess)
+            {
+                _farthestPointLength = ((Vector3D)ScatterGraph.GetFarthestPoint(_scatterGraph, new Point3D(0, 0, 0))).Length;
+                if (_farthestPointLength < 1.0)
+                {
+                    _farthestPointLength = 1.0;
+                }
+                _suggestedScaleFactor = Math.Max(0, 1.0 / (50.0 * (Math.Log10(_farthestPointLength) - 1.0)));
+                OnPropertyChanged(nameof(Details));
+            }
+        }
+
+        public void Reduce()
+        {
+            if (IsSuccess)
+            {
+                _scatterGraph!.ReducePercent(ReductionFactor);
+                HasToReduce = false;
+                HasToReduceForced = false;
+                MinReductionFactor = 0.0;
+                ReductionFactor = 0.0;
+                ComputeMinReductionFactor();
+                OnPropertyChanged(nameof(Count));
+                OnPropertyChanged(nameof(ReducedCount));
+                ComputeScaleFactor();
             }
         }
 
@@ -162,7 +227,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             IsAdded = true;
         }
 
-        public void Set(ScatterGraphBuildResult result)
+        public void SetFrom(ScatterGraphBuildResult result)
         {
             if (!Equals(result))
             {
@@ -176,6 +241,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                     Exception = result.Exception;
                     ScatterGraph = result.ScatterGraph;
                     ComputeMinReductionFactor();
+                    ComputeScaleFactor();
                 }
             }
         }

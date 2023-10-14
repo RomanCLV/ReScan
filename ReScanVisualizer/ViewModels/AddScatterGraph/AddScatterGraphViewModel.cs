@@ -22,6 +22,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         
         public ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> Items { get; private set; }
 
+        private uint _itemsToAddCount;
+        public uint ItemsToAddCount
+        {
+            get => _itemsToAddCount;
+            set => SetValue(ref _itemsToAddCount, value);
+        }
+
         public CommandKey AddScatterGraphBuilderCommand { get; private set; }
         public CommandKey BuildCommand { get; private set; }
         public CommandKey LoadCommand { get; private set; }
@@ -38,8 +45,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 
             AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new builder");
             BuildCommand = new CommandKey(new BuildScatterGraphCommand(this), Key.B, ModifierKeys.Control, "Build");
-            LoadCommand = new CommandKey(new LoadScatterGraphCommand(view, this, false), Key.L, ModifierKeys.Control, "Load");
-            LoadAndCloseCommand = new CommandKey(new LoadScatterGraphCommand(view, this, true), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
+            LoadCommand = new CommandKey(new LoadScatterGraphCommand(this, false), Key.L, ModifierKeys.Control, "Load");
+            LoadAndCloseCommand = new CommandKey(new LoadScatterGraphCommand(this, true), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
             CancelCommand = new CommandKey(new ActionCommand(_view.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
@@ -53,7 +60,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             if (!IsDisposed)
             {
                 Items.CollectionChanged -= Items_CollectionChanged;
-
+                foreach (var item in Items)
+                {
+                    item.Value.PropertyChanged -= Value_PropertyChanged;
+                }
                 base.Dispose();
                 IsDisposed = true;
             }
@@ -61,37 +71,71 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            switch (e.Action)
             {
-                bool firstFound = false;
-                List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> toRemove = new List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>(Items.Count);
-                KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> v = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>)e.NewItems[0];
-                foreach (var item in Items)
-                {
-                    // find if item or item key is many times in the list
-                    if (item.Equals(v) || item.Key.Equals(v.Key))
+                case NotifyCollectionChangedAction.Add:
+                    bool firstFound = false;
+                    List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> toRemove = new List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>(Items.Count);
+                    KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> v = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>)e.NewItems[0];
+                
+                    // try to find if item is already in the list
+                    foreach (var item in Items)
                     {
-                        if (firstFound)
+                        // find if item or item key is many times in the list
+                        if (item.Equals(v) || item.Key.Equals(v.Key))
                         {
-                            toRemove.Add(item);
-                        }
-                        else
-                        {
-                            firstFound = true;
+                            if (firstFound)
+                            {
+                                toRemove.Add(item);
+                            }
+                            else
+                            {
+                                firstFound = true;
+                            }
                         }
                     }
-                }
-                if (toRemove.Count > 0)
-                {
-                    Application.Current.Dispatcher.InvokeAsync(() =>
+                    // delete the duplicate
+                    if (toRemove.Count > 0)
                     {
-                        foreach (var item in toRemove)
+                        Application.Current.Dispatcher.InvokeAsync(() =>
                         {
-                            Items.Remove(item);
-                        }
-                    });
-                }
+                            foreach (var item in toRemove)
+                            {
+                                Items.Remove(item);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        v.Value.PropertyChanged += Value_PropertyChanged;
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (object? item in e.OldItems)
+                    {
+                        KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> oldItem = ((KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>)item);
+                        oldItem.Value.PropertyChanged -= Value_PropertyChanged;
+                    }
+                    break;
             }
+            ComputeItemsToAddCount();
+        }
+
+        private void Value_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            ComputeItemsToAddCount();
+        }
+
+        private void ComputeItemsToAddCount()
+        {
+            int count = 0;
+            foreach (var item in Items)
+            {
+                count += item.Value.HasToReduce ? item.Value.ReducedCount : item.Value.Count;
+            }
+            ItemsToAddCount = (uint)count;
         }
 
         public void AddBuilder(ScatterGraphBuilderBase builder)
@@ -135,10 +179,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             if (item.Value is null)
             {
                 item.Value = result;
+                item.Value.ComputeScaleFactor();
             }
             else
             {
-                item.Value.Set(result);
+                item.Value.SetFrom(result);
             }
         }
 
@@ -163,19 +208,31 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
             else
             {
-                item.Value.Set(result);
+                item.Value.SetFrom(result);
             }
         }
 
-        public void Load(bool closeWindow = false)
+        public void Load(KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
         {
-            foreach (var item in Items)
+            if (item.Key.State is ScatterGraphBuilderState.Success && item.Value != null && item.Value.IsSuccess && !item.Value.IsAdded)
             {
-                if (item.Value != null && item.Key.State is ScatterGraphBuilderState.Success && !item.Value.IsAdded)
+                if (item.Value.HasToReduce && item.Value.ReductionFactor > 0)
                 {
-                    _mainViewModel.AddScatterGraph(new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color));
-                    item.Value.SetAddedToTrue();
+                    item.Value.Reduce();
                 }
+                _mainViewModel.AddScatterGraph(new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor));
+                item.Value.SetAddedToTrue();
+                Items.Remove(item);
+            }
+        }
+
+        public void LoadAll(bool closeWindow = false)
+        {
+            while (Items.Count > 0)
+            {
+                KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item = Items[0];
+                
+                    Load(item);
             }
             if (closeWindow)
             {
@@ -183,10 +240,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-
-        public Task LoadAsync(bool closeWindow = false)
+        public Task LoadAsync(KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
         {
-            return Task.Run(() => Load(closeWindow));
+            return Task.Run(() => Application.Current.Dispatcher.InvokeAsync(() => Load(item)));
+        }
+
+        public Task LoadAllAsync(bool closeWindow = false)
+        {
+            return Task.Run(() => Application.Current.Dispatcher.InvokeAsync(() => LoadAll(closeWindow)));
         }
     }
 }

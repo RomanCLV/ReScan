@@ -9,7 +9,7 @@
         xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
         mc:Ignorable="d"
         Title="Add scatter graph" 
-        Height="720" Width="1280"
+        Height="720" Width="1380"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource backgroundColor}"
         Foreground="{StaticResource foregroundColor}"
@@ -21,6 +21,9 @@
         <converters:ScatterGraphBuilderStateToBitmapImageConverter x:Key="ScatterGraphBuilderStateToBitmapImageConverter"/>
         <converters:ScatterGraphBuilderResultReductionEnabledConverter x:Key="ScatterGraphBuilderResultReductionEnabledConverter" />
         <converters:BuilderStateNotWorkingToBoolConverter x:Key="BuilderStateNotWorkingToBoolConverter"/>
+        <converters:StringConcaterMultiConverter x:Key="StringConcaterMultiConverter"/>
+        <converters:ReduceItemButtonEnabledMultiConverter x:Key="ReduceItemButtonEnabledMultiConverter" />
+        <converters:LoadItemButtonEnabledMultiConverter x:Key="LoadItemButtonEnabledMultiConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
@@ -85,7 +88,7 @@
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource update}" Width="24" Height="24" />
+                                    <Image Source="{StaticResource load}" Width="24" Height="24"/>
                                     <TextBlock Text="Load" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                                 </StackPanel>
                             </Button.Content>
@@ -96,7 +99,7 @@
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource update}" Width="24" Height="24" />
+                                    <Image Source="{StaticResource load}" Width="24" Height="24" />
                                     <TextBlock Text="Load and close" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                                 </StackPanel>
                             </Button.Content>
@@ -104,6 +107,10 @@
                         <Button Content="Cancel" Style="{StaticResource myButton}"
                                 Command="{Binding ElementName=CancelCommandKey, Path=Command}"
                                 ToolTip="{Binding CancelCommand.Description}"/>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                        <TextBlock Text="Count of items to add:" Style="{StaticResource myTextBlock}" />
+                        <TextBlock Text="{Binding ItemsToAddCount}" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
                     <ListView 
                         x:Name="lv"
@@ -168,7 +175,7 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Name -->
-                                <GridViewColumn Header="Name" Width="200">
+                                <GridViewColumn Header="Name" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Key.Name}" Style="{StaticResource myTextBlockLeft}">
@@ -181,13 +188,16 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Details -->
-                                <GridViewColumn Header="Details" Width="200">
+                                <GridViewColumn Header="Details" Width="240">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Key.Details}" Style="{StaticResource myTextBlockLeft}">
-                                                <TextBlock.ToolTip>
-                                                    <ToolTip Content="{Binding Key.Details}" />
-                                                </TextBlock.ToolTip>
+                                            <TextBlock Style="{StaticResource myTextBlockLeft}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource StringConcaterMultiConverter}">
+                                                        <Binding Path="Key.Details" />
+                                                        <Binding Path="Value.Details" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
                                             </TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -218,7 +228,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <!-- Colonne Reduction factor -->
+                                <!-- Colonne Reduction Factor -->
                                 <GridViewColumn Header="Reduction factor" Width="175">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -235,7 +245,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <!-- Colonne Count reduced -->
+                                <!-- Colonne Reduced Count -->
                                 <GridViewColumn Header="Reduced Count" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -244,7 +254,17 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Actions" Width="165">
+                                <!-- Colonne Scale Factor -->
+                                <GridViewColumn Header="Scale factor" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Value.ScaleFactor, StringFormat=N2}" Style="{StaticResource myTextBox}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Actions -->
+                                <GridViewColumn Header="Actions" Width="205">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" IsEnabled="{Binding Key.State, Converter={StaticResource BuilderStateNotWorkingToBoolConverter}}">
@@ -259,8 +279,28 @@
                                                     </Button.Content>
                                                 </Button>
                                                 <Button Style="{StaticResource myButtonIcon}" ToolTip="Reduce" Click="ReduceButton_Click">
+                                                    <Button.IsEnabled>
+                                                        <MultiBinding Converter="{StaticResource ReduceItemButtonEnabledMultiConverter}">
+                                                            <Binding Path="Key.State" />
+                                                            <Binding Path="Value" />
+                                                            <Binding Path="Value.IsSuccess" />
+                                                        </MultiBinding>
+                                                    </Button.IsEnabled>
                                                     <Button.Content>
                                                         <Image Source="{StaticResource working}" />
+                                                    </Button.Content>
+                                                </Button>
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Load" Click="LoadButton_Click">
+                                                    <Button.IsEnabled>
+                                                        <MultiBinding Converter="{StaticResource LoadItemButtonEnabledMultiConverter}">
+                                                            <Binding Path="Key.State" />
+                                                            <Binding Path="Value" />
+                                                            <Binding Path="Value.IsSuccess" />
+                                                            <Binding Path="Value.IsAdded" />
+                                                        </MultiBinding>
+                                                    </Button.IsEnabled>
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource load}" />
                                                     </Button.Content>
                                                 </Button>
                                                 <Button Style="{StaticResource myButtonIcon}" ToolTip="Delete" Click="DeleteButton_Click">

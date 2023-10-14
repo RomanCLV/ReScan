@@ -20,7 +20,17 @@ namespace ReScanVisualizer.ViewModels
         public double ScaleFactor
         {
             get => _scaleFactor;
-            set => SetValue(ref _scaleFactor, value); // todo: rebuild all
+            set
+            {
+                if (value <= 0.0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Scale factor must be greater than 0.");
+                }
+                if (SetValue(ref _scaleFactor, value))
+                {
+                    // TODO: rebuild all
+                }
+            }
         }
 
         public Point3DViewModel Point { get; private set; }
@@ -87,19 +97,23 @@ namespace ReScanVisualizer.ViewModels
         {
         }
 
-        public SampleViewModel(Point3D point3D) : this(point3D, Colors.White, 0.5)
+        public SampleViewModel(Point3D point3D) : this(point3D, Colors.White)
         {
         }
 
-        public SampleViewModel(Color color) : this(new Point3D(), color, 0.5)
+        public SampleViewModel(Color color) : this(new Point3D(), color)
         {
         }
 
-        public SampleViewModel(Point3D point3D, Color color, double radius = 0.5)
+        public SampleViewModel(Point3D point3D, Color color, double scaleFactor = 1.0, double radius = 0.5)
         {
+            if (scaleFactor <= 0.0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
+            }
             IsDisposed = false;
             Color = new ColorViewModel(color);
-            _scaleFactor = 1.0;
+            _scaleFactor = scaleFactor;
             _oldOpacity = color.A;
             _isHidenChanging = false;
             _isHiden = _oldOpacity == 0;
