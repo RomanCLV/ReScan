@@ -109,6 +109,7 @@
     <Compile Include="UserControls\ColorSelector.xaml.cs">
       <DependentUpon>ColorSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Validators\PositiveNumberValidationRule.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\IScatterGraphBuilderGroup.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphBuildResult.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphEmptyBuilder.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRandomBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRectangle2DBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphViewModel.cs" />
+    <Compile Include="ViewModels\AddScatterGraph\EditScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\KeyValueObservable.cs" />
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
@@ -130,6 +132,12 @@
     </Compile>
     <Compile Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml.cs">
       <DependentUpon>AddScatterGraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\EditScatterGraphBuilderView.xaml.cs">
+      <DependentUpon>EditScatterGraphBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphFileBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphFileBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphEmptyBuilderView.xaml</DependentUpon>
@@ -187,6 +195,14 @@
     <Page Include="Views\AddScatterGraphViews\AddScatterGraphView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\EditScatterGraphBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphFileBuilderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AddScatterGraphViews\ScatterGraphEmptyBuilderView.xaml">
       <SubType>Designer</SubType>

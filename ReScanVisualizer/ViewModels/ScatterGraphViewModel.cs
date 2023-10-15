@@ -147,6 +147,10 @@ namespace ReScanVisualizer.ViewModels
         {
         }
 
+        /// <summary>
+        /// ScatterGraphViewModel constuctor.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double pointRadius = 0.25, bool hideBarycenter = false, bool hideAveragePlan = false)
         {
             if (scaleFactor <= 0.0)

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using ReScanVisualizer.Models;
 
@@ -181,7 +182,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRandom(ScatterGraph, uint, double, double, double, double, double, double)"/> method.</returns>
         public override ScatterGraphBuildResult Build()
         {
-            State = ScatterGraphBuilderState.Working;
+            Application.Current.Dispatcher.Invoke(() => State = ScatterGraphBuilderState.Working);
             ScatterGraphBuildResult scatterGraphBuildResult;
             try
             {

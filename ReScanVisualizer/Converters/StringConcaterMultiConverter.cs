@@ -17,7 +17,19 @@ namespace ReScanVisualizer.Converters
             {
                 sep = parameter.ToString();
             }
-            return string.Join(sep, values);
+            List<string> str = new List<string>(values.Length);
+            foreach (object o in values)
+            {
+                if (o is string s)
+                {
+                    if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
+                    {
+                        continue;
+                    }
+                    str.Add(s);
+                }
+            }
+            return string.Join(sep, str.ToArray());
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

@@ -19,7 +19,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
     {
         private readonly AddScatterGraphView _view;
         private readonly MainViewModel _mainViewModel;
-        
+
         public ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> Items { get; private set; }
 
         private uint _itemsToAddCount;
@@ -77,7 +77,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                     bool firstFound = false;
                     List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> toRemove = new List<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>(Items.Count);
                     KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> v = (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>)e.NewItems[0];
-                
+
                     // try to find if item is already in the list
                     foreach (var item in Items)
                     {
@@ -220,9 +220,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 {
                     item.Value.Reduce();
                 }
-                _mainViewModel.AddScatterGraph(new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor));
-                item.Value.SetAddedToTrue();
-                Items.Remove(item);
+                ScatterGraphViewModel? scatterGraphViewModel = null;
+                try
+                {
+                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    MessageBox.Show(e.Message, e.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                if (scatterGraphViewModel != null)
+                {
+                    _mainViewModel.AddScatterGraph(scatterGraphViewModel);
+                    item.Value.SetAddedToTrue();
+                    Items.Remove(item);
+                }
             }
         }
 
@@ -231,8 +243,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             while (Items.Count > 0)
             {
                 KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item = Items[0];
-                
-                    Load(item);
+                Load(item);
             }
             if (closeWindow)
             {

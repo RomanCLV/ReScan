@@ -24,11 +24,25 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         public ScatterGraphEmptyBuilderView()
         {
             InitializeComponent();
+            UpdateColorSelectorColor();
+        }
+
+        private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            UpdateColorSelectorColor();
+        }
+
+        private void UpdateColorSelectorColor()
+        {
+            if (DataContext is ScatterGraphBuilderBase builder)
+            {
+                ColorSelector.Color = builder.Color;
+            }
         }
 
         public void ColorSelector_ColorChanged(object sender, Color c)
         {
-            if (DataContext is  ScatterGraphEmptyBuilder builder)
+            if (DataContext is ScatterGraphEmptyBuilder builder)
             {
                 builder.Color = c;
             }

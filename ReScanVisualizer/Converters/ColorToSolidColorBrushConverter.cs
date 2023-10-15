@@ -30,6 +30,11 @@ namespace ReScanVisualizer.Converters
             {
                 return pair.Value;
             }
+            else if (value is null)
+            {
+                // no selection
+                return null;
+            }
             throw new NotImplementedException();
         }
     }

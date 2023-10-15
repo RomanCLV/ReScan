@@ -1,5 +1,4 @@
-﻿using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,15 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 
 namespace ReScanVisualizer.Views.AddScatterGraphViews
 {
     /// <summary>
-    /// Logique d'interaction pour ScatterGraphPopulateLineBuilderView.xaml
+    /// Logique d'interaction pour ScatterGraphFileBuilderView.xaml
     /// </summary>
-    public partial class ScatterGraphPopulateLineBuilderView : UserControl
+    public partial class ScatterGraphFileBuilderView : UserControl
     {
-        public ScatterGraphPopulateLineBuilderView()
+        public ScatterGraphFileBuilderView()
         {
             InitializeComponent();
             UpdateColorSelectorColor();
@@ -42,7 +42,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         public void ColorSelector_ColorChanged(object sender, Color c)
         {
-            if (DataContext is ScatterGraphPopulateLineBuilder builder)
+            if (DataContext is  ScatterGraphEmptyBuilder builder)
             {
                 builder.Color = c;
             }

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
@@ -20,8 +21,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> with an empty <see cref="ScatterGraph"/></returns>
         public override ScatterGraphBuildResult Build()
         {
+            Application.Current.Dispatcher.Invoke(() => State = ScatterGraphBuilderState.Working);
+            ScatterGraphBuildResult scatterGraphBuildResult = new ScatterGraphBuildResult(new ScatterGraph());
             State = ScatterGraphBuilderState.Success;
-            return new ScatterGraphBuildResult(new ScatterGraph());
+            return scatterGraphBuildResult;
         }
     }
 }

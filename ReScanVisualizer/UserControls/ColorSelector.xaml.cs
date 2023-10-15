@@ -71,6 +71,7 @@ namespace ReScanVisualizer.UserControls
                     {
                         ColorAlpha = value.A;
                     }
+                    UpdateComboBoxSelection();
                 }
             }
         }

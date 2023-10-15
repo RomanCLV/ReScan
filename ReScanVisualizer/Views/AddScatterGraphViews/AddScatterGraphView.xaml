@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
         xmlns:vm="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraph"
         xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+        xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
         xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
         mc:Ignorable="d"
         Title="Add scatter graph" 
@@ -121,6 +122,7 @@
                         >
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
+                                <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                                 <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                 <Setter Property="ToolTip" Value="Double click to edit"/>
@@ -258,7 +260,16 @@
                                 <GridViewColumn Header="Scale factor" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBox Text="{Binding Value.ScaleFactor, StringFormat=N2}" Style="{StaticResource myTextBox}" />
+                                            <TextBox  Style="{StaticResource myTextBox}">
+                                                <TextBox.Text>
+                                                    <Binding Path="Value.ScaleFactor" StringFormat="N2">
+                                                        <Binding.ValidationRules>
+                                                            <validators:PositiveNumberValidationRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

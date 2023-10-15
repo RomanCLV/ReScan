@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Foreground="{StaticResource foregroundColor}"
-             >
+             DataContextChanged="UserControl_DataContextChanged">
     <StackPanel>
         <GroupBox Header="Start" Margin="10">
             <form:PointForm DataContext="{Binding Start}" />
@@ -29,7 +29,7 @@
         </Grid>
 
         <GroupBox Header="Color" Margin="10">
-            <ctr:ColorSelector ColorChanged="ColorSelector_ColorChanged" Margin="30" />
+            <ctr:ColorSelector x:Name="ColorSelector" ColorChanged="ColorSelector_ColorChanged" Margin="30" />
         </GroupBox>
 
     </StackPanel>

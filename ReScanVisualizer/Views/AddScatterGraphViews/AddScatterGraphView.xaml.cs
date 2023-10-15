@@ -1,4 +1,5 @@
-﻿using ReScanVisualizer.ViewModels;
+﻿using ReScanVisualizer.UserControls;
+using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.ViewModels.AddScatterGraph;
 using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 using System;
@@ -74,6 +75,10 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                     _openedPopup = popup;
                     popup.Child.MouseLeave += Child_MouseLeave;
                     popup.IsOpen = true;
+                    if (popup.Child is ColorSelector selector)
+                    {
+                        selector.Color = item.Key.Color;
+                    }
                 }
                 else
                 {
@@ -104,6 +109,28 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             }
         }
 
+        private void Edit(ScatterGraphBuilderBase builder)
+        {
+            EditScatterGraphBuilderView view = new EditScatterGraphBuilderView()
+            {
+                Owner = this
+            };
+            EditScatterGraphViewModel editScatterGraphViewModel = new EditScatterGraphViewModel(view, builder);
+            view.DataContext = editScatterGraphViewModel;
+            view.ShowDialog();
+        }
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListViewItem lvi)
+            {
+                if (lvi.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
+                {
+                    Edit(item.Key);
+                }
+            }
+        }
+
         private void BuildButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button b)
@@ -120,7 +147,13 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO : edit
+            if (sender is Button b)
+            {
+                if (b.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
+                {
+                    Edit(item.Key);
+                }
+            }
         }
 
         private void ReduceButton_Click(object sender, RoutedEventArgs e)

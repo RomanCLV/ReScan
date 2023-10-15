@@ -32,7 +32,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     value = (uint)(5 * Width);
                 }
-                SetValue(ref _numPoints, value);
+                if (SetValue(ref _numPoints, value))
+                {
+                    OnPropertyChanged(nameof(Details));
+                }
             }
         }
 
@@ -92,7 +95,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateLine(ScatterGraph, Point3D, Point3D, uint)"/> method.</returns>
         public override ScatterGraphBuildResult Build()
         {
-            State = ScatterGraphBuilderState.Working;
+            Application.Current.Dispatcher.Invoke(() => State = ScatterGraphBuilderState.Working);
             ScatterGraphBuildResult scatterGraphBuildResult;
             try
             {
