@@ -151,7 +151,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public string Details =>
             (_suggestedScaleFactor == 0.0 ? "" : $"Farthest point from origin: {(int)_farthestPointLength}. Suggested scale factor: {Math.Round(_suggestedScaleFactor, 2)}") +
-            (_exception is null ? "" : $"\n\n{_exception.Message}");
+            (_exception is null ? "" : $"\n{_exception.Message}");
 
         public ScatterGraphBuildResult() : this(null, null)
         {
