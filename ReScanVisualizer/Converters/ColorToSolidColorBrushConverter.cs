@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 
+#nullable enable
+
 namespace ReScanVisualizer.Converters
 {
     public class ColorToSolidColorBrushConverter : IValueConverter
@@ -20,7 +22,7 @@ namespace ReScanVisualizer.Converters
             throw new NotImplementedException();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is  SolidColorBrush color) 
             {

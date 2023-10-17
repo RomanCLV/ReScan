@@ -9,13 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
+#nullable enable
+
 namespace ReScanVisualizer.Converters
 {
     public class ScatterGraphBuilderStateToBitmapImageConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            BitmapImage image = null;
+            BitmapImage? image = null;
             if (value is ScatterGraphBuilderState state)
             {
                 image = new BitmapImage();
