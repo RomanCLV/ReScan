@@ -29,9 +29,11 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private ScatterGraphBuilderBase? _selectedBuilder;
         private Popup? _openedPopup;
+        private bool _isEditingTextBox;
 
         public AddScatterGraphView()
         {
+            _isEditingTextBox = false;
             _selectedBuilder = null;
             _openedPopup = null;
             InitializeComponent();
@@ -49,6 +51,10 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         {
             if (sender is ListView listView)
             {
+                if (_isEditingTextBox)
+                {
+                    return;
+                }
                 if (e.Key == Key.Delete || e.Key == Key.Back)
                 {
                     if (listView.SelectedItem != null)
@@ -125,6 +131,16 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             EditScatterGraphViewModel editScatterGraphViewModel = new EditScatterGraphViewModel(view, builder);
             view.DataContext = editScatterGraphViewModel;
             view.ShowDialog();
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            _isEditingTextBox = true;
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            _isEditingTextBox = false;
         }
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)

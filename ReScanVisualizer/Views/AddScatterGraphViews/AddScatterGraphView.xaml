@@ -237,7 +237,8 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBox  Style="{StaticResource myTextBox}" Width="50"
                                                           IsEnabled="{Binding Value.IsSuccess}"
-                                                          Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                                                          Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                                          GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                                                 
                                                 <Slider   Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="100" VerticalAlignment="Center"
                                                           IsEnabled="{Binding Value.IsSuccess}"
@@ -260,7 +261,8 @@
                                 <GridViewColumn Header="Scale factor" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBox  Style="{StaticResource myTextBox}">
+                                            <TextBox Style="{StaticResource myTextBox}"
+                                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
                                                 <TextBox.Text>
                                                     <Binding Path="Value.ScaleFactor" StringFormat="N2">
                                                         <Binding.ValidationRules>

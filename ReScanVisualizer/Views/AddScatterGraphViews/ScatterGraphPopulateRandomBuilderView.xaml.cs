@@ -34,7 +34,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private void UpdateColorSelectorColor()
         {
-            if (DataContext is ScatterGraphBuilderBase builder)
+            if (DataContext is ScatterGraphPopulateRandomBuilder builder)
             {
                 ColorSelector.Color = builder.Color;
             }

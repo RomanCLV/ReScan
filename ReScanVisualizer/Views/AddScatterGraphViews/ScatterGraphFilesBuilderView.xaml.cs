@@ -92,6 +92,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         private void ColorPopup_Closed(object sender, EventArgs e)
         {
             _selectedBuilder = null;
+            _openedPopup = null;
         }
     }
 }

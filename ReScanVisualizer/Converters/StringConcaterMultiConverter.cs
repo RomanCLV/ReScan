@@ -22,6 +22,7 @@ namespace ReScanVisualizer.Converters
             {
                 if (o is string s)
                 {
+                    s = s.Trim();
                     if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
                     {
                         continue;

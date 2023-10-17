@@ -42,7 +42,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         public void ColorSelector_ColorChanged(object sender, Color c)
         {
-            if (DataContext is  ScatterGraphEmptyBuilder builder)
+            if (DataContext is  ScatterGraphFileBuilder builder)
             {
                 builder.Color = c;
             }
