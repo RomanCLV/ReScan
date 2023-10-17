@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels.AddScatterGraph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,17 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         public EditScatterGraphBuilderView()
         {
             InitializeComponent();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (DataContext is EditScatterGraphViewModel viewModel)
+            {
+                if (!viewModel.Builder.CanBuild)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
     }
 }

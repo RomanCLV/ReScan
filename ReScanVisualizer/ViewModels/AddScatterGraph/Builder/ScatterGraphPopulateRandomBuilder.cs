@@ -30,6 +30,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _numPoints, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -51,6 +52,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _minX, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -72,6 +74,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _maxX, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -93,6 +96,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _minY, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -114,6 +118,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _maxY, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -135,6 +140,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _minZ, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -156,6 +162,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _maxZ, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }

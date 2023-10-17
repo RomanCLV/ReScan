@@ -23,7 +23,6 @@ namespace ReScanVisualizer.Commands
 
         public ValidateAddingScatterGraphBuilderCommand(AddScatterGraphViewModel addScatterGraphViewModel, AddScatterGraphBuilderView addScatterGraphView, AddScatterGraphBuilderViewModel addScatterGraphModelView)
         {
-            Debug.WriteLine("new ValidateAddingScatterGraphBuilderCommand");
             _addScatterGraphViewModel = addScatterGraphViewModel;
             _addScatterGraphBuilderView = addScatterGraphView;
             _addScatterGraphBuilderModelView = addScatterGraphModelView;
@@ -39,7 +38,6 @@ namespace ReScanVisualizer.Commands
 
         ~ValidateAddingScatterGraphBuilderCommand()
         {
-            Debug.WriteLine("~ ValidateAddingScatterGraphBuilderCommand");
             _addScatterGraphBuilderModelView.PropertyChanged -= AddScatterGraphModelView_PropertyChanged;
             if (_builder != null)
             {

@@ -26,7 +26,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         {
             _builder = builder;
 
-            ValidateCommand = new CommandKey(new ActionCommand(view.Close), Key.Enter, ModifierKeys.None, "OK");
+            ValidateCommand = new CommandKey(new ValidateEditingScatterGraphBuilderCommand(view, _builder), Key.Enter, ModifierKeys.None, "OK");
         }
     }
 }

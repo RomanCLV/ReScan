@@ -35,6 +35,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _numPoints, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -71,12 +72,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (CanBuild)
                 {
                     Message = string.Empty;
-                    State = ScatterGraphBuilderState.Ready;
                 }
                 else
                 {
                     Message = "Start point and End point must be different!";
-                    State = ScatterGraphBuilderState.Error;
                 }
                 OnPropertyChanged(nameof(Details));
             }

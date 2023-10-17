@@ -24,6 +24,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _plan, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -46,6 +47,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     NumPointsWidth = (uint)_width + 1;
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -68,6 +70,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     NumPointsHeight = (uint)_height + 1;
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -89,6 +92,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _numPointsWidth, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -110,6 +114,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _numPointsHeight, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -137,6 +142,29 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _height = 10.0;
             _numPointsWidth = (uint)_width + 1;
             _numPointsHeight = (uint)_height + 1;
+
+            Center.PropertyChanged += Center_PropertyChanged;
+        }
+
+        ~ScatterGraphPopulateRectangle2DBuilder()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                Center.PropertyChanged -= Center_PropertyChanged;
+                base.Dispose();
+                IsDisposed = true;
+            }
+        }
+
+        private void Center_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(Details));
+            State = ScatterGraphBuilderState.Ready;
         }
 
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, uint, uint)"/> method.</returns>

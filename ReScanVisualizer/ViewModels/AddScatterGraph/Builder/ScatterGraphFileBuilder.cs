@@ -26,6 +26,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     OnPropertyChanged(nameof(FileName));
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }
@@ -41,6 +42,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 if (SetValue(ref _containsHeader, value))
                 {
                     OnPropertyChanged(nameof(Details));
+                    State = ScatterGraphBuilderState.Ready;
                 }
             }
         }

@@ -89,6 +89,11 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private void Child_MouseLeave(object sender, MouseEventArgs e)
         {
+            ClosePopup();
+        }
+
+        private void ClosePopup()
+        {
             if (_openedPopup != null)
             {
                 _openedPopup.Child.MouseLeave -= Child_MouseLeave;
@@ -99,6 +104,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         private void ColorPopup_Closed(object sender, EventArgs e)
         {
             _selectedBuilder = null;
+            _openedPopup = null;
         }
 
         private void ColorSelector_ColorChanged(object sender, Color e)
@@ -111,6 +117,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private void Edit(ScatterGraphBuilderBase builder)
         {
+            ClosePopup();
             EditScatterGraphBuilderView view = new EditScatterGraphBuilderView()
             {
                 Owner = this
