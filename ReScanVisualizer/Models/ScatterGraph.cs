@@ -392,7 +392,7 @@ namespace ReScanVisualizer.Models
                     }
                 }
                 z = Vector3D.CrossProduct(x, y);
-                return new Plan(z.X, z.Y, z.Z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
+                return new Plan(z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
             }
 
             double sX = 0.0;
@@ -465,6 +465,8 @@ namespace ReScanVisualizer.Models
 
         public static Repere3D ComputeRepere3D(ScatterGraph scatterGraph, Point3D origin, Plan averagePlan)
         {
+            // TODO : debugger ici
+
             Repere3D repere = new Repere3D(origin, new Vector3D(), new Vector3D(), averagePlan.GetNormal());
             repere.Z.Normalize();
 

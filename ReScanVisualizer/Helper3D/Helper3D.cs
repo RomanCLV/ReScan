@@ -108,6 +108,10 @@ namespace ReScanVisualizer.Helper3D
 
         public static MeshGeometry3D BuildPlanGeometry(Point3D center, Vector3D normal, Vector3D up, double width, double height, double dist = 0.0)
         {
+            if (up == new Vector3D())
+            {
+
+            }
             MeshBuilder builder = new MeshBuilder(false, false);
             builder.AddCubeFace(center, normal, up, dist, width, height);
             return builder.ToMesh(true);

@@ -22,6 +22,14 @@ namespace ReScanVisualizer.Models
             D = d;
         }
 
+        public Plan(Vector3D normal, double d = 0.0)
+        {
+            A = normal.X;
+            B = normal.Y;
+            C = normal.Z;
+            D = d;
+        }
+
         public Plan(Plan plan)
         {
             A = plan.A;

@@ -238,7 +238,7 @@ namespace ReScanVisualizer.ViewModels
             _isHidenChanging = false;
             _isHiden = _oldOpacity == 0;
 
-            _model = Helper3D.Helper3D.BuildPlanModel(_center, _plan.GetNormal(), _up, _width, _height, _dist, Color.Color);
+            _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, _width, _height, _dist, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;
         }
