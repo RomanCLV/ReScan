@@ -15,8 +15,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
     {
         public Point3DViewModel Center { get; private set; }
 
-        private Plan2D _plan;
-        public Plan2D Plan
+        private Enums _plan;
+        public Enums Plan
         {
             get => _plan;
             set
@@ -137,7 +137,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 CorrectY = CorrectY,
                 CorrectZ = CorrectZ
             };
-            _plan = Plan2D.XY;
+            _plan = Enums.XY;
             _width = 10.0;
             _height = 10.0;
             _numPointsWidth = (uint)_width + 1;
@@ -167,7 +167,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             State = ScatterGraphBuilderState.Ready;
         }
 
-        /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, uint, uint)"/> method.</returns>
+        /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Enums, double, double, uint, uint)"/> method.</returns>
         public override ScatterGraphBuildResult Build()
         {
             Application.Current.Dispatcher.Invoke(() => State = ScatterGraphBuilderState.Working);

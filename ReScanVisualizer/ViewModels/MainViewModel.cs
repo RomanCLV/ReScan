@@ -12,6 +12,7 @@ using ReScanVisualizer.Commands;
 using System.Windows.Input;
 using HelixToolkit.Wpf;
 using System.Windows;
+using ReScanVisualizer.Models;
 
 #nullable enable
 
@@ -39,10 +40,7 @@ namespace ReScanVisualizer.ViewModels
             IsDisposed = false;
             AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
 
-            OriginModel = new Model3DGroup();
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(1, 0, 0), 0.1, Brushes.Red));
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 1, 0), 0.1, Brushes.Green));
-            OriginModel.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), new Point3D(0, 0, 1), 0.1, Brushes.Blue));
+            OriginModel = BuildRepere(new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
 
             Models = new Model3DGroup();
             SelectedViewModel = null;
@@ -54,6 +52,24 @@ namespace ReScanVisualizer.ViewModels
         ~MainViewModel()
         {
             Dispose();
+        }
+
+        public Model3DGroup BuildRepere(Repere3D repere, Brush cx, Brush cy, Brush cz, double diameter = 0.1)
+        {
+            Model3DGroup group = new Model3DGroup();
+            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.X), diameter, cx));
+            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Y), diameter, cy));
+            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Z), diameter, cz));
+            return group;
+        }
+
+        public Model3DGroup BuildRepere(Vector3D x, Vector3D y, Vector3D z, Brush cx, Brush cy, Brush cz, double diameter = 0.1)
+        {
+            Model3DGroup group = new Model3DGroup();
+            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), x.ToPoint3D(), diameter, cx));
+            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), y.ToPoint3D(), diameter, cy));
+            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), z.ToPoint3D(), diameter, cz));
+            return group;
         }
 
         public override void Dispose()
@@ -86,9 +102,12 @@ namespace ReScanVisualizer.ViewModels
                             Application.Current.Dispatcher.Invoke(() =>
                             {
                                 Model3DGroup group = new Model3DGroup();
+                                Model3DGroup groupRepere = BuildRepere(graphViewModel.Repere, Brushes.Red, Brushes.Green, Brushes.Blue);
                                 group.Children.Add(graphViewModel.Model);
+                                group.Children.Add(groupRepere);
                                 group.Children.Add(graphViewModel.Barycenter.Model);
                                 group.Children.Add(graphViewModel.AveragePlan.Model);
+
                                 Models.Children.Add(group);
                             });
                         }

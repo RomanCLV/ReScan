@@ -272,7 +272,7 @@
     <Compile Include="Models\I3DElement.cs" />
     <Compile Include="Models\ItemIndexed.cs" />
     <Compile Include="Models\Plan.cs" />
-    <Compile Include="Models\Plan2D.cs" />
+    <Compile Include="Others\Enums.cs" />
     <Compile Include="Models\ScatterGraph.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PlanViewModel.cs" />

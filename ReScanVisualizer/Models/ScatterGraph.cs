@@ -190,7 +190,7 @@ namespace ReScanVisualizer.Models
             return maxIndex;
         }
 
-        public void FindExtrema(Plan2D plan, Func<Point3D, double>[] getters, out Point3D minPoint, out Point3D maxPoint)
+        public void FindExtrema(Enums plan, Func<Point3D, double>[] getters, out Point3D minPoint, out Point3D maxPoint)
         {
             if (_points.Count == 0)
             {
@@ -214,7 +214,7 @@ namespace ReScanVisualizer.Models
 
             switch (plan)
             {
-                case Plan2D.XY:
+                case Enums.XY:
                     minPoint.X = _points[extremas[0]].X;
                     minPoint.Y = _points[extremas[1]].Y;
                     minPoint.Z = 0.0;
@@ -223,7 +223,7 @@ namespace ReScanVisualizer.Models
                     maxPoint.Z = 0.0;
                     break;
 
-                case Plan2D.XZ:
+                case Enums.XZ:
                     minPoint.X = _points[extremas[0]].X;
                     minPoint.Y = 0.0;
                     minPoint.Z = _points[extremas[1]].Z;
@@ -232,7 +232,7 @@ namespace ReScanVisualizer.Models
                     maxPoint.Z = _points[extremas[3]].Z;
                     break;
 
-                case Plan2D.YZ:
+                case Enums.YZ:
                     minPoint.X = 0.0;
                     minPoint.Y = _points[extremas[0]].Y;
                     minPoint.Z = _points[extremas[1]].Z;
@@ -376,11 +376,7 @@ namespace ReScanVisualizer.Models
                 Vector3D x = _points[1] - _points[0];
                 Vector3D y = new Vector3D(0, 1, 0);
                 Vector3D z;
-                if (ArePointsColinear())
-                {
-                    // TODO : find y
-                }
-                else
+                if (!ArePointsColinear())
                 {
                     for (int i = 2; i < size; i++)
                     {
@@ -392,6 +388,10 @@ namespace ReScanVisualizer.Models
                     }
                 }
                 z = Vector3D.CrossProduct(x, y);
+                if (z.Z < 0)
+                {
+                    z *= -1;
+                }
                 return new Plan(z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
             }
 
@@ -453,6 +453,13 @@ namespace ReScanVisualizer.Models
             b *= (k / D);
             c *= (-k / D);
 
+            if (c < 0)
+            {
+                a *= -1;
+                b *= -1;
+                c *= -1;
+            }
+
             return new Plan(a, b, c, -(a * barycenter.X + b * barycenter.Y + c * barycenter.Z));
         }
 
@@ -460,29 +467,92 @@ namespace ReScanVisualizer.Models
         {
             Point3D barycenter = scatterGraph.ComputeBarycenter();
             Plan averagePlan = scatterGraph.ComputeAveragePlan();
-            return ComputeRepere3D(scatterGraph, barycenter, averagePlan);
+            return ComputeRepere3D(barycenter, averagePlan);
         }
 
-        public static Repere3D ComputeRepere3D(ScatterGraph scatterGraph, Point3D origin, Plan averagePlan)
+        public static Repere3D ComputeRepere3D(Point3D origin, Plan averagePlan)
         {
-            // TODO : debugger ici
-
-            Repere3D repere = new Repere3D(origin, new Vector3D(), new Vector3D(), averagePlan.GetNormal());
-            repere.Z.Normalize();
-
-            // on trouve le point le plus proche de l'origine du repere, on en fait son projet� orthogonal
-            Point3D closestPointFromOrigin = GetClosestPoint(scatterGraph, origin);
-            Point3D projetedPoint = averagePlan.GetOrthogonalProjection(closestPointFromOrigin);
-
-            // On trouve le vecteur entre l'origne et le projet� et on le normalise - On a X
-            repere.X = projetedPoint - repere.Origin;
-            repere.X.Normalize();
-
-            // On fait le produit vectoriel Z*X pour avoir Y, et on normalise
-            repere.Y = Vector3D.CrossProduct(repere.Z, repere.X);
-            repere.Y.Normalize();
-
+            Repere3D repere = ComputeOrientedRepere(averagePlan.GetNormal(), Axis.Z);
+            repere.Origin = origin;
             return repere;
+        }
+
+        public static Repere3D ComputeOrientedRepere(Vector3D direction, Axis axis)
+        {
+            double a;
+            double b;
+            double dx;
+            double dy;
+            double dz;
+
+            double cosa;
+            double cosb;
+            double sina;
+            double sinb;
+
+            double cosa_cosb;
+            double cosa_sinb;
+            double sina_cosb;
+            double sina_sinb;
+
+            Repere3D result = new Repere3D();
+            Matrix3D rot;
+
+            if (direction.Length != 1.0)
+            {
+                direction.Normalize();
+            }
+
+            switch (axis)
+            {
+                case Axis.X:
+                    dx = direction.X - result.X.X;
+                    dy = direction.Y - result.X.Y;
+                    dz = direction.Z - result.X.Z;
+                    a = Math.Atan2(dy, dx);
+                    b = Math.Atan2(dz, dx);
+                    break;
+
+                case Axis.Y:
+                    dx = direction.X - result.Y.X;
+                    dy = direction.Y - result.Y.Y;
+                    dz = direction.Z - result.Y.Z;
+                    a = Math.Atan2(dx, dy);
+                    b = Math.Atan2(dz, dy);
+                    break;
+
+                case Axis.Z:
+                    dx = direction.X - result.Z.X;
+                    dy = direction.Y - result.Z.Y;
+                    dz = direction.Z - result.Z.Z;
+                    a = Math.Atan2(dx, dz);
+                    b = Math.Atan2(dy, dz);
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            cosa = Math.Cos(a);
+            cosb = Math.Cos(b);
+            sina = Math.Sin(a);
+            sinb = Math.Sin(b);
+            cosa_cosb = cosa * cosb;
+            cosa_sinb = cosa * sinb;
+            sina_cosb = sina * cosb;
+            sina_sinb = sina * sinb;
+
+            rot = new Matrix3D(
+                        cosa_cosb, -sina, cosa_sinb, 0,
+                        sina_cosb, cosa, sina_sinb, 0,
+                            -sinb, 0, cosb, 0,
+                                0, 0, 0, 1);
+
+            result.X = new Vector3D(rot.M11, rot.M21, rot.M31);
+            result.Y = new Vector3D(rot.M12, rot.M22, rot.M32);
+            result.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
+
+            return result;
         }
 
         #region static functions
@@ -503,7 +573,7 @@ namespace ReScanVisualizer.Models
             }
         }
 
-        public static void PopulateRectangle2D(ScatterGraph scatterGraph, Point3D Center, Plan2D plan, double width, double height, uint numPointsWidth, uint numPointsHeight)
+        public static void PopulateRectangle2D(ScatterGraph scatterGraph, Point3D Center, Enums plan, double width, double height, uint numPointsWidth, uint numPointsHeight)
         {
             if (numPointsWidth < 2)
             {
@@ -528,19 +598,19 @@ namespace ReScanVisualizer.Models
 
                     switch (plan)
                     {
-                        case Plan2D.XY:
+                        case Enums.XY:
                             p.X = Center.X - halfWidth + i * stepWidth;
                             p.Y = Center.Y - halfHeight + j * stepHeight;
                             p.Z = Center.Z;
                             break;
 
-                        case Plan2D.XZ:
+                        case Enums.XZ:
                             p.X = Center.X - halfWidth + i * stepWidth;
                             p.Y = Center.Y;
                             p.Z = Center.Z - halfHeight + j * stepHeight;
                             break;
 
-                        case Plan2D.YZ:
+                        case Enums.YZ:
                             p.X = Center.X;
                             p.Y = Center.Y - halfWidth + i * stepWidth;
                             p.Z = Center.Z - halfHeight + j * stepHeight;
