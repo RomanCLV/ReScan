@@ -77,6 +77,7 @@ namespace ReScanVisualizer
 
         public static Repere3D ComputeOrientedRepere(Vector3D direction, Axis axis)
         {
+            return ComputeOrientedRepere2(direction, axis);
             double a;
             double b;
             double dx;
@@ -146,6 +147,44 @@ namespace ReScanVisualizer
                         sina_cosb, cosa, sina_sinb, 0,
                             -sinb, 0, cosb, 0,
                                 0, 0, 0, 1);
+
+            result.X = new Vector3D(rot.M11, rot.M21, rot.M31);
+            result.Y = new Vector3D(rot.M12, rot.M22, rot.M32);
+            result.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
+
+            return result;
+        }
+
+        public static Repere3D ComputeOrientedRepere2(Vector3D direction, Axis axis)
+        {
+            double a;
+            double b;
+            Matrix3D rot;
+            Repere3D result = new Repere3D();
+            
+            switch (axis)
+            {
+                case Axis.X:
+                    a = Math.Atan2(direction.Y, direction.X);
+                    b = Math.Atan2(direction.Z, direction.X);
+                    rot = CreateRotationMatrix(Axis.Z, a) * CreateRotationMatrix(Axis.X, b);
+                    break;
+
+                case Axis.Y:
+                    a = -Math.Atan2(direction.X, direction.Y);
+                    b = Math.Atan2(direction.Z, direction.X);
+                    rot = CreateRotationMatrix(Axis.Z, a) * CreateRotationMatrix(Axis.X, b);
+                    break;
+
+                case Axis.Z:
+                    a = Math.Atan2(direction.Y, direction.X);
+                    b = -Math.Atan2(direction.Z, direction.X);
+                    rot = CreateRotationMatrix(Axis.Y, b) * CreateRotationMatrix(Axis.X, a);
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
 
             result.X = new Vector3D(rot.M11, rot.M21, rot.M31);
             result.Y = new Vector3D(rot.M12, rot.M22, rot.M32);

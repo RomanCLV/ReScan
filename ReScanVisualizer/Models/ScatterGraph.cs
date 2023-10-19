@@ -377,7 +377,7 @@ namespace ReScanVisualizer.Models
                 Vector3D z;
                 if (ArePointsColinear())
                 {
-                    Repere3D repere = ComputeOrientedRepere(x, Axis.X);
+                    Repere3D repere = Tools.ComputeOrientedRepere(x, Axis.X);
                     z = repere.Z;
                 }
                 else
@@ -477,7 +477,7 @@ namespace ReScanVisualizer.Models
 
         public static Repere3D ComputeRepere3D(Point3D origin, Plan averagePlan)
         {
-            Repere3D repere = ComputeOrientedRepere(averagePlan.GetNormal(), Axis.Z);
+            Repere3D repere = Tools.ComputeOrientedRepere(averagePlan.GetNormal(), Axis.Z);
             repere.Origin = origin;
             return repere;
         }
