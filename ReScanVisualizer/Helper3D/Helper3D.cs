@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Windows.Media;
 using System.Data;
+using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer.Helper3D
 {
@@ -108,10 +109,6 @@ namespace ReScanVisualizer.Helper3D
 
         public static MeshGeometry3D BuildPlanGeometry(Point3D center, Vector3D normal, Vector3D up, double width, double height, double dist = 0.0)
         {
-            if (up == new Vector3D())
-            {
-
-            }
             MeshBuilder builder = new MeshBuilder(false, false);
             builder.AddCubeFace(center, normal, up, dist, width, height);
             return builder.ToMesh(true);
@@ -133,5 +130,23 @@ namespace ReScanVisualizer.Helper3D
         }
 
         #endregion
+
+        public static Model3DGroup BuildBaseModel(Base3D repere, Brush cx, Brush cy, Brush cz, double diameter = 0.1)
+        {
+            Model3DGroup group = new Model3DGroup();
+            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.X), diameter, cx));
+            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Y), diameter, cy));
+            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Z), diameter, cz));
+            return group;
+        }
+
+        public static Model3DGroup BuildBaseModel(Point3D origin, Vector3D x, Vector3D y, Vector3D z, Brush cx, Brush cy, Brush cz, double diameter = 0.1)
+        {
+            Model3DGroup group = new Model3DGroup();
+            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, x), diameter, cx));
+            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, y), diameter, cy));
+            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, z), diameter, cz));
+            return group;
+        }
     }
 }

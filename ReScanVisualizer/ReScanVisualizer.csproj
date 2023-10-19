@@ -104,7 +104,7 @@
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
-    <Compile Include="Models\Repere3D.cs" />
+    <Compile Include="Models\Base3D.cs" />
     <Compile Include="Others\Tools.cs" />
     <Compile Include="Service\ISelectFilesService.cs" />
     <Compile Include="UserControls\ColorSelector.xaml.cs">
@@ -124,6 +124,7 @@
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRectangle2DBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraph\EditScatterGraphViewModel.cs" />
+    <Compile Include="ViewModels\Base3DViewModel.cs" />
     <Compile Include="ViewModels\KeyValueObservable.cs" />
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />

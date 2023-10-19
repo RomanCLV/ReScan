@@ -13,6 +13,8 @@ using System.Windows.Input;
 using HelixToolkit.Wpf;
 using System.Windows;
 using ReScanVisualizer.Models;
+using System.Security.Cryptography;
+using System.Collections.Specialized;
 
 #nullable enable
 
@@ -31,45 +33,39 @@ namespace ReScanVisualizer.ViewModels
 
         public ObservableCollection<ScatterGraphViewModel> ScatterGraphs { get; private set; }
 
+        public ObservableCollection<Base3DViewModel> Bases { get; private set; }
+
         public Model3DGroup Models { get; private set; }
 
+        public Model3DGroup BasesModels { get; private set; }
+
         public CommandKey AddScatterGraphCommand { get; }
+
+        public CommandKey AddBaseCommand { get; }
 
         public MainViewModel()
         {
             IsDisposed = false;
-            AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
-
-            OriginModel = BuildRepere(new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
+            OriginModel = Helper3D.Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
 
             Models = new Model3DGroup();
+            BasesModels = new Model3DGroup();
+
             SelectedViewModel = null;
 
             ScatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
+            Bases = new ObservableCollection<Base3DViewModel>();
+
+            AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
+            AddBaseCommand = new CommandKey(new ActionCommand(AddBase), Key.B, ModifierKeys.Control | ModifierKeys.Shift, "Add a new base");
+
             ScatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
+            Bases.CollectionChanged += Bases_CollectionChanged;
         }
 
         ~MainViewModel()
         {
             Dispose();
-        }
-
-        public Model3DGroup BuildRepere(Repere3D repere, Brush cx, Brush cy, Brush cz, double diameter = 0.1)
-        {
-            Model3DGroup group = new Model3DGroup();
-            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.X), diameter, cx));
-            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Y), diameter, cy));
-            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Z), diameter, cz));
-            return group;
-        }
-
-        public Model3DGroup BuildRepere(Vector3D x, Vector3D y, Vector3D z, Brush cx, Brush cy, Brush cz, double diameter = 0.1)
-        {
-            Model3DGroup group = new Model3DGroup();
-            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), x.ToPoint3D(), diameter, cx));
-            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), y.ToPoint3D(), diameter, cy));
-            group.Children.Add(Helper3D.Helper3D.BuildArrowModel(new Point3D(), z.ToPoint3D(), diameter, cz));
-            return group;
         }
 
         public override void Dispose()
@@ -78,8 +74,14 @@ namespace ReScanVisualizer.ViewModels
             {
                 IsDisposed = true;
                 ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
+                Bases.CollectionChanged -= Bases_CollectionChanged;
                 base.Dispose();
             }
+        }
+
+        private void AddBase()
+        {
+            Bases.Add(Base3DViewModel.CreateCountedInstance(new Base3D(new Point3D(1, 1, 1))));
         }
 
         public void AddScatterGraph(ScatterGraphViewModel scatterGraphViewModel)
@@ -90,56 +92,82 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private void ScatterGraphs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ScatterGraphs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Add:
                     foreach (object? item in e.NewItems)
                     {
-                        if (item is ScatterGraphViewModel graphViewModel)
+                        ScatterGraphViewModel graphViewModel = (ScatterGraphViewModel)item;
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                Model3DGroup group = new Model3DGroup();
-                                Model3DGroup groupRepere = BuildRepere(graphViewModel.Repere, Brushes.Red, Brushes.Green, Brushes.Blue);
-                                group.Children.Add(graphViewModel.Model);
-                                group.Children.Add(groupRepere);
-                                group.Children.Add(graphViewModel.Barycenter.Model);
-                                group.Children.Add(graphViewModel.AveragePlan.Model);
-
-                                Models.Children.Add(group);
-                            });
-                        }
+                            Model3DGroup group = new Model3DGroup();
+                            group.Children.Add(graphViewModel.Model);
+                            group.Children.Add(graphViewModel.Base3D.Model);
+                            group.Children.Add(graphViewModel.Barycenter.Model);
+                            group.Children.Add(graphViewModel.AveragePlan.Model);
+                            Models.Children.Add(group);
+                        });
                     }
                     break;
 
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Remove:
                     foreach (object? item in e.NewItems)
                     {
-                        if (item is ScatterGraphViewModel graphViewModel)
+                        ScatterGraphViewModel graphViewModel = (ScatterGraphViewModel)item;
+                        for (int i = 0; i < Models.Children.Count; i++)
                         {
-                            for (int i = 0; i < Models.Children.Count; i++)
+                            if (Models.Children[i] is Model3DGroup group)
                             {
-                                if (Models.Children[i] is Model3DGroup group)
+                                if (group.Children[0].Equals(graphViewModel.Model))
                                 {
-                                    if (group.Children[0].Equals(graphViewModel.Model))
-                                    {
-                                        Models.Children.RemoveAt(i);
-                                        i--;
-                                    }
+                                    Models.Children.RemoveAt(i);
+                                    i--;
                                 }
-                                else
-                                {
-                                    throw new NotImplementedException("Model3D was expected to be a Model3DGroup.");
-                                }
+                            }
+                            else
+                            {
+                                throw new NotImplementedException("Model3D was expected to be a Model3DGroup.");
                             }
                         }
                     }
                     break;
 
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                case NotifyCollectionChangedAction.Reset:
                     Models.Children.Clear();
+                    break;
+            }
+        }
+
+        private void Bases_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (object? item in e.NewItems)
+                    {
+                        BasesModels.Children.Add(((Base3DViewModel)item).Model);
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (object? item in e.OldItems)
+                    {
+                        for (int i = 0; i < BasesModels.Children.Count; i++)
+                        {
+                            Base3DViewModel base3D = (Base3DViewModel)item;
+                            if (BasesModels.Children[i].Equals(base3D.Model))
+                            {
+                                BasesModels.Children.RemoveAt(i);
+                                i--;
+                            }
+                        }
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    BasesModels.Children.Clear();
                     break;
             }
         }

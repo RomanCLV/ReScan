@@ -98,11 +98,11 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _averagePlan, value);
         }
 
-        private Repere3D _repere;
-        public Repere3D Repere
+        private Base3DViewModel _base3D;
+        public Base3DViewModel Base3D
         {
-            get => _repere;
-            private set => _repere = value;
+            get => _base3D;
+            set => SetValue(ref _base3D, value);
         }
 
         public Model3D Model { get; private set; }
@@ -191,10 +191,13 @@ namespace ReScanVisualizer.ViewModels
             {
                 averagePlan = new Plan();
             }
-            _repere = ScatterGraph.ComputeRepere3D(barycenter, averagePlan);
+            _base3D = new Base3DViewModel(ScatterGraph.ComputeRepere3D(barycenter, averagePlan))
+            {
+                Name = "Plan base"
+            };
 
             _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius);
-            _averagePlan = new PlanViewModel(averagePlan, barycenter, _repere.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor);
+            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor);
 
             _barycenter.IsHiden = hideBarycenter;
             _averagePlan.IsHiden = hideAveragePlan;

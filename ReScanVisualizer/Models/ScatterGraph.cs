@@ -377,7 +377,7 @@ namespace ReScanVisualizer.Models
                 Vector3D z;
                 if (ArePointsColinear())
                 {
-                    Repere3D repere = Tools.ComputeOrientedRepere(x, Axis.X);
+                    Base3D repere = Tools.ComputeOrientedBase(x, Axis.X);
                     z = repere.Z;
                 }
                 else
@@ -468,16 +468,16 @@ namespace ReScanVisualizer.Models
             return new Plan(a, b, c, -(a * barycenter.X + b * barycenter.Y + c * barycenter.Z));
         }
 
-        public static Repere3D ComputeRepere3D(ScatterGraph scatterGraph)
+        public static Base3D ComputeRepere3D(ScatterGraph scatterGraph)
         {
             Point3D barycenter = scatterGraph.ComputeBarycenter();
             Plan averagePlan = scatterGraph.ComputeAveragePlan();
             return ComputeRepere3D(barycenter, averagePlan);
         }
 
-        public static Repere3D ComputeRepere3D(Point3D origin, Plan averagePlan)
+        public static Base3D ComputeRepere3D(Point3D origin, Plan averagePlan)
         {
-            Repere3D repere = Tools.ComputeOrientedRepere(averagePlan.GetNormal(), Axis.Z);
+            Base3D repere = Tools.ComputeOrientedBase(averagePlan.GetNormal(), Axis.Z);
             repere.Origin = origin;
             return repere;
         }

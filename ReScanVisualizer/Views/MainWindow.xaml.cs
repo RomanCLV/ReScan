@@ -30,5 +30,13 @@ namespace ReScanVisualizer.Views
         {
             InitializeComponent();
         }
+
+        private void BaseItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TextBlock tb && tb.DataContext is Base3DViewModel viewModel)
+            {
+                ((MainViewModel)DataContext).SelectedViewModel = viewModel;
+            }
+        }
     }
 }

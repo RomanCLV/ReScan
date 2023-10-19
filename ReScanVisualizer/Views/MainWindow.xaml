@@ -24,6 +24,12 @@
                     Key="{Binding Path=AddScatterGraphCommand.Key}" 
                     Modifiers="{Binding Path=AddScatterGraphCommand.Modifiers}"
                     />
+        <KeyBinding x:Name="AddBaseCommandKey" 
+            Command="{Binding Path=AddBaseCommand.Command}"  
+            Key="{Binding Path=AddBaseCommand.Key}" 
+            Modifiers="{Binding Path=AddBaseCommand.Modifiers}"
+            />
+
     </Window.InputBindings>
 
     <DockPanel>
@@ -33,9 +39,17 @@
             >
             <Menu DockPanel.Dock="Top" Background="Transparent">
                 <MenuItem Header="_Edit" ToolTip="Edit" Style="{StaticResource menuItemTitle}">
-                    <MenuItem Header="_Ajouter" ToolTip="{Binding AddScatterGraphCommand.Description}" Style="{StaticResource menuItemItem}"
+                    <MenuItem Header="_Add a graph" ToolTip="{Binding AddScatterGraphCommand.Description}" Style="{StaticResource menuItemItem}"
                               Command="{Binding ElementName=AddScatterGraphCommandKey, Path=Command}"
                               InputGestureText="{Binding ElementName=AddScatterGraphCommandKey, Converter={StaticResource CommandKeyToInputGestureTextConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource addIcon}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="_Add a base" ToolTip="{Binding AddBaseCommand.Description}" Style="{StaticResource menuItemItem}"
+                              Command="{Binding ElementName=AddBaseCommandKey, Path=Command}"
+                              InputGestureText="{Binding ElementName=AddBaseCommandKey, Converter={StaticResource CommandKeyToInputGestureTextConverter}}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource addIcon}" />
                         </MenuItem.Icon>
@@ -43,7 +57,7 @@
                 </MenuItem>
             </Menu>
         </StackPanel>
-        
+
         <Grid>
             <HelixToolkit:HelixViewport3D>
                 <HelixToolkit:HelixViewport3D.Background>
@@ -55,8 +69,9 @@
                 <!-- Remember to add light to the scene -->
                 <HelixToolkit:SunLight/>
                 <HelixToolkit:GridLinesVisual3D Width="30" Length="30" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
-                
+
                 <ModelVisual3D Content="{Binding OriginModel}" />
+                <ModelVisual3D Content="{Binding BasesModels}"/>
                 <ModelVisual3D Content="{Binding Models}"/>
             </HelixToolkit:HelixViewport3D>
 
@@ -75,6 +90,9 @@
                         <DataTemplate DataType="{x:Type viewModels:PlanViewModel}">
                             <local:PlanView />
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:Base3DViewModel}">
+                            <local:PlanView />
+                        </DataTemplate>
                     </Grid.Resources>
 
                     <ContentControl Content="{Binding SelectedViewModel}" />
@@ -84,45 +102,55 @@
                     HorizontalScrollBarVisibility="Auto" 
                     VerticalScrollBarVisibility="Auto"
                     >
-                    <TreeView x:Name="treeView" Background="{x:Null}" BorderThickness="0"
-                              ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}">
-                        <TreeView.ItemTemplate>
-                            <DataTemplate>
-                                <TreeViewItem IsExpanded="True" Foreground="{StaticResource foregroundColor}">
-                                    <TreeViewItem.Header>
-                                        <itw:ScatterGraphTreeViewItemHeader />
-                                    </TreeViewItem.Header>
-                                    <TreeViewItem Foreground="{StaticResource foregroundColor}">
+                    <StackPanel>
+                        <TreeView Background="{x:Null}" BorderThickness="0"
+                                  ItemsSource="{Binding Bases, UpdateSourceTrigger=PropertyChanged}">
+                            <TreeView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource myTextBlockLeft}" MouseDown="BaseItem_MouseDown" />
+                                </DataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
+                        <TreeView Background="{x:Null}" BorderThickness="0" 
+                                  ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}">
+                            <TreeView.ItemTemplate>
+                                <DataTemplate>
+                                    <TreeViewItem IsExpanded="True" Foreground="{StaticResource foregroundColor}">
                                         <TreeViewItem.Header>
-                                            <itw:BarycenterTreeViewItemHeader DataContext="{Binding Barycenter, UpdateSourceTrigger=PropertyChanged}" />
+                                            <itw:ScatterGraphTreeViewItemHeader />
                                         </TreeViewItem.Header>
+                                        <TreeViewItem Foreground="{StaticResource foregroundColor}">
+                                            <TreeViewItem.Header>
+                                                <itw:BarycenterTreeViewItemHeader DataContext="{Binding Barycenter, UpdateSourceTrigger=PropertyChanged}" />
+                                            </TreeViewItem.Header>
+                                        </TreeViewItem>
+                                        <TreeViewItem Foreground="{StaticResource foregroundColor}">
+                                            <TreeViewItem.Header>
+                                                <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" />
+                                            </TreeViewItem.Header>
+                                        </TreeViewItem>
+                                        <TreeViewItem Foreground="{StaticResource foregroundColor}" ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
+                                            <TreeViewItem.Header>
+                                                <itw:SamplesTreeViewItemHeader />
+                                            </TreeViewItem.Header>
+                                            <TreeViewItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TreeViewItem Foreground="{StaticResource foregroundColor}">
+                                                        <TreeViewItem.Header>
+                                                            <itw:SampleTreeViewItemHeader />
+                                                        </TreeViewItem.Header>
+                                                    </TreeViewItem>
+                                                </DataTemplate>
+                                            </TreeViewItem.ItemTemplate>
+                                        </TreeViewItem>
                                     </TreeViewItem>
-                                    <TreeViewItem Foreground="{StaticResource foregroundColor}">
-                                        <TreeViewItem.Header>
-                                            <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" />
-                                        </TreeViewItem.Header>
-                                    </TreeViewItem>
-                                    <TreeViewItem Foreground="{StaticResource foregroundColor}" ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
-                                        <TreeViewItem.Header>
-                                            <itw:SamplesTreeViewItemHeader />
-                                        </TreeViewItem.Header>
-                                        <TreeViewItem.ItemTemplate>
-                                            <DataTemplate>
-                                                <TreeViewItem Foreground="{StaticResource foregroundColor}">
-                                                    <TreeViewItem.Header>
-                                                        <itw:SampleTreeViewItemHeader />
-                                                    </TreeViewItem.Header>
-                                                </TreeViewItem>
-                                            </DataTemplate>
-                                        </TreeViewItem.ItemTemplate>
-                                    </TreeViewItem>
-                                </TreeViewItem>
-                            </DataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
+                                </DataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
+                    </StackPanel>
                 </ScrollViewer>
             </DockPanel>
         </Grid>
-        
+
     </DockPanel>
 </Window>

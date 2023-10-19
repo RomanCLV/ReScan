@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels
 {
     public class KeyValueObservable<T, V> : ViewModelBase
@@ -20,7 +22,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (_key is null)
                 {
-                    SetValue(ref _key, value);
+                    SetValue(ref _key!, value);
                 }
                 else
                 {
@@ -33,8 +35,8 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private V _value;
-        public V Value
+        private V? _value;
+        public V? Value
         {
             get => _value;
             set
@@ -58,7 +60,7 @@ namespace ReScanVisualizer.ViewModels
         {
         }
 
-        public KeyValueObservable(T key, V value)
+        public KeyValueObservable(T key, V? value)
         {
             if (key is null)
             {
