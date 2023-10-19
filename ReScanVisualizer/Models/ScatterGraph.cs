@@ -374,10 +374,15 @@ namespace ReScanVisualizer.Models
             if (ArePointsCoplanar())
             {
                 Vector3D x = _points[1] - _points[0];
-                Vector3D y = new Vector3D(0, 1, 0);
                 Vector3D z;
-                if (!ArePointsColinear())
+                if (ArePointsColinear())
                 {
+                    Repere3D repere = ComputeOrientedRepere(x, Axis.X);
+                    z = repere.Z;
+                }
+                else
+                {
+                    Vector3D y = new Vector3D(0, 1, 0);
                     for (int i = 2; i < size; i++)
                     {
                         y = _points[i] - _points[0];
@@ -386,8 +391,8 @@ namespace ReScanVisualizer.Models
                             break;
                         }
                     }
+                    z = Vector3D.CrossProduct(x, y);
                 }
-                z = Vector3D.CrossProduct(x, y);
                 if (z.Z < 0)
                 {
                     z *= -1;
@@ -475,84 +480,6 @@ namespace ReScanVisualizer.Models
             Repere3D repere = ComputeOrientedRepere(averagePlan.GetNormal(), Axis.Z);
             repere.Origin = origin;
             return repere;
-        }
-
-        public static Repere3D ComputeOrientedRepere(Vector3D direction, Axis axis)
-        {
-            double a;
-            double b;
-            double dx;
-            double dy;
-            double dz;
-
-            double cosa;
-            double cosb;
-            double sina;
-            double sinb;
-
-            double cosa_cosb;
-            double cosa_sinb;
-            double sina_cosb;
-            double sina_sinb;
-
-            Repere3D result = new Repere3D();
-            Matrix3D rot;
-
-            if (direction.Length != 1.0)
-            {
-                direction.Normalize();
-            }
-
-            switch (axis)
-            {
-                case Axis.X:
-                    dx = direction.X - result.X.X;
-                    dy = direction.Y - result.X.Y;
-                    dz = direction.Z - result.X.Z;
-                    a = Math.Atan2(dy, dx);
-                    b = Math.Atan2(dz, dx);
-                    break;
-
-                case Axis.Y:
-                    dx = direction.X - result.Y.X;
-                    dy = direction.Y - result.Y.Y;
-                    dz = direction.Z - result.Y.Z;
-                    a = Math.Atan2(dx, dy);
-                    b = Math.Atan2(dz, dy);
-                    break;
-
-                case Axis.Z:
-                    dx = direction.X - result.Z.X;
-                    dy = direction.Y - result.Z.Y;
-                    dz = direction.Z - result.Z.Z;
-                    a = Math.Atan2(dx, dz);
-                    b = Math.Atan2(dy, dz);
-                    break;
-
-                default:
-                    throw new NotImplementedException();
-            }
-
-            cosa = Math.Cos(a);
-            cosb = Math.Cos(b);
-            sina = Math.Sin(a);
-            sinb = Math.Sin(b);
-            cosa_cosb = cosa * cosb;
-            cosa_sinb = cosa * sinb;
-            sina_cosb = sina * cosb;
-            sina_sinb = sina * sinb;
-
-            rot = new Matrix3D(
-                        cosa_cosb, -sina, cosa_sinb, 0,
-                        sina_cosb, cosa, sina_sinb, 0,
-                            -sinb, 0, cosb, 0,
-                                0, 0, 0, 1);
-
-            result.X = new Vector3D(rot.M11, rot.M21, rot.M31);
-            result.Y = new Vector3D(rot.M12, rot.M22, rot.M32);
-            result.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
-
-            return result;
         }
 
         #region static functions
