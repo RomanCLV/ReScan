@@ -191,11 +191,29 @@ namespace ReScanVisualizer.ViewModels
             {
                 averagePlan = new Plan();
             }
-            _base3D = new Base3DViewModel(ScatterGraph.ComputeRepere3D(barycenter, averagePlan))
+            
+            if (_scatterGraph.Count < 2)
             {
-                Name = "Plan base"
-            };
-
+                _base3D = new Base3DViewModel(new Base3D(barycenter));
+            }
+            else
+            {
+                if (_scatterGraph.ArePointsColinear())
+                {
+                    Vector3D x = _scatterGraph[1] - _scatterGraph[0];
+                    x.Normalize();
+                    Vector3D z = averagePlan.GetNormal();
+                    z.Normalize();
+                    Vector3D y = Vector3D.CrossProduct(z, x);
+                    _base3D = new Base3DViewModel(new Base3D(barycenter, x, y, z));
+            }
+                else
+                {
+                    _base3D = new Base3DViewModel(ScatterGraph.ComputeRepere3D(barycenter, averagePlan));
+                }
+            }
+            
+            _base3D.Name = "Plan base";
             _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius);
             _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor);
 
@@ -223,11 +241,22 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
-                IsDisposed = true;
-                Color.PropertyChanged -= Color_PropertyChanged;
-                _barycenter.IsHidenChanged -= Barycenter_IsHidenChanged;
-                _averagePlan.IsHidenChanged -= AveragePlan_IsHidenChanged;
-                Samples.CollectionChanged -= Points_CollectionChanged;
+                if (Color != null)
+                {
+                    Color.PropertyChanged -= Color_PropertyChanged;
+                }
+                if (_barycenter != null)
+                {
+                    _barycenter.IsHidenChanged -= Barycenter_IsHidenChanged;
+                }
+                if (_averagePlan != null)
+                {
+                    _averagePlan.IsHidenChanged -= AveragePlan_IsHidenChanged;
+                }
+                if (Samples != null)
+                {
+                    Samples.CollectionChanged -= Points_CollectionChanged;
+                }
                 try
                 {
                     ((Model3DGroup)Model).Children.Clear();
@@ -236,13 +265,17 @@ namespace ReScanVisualizer.ViewModels
                 {
                 }
 
-                foreach (SampleViewModel point in Samples)
+                if (Samples != null)
                 {
-                    point.Dispose();
+                    foreach (SampleViewModel point in Samples)
+                    {
+                        point?.Dispose();
+                    }
                 }
-                Barycenter.Dispose();
-                AveragePlan.Dispose();
+                _barycenter?.Dispose();
+                _averagePlan?.Dispose();
                 base.Dispose();
+                IsDisposed = true;
             }
         }
 

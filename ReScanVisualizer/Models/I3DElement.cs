@@ -11,13 +11,11 @@ using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer.Models
 {
-    public interface I3DElement
+    public interface I3DElement : IModelisable
     {
         public double ScaleFactor { get; set; }
 
         public ColorViewModel Color { get; set; }
-
-        public Model3D Model { get; }
 
         public event EventHandler<bool>? IsHidenChanged;
 

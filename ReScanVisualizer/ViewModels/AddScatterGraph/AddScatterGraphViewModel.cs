@@ -253,12 +253,32 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 
         public Task LoadAsync(KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
         {
-            return Task.Run(() => Application.Current.Dispatcher.InvokeAsync(() => Load(item)));
+            return Task.Run(() => Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                try
+                {
+                    Load(item);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, e.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }));
         }
 
         public Task LoadAllAsync(bool closeWindow = false)
         {
-            return Task.Run(() => Application.Current.Dispatcher.InvokeAsync(() => LoadAll(closeWindow)));
+            return Task.Run(() => Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                try
+                {
+                    LoadAll(closeWindow);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, e.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }));
         }
     }
 }

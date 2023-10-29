@@ -35,7 +35,7 @@ namespace ReScanVisualizer.Views
         {
             if (sender is TextBlock tb && tb.DataContext is Base3DViewModel viewModel)
             {
-                ((MainViewModel)DataContext).SelectedViewModel = viewModel;
+                ((MainViewModel)DataContext).SelectedViewModel = new BaseViewModel(viewModel);
             }
         }
     }

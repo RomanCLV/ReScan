@@ -10,6 +10,16 @@ namespace ReScanVisualizer
 {
     public static class Tools
     {
+        public static double DegreeToRadian(double degree)
+        {
+            return Math.PI * degree / 180.0;
+        }
+
+        public static double RadianToDegree(double radian)
+        {
+            return 180.0 * radian / Math.PI;
+        }
+
         public static double MixteProduct(Vector3D u, Vector3D v, Vector3D w)
         {
             return Vector3D.DotProduct(u, Vector3D.CrossProduct(v, w));
@@ -69,122 +79,72 @@ namespace ReScanVisualizer
             };
         }
 
-        public static Base3D ComputeOrientedBase(Vector3D direction, Axis axis)
+        public static Matrix3D CreateRotationMatrix(Vector3D u, double angle)
         {
-            return ComputeOrientedBase2(direction, axis);
-            //double a;
-            //double b;
-            //double dx;
-            //double dy;
-            //double dz;
+            double uxx = u.X * u.X;
+            double uxy = u.X * u.Y;
+            double uxz = u.X * u.Z;
+            double uyy = u.Y * u.Y;
+            double uyz = u.Y * u.Z;
+            double uzz = u.Z * u.Z;
 
-            //double cosa;
-            //double cosb;
-            //double sina;
-            //double sinb;
+            double cosa = Math.Cos(angle).Clamp().Clamp(-1).Clamp(1);
+            double sina = Math.Sin(angle).Clamp().Clamp(-1).Clamp(1);
 
-            //double cosa_cosb;
-            //double cosa_sinb;
-            //double sina_cosb;
-            //double sina_sinb;
+            double _1_cosa = 1.0 - cosa;
+            double ux_sina = u.X * sina;
+            double uy_sina = u.Y * sina;
+            double uz_sina = u.Z * sina;
 
-            //Base3D result = new Base3D();
-            //Matrix3D rot;
-
-
-            //if (direction.Length != 1.0)
-            //{
-            //    direction.Normalize();
-            //}
-
-            //switch (axis)
-            //{
-            //    case Axis.X:
-            //        dx = direction.X - result.X.X;
-            //        dy = direction.Y - result.X.Y;
-            //        dz = direction.Z - result.X.Z;
-            //        a = Math.Atan2(dy, dx);
-            //        b = Math.Atan2(dz, dx);
-            //        break;
-
-            //    case Axis.Y:
-            //        dx = direction.X - result.Y.X;
-            //        dy = direction.Y - result.Y.Y;
-            //        dz = direction.Z - result.Y.Z;
-            //        a = Math.Atan2(dx, dy);
-            //        b = Math.Atan2(dz, dy);
-            //        break;
-
-            //    case Axis.Z:
-            //        dx = direction.X - result.Z.X;
-            //        dy = direction.Y - result.Z.Y;
-            //        dz = direction.Z - result.Z.Z;
-            //        a = Math.Atan2(dx, dz);
-            //        b = Math.Atan2(dy, dz);
-            //        break;
-
-            //    default:
-            //        throw new NotImplementedException();
-            //}
-
-            //cosa = Math.Cos(a);
-            //cosb = Math.Cos(b);
-            //sina = Math.Sin(a);
-            //sinb = Math.Sin(b);
-            //cosa_cosb = cosa * cosb;
-            //cosa_sinb = cosa * sinb;
-            //sina_cosb = sina * cosb;
-            //sina_sinb = sina * sinb;
-
-            //rot = new Matrix3D(
-            //            cosa_cosb, -sina, cosa_sinb, 0,
-            //            sina_cosb, cosa, sina_sinb, 0,
-            //                -sinb, 0, cosb, 0,
-            //                    0, 0, 0, 1);
-
-            //result.X = new Vector3D(rot.M11, rot.M21, rot.M31);
-            //result.Y = new Vector3D(rot.M12, rot.M22, rot.M32);
-            //result.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
-
-            //return result;
+            return new Matrix3D(
+                uxx * _1_cosa + cosa,    uxy * _1_cosa - uz_sina, uxz * _1_cosa + uy_sina, 0,
+                uxy * _1_cosa + uz_sina, uyy * _1_cosa + cosa,    uyz * _1_cosa - ux_sina, 0,
+                uxz * _1_cosa - uy_sina, uyz * _1_cosa + ux_sina, uzz * _1_cosa + cosa,    0,
+                0, 0, 0, 1);
         }
 
-        public static Base3D ComputeOrientedBase2(Vector3D direction, Axis axis)
+        public static Base3D ComputeOrientedBase(Vector3D direction, Axis axis)
         {
-            double a;
-            double b;
-            Matrix3D rot;
-            Base3D result = new Base3D();
-            
+            Matrix3D rot = Matrix3D.Identity;
+            Vector3D rotationAxis;
+            Base3D base3D = new Base3D();
+            double angle;
+
+            if (direction.Length != 1.0)
+            {
+                direction.Normalize();
+            }
+
             switch (axis)
             {
                 case Axis.X:
-                    a = Math.Atan2(direction.Y, direction.X);
-                    b = Math.Atan2(direction.Z, direction.X);
-                    rot = CreateRotationMatrix(Axis.Z, a) * CreateRotationMatrix(Axis.X, b);
+                    rotationAxis = Vector3D.CrossProduct(base3D.X, direction);
+                    angle = Vector3D.AngleBetween(base3D.X, direction);
                     break;
 
                 case Axis.Y:
-                    a = -Math.Atan2(direction.X, direction.Y);
-                    b = Math.Atan2(direction.Z, direction.X);
-                    rot = CreateRotationMatrix(Axis.Z, a) * CreateRotationMatrix(Axis.X, b);
+                    rotationAxis = Vector3D.CrossProduct(base3D.Y, direction);
+                    angle = Vector3D.AngleBetween(base3D.Y, direction);
                     break;
 
                 case Axis.Z:
-                    a = Math.Atan2(direction.Y, direction.X);
-                    b = -Math.Atan2(direction.Z, direction.X);
-                    rot = CreateRotationMatrix(Axis.Y, b) * CreateRotationMatrix(Axis.X, a);
+                    rotationAxis = Vector3D.CrossProduct(base3D.Z, direction);
+                    angle = Vector3D.AngleBetween(base3D.Z, direction);
                     break;
 
                 default:
                     throw new NotImplementedException();
             }
 
-            result.X = new Vector3D(rot.M11, rot.M21, rot.M31);
-            result.Y = new Vector3D(rot.M12, rot.M22, rot.M32);
-            result.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
-
-            return result;
+            if (angle != 0.0)
+            {
+                rot.Rotate(new Quaternion(rotationAxis, -angle));
+                rot.Clamp();
+                base3D.X = new Vector3D(rot.M11, rot.M21, rot.M31);
+                base3D.Y = new Vector3D(rot.M12, rot.M22, rot.M32);
+                base3D.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
+            }
+            return base3D;
         }
     }
 }

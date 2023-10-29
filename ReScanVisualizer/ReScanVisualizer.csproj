@@ -102,6 +102,7 @@
     <Compile Include="Converters\ScatterGraphBuilderResultReductionEnabledConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
+    <Compile Include="Models\IModelisable.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Base3D.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraph\EditScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\Base3DViewModel.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\KeyValueObservable.cs" />
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
@@ -158,6 +160,9 @@
     </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateRectangle2DBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphPopulateRectangle2DBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BaseView.xaml.cs">
+      <DependentUpon>BaseView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Forms\LimitsForm.xaml.cs">
       <DependentUpon>LimitsForm.xaml</DependentUpon>
@@ -227,6 +232,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateRectangle2DBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BaseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -362,6 +371,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\load.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\circle.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

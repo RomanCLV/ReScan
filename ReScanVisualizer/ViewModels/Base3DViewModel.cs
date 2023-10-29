@@ -13,8 +13,6 @@ namespace ReScanVisualizer.ViewModels
     {
         private readonly Base3D _base3D;
 
-        //public Base3D Base3D => _base3D;
-
         private string _name;
         public string Name
         {
@@ -105,6 +103,17 @@ namespace ReScanVisualizer.ViewModels
             {
                 Name = $"Base {_instanceCreated}"
             };
+        }
+
+        public void SetBaseVectorsFrom(Base3D base3D)
+        {
+            _base3D.X = base3D.X;
+            _base3D.Y = base3D.Y;
+            _base3D.Z = base3D.Z;
+            OnPropertyChanged(nameof(X));
+            OnPropertyChanged(nameof(Y));
+            OnPropertyChanged(nameof(Z));
+            Build();
         }
 
         private void Build()

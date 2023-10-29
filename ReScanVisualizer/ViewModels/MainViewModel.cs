@@ -28,12 +28,35 @@ namespace ReScanVisualizer.ViewModels
         public ViewModelBase? SelectedViewModel
         {
             get => _selectedViewModel;
-            set => SetValue(ref _selectedViewModel, value);
+            set
+            {
+                if (_selectedViewModel is null)
+                {
+                    SetValue(ref _selectedViewModel, value);
+                }
+                else
+                {
+                    if (!_selectedViewModel.Equals(value))
+                    {
+                        if (_selectedViewModel is IModelisable modelisable)
+                        {
+                            AdditionalModels.Children.Remove(modelisable.Model);
+                        }
+                    }
+                    SetValue(ref _selectedViewModel, value);
+                }
+                if (_selectedViewModel is IModelisable modelisable2)
+                {
+                    AdditionalModels.Children.Add(modelisable2.Model);
+                }
+            }
         }
 
         public ObservableCollection<ScatterGraphViewModel> ScatterGraphs { get; private set; }
 
         public ObservableCollection<Base3DViewModel> Bases { get; private set; }
+
+        public Model3DGroup AdditionalModels { get; private set; }
 
         public Model3DGroup Models { get; private set; }
 
@@ -50,6 +73,7 @@ namespace ReScanVisualizer.ViewModels
 
             Models = new Model3DGroup();
             BasesModels = new Model3DGroup();
+            AdditionalModels = new Model3DGroup();
 
             SelectedViewModel = null;
 

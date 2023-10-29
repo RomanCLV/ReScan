@@ -315,7 +315,8 @@ namespace ReScanVisualizer.Models
         {
             if (_points.Count < 2)
             {
-                throw new InvalidOperationException("Need at least 2 points to compute the linearity of a graph.");
+                return true;
+                //throw new InvalidOperationException("Need at least 2 points to compute the linearity of a graph.");
             }
 
             Point3D p0 = _points[0];
@@ -332,14 +333,19 @@ namespace ReScanVisualizer.Models
 
         public bool ArePointsCoplanar()
         {
-            if (_points.Count < 3)
-            {
-                throw new InvalidOperationException("Need at least 3 points to compute the coplanarity of a graph.");
-            }
-            else if (_points.Count == 3)
+            if ( _points.Count <= 3)
             {
                 return true;
             }
+            //if (_points.Count < 3)
+            //{
+            //    return true;
+            //    //throw new InvalidOperationException("Need at least 3 points to compute the coplanarity of a graph.");
+            //}
+            //else if (_points.Count == 3)
+            //{
+            //    return true;
+            //}
             Point3D p0 = _points[0];
             Vector3D vector1 = _points[1] - p0;
             Vector3D vector2 = _points[2] - p0;
@@ -364,14 +370,14 @@ namespace ReScanVisualizer.Models
 
             int size = _points.Count;
 
-            if (size < 3)
-            {
-                throw new InvalidOperationException("Need at least 3 points to compute the average plan.");
-            }
-
             Point3D barycenter = ComputeBarycenter();
 
-            if (ArePointsCoplanar())
+            if (size < 2)
+            {
+                Vector3D z = new Vector3D(0, 0, 1);
+                return size == 1 ? new Plan(z, -z.Z * barycenter.Z) : new Plan(z);
+            }
+            else if (ArePointsCoplanar())
             {
                 Vector3D x = _points[1] - _points[0];
                 Vector3D z;
@@ -393,10 +399,11 @@ namespace ReScanVisualizer.Models
                     }
                     z = Vector3D.CrossProduct(x, y);
                 }
-                if (z.Z < 0)
-                {
-                    z *= -1;
-                }
+                //if (z.Z < 0)
+                //{
+                //    z *= -1;
+                //}
+                // TODO : check if remove or no
                 return new Plan(z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
             }
 
