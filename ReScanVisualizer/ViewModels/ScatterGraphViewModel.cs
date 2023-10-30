@@ -381,7 +381,8 @@ namespace ReScanVisualizer.ViewModels
         private double ComputeAveragePlanLength(Base3D base3D)
         {
             Point3D point3D = ScatterGraph.GetFarthestPoint(_scatterGraph, base3D, Plan2D.XY);
-            Vector3D vector = point3D - base3D.Origin;
+            Vector3D vector = base3D.GetRotationMatrix().Transform(point3D) - base3D.Origin;
+
             return 2.0 * Math.Max(Math.Abs(vector.X), Math.Abs(vector.Y));
         }
 

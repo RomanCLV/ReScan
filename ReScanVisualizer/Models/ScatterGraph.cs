@@ -343,9 +343,11 @@ namespace ReScanVisualizer.Models
             double maxDistance = double.MinValue;
             double currentDistance;
             Plan plan = base3D.GetPlan(plan2D);
+            Matrix3D matrix = base3D.GetRotationMatrix();
+
             for (int i = 0; i < size; i++)
             {
-                currentPoint = plan.GetOrthogonalProjection(scatterGraph[i]);
+                currentPoint = matrix.Transform(plan.GetOrthogonalProjection(scatterGraph[i]));
                 currentDistance = (base3D.Origin - currentPoint).Length;
                 if (currentDistance > maxDistance)
                 {
