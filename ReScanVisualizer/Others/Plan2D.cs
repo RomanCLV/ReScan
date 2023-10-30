@@ -1,6 +1,6 @@
 ﻿namespace ReScanVisualizer.Models
 {
-    public enum Enums
+    public enum Plan2D
     {
         XY,
         XZ,

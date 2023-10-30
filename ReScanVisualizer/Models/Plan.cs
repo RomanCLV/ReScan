@@ -46,6 +46,14 @@ namespace ReScanVisualizer.Models
             D = d;
         }
 
+        public void SetABCD(Plan plan)
+        {
+            A = plan.A;
+            B = plan.B;
+            C = plan.C;
+            D = plan.D;
+        }
+
         public Vector3D GetNormal()
         {
             return new Vector3D(A, B, C);

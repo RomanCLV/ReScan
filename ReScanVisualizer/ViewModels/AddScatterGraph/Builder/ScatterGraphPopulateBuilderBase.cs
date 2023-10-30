@@ -10,7 +10,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 {
     public abstract class ScatterGraphPopulateBuilderBase : ScatterGraphBuilderBase
     {
-        public List<Enums> AllPlans { get; private set; }
+        public List<Plan2D> AllPlans { get; private set; }
 
 
         public ScatterGraphPopulateBuilderBase() : this(Colors.White)
@@ -22,10 +22,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             AllPlans = GeneratePlan2DList();
         }
 
-        private List<Enums> GeneratePlan2DList()
+        private List<Plan2D> GeneratePlan2DList()
         {
-            List<Enums> plans = new List<Enums>();
-            foreach (Enums plan in typeof(Enums).GetEnumValues())
+            List<Plan2D> plans = new List<Plan2D>();
+            foreach (Plan2D plan in typeof(Plan2D).GetEnumValues())
             {
                 plans.Add(plan);
             }

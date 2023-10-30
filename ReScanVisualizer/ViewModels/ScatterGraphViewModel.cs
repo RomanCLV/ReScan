@@ -214,8 +214,9 @@ namespace ReScanVisualizer.ViewModels
             }
             
             _base3D.Name = "Plan base";
+
             _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius);
-            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor);
+            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor, ComputeAveragePlanLength(_base3D.Base3D));
 
             _barycenter.IsHiden = hideBarycenter;
             _averagePlan.IsHiden = hideAveragePlan;
@@ -372,9 +373,16 @@ namespace ReScanVisualizer.ViewModels
         {
             if (_hasToComputeAveragePlan)
             {
-                AveragePlan.Plan = _scatterGraph.ComputeAveragePlan();
+                AveragePlan.Plan.SetABCD(_scatterGraph.ComputeAveragePlan());
                 _hasToComputeAveragePlan = false;
             }
+        }
+
+        private double ComputeAveragePlanLength(Base3D base3D)
+        {
+            Point3D point3D = ScatterGraph.GetFarthestPoint(_scatterGraph, base3D, Plan2D.XY);
+            Vector3D vector = point3D - base3D.Origin;
+            return 2.0 * Math.Max(Math.Abs(vector.X), Math.Abs(vector.Y));
         }
 
         public void UpdateModelGeometry()

@@ -196,7 +196,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         {
             if (IsSuccess)
             {
-                _farthestPointLength = ((Vector3D)ScatterGraph.GetFarthestPoint(_scatterGraph!, new Point3D(0, 0, 0))).Length;
+                _farthestPointLength = ((Vector3D)ScatterGraph.GetFarthestPoint(_scatterGraph!)).Length;
                 if (_farthestPointLength < 1.0)
                 {
                     _farthestPointLength = 1.0;

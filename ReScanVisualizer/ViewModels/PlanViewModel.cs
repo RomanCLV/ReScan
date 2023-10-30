@@ -145,26 +145,13 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private double _width;
-        public double Width
+        private double _lenght;
+        public double Length
         {
-            get => _width;
+            get => _lenght;
             set
             {
-                if (SetValue(ref _width, value))
-                {
-                    UpdateModelGeometry();
-                }
-            }
-        }
-
-        private double _height;
-        public double Height
-        {
-            get => _height;
-            set
-            {
-                if (SetValue(ref _height, value))
+                if (SetValue(ref _lenght, value))
                 {
                     UpdateModelGeometry();
                 }
@@ -219,7 +206,7 @@ namespace ReScanVisualizer.ViewModels
         public PlanViewModel(Plan plan, Point3D center, Vector3D up) : this(plan, center, up, Colors.LightBlue.ChangeAlpha(191))
         { }
 
-        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double scaleFactor = 1.0, double width = 10, double height = 10, double dist = 0.0)
+        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double scaleFactor = 1.0, double length = 10, double dist = 0.0)
         {
             if (scaleFactor <= 0.0)
             {
@@ -231,14 +218,13 @@ namespace ReScanVisualizer.ViewModels
             _center = center;
             _up = up;
             _dist = dist;
-            _width = width;
-            _height = height;
+            _lenght = length;
             Color = new ColorViewModel(color);
             _oldOpacity = Color.A;
             _isHidenChanging = false;
             _isHiden = _oldOpacity == 0;
 
-            _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, _width, _height, _dist, Color.Color);
+            _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, _lenght, _lenght, _dist, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;
         }
@@ -294,7 +280,7 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, _width, _height, _dist);
+            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, _lenght, _lenght, _dist);
         }
 
         public void UpdateModelMaterial()

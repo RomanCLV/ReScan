@@ -166,9 +166,31 @@ namespace ReScanVisualizer.Models
             return rot;
         }
 
+        public Plan GetPlan(Plan2D plan2D)
+        {
+            Vector3D normal;
+            switch (plan2D)
+            {
+                case Plan2D.XY:
+                    normal = _z;
+                    break;
+                case Plan2D.XZ:
+                    normal = _y;
+                    break;
+                case Plan2D.YZ:
+                    normal = _x;
+                    break;
+                default:
+                    throw new InvalidOperationException("Unexpected plan.");
+            }
+            return new Plan(normal, -(normal.X * _origin.X + normal.Y * _origin.Y + normal.Z * _origin.Z));
+        }
+
         public override string ToString()
         {
             return $"{X.X};{X.Y};{X.Z};{Y.X};{Y.Y};{Y.Z};{Z.X};{Z.Y};{Z.Z}";
         }
+
+        
     }
 }

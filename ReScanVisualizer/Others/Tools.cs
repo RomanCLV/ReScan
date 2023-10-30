@@ -136,9 +136,35 @@ namespace ReScanVisualizer
                     throw new NotImplementedException();
             }
 
+            //angle = angle.Clamp().Clamp(-180).Clamp(180) % 360.0;
+            angle = angle.Clamp().Clamp(-180).Clamp(180) % 180.0;
+
             if (angle != 0.0)
             {
+                //if (angle == 180.0 || angle == -180.0)
+                //{
+                //    switch (axis)
+                //    {
+                //        case Axis.X:
+                //            rot.M22 *= -1.0;
+                //            rot.M33 *= -1.0;
+                //            break;
+                //        case Axis.Y:
+                //            rot.M11 *= -1.0;
+                //            rot.M33 *= -1.0;
+                //            break;
+                //        case Axis.Z:
+                //            rot.M11 *= -1.0;
+                //            rot.M22 *= -1.0;
+                //            break;
+                //    }
+                //}
+                //else
+                //{
+                //    rot.Rotate(new Quaternion(rotationAxis, -angle));
+                //}
                 rot.Rotate(new Quaternion(rotationAxis, -angle));
+
                 rot.Clamp();
                 base3D.X = new Vector3D(rot.M11, rot.M21, rot.M31);
                 base3D.Y = new Vector3D(rot.M12, rot.M22, rot.M32);

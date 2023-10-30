@@ -190,7 +190,7 @@ namespace ReScanVisualizer.Models
             return maxIndex;
         }
 
-        public void FindExtrema(Enums plan, Func<Point3D, double>[] getters, out Point3D minPoint, out Point3D maxPoint)
+        public void FindExtrema(Plan2D plan, Func<Point3D, double>[] getters, out Point3D minPoint, out Point3D maxPoint)
         {
             if (_points.Count == 0)
             {
@@ -214,7 +214,7 @@ namespace ReScanVisualizer.Models
 
             switch (plan)
             {
-                case Enums.XY:
+                case Plan2D.XY:
                     minPoint.X = _points[extremas[0]].X;
                     minPoint.Y = _points[extremas[1]].Y;
                     minPoint.Z = 0.0;
@@ -223,7 +223,7 @@ namespace ReScanVisualizer.Models
                     maxPoint.Z = 0.0;
                     break;
 
-                case Enums.XZ:
+                case Plan2D.XZ:
                     minPoint.X = _points[extremas[0]].X;
                     minPoint.Y = 0.0;
                     minPoint.Z = _points[extremas[1]].Z;
@@ -232,7 +232,7 @@ namespace ReScanVisualizer.Models
                     maxPoint.Z = _points[extremas[3]].Z;
                     break;
 
-                case Enums.YZ:
+                case Plan2D.YZ:
                     minPoint.X = 0.0;
                     minPoint.Y = _points[extremas[0]].Y;
                     minPoint.Z = _points[extremas[1]].Z;
@@ -246,6 +246,17 @@ namespace ReScanVisualizer.Models
             }
         }
 
+        /// <summary>
+        /// Find the closest point from the origin.
+        /// </summary>
+        public static Point3D GetClosestPoint(ScatterGraph scatterGraph)
+        {
+            return GetClosestPoint(scatterGraph, new Point3D());
+        }
+
+        /// <summary>
+        /// Find the closest point from another point.
+        /// </summary>
         public static Point3D GetClosestPoint(ScatterGraph scatterGraph, Point3D point)
         {
             int size = scatterGraph.Count;
@@ -266,6 +277,41 @@ namespace ReScanVisualizer.Models
             return closestPoint;
         }
 
+        /// <summary>
+        /// Find the closest point in a specified 3D base using the projection of each point over a plan of this base.
+        /// </summary>
+        public static Point3D GetClosestPoint(ScatterGraph scatterGraph, Base3D base3D, Plan2D plan2D)
+        {
+            int size = scatterGraph.Count;
+            Point3D closestPoint = base3D.Origin;
+            Point3D currentPoint;
+            double minDistance = double.MaxValue;
+            double currentDistance;
+            Plan plan = base3D.GetPlan(plan2D);
+            for (int i = 0; i < size; i++)
+            {
+                currentPoint = plan.GetOrthogonalProjection(scatterGraph[i]);
+                currentDistance = (base3D.Origin - currentPoint).Length;
+                if (currentDistance < minDistance)
+                {
+                    minDistance = currentDistance;
+                    closestPoint = currentPoint;
+                }
+            }
+            return closestPoint;
+        }
+
+        /// <summary>
+        /// Find the farthest point from the origin.
+        /// </summary>
+        public static Point3D GetFarthestPoint(ScatterGraph scatterGraph)
+        {
+            return GetFarthestPoint(scatterGraph, new Point3D());
+        }
+
+        /// <summary>
+        /// Find the farthest point from another point.
+        /// </summary>
         public static Point3D GetFarthestPoint(ScatterGraph scatterGraph, Point3D point)
         {
             int size = scatterGraph.Count;
@@ -277,6 +323,30 @@ namespace ReScanVisualizer.Models
             {
                 currentPoint = scatterGraph[i];
                 currentDistance = (point - currentPoint).Length;
+                if (currentDistance > maxDistance)
+                {
+                    maxDistance = currentDistance;
+                    farthestPoint = currentPoint;
+                }
+            }
+            return farthestPoint;
+        }
+
+        /// <summary>
+        /// Find the farthest point in a specified 3D base using the projection of each point over a plan of this base.
+        /// </summary>
+        public static Point3D GetFarthestPoint(ScatterGraph scatterGraph, Base3D base3D, Plan2D plan2D)
+        {
+            int size = scatterGraph.Count;
+            Point3D farthestPoint = base3D.Origin;
+            Point3D currentPoint;
+            double maxDistance = double.MinValue;
+            double currentDistance;
+            Plan plan = base3D.GetPlan(plan2D);
+            for (int i = 0; i < size; i++)
+            {
+                currentPoint = plan.GetOrthogonalProjection(scatterGraph[i]);
+                currentDistance = (base3D.Origin - currentPoint).Length;
                 if (currentDistance > maxDistance)
                 {
                     maxDistance = currentDistance;
@@ -399,11 +469,10 @@ namespace ReScanVisualizer.Models
                     }
                     z = Vector3D.CrossProduct(x, y);
                 }
-                //if (z.Z < 0)
-                //{
-                //    z *= -1;
-                //}
-                // TODO : check if remove or no
+                if (z.Z < 0)
+                {
+                    z *= -1;
+                }
                 return new Plan(z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
             }
 
@@ -507,7 +576,7 @@ namespace ReScanVisualizer.Models
             }
         }
 
-        public static void PopulateRectangle2D(ScatterGraph scatterGraph, Point3D Center, Enums plan, double width, double height, uint numPointsWidth, uint numPointsHeight)
+        public static void PopulateRectangle2D(ScatterGraph scatterGraph, Point3D Center, Plan2D plan, double width, double height, uint numPointsWidth, uint numPointsHeight)
         {
             if (numPointsWidth < 2)
             {
@@ -532,19 +601,19 @@ namespace ReScanVisualizer.Models
 
                     switch (plan)
                     {
-                        case Enums.XY:
+                        case Plan2D.XY:
                             p.X = Center.X - halfWidth + i * stepWidth;
                             p.Y = Center.Y - halfHeight + j * stepHeight;
                             p.Z = Center.Z;
                             break;
 
-                        case Enums.XZ:
+                        case Plan2D.XZ:
                             p.X = Center.X - halfWidth + i * stepWidth;
                             p.Y = Center.Y;
                             p.Z = Center.Z - halfHeight + j * stepHeight;
                             break;
 
-                        case Enums.YZ:
+                        case Plan2D.YZ:
                             p.X = Center.X;
                             p.Y = Center.Y - halfWidth + i * stepWidth;
                             p.Z = Center.Z - halfHeight + j * stepHeight;

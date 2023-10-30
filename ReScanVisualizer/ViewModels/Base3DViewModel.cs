@@ -12,6 +12,7 @@ namespace ReScanVisualizer.ViewModels
     public class Base3DViewModel : ViewModelBase
     {
         private readonly Base3D _base3D;
+        public Base3D Base3D => _base3D;
 
         private string _name;
         public string Name
