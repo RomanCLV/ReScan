@@ -9,6 +9,7 @@ using System.Windows.Media;
 using HelixToolkit.Wpf;
 using System.Windows;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 #nullable enable
 
@@ -158,6 +159,8 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        private double LengthScalled => _lenght * _scaleFactor;
+
         public ColorViewModel Color { get; set; }
 
         private byte _oldOpacity;
@@ -224,7 +227,7 @@ namespace ReScanVisualizer.ViewModels
             _isHidenChanging = false;
             _isHiden = _oldOpacity == 0;
 
-            _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, _lenght, _lenght, _dist, Color.Color);
+            _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, _dist, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;
         }
@@ -280,7 +283,7 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, _lenght, _lenght, _dist);
+            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, _dist);
         }
 
         public void UpdateModelMaterial()

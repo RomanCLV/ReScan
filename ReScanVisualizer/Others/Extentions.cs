@@ -63,5 +63,15 @@ namespace ReScanVisualizer
             matrix.M34 = matrix.M34.Clamp().Clamp(-1).Clamp(1);
             matrix.M44 = matrix.M44.Clamp().Clamp(-1).Clamp(1);
         }
+
+        internal static Point4D ToPoint4D(this Point3D point)
+        {
+            return new Point4D(point.X, point.Y, point.Z, 1.0);
+        }
+
+        internal static Point3D ToPoint3D(this Point4D point)
+        {
+            return new Point3D(point.X, point.Y, point.Z);
+        }
     }
 }

@@ -264,7 +264,7 @@
                                             <TextBox Style="{StaticResource myTextBox}"
                                                      GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
                                                 <TextBox.Text>
-                                                    <Binding Path="Value.ScaleFactor" StringFormat="N2">
+                                                    <Binding Path="Value.ScaleFactor" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
                                                         <Binding.ValidationRules>
                                                             <validators:PositiveNumberValidationRule />
                                                         </Binding.ValidationRules>

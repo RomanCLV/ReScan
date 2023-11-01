@@ -143,7 +143,7 @@ namespace ReScanVisualizer.ViewModels
 
         public int ItemsCount
         {
-            get => Samples.Count + 2; // Points count + barycenter + averplan
+            get => Samples.Count + 5; // Points count + barycenter (1) + averplan (1) + base (x, y, z) (3)
         }
 
         public ScatterGraphViewModel() : this(new ScatterGraph(), Colors.White)
@@ -189,12 +189,12 @@ namespace ReScanVisualizer.ViewModels
             }
             catch (InvalidOperationException)
             {
-                averagePlan = new Plan();
+                averagePlan = new Plan(0, 0, 1, 0);
             }
             
             if (_scatterGraph.Count < 2)
             {
-                _base3D = new Base3DViewModel(new Base3D(barycenter));
+                _base3D = new Base3DViewModel(new Base3D(barycenter), _scaleFactor);
             }
             else
             {
@@ -205,11 +205,11 @@ namespace ReScanVisualizer.ViewModels
                     Vector3D z = averagePlan.GetNormal();
                     z.Normalize();
                     Vector3D y = Vector3D.CrossProduct(z, x);
-                    _base3D = new Base3DViewModel(new Base3D(barycenter, x, y, z));
+                    _base3D = new Base3DViewModel(new Base3D(barycenter, x, y, z), _scaleFactor);
             }
                 else
                 {
-                    _base3D = new Base3DViewModel(ScatterGraph.ComputeRepere3D(barycenter, averagePlan));
+                    _base3D = new Base3DViewModel(ScatterGraph.ComputeRepere3D(barycenter, averagePlan), _scaleFactor);
                 }
             }
             
@@ -381,9 +381,9 @@ namespace ReScanVisualizer.ViewModels
         private double ComputeAveragePlanLength(Base3D base3D)
         {
             Point3D point3D = ScatterGraph.GetFarthestPoint(_scatterGraph, base3D, Plan2D.XY);
-            Vector3D vector = base3D.GetRotationMatrix().Transform(point3D) - base3D.Origin;
-
-            return 2.0 * Math.Max(Math.Abs(vector.X), Math.Abs(vector.Y));
+            Vector3D vector = base3D.GetRotationMatrix().Transform(point3D.ToPoint4D()).ToPoint3D() - base3D.Origin;
+            double length = 2.0 * Math.Max(Math.Abs(vector.X), Math.Abs(vector.Y));
+            return length;
         }
 
         public void UpdateModelGeometry()

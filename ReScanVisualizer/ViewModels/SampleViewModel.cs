@@ -36,6 +36,7 @@ namespace ReScanVisualizer.ViewModels
         public Point3DViewModel Point { get; private set; }
 
         private Point3D PointScalled => Point.Point.Multiply(_scaleFactor);
+        private double RadiusScalled => Math.Max(0.001, _radius * _scaleFactor);
 
         private double _radius;
         public double Radius
@@ -126,7 +127,7 @@ namespace ReScanVisualizer.ViewModels
                 CorrectZ = CorrectZ
             };
 
-            _model = Helper3D.Helper3D.BuildSphereModel(PointScalled, _radius * _scaleFactor, Color.Color);
+            _model = Helper3D.Helper3D.BuildSphereModel(PointScalled, RadiusScalled, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;
             Point.PropertyChanged += Point_PropertyChanged;
@@ -189,7 +190,7 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildSphereGeometry(PointScalled, _radius * _scaleFactor);
+            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildSphereGeometry(PointScalled, RadiusScalled);
         }
 
         public void UpdateModelMaterial()

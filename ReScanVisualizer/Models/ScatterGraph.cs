@@ -340,14 +340,18 @@ namespace ReScanVisualizer.Models
             int size = scatterGraph.Count;
             Point3D farthestPoint = base3D.Origin;
             Point3D currentPoint;
+            Point3D currentProjection;
             double maxDistance = double.MinValue;
             double currentDistance;
             Plan plan = base3D.GetPlan(plan2D);
             Matrix3D matrix = base3D.GetRotationMatrix();
+            matrix.Invert();
 
             for (int i = 0; i < size; i++)
             {
-                currentPoint = matrix.Transform(plan.GetOrthogonalProjection(scatterGraph[i]));
+                currentPoint = scatterGraph[i];
+                currentProjection = plan.GetOrthogonalProjection(currentPoint);
+                currentPoint = matrix.Transform(currentProjection.ToPoint4D()).ToPoint3D();
                 currentDistance = (base3D.Origin - currentPoint).Length;
                 if (currentDistance > maxDistance)
                 {
@@ -443,16 +447,15 @@ namespace ReScanVisualizer.Models
             int size = _points.Count;
 
             Point3D barycenter = ComputeBarycenter();
-
+            Vector3D z;
             if (size < 2)
             {
-                Vector3D z = new Vector3D(0, 0, 1);
+                z = new Vector3D(0, 0, 1);
                 return size == 1 ? new Plan(z, -z.Z * barycenter.Z) : new Plan(z);
             }
             else if (ArePointsCoplanar())
             {
                 Vector3D x = _points[1] - _points[0];
-                Vector3D z;
                 if (ArePointsColinear())
                 {
                     Base3D repere = Tools.ComputeOrientedBase(x, Axis.X);
@@ -475,6 +478,7 @@ namespace ReScanVisualizer.Models
                 {
                     z *= -1;
                 }
+                z.Normalize();
                 return new Plan(z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
             }
 
@@ -543,7 +547,18 @@ namespace ReScanVisualizer.Models
                 c *= -1;
             }
 
-            return new Plan(a, b, c, -(a * barycenter.X + b * barycenter.Y + c * barycenter.Z));
+            z = new Vector3D(a, b, c);
+            
+            if (z.Length == 0)
+            {
+                z.Z = 1.0;
+            }
+            else if (z.Length != 1.0)
+            {
+                z.Normalize();
+            }
+
+            return new Plan(z.X, z.Y, z.Z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
         }
 
         public static Base3D ComputeRepere3D(ScatterGraph scatterGraph)

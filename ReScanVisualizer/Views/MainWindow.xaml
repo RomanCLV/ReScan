@@ -58,7 +58,7 @@
         </StackPanel>
 
         <Grid>
-            <HelixToolkit:HelixViewport3D>
+            <HelixToolkit:HelixViewport3D ShowCameraInfo="False">
                 <HelixToolkit:HelixViewport3D.Background>
                     <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
                         <GradientStop Color="#FF0061FF" Offset="0"/>
@@ -111,6 +111,7 @@
                                 </DataTemplate>
                             </TreeView.ItemTemplate>
                         </TreeView>
+                        
                         <TreeView Background="Transparent" BorderThickness="0" 
                                   ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}">
                             <TreeView.ItemTemplate>
@@ -129,17 +130,54 @@
                                                 <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" />
                                             </TreeViewItem.Header>
                                         </TreeViewItem>
+                                        <TreeViewItem Header="Base (3)" IsExpanded="False">
+                                            <TreeViewItem>
+                                                <TreeViewItem.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="X ("/>
+                                                        <TextBlock Text="{Binding Base3D.X.X, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=" "/>
+                                                        <TextBlock Text="{Binding Base3D.X.Y, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=" "/>
+                                                        <TextBlock Text="{Binding Base3D.X.Z, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=")"/>
+                                                    </StackPanel>
+                                                </TreeViewItem.Header>
+                                            </TreeViewItem>
+                                            <TreeViewItem>
+                                                <TreeViewItem.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Y ("/>
+                                                        <TextBlock Text="{Binding Base3D.Y.X, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=" "/>
+                                                        <TextBlock Text="{Binding Base3D.Y.Y, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=" "/>
+                                                        <TextBlock Text="{Binding Base3D.Y.Z, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=")"/>
+                                                    </StackPanel>
+                                                </TreeViewItem.Header>
+                                            </TreeViewItem>
+                                            <TreeViewItem>
+                                                <TreeViewItem.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Z ("/>
+                                                        <TextBlock Text="{Binding Base3D.Z.X, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=" "/>
+                                                        <TextBlock Text="{Binding Base3D.Z.Y, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=" "/>
+                                                        <TextBlock Text="{Binding Base3D.Z.Z, StringFormat=N3, Mode=OneWay}" />
+                                                        <TextBlock Text=")"/>
+                                                    </StackPanel>
+                                                </TreeViewItem.Header>
+                                            </TreeViewItem>
+                                        </TreeViewItem>
                                         <TreeViewItem ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
                                             <TreeViewItem.Header>
                                                 <itw:SamplesTreeViewItemHeader />
                                             </TreeViewItem.Header>
                                             <TreeViewItem.ItemTemplate>
                                                 <DataTemplate>
-                                                    <TreeViewItem>
-                                                        <TreeViewItem.Header>
-                                                            <itw:SampleTreeViewItemHeader />
-                                                        </TreeViewItem.Header>
-                                                    </TreeViewItem>
+                                                    <itw:SampleTreeViewItemHeader />
                                                 </DataTemplate>
                                             </TreeViewItem.ItemTemplate>
                                         </TreeViewItem>

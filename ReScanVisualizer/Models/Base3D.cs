@@ -115,10 +115,10 @@ namespace ReScanVisualizer.Models
 
         public Base3D(Point3D origin, Vector3D x, Vector3D y, Vector3D z)
         {
-            Origin = origin;
-            X = x;
-            Y = y;
-            Z = z;
+            _origin = origin;
+            _x = x;
+            _y = y;
+            _z = z;
         }
 
         private void OnOriginChanged()
@@ -156,13 +156,21 @@ namespace ReScanVisualizer.Models
             Vector3D xAxis = new Vector3D(1, 0, 0);
             Vector3D rotationAxis = Vector3D.CrossProduct(xAxis, X);
             double angle = Vector3D.AngleBetween(xAxis, X);
+            Matrix3D rot;
             if (angle == 0)
             {
-                return Matrix3D.Identity;
+                rot = Matrix3D.Identity;
+                rot.OffsetX = _origin.X;
+                rot.OffsetY = _origin.Y;
+                rot.OffsetZ = _origin.Z;
+                return rot;
             }
-            Matrix3D rot = new Matrix3D();
+            rot = new Matrix3D();
             rot.Rotate(new Quaternion(rotationAxis, -angle));
             rot.Clamp();
+            rot.OffsetX = _origin.X;
+            rot.OffsetY = _origin.Y;
+            rot.OffsetZ = _origin.Z;
             return rot;
         }
 
