@@ -49,7 +49,10 @@ namespace ReScanVisualizer
             {
                 throw new ArgumentException("Can't compute Tool.AreVectorsColinear(Vector3D, Vector3D) because one them is the zero vector.", nameof(vector2));
             }
-            return vector1.X == k * vector2.X && vector1.Y == k * vector2.Y && vector1.Z == k * vector2.Z;
+            bool areColinear = (vector1.X - k * vector2.X).Clamp() == 0.0;
+            areColinear &= (vector1.Y - k * vector2.Y).Clamp() == 0.0;
+            areColinear &= (vector1.Z - k * vector2.Z).Clamp() == 0.0;
+            return areColinear;
         }
 
         /// <param name="axis">Rotation axis</param>

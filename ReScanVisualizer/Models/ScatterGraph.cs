@@ -1,5 +1,7 @@
-﻿using System;
+﻿using HelixToolkit.Wpf;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -332,36 +334,6 @@ namespace ReScanVisualizer.Models
             return farthestPoint;
         }
 
-        /// <summary>
-        /// Find the farthest point in a specified 3D base using the projection of each point over a plan of this base.
-        /// </summary>
-        public static Point3D GetFarthestPoint(ScatterGraph scatterGraph, Base3D base3D, Plan2D plan2D)
-        {
-            int size = scatterGraph.Count;
-            Point3D farthestPoint = base3D.Origin;
-            Point3D currentPoint;
-            Point3D currentProjection;
-            double maxDistance = double.MinValue;
-            double currentDistance;
-            Plan plan = base3D.GetPlan(plan2D);
-            Matrix3D matrix = base3D.GetRotationMatrix();
-            matrix.Invert();
-
-            for (int i = 0; i < size; i++)
-            {
-                currentPoint = scatterGraph[i];
-                currentProjection = plan.GetOrthogonalProjection(currentPoint);
-                currentPoint = matrix.Transform(currentProjection.ToPoint4D()).ToPoint3D();
-                currentDistance = (base3D.Origin - currentPoint).Length;
-                if (currentDistance > maxDistance)
-                {
-                    maxDistance = currentDistance;
-                    farthestPoint = currentPoint;
-                }
-            }
-            return farthestPoint;
-        }
-
         public Point3D ComputeBarycenter()
         {
             if (_points.Count == 0)
@@ -413,28 +385,28 @@ namespace ReScanVisualizer.Models
             {
                 return true;
             }
-            //if (_points.Count < 3)
-            //{
-            //    return true;
-            //    //throw new InvalidOperationException("Need at least 3 points to compute the coplanarity of a graph.");
-            //}
-            //else if (_points.Count == 3)
-            //{
-            //    return true;
-            //}
+   
             Point3D p0 = _points[0];
             Vector3D vector1 = _points[1] - p0;
-            Vector3D vector2 = _points[2] - p0;
+            Vector3D vector2 = new Vector3D();
             Vector3D vector3;
+            bool hasFoundVector2 = false;
             bool isCoplanar = true;
-            for (int i = 3; i < _points.Count; i++)
+            for (int i = 2; i < _points.Count; i++)
             {
-                vector3 = _points[i] - p0;
-
-                isCoplanar = Math.Abs(Tools.MixteProduct(vector1, vector2, vector3)) < Const.ZERO_CLAMP;
-                if (!isCoplanar)
+                if (!hasFoundVector2)
                 {
-                    break;
+                    vector2 = _points[i] - p0;
+                    hasFoundVector2 = !Tools.AreVectorsColinear(vector1, vector2);
+                }
+                else
+                {
+                    vector3 = _points[i] - p0;
+                    isCoplanar = Math.Abs(Tools.MixteProduct(vector1, vector2, vector3)) < Const.ZERO_CLAMP;
+                    if (!isCoplanar)
+                    {
+                        break;
+                    }
                 }
             }
             return isCoplanar;

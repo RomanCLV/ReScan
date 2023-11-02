@@ -160,17 +160,17 @@ namespace ReScanVisualizer.Models
             if (angle == 0)
             {
                 rot = Matrix3D.Identity;
-                rot.OffsetX = _origin.X;
-                rot.OffsetY = _origin.Y;
-                rot.OffsetZ = _origin.Z;
+                //rot.OffsetX = _origin.X;
+                //rot.OffsetY = _origin.Y;
+                //rot.OffsetZ = _origin.Z;
                 return rot;
             }
             rot = new Matrix3D();
             rot.Rotate(new Quaternion(rotationAxis, -angle));
             rot.Clamp();
-            rot.OffsetX = _origin.X;
-            rot.OffsetY = _origin.Y;
-            rot.OffsetZ = _origin.Z;
+            //rot.OffsetX = _origin.X;
+            //rot.OffsetY = _origin.Y;
+            //rot.OffsetZ = _origin.Z;
             return rot;
         }
 

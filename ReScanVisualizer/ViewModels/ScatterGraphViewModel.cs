@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -216,7 +218,7 @@ namespace ReScanVisualizer.ViewModels
             _base3D.Name = "Plan base";
 
             _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius);
-            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor, ComputeAveragePlanLength(_base3D.Base3D));
+            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor, ComputeAveragePlanLength());
 
             _barycenter.IsHiden = hideBarycenter;
             _averagePlan.IsHiden = hideAveragePlan;
@@ -378,13 +380,38 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private double ComputeAveragePlanLength(Base3D base3D)
+        private double ComputeAveragePlanLength()
         {
-            Point3D point3D = ScatterGraph.GetFarthestPoint(_scatterGraph, base3D, Plan2D.XY);
-            Vector3D vector = base3D.GetRotationMatrix().Transform(point3D.ToPoint4D()).ToPoint3D() - base3D.Origin;
-            double length = 2.0 * Math.Max(Math.Abs(vector.X), Math.Abs(vector.Y));
-            return length;
+            int size = _scatterGraph.Count;
+            Base3D base3D = _base3D.Base3D;
+            Point3D currentPoint;
+            double maxDistance = 0.0;
+            double currentDistance;
+            Matrix3D matrix = base3D.GetRotationMatrix();
+            matrix.Invert();
+
+            for (int i = 0; i < size; i++)
+            {
+                currentPoint = _scatterGraph[i];
+
+                // cancel translation of origin
+                currentPoint.Offset(-base3D.Origin.X, -base3D.Origin.Y, -base3D.Origin.Z);
+
+                // rotate by the invert matrix
+                currentPoint = matrix.Transform(currentPoint);
+
+                // projection over the plan
+                currentPoint.Z = 0.0;
+
+                currentDistance = Math.Max(Math.Abs(currentPoint.X), Math.Abs(currentPoint.Y));
+                if (currentDistance > maxDistance)
+                {
+                    maxDistance = currentDistance;
+                }
+            }
+            return 2.0 * maxDistance;
         }
+
 
         public void UpdateModelGeometry()
         { }
