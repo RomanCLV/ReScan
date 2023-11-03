@@ -80,10 +80,14 @@
                 HorizontalAlignment="Left" 
                 >
                 <Grid
+                    Background="{x:Null}"
                     DockPanel.Dock="Bottom"
                     Height="250"
                     >
                     <Grid.Resources>
+                        <DataTemplate DataType="{x:Type viewModels:ScatterGraphViewModel}">
+                            <local:ScatterGraphView />
+                        </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:SampleViewModel}">
                             <local:SampleView />
                         </DataTemplate>
@@ -111,7 +115,7 @@
                                 </DataTemplate>
                             </TreeView.ItemTemplate>
                         </TreeView>
-                        
+
                         <TreeView Background="Transparent" BorderThickness="0" 
                                   ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}">
                             <TreeView.ItemTemplate>

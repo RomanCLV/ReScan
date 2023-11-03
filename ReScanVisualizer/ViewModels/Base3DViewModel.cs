@@ -11,7 +11,7 @@ using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class Base3DViewModel : ViewModelBase
+    public class Base3DViewModel : ViewModelBase, I3DElement
     {
         private readonly Base3D _base3D;
         public Base3D Base3D => _base3D;
@@ -58,7 +58,7 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _base3D.Origin = value;
                     OnPropertyChanged(nameof(Origin));
-                    Build();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _base3D.X = value;
                     OnPropertyChanged(nameof(X));
-                    Build();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -86,7 +86,7 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _base3D.Y = value;
                     OnPropertyChanged(nameof(Y));
-                    Build();
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -100,14 +100,51 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _base3D.Z = value;
                     OnPropertyChanged(nameof(Z));
-                    Build();
+                    UpdateModelGeometry();
                 }
             }
         }
 
-        public Model3DGroup Model { get; private set; }
+        private Model3DGroup _model;
+        public Model3D Model => _model;
+
+        public ColorViewModel Color
+        {
+            get => throw new InvalidOperationException("Can't access to Color"); 
+            set => throw new InvalidOperationException("Can't access to Color"); 
+        }
+
+        private bool _isHidenChanging;
+
+        private bool _isHiden;
+        public bool IsHiden
+        {
+            get => _isHiden;
+            set
+            {
+                if (SetValue(ref _isHiden, value))
+                {
+                    _isHidenChanging = true;
+                    //if (_isHiden)
+                    //{
+                    //    UpdateOldOpacity();
+                    //    Color.A = 0;
+                    //}
+                    //else
+                    //{
+                    //    Color.A = _oldOpacity;
+                    //}
+                    //_isHidenChanging = false;
+                    //OnIsHidenChanged();
+                }
+            }
+        }
+
+
 
         private static uint _instanceCreated = 0;
+
+        public event EventHandler<bool> IsHidenChanged;
 
         public Base3DViewModel(double scaleFactor = 1.0) : this(new Base3D(), scaleFactor)
         {
@@ -118,7 +155,9 @@ namespace ReScanVisualizer.ViewModels
             _base3D = base3D;
             _scaleFactor = scaleFactor;
             _name = $"Base";
-            Model = Helper3D.Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _scaleFactor);
+            _isHidenChanging = false;
+            _isHiden = false;
+            _model = Helper3D.Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _scaleFactor);
         }
 
         public static Base3DViewModel CreateCountedInstance()
@@ -146,7 +185,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 _base3D.Translate(x, y, z);
                 OnPropertyChanged(nameof(Origin));
-                Build();
+                UpdateModelGeometry();
             }
         }
 
@@ -158,15 +197,29 @@ namespace ReScanVisualizer.ViewModels
             OnPropertyChanged(nameof(X));
             OnPropertyChanged(nameof(Y));
             OnPropertyChanged(nameof(Z));
-            Build();
+            UpdateModelGeometry();
         }
 
-        private void Build()
+        public void Hide()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Show()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateModelGeometry()
         {
             Base3D base3D = GetBaseScalled();
-            ((GeometryModel3D)Model.Children[0]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.X), 0.1 * _scaleFactor);
-            ((GeometryModel3D)Model.Children[1]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.Y), 0.1 * _scaleFactor);
-            ((GeometryModel3D)Model.Children[2]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.Z), 0.1 * _scaleFactor);
+            ((GeometryModel3D)_model.Children[0]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.X), 0.1 * _scaleFactor);
+            ((GeometryModel3D)_model.Children[1]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.Y), 0.1 * _scaleFactor);
+            ((GeometryModel3D)_model.Children[2]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.Z), 0.1 * _scaleFactor);
+        }
+
+        public void UpdateModelMaterial()
+        {
         }
     }
 }

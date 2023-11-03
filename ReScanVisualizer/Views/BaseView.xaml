@@ -10,7 +10,7 @@
     
     <Grid Background="{StaticResource gray24}">
         <TabControl Background="Transparent">
-            <TabItem Header="Infos">
+            <TabItem Header="General">
                 <Grid Margin="0 25 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>

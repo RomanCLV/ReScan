@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="ReScanVisualizer.Views.ScatterGraphView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ReScanVisualizer.Views"
+             xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="400">
+    <UserControl.Resources>
+        <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <TabControl Background="Transparent">
+            <TabItem Header="General">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Name" Style="{StaticResource myTextBlockLeft}" />
+                        <TextBox   Style="{StaticResource myTextBox}" Width="100">
+                            <TextBox.Text>
+                                <Binding Path="Name" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <validators:NotEmptyValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <CheckBox Content="Barycenter visible"   IsChecked="{Binding IsBarycenterHiden,  Converter={StaticResource BoolToInverseBoolConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="{StaticResource foregroundColor}"/>
+                    <CheckBox Content="Average plan visible" IsChecked="{Binding IsAveragePlanHiden, Converter={StaticResource BoolToInverseBoolConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="{StaticResource foregroundColor}"/>
+                    <CheckBox Content="Base visible"         IsChecked="{Binding IsBaseHiden,        Converter={StaticResource BoolToInverseBoolConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="{StaticResource foregroundColor}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Scale factor" Style="{StaticResource myTextBlockLeft}" />
+                        <TextBox   Style="{StaticResource myTextBox}" Width="100">
+                            <TextBox.Text>
+                                <Binding Path="ScaleFactor">
+                                    <Binding.ValidationRules>
+                                        <validators:PositiveNumberValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

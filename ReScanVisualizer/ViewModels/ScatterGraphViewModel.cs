@@ -81,6 +81,22 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        public bool IsBaseHiden
+        {
+            get => Base3D.IsHiden;
+            set
+            {
+                if (AveragePlan.IsHiden != value)
+                {
+                    AveragePlan.IsHiden = value;
+                    if (!AveragePlan.IsHiden && _hasToComputeAveragePlan)
+                    {
+                        ComputeAveragePlan();
+                    }
+                }
+            }
+        }
+
         private bool _hasToComputeBarycenter;
         private bool _hasToComputeAveragePlan;
 
@@ -114,6 +130,7 @@ namespace ReScanVisualizer.ViewModels
         private byte _oldPointsOpacity;
         private bool _oldBarycenterIsHiden;
         private bool _oldAveragePlanIsHiden;
+        private bool _oldBase3DIsHiden;
 
         private bool _isHiden;
         public bool IsHiden
@@ -129,14 +146,17 @@ namespace ReScanVisualizer.ViewModels
                         Color.A = 0;
                         _oldBarycenterIsHiden = _barycenter.IsHiden;
                         _oldAveragePlanIsHiden = _averagePlan.IsHiden;
+                        _oldBase3DIsHiden = _base3D.IsHiden;
                         _barycenter.Hide();
                         _averagePlan.Hide();
+                        _base3D.Hide();
                     }
                     else
                     {
                         Color.A = _oldPointsOpacity;
                         _barycenter.IsHiden = _oldBarycenterIsHiden;
                         _averagePlan.IsHiden = _oldAveragePlanIsHiden;
+                        _base3D.IsHiden = _oldBase3DIsHiden;
                     }
                     OnIsHiddenChanged();
                 }
@@ -146,6 +166,13 @@ namespace ReScanVisualizer.ViewModels
         public int ItemsCount
         {
             get => Samples.Count + 5; // Points count + barycenter (1) + averplan (1) + base (x, y, z) (3)
+        }
+
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set => SetValue(ref _name, value);
         }
 
         public ScatterGraphViewModel() : this(new ScatterGraph(), Colors.White)
@@ -167,6 +194,7 @@ namespace ReScanVisualizer.ViewModels
                 throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
             }
             IsDisposed = false;
+            _name = "Scatter Graph";
             _scaleFactor = scaleFactor;
             _scatterGraph = scatterGraph;
             _pointsRadius = pointRadius;
@@ -225,14 +253,16 @@ namespace ReScanVisualizer.ViewModels
 
             _oldBarycenterIsHiden = _barycenter.IsHiden;
             _oldAveragePlanIsHiden = _averagePlan.IsHiden;
+            _oldBase3DIsHiden = _base3D.IsHiden;
 
-            _hasToComputeBarycenter = false;
+            _hasToComputeBarycenter = false;    // TODO: remove this to become has to rebuild model
             _hasToComputeAveragePlan = false;
 
             Color.PropertyChanged += Color_PropertyChanged;
             Samples.CollectionChanged += Points_CollectionChanged;
             _barycenter.IsHidenChanged += Barycenter_IsHidenChanged;
             _averagePlan.IsHidenChanged += AveragePlan_IsHidenChanged;
+            _base3D.IsHidenChanged += AveragePlan_IsHidenChanged;
         }
 
         ~ScatterGraphViewModel()
@@ -256,6 +286,10 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _averagePlan.IsHidenChanged -= AveragePlan_IsHidenChanged;
                 }
+                if (_base3D != null)
+                {
+                    _base3D.IsHidenChanged -= AveragePlan_IsHidenChanged;
+                }
                 if (Samples != null)
                 {
                     Samples.CollectionChanged -= Points_CollectionChanged;
@@ -277,6 +311,7 @@ namespace ReScanVisualizer.ViewModels
                 }
                 _barycenter?.Dispose();
                 _averagePlan?.Dispose();
+                _base3D?.Dispose();
                 base.Dispose();
                 IsDisposed = true;
             }
