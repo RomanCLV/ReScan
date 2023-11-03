@@ -15,6 +15,33 @@ namespace ReScanVisualizer.ViewModels
 
         public Base3DViewModel Base { get; private set; }
 
+        #region Translate
+
+        private double _translateX;
+        public double TranslateX
+        {
+            get => _translateX;
+            set => SetValue(ref _translateX, value);
+        }
+
+        private double _translateY;
+        public double TranslateY
+        {
+            get => _translateY;
+            set => SetValue(ref _translateY, value);
+        }
+
+        private double _translateZ;
+        public double TranslateZ
+        {
+            get => _translateZ;
+            set => SetValue(ref _translateZ, value);
+        }
+
+        #endregion
+
+        #region Rotate
+
         private double _x;
         public double X
         {
@@ -43,6 +70,10 @@ namespace ReScanVisualizer.ViewModels
             get => _theta;
             set
             {
+                if (value > 180 || value < -180)
+                {
+                    value = 180;
+                }
                 if (SetValue(ref _theta, value))
                 {
                     UpdateCartesianFromAngles();
@@ -56,6 +87,10 @@ namespace ReScanVisualizer.ViewModels
             get => _phi;
             set
             {
+                if (value > 180 || value < -180)
+                {
+                    value = 180;
+                }
                 if (SetValue(ref _phi, value))
                 {
                     UpdateCartesianFromAngles();
@@ -76,12 +111,17 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        #endregion
+
         public BaseViewModel() : this(new Base3DViewModel())
         {
         }
 
         public BaseViewModel(Base3DViewModel base3DViewModel)
         {
+            _translateX = 0.0;
+            _translateY = 0.0;
+            _translateZ = 0.0;
             _x = 1.0;
             _y = 0.0;
             _z = 0.0;
@@ -118,6 +158,14 @@ namespace ReScanVisualizer.ViewModels
             Z = cost;
 
             RotateBase();
+        }
+
+        public void ApplyTranslation()
+        {
+            Base.Translate(_translateX, _translateY, _translateZ);
+            TranslateX = 0.0;
+            TranslateY = 0.0;
+            TranslateZ = 0.0;
         }
 
         private void RotateBase()

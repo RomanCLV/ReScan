@@ -117,7 +117,7 @@ namespace ReScanVisualizer.ViewModels
         {
             _base3D = base3D;
             _scaleFactor = scaleFactor;
-            Name = $"Base";
+            _name = $"Base";
             Model = Helper3D.Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _scaleFactor);
         }
 
@@ -133,6 +133,21 @@ namespace ReScanVisualizer.ViewModels
             {
                 Name = $"Base {_instanceCreated}"
             };
+        }
+
+        public void Translate(Vector3D translation)
+        {
+            Translate(translation.X, translation.Y, translation.Z);
+        }
+
+        public void Translate(double x = 0.0, double y = 0.0, double z = 0.0)
+        {
+            if (x != 0.0 || y != 0.0 || z != 0.0)
+            {
+                _base3D.Translate(x, y, z);
+                OnPropertyChanged(nameof(Origin));
+                Build();
+            }
         }
 
         public void SetBaseVectorsFrom(Base3D base3D)

@@ -4,48 +4,92 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views"
+             xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="200" d:DesignWidth="300">
+    
     <Grid Background="{StaticResource gray24}">
         <TabControl Background="Transparent">
             <TabItem Header="Infos">
-                <Grid>
+                <Grid Margin="0 25 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition />
                         <ColumnDefinition />
                         <ColumnDefinition />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition />
+                        <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="X axis" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Y axis" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Z axis" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="Base.Name" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validators:NotEmptyValidationRule />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Origin" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="X axis" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Grid.Row="1" Grid.Column="3" Text="Y axis" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="Z axis" Style="{StaticResource myTextBlock}" />
 
-                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Base.X.X, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Base.X.Y, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Base.X.Z, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                   
-                    <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding Base.Y.X, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Base.Y.Y, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding Base.Y.Z, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    
-                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Base.Z.X, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Base.Z.Y, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding Base.Z.Z, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
+
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Base.Origin.X, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Base.Origin.Y, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Base.Origin.Z, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+
+                    <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Base.X.X, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding Base.X.Y, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Base.X.Z, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+
+                    <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Base.Y.X, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding Base.Y.Y, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Base.Y.Z, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+
+                    <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding Base.Z.X, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBox Grid.Row="3" Grid.Column="4" Text="{Binding Base.Z.Y, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                    <TextBox Grid.Row="4" Grid.Column="4" Text="{Binding Base.Z.Z, Mode=OneWay}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Translate">
+                <Grid Margin="0 25 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}"/>
+
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding TranslateX, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TranslateY, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TranslateZ, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+
+                    <Button Grid.Row="3" Grid.Column="1" Content="Translate" Style="{StaticResource myButton}" Click="TranslateButton_Click" />
                 </Grid>
             </TabItem>
             <TabItem Header="Rotate">
-                <Grid>
+                <Grid Margin="0 25 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition />
@@ -55,7 +99,7 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    
+
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Style="{StaticResource myTextBlockLeft}"/>
                     <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" ItemsSource="{Binding AllAxis}" SelectedValue="{Binding Axis}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 

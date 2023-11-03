@@ -13,7 +13,7 @@
         <BitmapImage x:Key="browse"  UriSource="/ReScanVisualizer;component/Resources/Images/browse.png" />
         <BitmapImage x:Key="working" UriSource="/ReScanVisualizer;component/Resources/Images/working.png" />
         
-        <BitmapImage x:Key="circle" UriSource="/ReScanVisualizer;component/Resources/Images/circle.jpg" />
+        <BitmapImage x:Key="circle" UriSource="/ReScanVisualizer;component/Resources/Images/circle.png" />
 
         <SolidColorBrush x:Key="textBoxGrey"         Color="#FF454545" />
         <SolidColorBrush x:Key="backgroundColor"     Color="#FF303030" />

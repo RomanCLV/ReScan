@@ -185,7 +185,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             {
                 if (b.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
                 {
-                    item.Value.Reduce();
+                    item.Value!.Reduce();
                 }
             }
         }

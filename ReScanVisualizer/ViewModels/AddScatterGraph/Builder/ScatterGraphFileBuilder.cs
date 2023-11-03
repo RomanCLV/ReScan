@@ -55,7 +55,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public ICommand SelectFileCommand { get; private set; }
 
-
+        
         public ScatterGraphFileBuilder(string path, Color color, bool containsHeader) : base(color)
         {
             _path = path;

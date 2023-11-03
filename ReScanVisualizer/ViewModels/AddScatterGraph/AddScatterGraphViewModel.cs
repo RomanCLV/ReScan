@@ -62,7 +62,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 Items.CollectionChanged -= Items_CollectionChanged;
                 foreach (var item in Items)
                 {
-                    item.Value.PropertyChanged -= Value_PropertyChanged;
+                    item.Value!.PropertyChanged -= Value_PropertyChanged;
                 }
                 base.Dispose();
                 IsDisposed = true;
@@ -107,7 +107,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                     }
                     else
                     {
-                        v.Value.PropertyChanged += Value_PropertyChanged;
+                        v.Value!.PropertyChanged += Value_PropertyChanged;
                     }
                     break;
 
@@ -116,7 +116,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                     foreach (object? item in e.OldItems)
                     {
                         KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> oldItem = ((KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>)item);
-                        oldItem.Value.PropertyChanged -= Value_PropertyChanged;
+                        oldItem.Value!.PropertyChanged -= Value_PropertyChanged;
                     }
                     break;
             }
@@ -133,7 +133,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             int count = 0;
             foreach (var item in Items)
             {
-                count += item.Value.HasToReduce ? item.Value.ReducedCount : item.Value.Count;
+                count += item.Value!.HasToReduce ? item.Value.ReducedCount : item.Value.Count;
             }
             ItemsToAddCount = (uint)count;
         }

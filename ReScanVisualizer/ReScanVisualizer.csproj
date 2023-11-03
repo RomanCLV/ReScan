@@ -111,6 +111,7 @@
     <Compile Include="UserControls\ColorSelector.xaml.cs">
       <DependentUpon>ColorSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Validators\NotEmptyValidationRule.cs" />
     <Compile Include="Validators\PositiveNumberValidationRule.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\IScatterGraphBuilderGroup.cs" />
     <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphBuildResult.cs" />
@@ -373,7 +374,7 @@
     <Resource Include="Resources\Images\load.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\circle.jpg" />
+    <Resource Include="Resources\Images\circle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

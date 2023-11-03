@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
+#nullable enable
+
 namespace ReScanVisualizer.Models
 {
     public class Base3D
     {
-        public event EventHandler<Point3D> OriginChanged;
-        public event EventHandler<Vector3D> XChanged;
-        public event EventHandler<Vector3D> YChanged;
-        public event EventHandler<Vector3D> ZChanged;
-        public event EventHandler<double> ThetaChanged;
-        public event EventHandler<double> PhiChanged;
+        public event EventHandler<Point3D>? OriginChanged;
+        public event EventHandler<Vector3D>? XChanged;
+        public event EventHandler<Vector3D>? YChanged;
+        public event EventHandler<Vector3D>? ZChanged;
 
         private Point3D _origin;
         public Point3D Origin
@@ -75,35 +75,6 @@ namespace ReScanVisualizer.Models
             }
         }
 
-        private double _theta;
-        public double Theta
-        {
-            get => _theta;
-            set
-            {
-                if (_theta != value)
-                {
-                    _theta = value;
-                    OnThetaChanged();
-                }
-            }
-        }
-
-        private double _phi;
-        public double Phi
-        {
-            get => _phi;
-            set
-            {
-                if (_phi != value)
-                {
-                    _phi = value;
-                    OnPhiChanged();
-                }
-            }
-        }
-
-
         public Base3D() : this(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1))
         { }
 
@@ -119,6 +90,26 @@ namespace ReScanVisualizer.Models
             _x = x;
             _y = y;
             _z = z;
+        }
+
+        public void Translate(double x = 0.0, double y = 0.0, double z = 0.0)
+        {
+            if (x != 0.0)
+            {
+                _origin.X += x;
+            }
+            if (y != 0.0)
+            {
+                _origin.Y += y;
+            }
+            if (z != 0.0)
+            {
+                _origin.Z += z;
+            }
+            if (x != 0.0 || y != 0.0 || z != 0.0)
+            {
+                OnOriginChanged();
+            }
         }
 
         private void OnOriginChanged()
@@ -141,16 +132,6 @@ namespace ReScanVisualizer.Models
             ZChanged?.Invoke(this, _z);
         }
 
-        private void OnThetaChanged()
-        {
-            ThetaChanged?.Invoke(this, _theta);
-        }
-
-        private void OnPhiChanged()
-        {
-            PhiChanged?.Invoke(this, _phi);
-        }
-
         public Matrix3D GetRotationMatrix()
         {
             Vector3D xAxis = new Vector3D(1, 0, 0);
@@ -160,37 +141,23 @@ namespace ReScanVisualizer.Models
             if (angle == 0)
             {
                 rot = Matrix3D.Identity;
-                //rot.OffsetX = _origin.X;
-                //rot.OffsetY = _origin.Y;
-                //rot.OffsetZ = _origin.Z;
                 return rot;
             }
             rot = new Matrix3D();
             rot.Rotate(new Quaternion(rotationAxis, -angle));
             rot.Clamp();
-            //rot.OffsetX = _origin.X;
-            //rot.OffsetY = _origin.Y;
-            //rot.OffsetZ = _origin.Z;
             return rot;
         }
 
         public Plan GetPlan(Plan2D plan2D)
         {
-            Vector3D normal;
-            switch (plan2D)
+            var normal = plan2D switch
             {
-                case Plan2D.XY:
-                    normal = _z;
-                    break;
-                case Plan2D.XZ:
-                    normal = _y;
-                    break;
-                case Plan2D.YZ:
-                    normal = _x;
-                    break;
-                default:
-                    throw new InvalidOperationException("Unexpected plan.");
-            }
+                Plan2D.XY => _z,
+                Plan2D.XZ => _y,
+                Plan2D.YZ => _x,
+                _ => throw new InvalidOperationException("Unexpected plan."),
+            };
             return new Plan(normal, -(normal.X * _origin.X + normal.Y * _origin.Y + normal.Z * _origin.Z));
         }
 
@@ -198,7 +165,5 @@ namespace ReScanVisualizer.Models
         {
             return $"{X.X};{X.Y};{X.Z};{Y.X};{Y.Y};{Y.Z};{Z.X};{Z.Y};{Z.Z}";
         }
-
-        
     }
 }

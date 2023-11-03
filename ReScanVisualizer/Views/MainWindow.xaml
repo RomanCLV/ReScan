@@ -81,7 +81,7 @@
                 >
                 <Grid
                     DockPanel.Dock="Bottom"
-                    Height="200"
+                    Height="250"
                     >
                     <Grid.Resources>
                         <DataTemplate DataType="{x:Type viewModels:SampleViewModel}">

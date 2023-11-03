@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,14 @@ namespace ReScanVisualizer.Views
         public BaseView()
         {
             InitializeComponent();
+        }
+
+        private void TranslateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is BaseViewModel viewModel)
+            {
+                viewModel.ApplyTranslation();
+            }
         }
     }
 }
