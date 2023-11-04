@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels
 {
     public class Base3DViewModel : ViewModelBase, I3DElement
@@ -105,7 +107,7 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private Model3DGroup _model;
+        private readonly Model3DGroup _model;
         public Model3D Model => _model;
 
         public ColorViewModel Color
@@ -117,7 +119,7 @@ namespace ReScanVisualizer.ViewModels
         private bool _isHidenChanging;
 
         private bool _isHiden;
-        public bool IsHiden
+        public bool IsHidden
         {
             get => _isHiden;
             set
@@ -144,7 +146,7 @@ namespace ReScanVisualizer.ViewModels
 
         private static uint _instanceCreated = 0;
 
-        public event EventHandler<bool> IsHidenChanged;
+        public event EventHandler<bool>? IsHidenChanged;
 
         public Base3DViewModel(double scaleFactor = 1.0) : this(new Base3D(), scaleFactor)
         {
@@ -198,6 +200,11 @@ namespace ReScanVisualizer.ViewModels
             OnPropertyChanged(nameof(Y));
             OnPropertyChanged(nameof(Z));
             UpdateModelGeometry();
+        }
+
+        public void InverseIsHidden()
+        {
+            IsHidden = !_isHiden;
         }
 
         public void Hide()

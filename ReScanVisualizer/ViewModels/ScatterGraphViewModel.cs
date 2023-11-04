@@ -48,16 +48,16 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _pointsRadius, value);
         }
 
-        public bool IsBarycenterHiden
+        public bool IsBarycenterHidden
         {
-            get => Barycenter.IsHiden;
+            get => Barycenter.IsHidden;
             set
             {
-                if (Barycenter.IsHiden != value)
+                if (Barycenter.IsHidden != value)
                 {
-                    Barycenter.IsHiden = value;
-                    OnPropertyChanged(nameof(Barycenter.IsHiden));
-                    if (!Barycenter.IsHiden && _hasToComputeBarycenter)
+                    Barycenter.IsHidden = value;
+                    OnPropertyChanged(nameof(Barycenter.IsHidden));
+                    if (!Barycenter.IsHidden && _hasToComputeBarycenter)
                     {
                         ComputeBarycenter();
                     }
@@ -65,15 +65,15 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public bool IsAveragePlanHiden
+        public bool IsAveragePlanHidden
         {
-            get => AveragePlan.IsHiden;
+            get => AveragePlan.IsHidden;
             set
             {
-                if (AveragePlan.IsHiden != value)
+                if (AveragePlan.IsHidden != value)
                 {
-                    AveragePlan.IsHiden = value;
-                    if (!AveragePlan.IsHiden && _hasToComputeAveragePlan)
+                    AveragePlan.IsHidden = value;
+                    if (!AveragePlan.IsHidden && _hasToComputeAveragePlan)
                     {
                         ComputeAveragePlan();
                     }
@@ -81,15 +81,15 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public bool IsBaseHiden
+        public bool IsBaseHidden
         {
-            get => Base3D.IsHiden;
+            get => Base3D.IsHidden;
             set
             {
-                if (AveragePlan.IsHiden != value)
+                if (AveragePlan.IsHidden != value)
                 {
-                    AveragePlan.IsHiden = value;
-                    if (!AveragePlan.IsHiden && _hasToComputeAveragePlan)
+                    AveragePlan.IsHidden = value;
+                    if (!AveragePlan.IsHidden && _hasToComputeAveragePlan)
                     {
                         ComputeAveragePlan();
                     }
@@ -133,7 +133,7 @@ namespace ReScanVisualizer.ViewModels
         private bool _oldBase3DIsHiden;
 
         private bool _isHiden;
-        public bool IsHiden
+        public bool IsHidden
         {
             get => _isHiden;
             set
@@ -144,9 +144,9 @@ namespace ReScanVisualizer.ViewModels
                     {
                         UpdateOldOpacity();
                         Color.A = 0;
-                        _oldBarycenterIsHiden = _barycenter.IsHiden;
-                        _oldAveragePlanIsHiden = _averagePlan.IsHiden;
-                        _oldBase3DIsHiden = _base3D.IsHiden;
+                        _oldBarycenterIsHiden = _barycenter.IsHidden;
+                        _oldAveragePlanIsHiden = _averagePlan.IsHidden;
+                        _oldBase3DIsHiden = _base3D.IsHidden;
                         _barycenter.Hide();
                         _averagePlan.Hide();
                         _base3D.Hide();
@@ -154,9 +154,9 @@ namespace ReScanVisualizer.ViewModels
                     else
                     {
                         Color.A = _oldPointsOpacity;
-                        _barycenter.IsHiden = _oldBarycenterIsHiden;
-                        _averagePlan.IsHiden = _oldAveragePlanIsHiden;
-                        _base3D.IsHiden = _oldBase3DIsHiden;
+                        _barycenter.IsHidden = _oldBarycenterIsHiden;
+                        _averagePlan.IsHidden = _oldAveragePlanIsHiden;
+                        _base3D.IsHidden = _oldBase3DIsHiden;
                     }
                     OnIsHiddenChanged();
                 }
@@ -248,12 +248,12 @@ namespace ReScanVisualizer.ViewModels
             _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius);
             _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), _scaleFactor, ComputeAveragePlanLength());
 
-            _barycenter.IsHiden = hideBarycenter;
-            _averagePlan.IsHiden = hideAveragePlan;
+            _barycenter.IsHidden = hideBarycenter;
+            _averagePlan.IsHidden = hideAveragePlan;
 
-            _oldBarycenterIsHiden = _barycenter.IsHiden;
-            _oldAveragePlanIsHiden = _averagePlan.IsHiden;
-            _oldBase3DIsHiden = _base3D.IsHiden;
+            _oldBarycenterIsHiden = _barycenter.IsHidden;
+            _oldAveragePlanIsHiden = _averagePlan.IsHidden;
+            _oldBase3DIsHiden = _base3D.IsHidden;
 
             _hasToComputeBarycenter = false;    // TODO: remove this to become has to rebuild model
             _hasToComputeAveragePlan = false;
@@ -328,12 +328,12 @@ namespace ReScanVisualizer.ViewModels
 
         private void Barycenter_IsHidenChanged(object sender, bool e)
         {
-            _oldBarycenterIsHiden = _barycenter.IsHiden;
+            _oldBarycenterIsHiden = _barycenter.IsHidden;
         }
 
         private void AveragePlan_IsHidenChanged(object sender, bool e)
         {
-            _oldAveragePlanIsHiden = _averagePlan.IsHiden;
+            _oldAveragePlanIsHiden = _averagePlan.IsHidden;
         }
 
         private void Points_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -364,12 +364,12 @@ namespace ReScanVisualizer.ViewModels
                     throw new NotImplementedException();
             }
 
-            if (!Barycenter.IsHiden)
+            if (!Barycenter.IsHidden)
             {
                 ComputeBarycenter();
             }
 
-            if (!AveragePlan.IsHiden)
+            if (!AveragePlan.IsHidden)
             {
                 ComputeAveragePlan();
             }
@@ -387,14 +387,19 @@ namespace ReScanVisualizer.ViewModels
             IsHidenChanged?.Invoke(this, _isHiden);
         }
 
+        public void InverseIsHidden()
+        {
+            IsHidden = !_isHiden;
+        }
+
         public void Hide()
         {
-            IsHiden = true;
+            IsHidden = true;
         }
 
         public void Show()
         {
-            IsHiden = false;
+            IsHidden = false;
         }
 
         private void ComputeBarycenter()

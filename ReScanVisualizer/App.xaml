@@ -4,16 +4,17 @@
              xmlns:local="clr-namespace:ReScanVisualizer">
     <Application.Resources>
 
-        <BitmapImage x:Key="add"     UriSource="/ReScanVisualizer;component/Resources/Images/add.png" />
-        <BitmapImage x:Key="play"    UriSource="/ReScanVisualizer;component/Resources/Images/play.png" />
-        <BitmapImage x:Key="config"  UriSource="/ReScanVisualizer;component/Resources/Images/config.png" />
-        <BitmapImage x:Key="delete"  UriSource="/ReScanVisualizer;component/Resources/Images/delete.png" />
-        <BitmapImage x:Key="update"  UriSource="/ReScanVisualizer;component/Resources/Images/update.png" />
-        <BitmapImage x:Key="load"    UriSource="/ReScanVisualizer;component/Resources/Images/load.png" />
-        <BitmapImage x:Key="browse"  UriSource="/ReScanVisualizer;component/Resources/Images/browse.png" />
-        <BitmapImage x:Key="working" UriSource="/ReScanVisualizer;component/Resources/Images/working.png" />
-        
-        <BitmapImage x:Key="circle" UriSource="/ReScanVisualizer;component/Resources/Images/circle.png" />
+        <BitmapImage x:Key="eye"       UriSource="/ReScanVisualizer;component/Resources/Images/eye.png" />
+        <BitmapImage x:Key="eyeClosed" UriSource="/ReScanVisualizer;component/Resources/Images/eye_closed.png" />
+        <BitmapImage x:Key="add"       UriSource="/ReScanVisualizer;component/Resources/Images/add.png" />
+        <BitmapImage x:Key="circle"    UriSource="/ReScanVisualizer;component/Resources/Images/circle.png" />
+        <BitmapImage x:Key="play"      UriSource="/ReScanVisualizer;component/Resources/Images/play.png" />
+        <BitmapImage x:Key="config"    UriSource="/ReScanVisualizer;component/Resources/Images/config.png" />
+        <BitmapImage x:Key="delete"    UriSource="/ReScanVisualizer;component/Resources/Images/delete.png" />
+        <BitmapImage x:Key="update"    UriSource="/ReScanVisualizer;component/Resources/Images/update.png" />
+        <BitmapImage x:Key="load"      UriSource="/ReScanVisualizer;component/Resources/Images/load.png" />
+        <BitmapImage x:Key="browse"    UriSource="/ReScanVisualizer;component/Resources/Images/browse.png" />
+        <BitmapImage x:Key="working"   UriSource="/ReScanVisualizer;component/Resources/Images/working.png" />
 
         <SolidColorBrush x:Key="textBoxGrey"         Color="#FF454545" />
         <SolidColorBrush x:Key="backgroundColor"     Color="#FF303030" />
@@ -74,7 +75,19 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
+        <Style TargetType="{x:Type Button}" x:Key="myButtonNoPadding" BasedOn="{StaticResource myButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="{x:Type Button}" x:Key="myButtonIcon">
             <Setter Property="Margin"      Value="5" />
             <Setter Property="Foreground"  Value="White" />
@@ -87,7 +100,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="2.5">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Height="24" Width="24" />
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -102,7 +115,21 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
+        <Style TargetType="{x:Type Button}" x:Key="myButtonIconNoPadding" BasedOn="{StaticResource myButtonIcon}">
+            <Setter Property="Margin"  Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0" Margin="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="{x:Type TextBlock}" x:Key="myTextBlock">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment"   Value="Center" />

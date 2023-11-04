@@ -65,7 +65,7 @@
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource add}" Width="24" Height="24" />
+                                    <Image Source="{StaticResource add}" Width="25" Height="25" />
                                     <TextBlock Text="Add scatter graph builder" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                                 </StackPanel>
                             </Button.Content>
@@ -78,7 +78,7 @@
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource play}" Width="24" Height="24" />
+                                    <Image Source="{StaticResource play}" Width="25" Height="25" />
                                     <TextBlock Text="Build all" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                                 </StackPanel>
                             </Button.Content>
@@ -89,7 +89,7 @@
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource load}" Width="24" Height="24"/>
+                                    <Image Source="{StaticResource load}" Width="25" Height="25"/>
                                     <TextBlock Text="Load" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                                 </StackPanel>
                             </Button.Content>
@@ -100,7 +100,7 @@
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource load}" Width="24" Height="24" />
+                                    <Image Source="{StaticResource load}" Width="25" Height="25" />
                                     <TextBlock Text="Load and close" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                                 </StackPanel>
                             </Button.Content>

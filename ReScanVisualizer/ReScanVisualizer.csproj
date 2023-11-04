@@ -90,6 +90,7 @@
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Commands\BuildScatterGraphCommand.cs" />
     <Compile Include="Commands\ValidateEditingScatterGraphBuilderCommand.cs" />
+    <Compile Include="Converters\IsHiddenToImageConverter.cs" />
     <Compile Include="Converters\ReduceItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Converters\LoadItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Commands\LoadScatterGraphCommand.cs" />
@@ -177,6 +178,9 @@
     <Compile Include="Views\ItemTreeViews\BarycenterTreeViewItemHeader.xaml.cs">
       <DependentUpon>BarycenterTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ItemTreeViews\BaseTreeViewItemHeader.xaml.cs">
+      <DependentUpon>BaseTreeViewItemHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ItemTreeViews\SampleTreeViewItemHeader.xaml.cs">
       <DependentUpon>SampleTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
@@ -256,6 +260,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ItemTreeViews\BarycenterTreeViewItemHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\BaseTreeViewItemHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -382,6 +390,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\eye_closed.png" />
+    <Resource Include="Resources\Images\eye.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

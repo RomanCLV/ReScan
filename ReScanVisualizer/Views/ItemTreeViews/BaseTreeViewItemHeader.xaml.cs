@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,23 +13,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ReScanVisualizer.ViewModels;
 
 namespace ReScanVisualizer.Views.ItemTreeViews
 {
     /// <summary>
-    /// Logique d'interaction pour AveragePlanItemTreeView.xaml
+    /// Logique d'interaction pour BaseTreeViewItemHeader.xaml
     /// </summary>
-    public partial class AveragePlanTreeViewItemHeader : UserControl
+    public partial class BaseTreeViewItemHeader : UserControl
     {
-        public AveragePlanTreeViewItemHeader()
+        public BaseTreeViewItemHeader()
         {
             InitializeComponent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is PlanViewModel viewModel)
+            if (DataContext is Base3DViewModel viewModel)
             {
                 viewModel.InverseIsHidden();
             }

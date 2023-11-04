@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ReScanVisualizer.Views.ItemTreeViews.BarycenterTreeViewItemHeader"
+﻿<UserControl x:Class="ReScanVisualizer.Views.ItemTreeViews.BaseTreeViewItemHeader"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,21 +14,14 @@
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-
+    
     <StackPanel Orientation="Horizontal">
         <Button Style="{StaticResource myButtonIconNoPadding}" Click="Button_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
             <Button.Content>
                 <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
             </Button.Content>
         </Button>
-        <StackPanel Orientation="Horizontal" Margin="5 0">
-            <TextBlock Text="Barycenter (" />
-            <TextBlock Text="{Binding Point.X, StringFormat=N2}" />
-            <TextBlock Text=", " />
-            <TextBlock Text="{Binding Point.Y, StringFormat=N2}" />
-            <TextBlock Text=", " />
-            <TextBlock Text="{Binding Point.Z, StringFormat=N2}" />
-            <TextBlock Text=")" />
-        </StackPanel>
+        <TextBlock  Margin="5 0" Text="Base (3)" />
     </StackPanel>
+
 </UserControl>

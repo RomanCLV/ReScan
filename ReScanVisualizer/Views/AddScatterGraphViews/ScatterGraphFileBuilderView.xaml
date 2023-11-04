@@ -15,7 +15,7 @@
                 <Button HorizontalAlignment="Left" Command="{Binding SelectFileCommand}" Style="{StaticResource myButton}" ToolTip="Select file">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="{StaticResource browse}" Width="24" Height="24" />
+                            <Image Source="{StaticResource browse}" Width="25" Height="25" />
                             <TextBlock Text="Select file" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                         </StackPanel>
                     </Button.Content>

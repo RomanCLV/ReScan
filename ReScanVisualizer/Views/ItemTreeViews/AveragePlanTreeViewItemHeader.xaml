@@ -4,17 +4,35 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="userControl"
+             Background="Transparent"
+             >
+    <UserControl.Resources>
+        <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <StackPanel Orientation="Horizontal">
-        <TextBlock Text="Average Plan (" />
-        <TextBlock Text="{Binding A, StringFormat=N2}" />
-        <TextBlock Text=", " />
-        <TextBlock Text="{Binding B, StringFormat=N2}" />
-        <TextBlock Text=", " />
-        <TextBlock Text="{Binding C, StringFormat=N2}" />
-        <TextBlock Text=", " />
-        <TextBlock Text="{Binding D, StringFormat=N2}" />
-        <TextBlock Text=")" />
+        <Button Style="{StaticResource myButtonIconNoPadding}" Click="Button_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Button.Content>
+                <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+            </Button.Content>
+        </Button>
+        <StackPanel Orientation="Horizontal" Margin="5 0">
+            <TextBlock Text="Average Plan (" />
+            <TextBlock Text="{Binding A, StringFormat=N2}" />
+            <TextBlock Text=", " />
+            <TextBlock Text="{Binding B, StringFormat=N2}" />
+            <TextBlock Text=", " />
+            <TextBlock Text="{Binding C, StringFormat=N2}" />
+            <TextBlock Text=", " />
+            <TextBlock Text="{Binding D, StringFormat=N2}" />
+            <TextBlock Text=")" />
+        </StackPanel>
     </StackPanel>
+
+    
 </UserControl>

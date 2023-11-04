@@ -19,7 +19,9 @@ namespace ReScanVisualizer.Models
 
         public event EventHandler<bool>? IsHidenChanged;
 
-        public bool IsHiden { get; }
+        public bool IsHidden { get; }
+
+        public void InverseIsHidden();
 
         public void Hide();
 

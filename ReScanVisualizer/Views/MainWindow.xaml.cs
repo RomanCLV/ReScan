@@ -1,6 +1,7 @@
 ﻿using HelixToolkit.Wpf;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels;
+using ReScanVisualizer.Views.ItemTreeViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,38 @@ namespace ReScanVisualizer.Views
             if (sender is TextBlock tb && tb.DataContext is Base3DViewModel viewModel)
             {
                 ((MainViewModel)DataContext).SelectedViewModel = new BaseViewModel(viewModel);
+            }
+        }
+
+        private void ScatterGraphTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectedViewModel = ((ScatterGraphTreeViewItemHeader)sender).DataContext as ViewModelBase;
+            }
+        }
+
+        private void BarycenterTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectedViewModel = ((SampleTreeViewItemHeader)sender).DataContext as ViewModelBase;
+            }
+        }
+
+        private void AveragePlanTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectedViewModel = ((AveragePlanTreeViewItemHeader)sender).DataContext as ViewModelBase;
+            }
+        }
+
+        private void BaseTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectedViewModel = ((BaseTreeViewItemHeader)sender).DataContext as ViewModelBase;
             }
         }
     }

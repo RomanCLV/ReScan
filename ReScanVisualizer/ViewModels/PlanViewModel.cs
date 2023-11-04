@@ -168,7 +168,7 @@ namespace ReScanVisualizer.ViewModels
         private bool _isHidenChanging;
 
         private bool _isHiden;
-        public bool IsHiden
+        public bool IsHidden
         {
             get => _isHiden;
             set
@@ -256,7 +256,7 @@ namespace ReScanVisualizer.ViewModels
                     UpdateOldOpacity();
                     if (_isHiden && Color.A != 0)
                     {
-                        IsHiden = false;
+                        IsHidden = false;
                     }
                 }
             }
@@ -271,14 +271,19 @@ namespace ReScanVisualizer.ViewModels
             _oldOpacity = Color.A;
         }
 
+        public void InverseIsHidden()
+        {
+            IsHidden = !_isHiden;
+        }
+
         public void Hide()
         {
-            IsHiden = true;
+            IsHidden = true;
         }
 
         public void Show()
         {
-            IsHiden = false;
+            IsHidden = false;
         }
 
         public void UpdateModelGeometry()

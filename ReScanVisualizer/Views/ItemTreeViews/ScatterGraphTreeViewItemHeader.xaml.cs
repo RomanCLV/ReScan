@@ -78,5 +78,13 @@ namespace ReScanVisualizer.Views.ItemTreeViews
                 _openedPopup.IsOpen = false;
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
+            {
+                scatterGraphViewModel.InverseIsHidden();
+            }
+        }
     }
 }

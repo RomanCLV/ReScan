@@ -6,13 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
+#nullable enable
+
 namespace ReScanVisualizer.Validators
 {
     internal class NotEmptyValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            string val = (string)value;
+            string? val = value is string s ? s : null;
             val = val?.Trim();
             if (string.IsNullOrEmpty(val) || string.IsNullOrWhiteSpace(val))
             {

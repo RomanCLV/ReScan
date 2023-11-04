@@ -24,5 +24,20 @@ namespace ReScanVisualizer.Views
         {
             InitializeComponent();
         }
+
+        private void BarycenterVisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AveraglePlanVisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Base3DVisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

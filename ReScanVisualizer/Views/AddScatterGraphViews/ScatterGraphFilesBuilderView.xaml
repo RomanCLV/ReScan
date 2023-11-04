@@ -15,7 +15,7 @@
         <Button HorizontalAlignment="Left" Command="{Binding SelectFilesCommand}" Style="{StaticResource myButton}" ToolTip="Select files">
             <Button.Content>
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{StaticResource browse}" Width="24" Height="24" />
+                    <Image Source="{StaticResource browse}" Width="25" Height="25" />
                     <TextBlock Text="Select files" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                 </StackPanel>
             </Button.Content>
@@ -62,7 +62,7 @@
                                                MouseUp="Rectangle_MouseUp"
                                                Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" 
                                                Width="16" Height="16" 
-                                               ToolTip="{Binding Key.Color}"
+                                               ToolTip="{Binding Color}"
                                                ToolTipService.Placement="Top"/>
                                     
                                     <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">

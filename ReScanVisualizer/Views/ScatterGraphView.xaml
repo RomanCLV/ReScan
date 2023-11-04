@@ -10,6 +10,7 @@
              d:DesignHeight="250" d:DesignWidth="400">
     <UserControl.Resources>
         <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter"/>
+        <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
     </UserControl.Resources>
     <Grid>
         <TabControl Background="Transparent">
@@ -27,14 +28,35 @@
                             </TextBox.Text>
                         </TextBox>
                     </StackPanel>
-                    <CheckBox Content="Barycenter visible"   IsChecked="{Binding IsBarycenterHiden,  Converter={StaticResource BoolToInverseBoolConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="{StaticResource foregroundColor}"/>
-                    <CheckBox Content="Average plan visible" IsChecked="{Binding IsAveragePlanHiden, Converter={StaticResource BoolToInverseBoolConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="{StaticResource foregroundColor}"/>
-                    <CheckBox Content="Base visible"         IsChecked="{Binding IsBaseHiden,        Converter={StaticResource BoolToInverseBoolConverter}, UpdateSourceTrigger=PropertyChanged}" Foreground="{StaticResource foregroundColor}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
+                            <Button.Content>
+                                <Image Source="{Binding IsBarycenterHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Barycenter visible" Style="{StaticResource myTextBlock}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="AveraglePlanVisibilityButton_Click" Margin="5">
+                            <Button.Content>
+                                <Image Source="{Binding IsAveragePlanHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
+                            <Button.Content>
+                                <Image Source="{Binding IsBaseHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Scale factor" Style="{StaticResource myTextBlockLeft}" />
                         <TextBox   Style="{StaticResource myTextBox}" Width="100">
                             <TextBox.Text>
-                                <Binding Path="ScaleFactor">
+                                <Binding Path="ScaleFactor" StringFormat="N2">
                                     <Binding.ValidationRules>
                                         <validators:PositiveNumberValidationRule />
                                     </Binding.ValidationRules>

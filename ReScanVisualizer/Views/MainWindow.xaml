@@ -122,19 +122,22 @@
                                 <DataTemplate>
                                     <TreeViewItem IsExpanded="True">
                                         <TreeViewItem.Header>
-                                            <itw:ScatterGraphTreeViewItemHeader />
+                                            <itw:ScatterGraphTreeViewItemHeader MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
                                         </TreeViewItem.Header>
                                         <TreeViewItem>
                                             <TreeViewItem.Header>
-                                                <itw:BarycenterTreeViewItemHeader DataContext="{Binding Barycenter, UpdateSourceTrigger=PropertyChanged}" />
+                                                <itw:BarycenterTreeViewItemHeader DataContext="{Binding Barycenter, UpdateSourceTrigger=PropertyChanged}" MouseDown="BarycenterTreeViewItemHeader_MouseDown" />
                                             </TreeViewItem.Header>
                                         </TreeViewItem>
                                         <TreeViewItem>
                                             <TreeViewItem.Header>
-                                                <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" />
+                                                <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" MouseDown="AveragePlanTreeViewItemHeader_MouseDown"/>
                                             </TreeViewItem.Header>
                                         </TreeViewItem>
-                                        <TreeViewItem Header="Base (3)" IsExpanded="False">
+                                        <TreeViewItem IsExpanded="False">
+                                            <TreeViewItem.Header>
+                                                <itw:BaseTreeViewItemHeader DataContext="{Binding Base3D, UpdateSourceTrigger=PropertyChanged}" MouseDown="BaseTreeViewItemHeader_MouseDown" />
+                                            </TreeViewItem.Header>
                                             <TreeViewItem>
                                                 <TreeViewItem.Header>
                                                     <StackPanel Orientation="Horizontal">
