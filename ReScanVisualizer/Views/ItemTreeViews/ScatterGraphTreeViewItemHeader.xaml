@@ -13,6 +13,7 @@
              >
     <UserControl.Resources>
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+        <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
@@ -25,7 +26,7 @@
                     <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
                 </Button.Content>
             </Button>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5 0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5 0" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
                 <TextBlock Text="{Binding Name, Mode=OneWay}" />
                 <TextBlock Text=" (" />
                 <TextBlock Text="{Binding ItemsCount}" />

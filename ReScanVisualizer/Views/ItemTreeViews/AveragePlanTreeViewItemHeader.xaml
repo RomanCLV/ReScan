@@ -12,6 +12,7 @@
              >
     <UserControl.Resources>
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
+        <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
@@ -21,7 +22,7 @@
                 <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
             </Button.Content>
         </Button>
-        <StackPanel Orientation="Horizontal" Margin="5 0">
+        <StackPanel Orientation="Horizontal" Margin="5 0" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
             <TextBlock Text="Average Plan (" />
             <TextBlock Text="{Binding A, StringFormat=N2}" />
             <TextBlock Text=", " />

@@ -10,13 +10,11 @@ using System.Windows.Media.Imaging;
 
 namespace ReScanVisualizer.Converters
 {
-    public class IsHiddenToImageConverter : IValueConverter
+    public class IsHiddenToOpacityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            BitmapImage image = new BitmapImage();
-            image.LoadFromBitmap((bool)value ? Resources.eye_closed : Resources.eye);
-            return image;
+            return (bool)value ? 0.5 : 1.0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -90,6 +90,7 @@
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Commands\BuildScatterGraphCommand.cs" />
     <Compile Include="Commands\ValidateEditingScatterGraphBuilderCommand.cs" />
+    <Compile Include="Converters\IsHiddenToOpacityConverter.cs" />
     <Compile Include="Converters\IsHiddenToImageConverter.cs" />
     <Compile Include="Converters\ReduceItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Converters\LoadItemButtonEnabledMultiConverter.cs" />

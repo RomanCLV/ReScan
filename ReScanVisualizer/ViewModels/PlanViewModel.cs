@@ -29,7 +29,7 @@ namespace ReScanVisualizer.ViewModels
                 }
                 if (SetValue(ref _scaleFactor, value))
                 {
-                    // TODO: rebuild all
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -121,84 +121,51 @@ namespace ReScanVisualizer.ViewModels
 
         private Point3D CenterScalled => _center.Multiply(_scaleFactor);
 
-
         private Vector3D _up;
-        public Vector3D Up
-        {
-            get => _up;
-            set
-            {
-                _up = value;
-                UpdateModelGeometry();
-            }
-        }
-
-        private double _dist;
-        public double Dist
-        {
-            get => _dist;
-            set
-            {
-                if (SetValue(ref _dist, value))
-                {
-                    UpdateModelGeometry();
-                }
-            }
-        }
 
         private double _lenght;
-        public double Length
-        {
-            get => _lenght;
-            set
-            {
-                if (SetValue(ref _lenght, value))
-                {
-                    UpdateModelGeometry();
-                }
-            }
-        }
-
         private double LengthScalled => _lenght * _scaleFactor;
 
         public ColorViewModel Color { get; set; }
 
-        private byte _oldOpacity;
+        private Material? _oldModelMaterial;
 
-        private bool _isHidenChanging;
-
-        private bool _isHiden;
+        private bool _isHidden;
         public bool IsHidden
         {
-            get => _isHiden;
+            get => _isHidden;
             set
             {
-                if (SetValue(ref _isHiden, value))
+                if (SetValue(ref _isHidden, value))
                 {
-                    _isHidenChanging = true;
-                    if (_isHiden)
+                    if (_isHidden)
                     {
-                        UpdateOldOpacity();
-                        Color.A = 0;
+                        _oldModelMaterial = _model.Material;
+                        _model.Material = null;
+                        _model.BackMaterial = null;
                     }
                     else
                     {
-                        Color.A = _oldOpacity;
+                        if (Color.A == 0)
+                        {
+                            Color.A = 191;
+                            //UpdateModelMaterial();
+                        }
+                        else
+                        {
+                            _model.Material = _oldModelMaterial;
+                            _model.BackMaterial = _oldModelMaterial;
+                        }
                     }
-                    _isHidenChanging = false;
                     OnIsHidenChanged();
                 }
             }
         }
 
-        public event EventHandler<bool>? IsHidenChanged;
+        public event EventHandler<bool>? IsHiddenChanged;
 
-        private Model3D _model;
-        public Model3D Model
-        {
-            get => _model;
-            set => SetValue(ref _model, value);
-        }
+        private readonly GeometryModel3D _model;
+        public Model3D Model => _model;
 
         public PlanViewModel() : this(new Plan(), new Point3D(), new Vector3D(0, 0, 1), Colors.LightBlue.ChangeAlpha(191))
         { }
@@ -209,7 +176,7 @@ namespace ReScanVisualizer.ViewModels
         public PlanViewModel(Plan plan, Point3D center, Vector3D up) : this(plan, center, up, Colors.LightBlue.ChangeAlpha(191))
         { }
 
-        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double scaleFactor = 1.0, double length = 10, double dist = 0.0)
+        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double length = 10.0, double scaleFactor = 1.0)
         {
             if (scaleFactor <= 0.0)
             {
@@ -220,14 +187,11 @@ namespace ReScanVisualizer.ViewModels
             _plan = plan;
             _center = center;
             _up = up;
-            _dist = dist;
             _lenght = length;
             Color = new ColorViewModel(color);
-            _oldOpacity = Color.A;
-            _isHidenChanging = false;
-            _isHiden = _oldOpacity == 0;
+            _isHidden = color.A == 0;
 
-            _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, _dist, Color.Color);
+            _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;
         }
@@ -241,39 +205,31 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
-                IsDisposed = true;
                 Color.PropertyChanged -= Color_PropertyChanged;
                 base.Dispose();
+                IsDisposed = true;
             }
         }
 
         private void Color_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Color.A))
+            if (e.PropertyName == nameof(Color))
             {
-                if (!_isHidenChanging)
+                if (_isHidden)
                 {
-                    UpdateOldOpacity();
-                    if (_isHiden && Color.A != 0)
-                    {
-                        IsHidden = false;
-                    }
+                    IsHidden = false;
+                }
+                UpdateModelMaterial();
+                if (!_isHidden && Color.A == 0)
+                {
+                    IsHidden = true;
                 }
             }
-            if (e.PropertyName == nameof(Color.Color))
-            {
-                UpdateModelMaterial();
-            }
-        }
-
-        private void UpdateOldOpacity()
-        {
-            _oldOpacity = Color.A;
         }
 
         public void InverseIsHidden()
         {
-            IsHidden = !_isHiden;
+            IsHidden = !_isHidden;
         }
 
         public void Hide()
@@ -288,19 +244,26 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            ((GeometryModel3D)_model).Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, _dist);
+            _model.Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0);
         }
 
         public void UpdateModelMaterial()
         {
-            GeometryModel3D model = (GeometryModel3D)_model;
-            model.Material = MaterialHelper.CreateMaterial(new SolidColorBrush(Color.Color));
-            model.BackMaterial = model.Material;
+            _model.Material = MaterialHelper.CreateMaterial(new SolidColorBrush(Color.Color));
+            _model.BackMaterial = _model.Material;
         }
 
         private void OnIsHidenChanged()
         {
-            IsHidenChanged?.Invoke(this, _isHiden);
+            IsHiddenChanged?.Invoke(this, _isHidden);
+        }
+
+        public void UpdatePlan(Plan plan, Vector3D up, double length)
+        {
+            _plan.SetABCD(plan);
+            _up = up;
+            _lenght = length;
+            UpdateModelGeometry();
         }
 
         public override string ToString()

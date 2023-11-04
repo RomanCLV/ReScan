@@ -4,12 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="userControl"
+             Background="Transparent"
              >
+    <UserControl.Resources>
+        <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
+        <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <StackPanel Orientation="Horizontal">
-        <TextBlock Text="Points (" />
-        <TextBlock Text="{Binding Samples.Count}" />
-        <TextBlock Text=")" />
+        <Button Style="{StaticResource myButtonIconNoPadding}" Click="Button_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Button.Content>
+                <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+            </Button.Content>
+        </Button>
+
+        <StackPanel Orientation="Horizontal" Margin="5 0" Opacity="{Binding ArePointsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
+            <TextBlock Text="Points (" />
+            <TextBlock Text="{Binding Samples.Count}" />
+            <TextBlock Text=")" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

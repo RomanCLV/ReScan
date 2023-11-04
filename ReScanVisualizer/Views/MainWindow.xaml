@@ -15,6 +15,7 @@
         >
     <Window.Resources>
         <converters:CommandKeyToInputGestureTextConverter x:Key="CommandKeyToInputGestureTextConverter" />
+        <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
     </Window.Resources>
     
     <Window.InputBindings>
@@ -140,7 +141,7 @@
                                             </TreeViewItem.Header>
                                             <TreeViewItem>
                                                 <TreeViewItem.Header>
-                                                    <StackPanel Orientation="Horizontal">
+                                                    <StackPanel Orientation="Horizontal" Opacity="{Binding Base3D.IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
                                                         <TextBlock Text="X ("/>
                                                         <TextBlock Text="{Binding Base3D.X.X, StringFormat=N3, Mode=OneWay}" />
                                                         <TextBlock Text=" "/>
@@ -153,7 +154,7 @@
                                             </TreeViewItem>
                                             <TreeViewItem>
                                                 <TreeViewItem.Header>
-                                                    <StackPanel Orientation="Horizontal">
+                                                    <StackPanel Orientation="Horizontal" Opacity="{Binding Base3D.IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
                                                         <TextBlock Text="Y ("/>
                                                         <TextBlock Text="{Binding Base3D.Y.X, StringFormat=N3, Mode=OneWay}" />
                                                         <TextBlock Text=" "/>
@@ -166,7 +167,7 @@
                                             </TreeViewItem>
                                             <TreeViewItem>
                                                 <TreeViewItem.Header>
-                                                    <StackPanel Orientation="Horizontal">
+                                                    <StackPanel Orientation="Horizontal" Opacity="{Binding Base3D.IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
                                                         <TextBlock Text="Z ("/>
                                                         <TextBlock Text="{Binding Base3D.Z.X, StringFormat=N3, Mode=OneWay}" />
                                                         <TextBlock Text=" "/>

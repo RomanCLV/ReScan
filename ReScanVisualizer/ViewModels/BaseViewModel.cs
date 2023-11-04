@@ -171,7 +171,7 @@ namespace ReScanVisualizer.ViewModels
         private void RotateBase()
         {
             Base3D orientedBase = Tools.ComputeOrientedBase(new Vector3D(_x, _y, _z), _axis);
-            Base.SetBaseVectorsFrom(orientedBase);
+            Base.UpdateBase(orientedBase, false);
         }
     }
 }

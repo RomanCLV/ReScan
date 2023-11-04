@@ -15,9 +15,9 @@ namespace ReScanVisualizer.Models
     {
         public double ScaleFactor { get; set; }
 
-        public ColorViewModel Color { get; set; }
+        public ColorViewModel Color { get; }
 
-        public event EventHandler<bool>? IsHidenChanged;
+        public event EventHandler<bool>? IsHiddenChanged;
 
         public bool IsHidden { get; }
 

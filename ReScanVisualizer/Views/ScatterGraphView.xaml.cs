@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,17 +28,41 @@ namespace ReScanVisualizer.Views
 
         private void BarycenterVisibilityButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (DataContext is ScatterGraphViewModel scatterGraphView)
+            {
+                scatterGraphView.Barycenter.InverseIsHidden();
+            }
         }
 
         private void AveraglePlanVisibilityButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (DataContext is ScatterGraphViewModel scatterGraphView)
+            {
+                scatterGraphView.AveragePlan.InverseIsHidden();
+            }
         }
 
         private void Base3DVisibilityButton_Click(object sender, RoutedEventArgs e)
         {
+            if (DataContext is ScatterGraphViewModel scatterGraphView)
+            {
+                scatterGraphView.Base3D.InverseIsHidden();
+            }
+        }
 
+        private void PointsVisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                if (viewModel.ArePointsHidden)
+                {
+                    viewModel.ShowPoints();
+                }
+                else
+                {
+                    viewModel.HidePoints();
+                }
+            }
         }
     }
 }

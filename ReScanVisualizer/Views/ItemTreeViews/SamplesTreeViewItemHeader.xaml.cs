@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,21 @@ namespace ReScanVisualizer.Views.ItemTreeViews
         public SamplesTreeViewItemHeader()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                if (viewModel.ArePointsHidden)
+                {
+                    viewModel.ShowPoints();
+                }
+                else
+                {
+                    viewModel.HidePoints();
+                }
+            }
         }
     }
 }
