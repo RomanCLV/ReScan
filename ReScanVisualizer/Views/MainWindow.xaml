@@ -31,6 +31,12 @@
             Modifiers="{Binding Path=AddBaseCommand.Modifiers}"
             />
 
+        <KeyBinding x:Name="ExportBaseCommandKey" 
+            Command="{Binding Path=ExportBaseCommand.Command}"  
+            Key="{Binding Path=ExportBaseCommand.Key}" 
+            Modifiers="{Binding Path=ExportBaseCommand.Modifiers}"
+            />
+
     </Window.InputBindings>
 
     <DockPanel>
@@ -55,6 +61,17 @@
                             <Image Source="{StaticResource add}" />
                         </MenuItem.Icon>
                     </MenuItem>
+
+                    <Separator />
+
+                    <MenuItem Header="_Export bases" ToolTip="{Binding ExportBaseCommand.Description}" Style="{StaticResource menuItemItem}"
+                              Command="{Binding ElementName=ExportBaseCommandKey, Path=Command}"
+                              InputGestureText="{Binding ElementName=ExportBaseCommandKey, Converter={StaticResource CommandKeyToInputGestureTextConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource update}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
                 </MenuItem>
             </Menu>
         </StackPanel>

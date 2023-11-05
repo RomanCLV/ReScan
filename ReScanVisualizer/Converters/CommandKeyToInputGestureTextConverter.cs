@@ -25,7 +25,7 @@ namespace ReScanVisualizer.Converters
                 modifiers = keysConverter.ConvertToString(keyBinding.Modifiers);
                 keys = keyConverter.ConvertToString(keyBinding.Key);
             }
-            if (value is CommandKey commandGestureKey)
+            else if (value is CommandKey commandGestureKey)
             {
                 modifiers = keysConverter.ConvertToString(commandGestureKey.Modifiers);
                 keys = keyConverter.ConvertToString(commandGestureKey.Key);

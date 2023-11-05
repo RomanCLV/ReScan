@@ -50,6 +50,8 @@ namespace ReScanVisualizer.ViewModels
 
         public CommandKey AddBaseCommand { get; }
 
+        public CommandKey ExportBaseCommand { get; }
+
         public MainViewModel()
         {
             IsDisposed = false;
@@ -65,6 +67,7 @@ namespace ReScanVisualizer.ViewModels
 
             AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
             AddBaseCommand = new CommandKey(new ActionCommand(AddBase), Key.B, ModifierKeys.Control | ModifierKeys.Shift, "Add a new base");
+            ExportBaseCommand = new CommandKey(new ExportBasesCommand(this), Key.E, ModifierKeys.Control | ModifierKeys.Shift, "Export bases");
 
             ScatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
             Bases.CollectionChanged += Bases_CollectionChanged;

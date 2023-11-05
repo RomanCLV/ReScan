@@ -17,21 +17,21 @@ namespace ReScanVisualizer.ViewModels
         public ModifierKeys Modifiers
         {
             get { return _modifiers; }
-            set { SetValue(ref _modifiers, value); }
+            private set { SetValue(ref _modifiers, value); }
         }
 
         private Key _key;
         public Key Key
         {
             get { return _key; }
-            set { SetValue(ref _key, value); }
+            private set { SetValue(ref _key, value); }
         }
 
         private string _description;
         public string Description
         {
             get { return _description; }
-            set { SetValue(ref _description, value); }
+            private set { SetValue(ref _description, value); }
         }
 
         public CommandKey(ICommand command)

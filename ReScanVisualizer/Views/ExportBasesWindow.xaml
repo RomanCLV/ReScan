@@ -1,0 +1,90 @@
+﻿<Window x:Class="ReScanVisualizer.Views.ExportBasesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReScanVisualizer.Views"
+        mc:Ignorable="d"
+        Title="Add scatter graph" 
+        Height="720" Width="1380"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource backgroundColor}"
+        Foreground="{StaticResource foregroundColor}"
+        >
+    <Window.InputBindings>
+        <KeyBinding x:Name="ValidateCommandKey" 
+                Command="{Binding Path=ValidateCommand.Command}"  
+                Key="{Binding Path=ValidateCommand.Key}" 
+                Modifiers="{Binding Path=ValidateCommand.Modifiers}"
+                />
+        
+        <KeyBinding x:Name="CancelCommandKey" 
+                Command="{Binding Path=CancelCommand.Command}"  
+                Key="{Binding Path=CancelCommand.Key}" 
+                Modifiers="{Binding Path=CancelCommand.Modifiers}"
+                />
+    </Window.InputBindings>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Export bases" Style="{StaticResource helpWindowTitle}"/>
+                <DockPanel Margin="50">
+                    <CheckBox DockPanel.Dock="Top" Margin="0 5" Content="Select all" IsChecked="{Binding SelectAll}" Foreground="{StaticResource foregroundColor}" />
+                    
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource myButton}"
+                                Command="{Binding ElementName=ValidateCommandKey, Path=Command}"
+                                ToolTip="{Binding ValidateCommand.Description}">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource load}" Width="25" Height="25" />
+                                    <TextBlock Text="Export" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Content="Cancel" Style="{StaticResource myButton}"
+                            Command="{Binding ElementName=CancelCommandKey, Path=Command}"
+                            ToolTip="{Binding CancelCommand.Description}"/>
+                    </StackPanel>
+                    
+                    <ListView 
+                        ItemsSource="{Binding Items}"
+                        Background="{StaticResource backgroundListColor}" 
+                        FocusVisualStyle="{x:Null}"
+                    >
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                                <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Base name" Width="75" DisplayMemberBinding="{Binding Name}"/>
+
+                                <GridViewColumn Header="Selected" Width="60">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding IsSelected}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                              
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </DockPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

@@ -27,8 +27,10 @@ namespace ReScanVisualizer.Commands
             {
                 Owner = _addScatterGraphView
             };
-            view.DataContext = new AddScatterGraphBuilderViewModel(view, _addScatterGraphViewModel);
+            AddScatterGraphBuilderViewModel addScatterGraphBuilderViewModel = new AddScatterGraphBuilderViewModel(view, _addScatterGraphViewModel);
+            view.DataContext = addScatterGraphBuilderViewModel;
             view.ShowDialog();
+            addScatterGraphBuilderViewModel.Dispose();
         }
     }
 }
