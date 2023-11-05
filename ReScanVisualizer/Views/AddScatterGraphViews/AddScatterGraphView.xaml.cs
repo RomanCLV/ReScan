@@ -210,11 +210,27 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             {
                 if (b.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
                 {
-                    if (DataContext is AddScatterGraphViewModel model)
+                    if (DataContext is AddScatterGraphViewModel viewModel)
                     {
-                        model.Items.Remove(item);
+                        viewModel.Items.Remove(item);
                     }
                 }
+            }
+        }
+
+        private void ApplyMaxPointsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyMaxPoints();
+            }
+        }
+
+        private void ApplyCommonScaleFactorButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonFactor();
             }
         }
     }

@@ -58,8 +58,9 @@
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="Add Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
                 <DockPanel Margin="50">
-                    <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                    <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Left" Orientation="Horizontal">
                         <Button Style="{StaticResource myButton}"
+                                VerticalAlignment="Bottom"
                                 Command="{Binding ElementName=AddScatterGraphBuilderCommandKey, Path=Command}"
                                 ToolTip="{Binding AddScatterGraphBuilderCommand.Description}"
                                 >
@@ -70,6 +71,34 @@
                                 </StackPanel>
                             </Button.Content>
                         </Button>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Max points for all graph" Style="{StaticResource myTextBlock}"/>
+                                <TextBox Text="{Binding MaxPoints}" Width="75"  Style="{StaticResource myTextBox}"
+                                         GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                            </StackPanel>
+                            <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
+                                    ToolTip="Find the reduction factor of all builded graphes to reach the specified max points."
+                                    Click="ApplyMaxPointsButton_Click"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Common scale factor" Style="{StaticResource myTextBlock}"/>
+                                <TextBox Width="75"  Style="{StaticResource myTextBox}"
+                                         GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                    <TextBox.Text>
+                                        <Binding Path="CommonScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <validators:PositiveNumberValidationRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </StackPanel>
+                            <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
+                                    ToolTip="Apply this scale factor for all builded graphes."
+                                    Click="ApplyCommonScaleFactorButton_Click"/>
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Style="{StaticResource myButton}" 
@@ -237,7 +266,7 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBox  Style="{StaticResource myTextBox}" Width="50"
                                                           IsEnabled="{Binding Value.IsSuccess}"
-                                                          Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                                          Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}"
                                                           GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                                                 
                                                 <Slider   Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="100" VerticalAlignment="Center"
@@ -264,7 +293,7 @@
                                             <TextBox Style="{StaticResource myTextBox}"
                                                      GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
                                                 <TextBox.Text>
-                                                    <Binding Path="Value.ScaleFactor" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding Path="Value.ScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
                                                         <Binding.ValidationRules>
                                                             <validators:PositiveNumberValidationRule />
                                                         </Binding.ValidationRules>

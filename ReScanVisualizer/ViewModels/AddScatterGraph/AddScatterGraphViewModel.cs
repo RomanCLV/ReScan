@@ -29,6 +29,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             set => SetValue(ref _itemsToAddCount, value);
         }
 
+        private uint _maxPoints;
+        public uint MaxPoints
+        {
+            get => _maxPoints;
+            set => SetValue(ref _maxPoints, value);
+        }
+
+        private double _commonScaleFactor;
+        public double CommonScaleFactor
+        {
+            get => _commonScaleFactor;
+            set => SetValue(ref _commonScaleFactor, value);
+        }
+
         public CommandKey AddScatterGraphBuilderCommand { get; private set; }
         public CommandKey BuildCommand { get; private set; }
         public CommandKey LoadCommand { get; private set; }
@@ -39,6 +53,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         {
             _view = view;
             _mainViewModel = mainViewModel;
+            _commonScaleFactor = 1.0;
+            _maxPoints = 0;
+
             Items = new ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>();
 
             Items.CollectionChanged += Items_CollectionChanged;
@@ -136,6 +153,28 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 count += item.Value!.HasToReduce ? item.Value.ReducedCount : item.Value.Count;
             }
             ItemsToAddCount = (uint)count;
+        }
+
+        public void ApplyCommonFactor()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Value != null)
+                {
+                    item.Value.ScaleFactor = _commonScaleFactor;
+                }
+            }
+        }
+
+        public void ApplyMaxPoints()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Value != null && item.Value.Count > _maxPoints)
+                {
+                    item.Value.ReductionFactor = 100.0 - ((_maxPoints * 100.0) / item.Value.Count);
+                }
+            }
         }
 
         public void AddBuilder(ScatterGraphBuilderBase builder)

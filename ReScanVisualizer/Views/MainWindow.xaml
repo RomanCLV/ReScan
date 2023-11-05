@@ -113,6 +113,7 @@
                     HorizontalScrollBarVisibility="Auto" 
                     VerticalScrollBarVisibility="Auto"
                     FocusVisualStyle="{x:Null}"
+                    Margin="0 0 5 0"
                     >
                     <StackPanel>
                         <DockPanel Visibility="{Binding ElementName=BasesTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -121,7 +122,11 @@
                                     <Image Source="{StaticResource delete}" />
                                 </Button.Content>
                             </Button>
-                            <TextBlock Text="Bases" Style="{StaticResource mainViewSectionTitle}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Bases (" Style="{StaticResource mainViewSectionTitle}"  Margin="5 5 0 5"/>
+                                <TextBlock Text="{Binding Bases.Count}" Style="{StaticResource mainViewSectionTitle}" Margin="0" />
+                                <TextBlock Text=")" Style="{StaticResource mainViewSectionTitle}" Margin="0 5 5 5" />
+                            </StackPanel>
                         </DockPanel>
                         <TreeView 
                             Background="Transparent" 
@@ -155,7 +160,11 @@
                                     <Image Source="{StaticResource delete}" />
                                 </Button.Content>
                             </Button>
-                            <TextBlock Text="Scatter Graphs" Style="{StaticResource mainViewSectionTitle}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Scatter Graphs (" Style="{StaticResource mainViewSectionTitle}" Margin="5 5 0 5" />
+                                <TextBlock Text="{Binding ScatterGraphs.Count}" Style="{StaticResource mainViewSectionTitle}" Margin="0" />
+                                <TextBlock Text=")" Style="{StaticResource mainViewSectionTitle}" Margin="0 5 5 5" />
+                            </StackPanel>
                         </DockPanel>
                         <TreeView 
                             Background="Transparent" 
