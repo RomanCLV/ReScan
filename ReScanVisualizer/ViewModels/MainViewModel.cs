@@ -30,33 +30,17 @@ namespace ReScanVisualizer.ViewModels
             get => _selectedViewModel;
             set
             {
-                if (_selectedViewModel is null)
+                if (_selectedViewModel is BaseViewModel && !_selectedViewModel.Equals(value))
                 {
-                    SetValue(ref _selectedViewModel, value);
+                    _selectedViewModel.Dispose();
                 }
-                else
-                {
-                    if (!_selectedViewModel.Equals(value))
-                    {
-                        if (_selectedViewModel is IModelisable modelisable)
-                        {
-                            AdditionalModels.Children.Remove(modelisable.Model);
-                        }
-                    }
-                    SetValue(ref _selectedViewModel, value);
-                }
-                if (_selectedViewModel is IModelisable modelisable2)
-                {
-                    AdditionalModels.Children.Add(modelisable2.Model);
-                }
+                SetValue(ref _selectedViewModel, value);
             }
         }
 
         public ObservableCollection<ScatterGraphViewModel> ScatterGraphs { get; private set; }
 
         public ObservableCollection<Base3DViewModel> Bases { get; private set; }
-
-        public Model3DGroup AdditionalModels { get; private set; }
 
         public Model3DGroup Models { get; private set; }
 
@@ -73,7 +57,6 @@ namespace ReScanVisualizer.ViewModels
 
             Models = new Model3DGroup();
             BasesModels = new Model3DGroup();
-            AdditionalModels = new Model3DGroup();
 
             SelectedViewModel = null;
 
@@ -137,7 +120,7 @@ namespace ReScanVisualizer.ViewModels
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (object? item in e.NewItems)
+                    foreach (object? item in e.OldItems)
                     {
                         ScatterGraphViewModel graphViewModel = (ScatterGraphViewModel)item;
                         for (int i = 0; i < Models.Children.Count; i++)
@@ -146,6 +129,17 @@ namespace ReScanVisualizer.ViewModels
                             {
                                 if (group.Children[0].Equals(graphViewModel.Model))
                                 {
+                                    if (SelectedViewModel != null)
+                                    {
+                                        if (graphViewModel.Equals(SelectedViewModel) ||
+                                            graphViewModel.AveragePlan.Equals(SelectedViewModel) ||
+                                            graphViewModel.Barycenter.Equals(SelectedViewModel) ||
+                                            (SelectedViewModel is BaseViewModel bvModel && graphViewModel.Base3D.Equals(bvModel.Base)) ||
+                                            graphViewModel.Samples.Any(s => s.Equals(SelectedViewModel)))
+                                        {
+                                            SelectedViewModel = null;
+                                        }
+                                    }
                                     Models.Children.RemoveAt(i);
                                     i--;
                                 }
@@ -160,6 +154,17 @@ namespace ReScanVisualizer.ViewModels
 
                 case NotifyCollectionChangedAction.Reset:
                     Models.Children.Clear();
+                    if (SelectedViewModel is BaseViewModel baseViewModel)
+                    {
+                        if (Bases.All(b => !b.Equals(baseViewModel.Base)))
+                        {
+                            SelectedViewModel = null;
+                        }
+                    }
+                    else
+                    {
+                        SelectedViewModel = null;
+                    }
                     break;
             }
         }
@@ -183,6 +188,13 @@ namespace ReScanVisualizer.ViewModels
                             Base3DViewModel base3D = (Base3DViewModel)item;
                             if (BasesModels.Children[i].Equals(base3D.Model))
                             {
+                                if (SelectedViewModel is BaseViewModel baseViewModel)
+                                {
+                                    if (baseViewModel.Base.Equals(item))
+                                    {
+                                        SelectedViewModel = null;
+                                    }
+                                }
                                 BasesModels.Children.RemoveAt(i);
                                 i--;
                             }
@@ -192,6 +204,13 @@ namespace ReScanVisualizer.ViewModels
 
                 case NotifyCollectionChangedAction.Reset:
                     BasesModels.Children.Clear();
+                    if (SelectedViewModel is BaseViewModel baseViewModel2)
+                    {
+                        if (ScatterGraphs.All(s => !s.Base3D.Equals(baseViewModel2.Base)))
+                        {
+                            SelectedViewModel = null;
+                        }
+                    }
                     break;
             }
         }

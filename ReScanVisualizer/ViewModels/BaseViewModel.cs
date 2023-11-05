@@ -122,6 +122,7 @@ namespace ReScanVisualizer.ViewModels
             _translateX = 0.0;
             _translateY = 0.0;
             _translateZ = 0.0;
+            // TODO: set next values according to base3DViewModel
             _x = 1.0;
             _y = 0.0;
             _z = 0.0;

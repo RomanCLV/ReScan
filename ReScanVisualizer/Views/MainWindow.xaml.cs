@@ -4,6 +4,7 @@ using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.Views.ItemTreeViews;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,12 +33,36 @@ namespace ReScanVisualizer.Views
             InitializeComponent();
         }
 
-        private void BaseItem_MouseDown(object sender, MouseButtonEventArgs e)
+        private void BaseClearButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is TextBlock tb && tb.DataContext is Base3DViewModel viewModel)
+            ((MainViewModel)DataContext).Bases.Clear();
+        }
+
+        private void BaseTreeViewItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TreeViewItem tb && tb.DataContext is Base3DViewModel viewModel)
             {
                 ((MainViewModel)DataContext).SelectedViewModel = new BaseViewModel(viewModel);
             }
+        }
+
+        private void BaseTreeViewItem_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sender is TreeViewItem tb && tb.DataContext is Base3DViewModel viewModel)
+            {
+                switch (e.Key)
+                {
+                    case Key.Delete:
+                    case Key.Back:
+                        ((MainViewModel)DataContext).Bases.Remove(viewModel);
+                        break;
+                }
+            }
+        }
+
+        private void GraphClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((MainViewModel)DataContext).ScatterGraphs.Clear();
         }
 
         private void ScatterGraphTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
@@ -48,11 +73,25 @@ namespace ReScanVisualizer.Views
             }
         }
 
+        private void ScatterGraphTreeViewItem_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sender is TreeViewItem tb && tb.DataContext is ScatterGraphViewModel viewModel)
+            {
+                switch (e.Key)
+                {
+                    case Key.Delete:
+                    case Key.Back:
+                        ((MainViewModel)DataContext).ScatterGraphs.Remove(viewModel);
+                        break;
+                }
+            }
+        }
+
         private void BarycenterTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is MainViewModel viewModel)
             {
-                viewModel.SelectedViewModel = ((SampleTreeViewItemHeader)sender).DataContext as ViewModelBase;
+                viewModel.SelectedViewModel = (SampleViewModel) ((BarycenterTreeViewItemHeader)sender).DataContext;
             }
         }
 
@@ -60,7 +99,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is MainViewModel viewModel)
             {
-                viewModel.SelectedViewModel = ((AveragePlanTreeViewItemHeader)sender).DataContext as ViewModelBase;
+                viewModel.SelectedViewModel = (PlanViewModel) ((AveragePlanTreeViewItemHeader)sender).DataContext;
             }
         }
 
@@ -68,7 +107,16 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is MainViewModel viewModel)
             {
-                viewModel.SelectedViewModel = ((BaseTreeViewItemHeader)sender).DataContext as ViewModelBase;
+                Base3DViewModel base3DviewModel = (Base3DViewModel)((BaseTreeViewItemHeader)sender).DataContext;
+                viewModel.SelectedViewModel = new BaseViewModel(base3DviewModel);
+            }
+        }
+
+        private void SampleTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectedViewModel = (SampleViewModel)((SampleTreeViewItemHeader)sender).DataContext;
             }
         }
     }

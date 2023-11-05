@@ -224,6 +224,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 try
                 {
                     scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor);
+                    scatterGraphViewModel.Name = item.Key.Name.Replace(" builder", "");
                 }
                 catch (ArgumentOutOfRangeException e)
                 {

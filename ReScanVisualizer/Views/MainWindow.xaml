@@ -16,8 +16,9 @@
     <Window.Resources>
         <converters:CommandKeyToInputGestureTextConverter x:Key="CommandKeyToInputGestureTextConverter" />
         <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
-    
+
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphCommandKey" 
                     Command="{Binding Path=AddScatterGraphCommand.Command}"  
@@ -59,33 +60,21 @@
         </StackPanel>
 
         <Grid>
-            <HelixToolkit:HelixViewport3D ShowCameraInfo="False">
-                <HelixToolkit:HelixViewport3D.Background>
-                    <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
-                        <GradientStop Color="#FF0061FF" Offset="0"/>
-                        <GradientStop Color="DarkBlue"  Offset="1"/>
-                    </LinearGradientBrush>
-                </HelixToolkit:HelixViewport3D.Background>
-                <!-- Remember to add light to the scene -->
-                <HelixToolkit:SunLight/>
-                <HelixToolkit:GridLinesVisual3D Width="30" Length="30" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="50" Width="290"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-                <ModelVisual3D Content="{Binding OriginModel}" />
-                <ModelVisual3D Content="{Binding BasesModels}"/>
-                <ModelVisual3D Content="{Binding AdditionalModels}"/>
-                <ModelVisual3D Content="{Binding Models}"/>
-            </HelixToolkit:HelixViewport3D>
-
-            <DockPanel 
-                Width="400"
-                HorizontalAlignment="Left" 
-                >
-                <Grid
-                    Background="{x:Null}"
+            <DockPanel Grid.Column="0">
+                <ScrollViewer
+                    Background="Transparent"
                     DockPanel.Dock="Bottom"
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Auto" 
+                    FocusVisualStyle="{x:Null}"
                     Height="250"
-                    >
-                    <Grid.Resources>
+                    Margin="0 0 5 0">
+                    <ScrollViewer.Resources>
                         <DataTemplate DataType="{x:Type viewModels:ScatterGraphViewModel}">
                             <local:ScatterGraphView />
                         </DataTemplate>
@@ -98,32 +87,75 @@
                         <DataTemplate DataType="{x:Type viewModels:BaseViewModel}">
                             <local:BaseView />
                         </DataTemplate>
-                    </Grid.Resources>
+                    </ScrollViewer.Resources>
 
                     <ContentControl Content="{Binding SelectedViewModel}" />
-                </Grid>
+                </ScrollViewer>
 
                 <ScrollViewer 
                     HorizontalScrollBarVisibility="Auto" 
                     VerticalScrollBarVisibility="Auto"
+                    FocusVisualStyle="{x:Null}"
                     >
                     <StackPanel>
-                        <TreeView Background="Transparent" BorderThickness="0"
-                                  ItemsSource="{Binding Bases, UpdateSourceTrigger=PropertyChanged}">
+                        <DockPanel Visibility="{Binding ElementName=BasesTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" Click="BaseClearButton_Click">
+                                <Button.Content>
+                                    <Image Source="{StaticResource delete}" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Bases" Style="{StaticResource mainViewSectionTitle}" />
+                        </DockPanel>
+                        <TreeView 
+                            Background="Transparent" 
+                            BorderThickness="0" 
+                            ItemsSource="{Binding Bases, UpdateSourceTrigger=PropertyChanged}"
+                            x:Name="BasesTreeView">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                    <Style.Setters>
+                                        <EventSetter Event="KeyUp"             Handler="BaseTreeViewItem_KeyUp"/>
+                                        <EventSetter Event="MouseLeftButtonUp" Handler="BaseTreeViewItem_MouseDown" />
+                                    </Style.Setters>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
                             <TreeView.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" Style="{StaticResource myTextBlockLeft}" MouseDown="BaseItem_MouseDown" />
+                                    <TextBlock Text="{Binding Name}" />
                                 </DataTemplate>
                             </TreeView.ItemTemplate>
+
                         </TreeView>
 
-                        <TreeView Background="Transparent" BorderThickness="0" 
-                                  ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}">
+                        <DockPanel Visibility="{Binding ElementName=GraphsTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" Click="GraphClearButton_Click">
+                                <Button.Content>
+                                    <Image Source="{StaticResource delete}" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Scatter Graphs" Style="{StaticResource mainViewSectionTitle}" />
+                        </DockPanel>
+                        <TreeView 
+                            Background="Transparent" 
+                            BorderThickness="0" 
+                            ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}"
+                            x:Name="GraphsTreeView"
+                            >
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <EventSetter Event="KeyUp" Handler="ScatterGraphTreeViewItem_KeyUp"/>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
                             <TreeView.ItemTemplate>
                                 <DataTemplate>
-                                    <TreeViewItem IsExpanded="True">
+                                    <TreeViewItem IsExpanded="True" Tag="0">
                                         <TreeViewItem.Header>
-                                            <itw:ScatterGraphTreeViewItemHeader MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
+                                            <itw:ScatterGraphTreeViewItemHeader Tag="1" MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
                                         </TreeViewItem.Header>
                                         <TreeViewItem>
                                             <TreeViewItem.Header>
@@ -185,7 +217,7 @@
                                             </TreeViewItem.Header>
                                             <TreeViewItem.ItemTemplate>
                                                 <DataTemplate>
-                                                    <itw:SampleTreeViewItemHeader />
+                                                    <itw:SampleTreeViewItemHeader MouseDown="SampleTreeViewItemHeader_MouseDown"/>
                                                 </DataTemplate>
                                             </TreeViewItem.ItemTemplate>
                                         </TreeViewItem>
@@ -196,7 +228,24 @@
                     </StackPanel>
                 </ScrollViewer>
             </DockPanel>
-        </Grid>
+            
+            <GridSplitter Grid.Column="0" Width="5" Background="{StaticResource backgroundListColor}" />
 
+            <HelixToolkit:HelixViewport3D Grid.Column="1" ShowCameraInfo="False">
+                <HelixToolkit:HelixViewport3D.Background>
+                    <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
+                        <GradientStop Color="#FF0061FF" Offset="0"/>
+                        <GradientStop Color="DarkBlue"  Offset="1"/>
+                    </LinearGradientBrush>
+                </HelixToolkit:HelixViewport3D.Background>
+                <!-- Remember to add light to the scene -->
+                <HelixToolkit:SunLight/>
+                <HelixToolkit:GridLinesVisual3D Width="30" Length="30" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+
+                <ModelVisual3D Content="{Binding OriginModel}" />
+                <ModelVisual3D Content="{Binding BasesModels}"/>
+                <ModelVisual3D Content="{Binding Models}"/>
+            </HelixToolkit:HelixViewport3D>
+        </Grid>
     </DockPanel>
 </Window>

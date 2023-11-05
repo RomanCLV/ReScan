@@ -157,6 +157,10 @@
             <Setter Property="Foreground" Value="{StaticResource errorColor}" />
         </Style>
 
+        <Style TargetType="{x:Type TextBlock}" x:Key="mainViewSectionTitle" BasedOn="{StaticResource myTextBlockLeft}">
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        
         <Style TargetType="{x:Type TextBox}"   x:Key="myTextBox">
             <Setter Property="HorizontalContentAlignment"   Value="Center" />
             <Setter Property="VerticalContentAlignment"     Value="Center" />
@@ -211,24 +215,12 @@
 
         <Style TargetType="{x:Type TreeView}">
             <Style.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"     Color="Transparent" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}"   Color="White"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#FF2E2E"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"                      Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"     Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}"                    Color="White"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+                <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"              Color="#FF2E2E"/>-->
             </Style.Resources>
-        </Style>
-
-        <Style TargetType="{x:Type TreeViewItem}">
-            <Style.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"     Color="Transparent" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}"   Color="White"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#FF2E2E"/>
-            </Style.Resources>
-            <Setter Property="Foreground" Value="{StaticResource foregroundColor}"/>
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="FontWeight" Value="Bold"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
     </Application.Resources>
 </Application>
