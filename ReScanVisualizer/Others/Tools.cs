@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
@@ -174,6 +175,18 @@ namespace ReScanVisualizer
                 base3D.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
             }
             return base3D;
+        }
+
+        public static List<RenderQuality> GetRenderQualitiesList()
+        {
+            return new List<RenderQuality>()
+            {
+                RenderQuality.VeryLow,
+                RenderQuality.Low, 
+                RenderQuality.Medium,
+                RenderQuality.High,
+                RenderQuality.VeryHigh,
+            };
         }
     }
 }

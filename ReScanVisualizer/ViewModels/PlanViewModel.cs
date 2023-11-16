@@ -162,6 +162,13 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        private RenderQuality _renderQuality;
+        public RenderQuality RenderQuality
+        {
+            get => _renderQuality;
+            set => SetValue(ref _renderQuality, value);
+        }
+
         public event EventHandler<bool>? IsHiddenChanged;
 
         private readonly GeometryModel3D _model;
@@ -176,7 +183,7 @@ namespace ReScanVisualizer.ViewModels
         public PlanViewModel(Plan plan, Point3D center, Vector3D up) : this(plan, center, up, Colors.LightBlue.ChangeAlpha(191))
         { }
 
-        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double length = 10.0, double scaleFactor = 1.0)
+        public PlanViewModel(Plan plan, Point3D center, Vector3D up, Color color, double length = 10.0, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
             if (scaleFactor <= 0.0)
             {
@@ -190,7 +197,7 @@ namespace ReScanVisualizer.ViewModels
             _lenght = length;
             Color = new ColorViewModel(color);
             _isHidden = color.A == 0;
-
+            _renderQuality = renderQuality;
             _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;

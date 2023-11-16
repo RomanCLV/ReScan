@@ -7,9 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
+#nullable enable
+
 namespace ReScanVisualizer.Commands
 {
-    internal class ExportBasesCommand : CommandBase
+    public class ExportBasesCommand : CommandBase
     {
         private readonly MainViewModel _mainViewModel;
 
@@ -36,7 +38,7 @@ namespace ReScanVisualizer.Commands
             OnCanExecuteChanged();
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecute(object? parameter)
         {
             return 
                 base.CanExecute(parameter) && 
@@ -44,7 +46,7 @@ namespace ReScanVisualizer.Commands
                 _mainViewModel.ScatterGraphs.Count > 0);
         }
 
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             ExportBasesWindow window = new ExportBasesWindow
             {

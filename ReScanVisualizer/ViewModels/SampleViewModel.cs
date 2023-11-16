@@ -87,6 +87,19 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        private RenderQuality _renderQuality;
+        public RenderQuality RenderQuality
+        {
+            get => _renderQuality;
+            set
+            {
+                if (SetValue(ref _renderQuality, value))
+                {
+                    UpdateModelGeometry();
+                }
+            }
+        }
+
         public event EventHandler<bool>? IsHiddenChanged;
 
         private readonly GeometryModel3D _model;
@@ -109,7 +122,7 @@ namespace ReScanVisualizer.ViewModels
         {
         }
 
-        public SampleViewModel(Point3D point3D, Color color, double scaleFactor = 1.0, double radius = 0.5)
+        public SampleViewModel(Point3D point3D, Color color, double scaleFactor = 1.0, double radius = 0.5, RenderQuality renderQuality = RenderQuality.High)
         {
             if (scaleFactor <= 0.0)
             {
@@ -119,7 +132,7 @@ namespace ReScanVisualizer.ViewModels
             Color = new ColorViewModel(color);
             _scaleFactor = scaleFactor;
             _isHidden = color.A == 0;
-
+            _renderQuality = renderQuality;
             _radius = radius;
             Point = new Point3DViewModel(point3D)
             {
@@ -128,7 +141,7 @@ namespace ReScanVisualizer.ViewModels
                 CorrectZ = CorrectZ
             };
 
-            _model = Helper3D.Helper3D.BuildSphereModel(PointScalled, RadiusScalled, Color.Color);
+            _model = Helper3D.Helper3D.BuildSphereModel(PointScalled, RadiusScalled, Color.Color, _renderQuality);
 
             Color.PropertyChanged += Color_PropertyChanged;
             Point.PropertyChanged += Point_PropertyChanged;
@@ -193,7 +206,7 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            _model.Geometry = Helper3D.Helper3D.BuildSphereGeometry(PointScalled, RadiusScalled);
+            _model.Geometry = Helper3D.Helper3D.BuildSphereGeometry(PointScalled, RadiusScalled, _renderQuality);
         }
 
         public void UpdateModelMaterial()

@@ -69,8 +69,6 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        // TODO : global quality (very low, low, medium, high, very high) -> nombre de points
-
         public bool IsBarycenterHidden => Barycenter.IsHidden;
 
         public bool IsAveragePlanHidden => AveragePlan.IsHidden;
@@ -146,6 +144,26 @@ namespace ReScanVisualizer.ViewModels
             private set => SetValue(ref _arePointsHidden, value);
         }
 
+        private RenderQuality _renderQuality;
+        public RenderQuality RenderQuality
+        {
+            get => _renderQuality;
+            set
+            {
+                if (SetValue(ref _renderQuality, value))
+                {
+                    Base3D.RenderQuality = _renderQuality;
+                    AveragePlan.RenderQuality = _renderQuality;
+                    foreach (SampleViewModel sample in Samples)
+                    {
+                        sample.RenderQuality = _renderQuality;
+                    }
+                }
+            }
+        }
+
+        public List<RenderQuality> RenderQualities { get; }
+
         public int ItemsCount
         {
             get => Samples.Count + 5; // Points count + barycenter (1) + averplan (1) + base (x, y, z) (3)
@@ -170,7 +188,7 @@ namespace ReScanVisualizer.ViewModels
         /// ScatterGraphViewModel constuctor.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double pointRadius = 0.25, bool hideBarycenter = false, bool hideAveragePlan = false, bool hideBase = false)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double pointRadius = 0.25, RenderQuality renderQuality = RenderQuality.High, bool hideBarycenter = false, bool hideAveragePlan = false, bool hideBase = false)
         {
             if (scaleFactor <= 0.0)
             {
@@ -181,6 +199,8 @@ namespace ReScanVisualizer.ViewModels
             _scaleFactor = scaleFactor;
             _scatterGraph = scatterGraph;
             _pointsRadius = pointRadius;
+            _renderQuality = renderQuality;
+            RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
             Color = new ColorViewModel(color);
             _isHidden = color.A == 0;
             _arePointsHidden = false;
@@ -190,7 +210,7 @@ namespace ReScanVisualizer.ViewModels
 
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
-                SampleViewModel sampleViewModel = new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius);
+                SampleViewModel sampleViewModel = new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius, _renderQuality);
                 sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
                 Samples.Add(sampleViewModel);
                 _model.Children.Add(sampleViewModel.Model);
@@ -202,12 +222,12 @@ namespace ReScanVisualizer.ViewModels
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
             double averagePlanLength = ComputeAveragePlanLength(base3D);
 
-            _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius);
-            _base3D = new Base3DViewModel(base3D, _scaleFactor)
+            _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality);
+            _base3D = new Base3DViewModel(base3D, _scaleFactor, _renderQuality)
             {
                 Name = "Plan base"
             };
-            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), averagePlanLength, _scaleFactor);
+            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), averagePlanLength, _scaleFactor, _renderQuality);
 
             _barycenter.IsHidden = hideBarycenter;
             _averagePlan.IsHidden = hideAveragePlan;
@@ -238,10 +258,7 @@ namespace ReScanVisualizer.ViewModels
                         sample.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
                         sample?.Dispose();
                     }
-                    if (Application.Current != null)
-                    {
-                        Application.Current.Dispatcher.Invoke(() => Samples.Clear());
-                    }
+                    Application.Current?.Dispatcher.Invoke(() => Samples.Clear());
                 }
                 _averagePlan?.Dispose();
                 _base3D?.Dispose();

@@ -73,7 +73,9 @@
                                 </StackPanel>
                             </Button.Content>
                         </Button>
+                        
                         <TextBlock DockPanel.Dock="Top" Text="Common parameters:" Style="{StaticResource myTextBlockLeft}"/>
+                        
                         <Button DockPanel.Dock="Left" Content="Randomize colors" Style="{StaticResource myButton}" VerticalAlignment="Top" Click="RandomizeColorButton_Click"/>
 
                         <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
@@ -86,6 +88,7 @@
                                     ToolTip="Find the reduction factor of all builded graphes to reach the specified max points."
                                     Click="ApplyMaxPointsButton_Click"/>
                         </StackPanel>
+                        
                         <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Scale factor" Style="{StaticResource myTextBlock}"/>
@@ -104,6 +107,7 @@
                                 ToolTip="Apply this scale factor for all builded graphes."
                                 Click="ApplyCommonScaleFactorButton_Click"/>
                         </StackPanel>
+                        
                         <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Point radius" Style="{StaticResource myTextBlock}"/>
@@ -119,9 +123,20 @@
                                 </TextBox>
                             </StackPanel>
                             <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
-                                ToolTip="Apply this point radius for all builded graphes."
+                                ToolTip="Apply this point radius for all added graphes."
                                 Click="ApplyCommonPointRadiusButton_Click"/>
                         </StackPanel>
+                        
+                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Render quality" Style="{StaticResource myTextBlock}"/>
+                                <ComboBox ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding CommonRenderQuality}" Margin="5" MinWidth="80" />
+                            </StackPanel>
+                            <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
+                                    ToolTip="Apply the selected render quality for all added graphes."
+                                    Click="ApplyQualityButton_Click"/>
+                        </StackPanel>
+                        
                         <StackPanel />
                     </DockPanel>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -329,7 +344,7 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Point Radius -->
-                                <GridViewColumn Header="Point radius">
+                                <GridViewColumn Header="Point radius" Width="85">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBox Style="{StaticResource myTextBox}"
@@ -342,6 +357,15 @@
                                                     </Binding>
                                                 </TextBox.Text>
                                             </TextBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Render Quality -->
+                                <GridViewColumn Header="Render quality" Width="88">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox ItemsSource="{Binding Key.RenderQualities}" SelectedValue="{Binding Key.RenderQuality}" MinWidth="76" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

@@ -55,52 +55,70 @@ namespace ReScanVisualizer.Helper3D
 
         #region Sphere Model & Geometry
 
-        public static MeshGeometry3D BuildSphereGeometry(Point3D center, double radius)
+        public static MeshGeometry3D BuildSphereGeometry(Point3D center, double radius, RenderQuality renderQuality = RenderQuality.High)
         {
             MeshBuilder builder = new MeshBuilder(false, false);
-            builder.AddSphere(center, radius);
+            int thetaDiv = renderQuality switch
+            {
+                RenderQuality.VeryLow => 5,
+                RenderQuality.Low => 10,
+                RenderQuality.Medium => 14,
+                RenderQuality.High => 18,
+                RenderQuality.VeryHigh => 30,
+                _ => throw new NotImplementedException(),
+            };
+            builder.AddSphere(center, radius, thetaDiv, thetaDiv);
             return builder.ToMesh(true);
         }
 
-        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Color color)
+        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Color color, RenderQuality renderQuality = RenderQuality.High)
         {
-            return BuildSphereModel(center, radius, new SolidColorBrush(color));
+            return BuildSphereModel(center, radius, new SolidColorBrush(color), renderQuality);
         }
 
-        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Brush brush)
+        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Brush brush, RenderQuality renderQuality = RenderQuality.High)
         {
-            return BuildSphereModel(center, radius, MaterialHelper.CreateMaterial(brush));
+            return BuildSphereModel(center, radius, MaterialHelper.CreateMaterial(brush), renderQuality);
         }
 
-        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Material material)
+        public static GeometryModel3D BuildSphereModel(Point3D center, double radius, Material material, RenderQuality renderQuality = RenderQuality.High)
         {
-            return BuildModel(BuildSphereGeometry(center, radius), material);
+            return BuildModel(BuildSphereGeometry(center, radius, renderQuality), material);
         }
 
         #endregion
 
         #region Arrow Model & Geometry
 
-        public static MeshGeometry3D BuildArrowGeometry(Point3D point1, Point3D point2, double diameter)
+        public static MeshGeometry3D BuildArrowGeometry(Point3D point1, Point3D point2, double diameter, RenderQuality renderQuality=RenderQuality.High)
         {
             MeshBuilder builder = new MeshBuilder(false, false);
-            builder.AddArrow(point1, point2, diameter);
+            int thetaDiv = renderQuality switch
+            {
+                RenderQuality.VeryLow => 5,
+                RenderQuality.Low => 10,
+                RenderQuality.Medium => 14,
+                RenderQuality.High => 18,
+                RenderQuality.VeryHigh => 30,
+                _ => throw new NotImplementedException(),
+            };
+            builder.AddArrow(point1, point2, diameter, 3, thetaDiv);
             return builder.ToMesh(true);
         }
 
-        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Color color)
+        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Color color, RenderQuality renderQuality = RenderQuality.High)
         {
-            return BuildArrowModel(point1, point2, diameter, new SolidColorBrush(color));
+            return BuildArrowModel(point1, point2, diameter, new SolidColorBrush(color), renderQuality);
         }
 
-        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Brush brush)
+        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Brush brush, RenderQuality renderQuality = RenderQuality.High)
         {
-            return BuildArrowModel(point1, point2, diameter, MaterialHelper.CreateMaterial(brush));
+            return BuildArrowModel(point1, point2, diameter, MaterialHelper.CreateMaterial(brush), renderQuality);
         }
 
-        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Material material)
+        public static GeometryModel3D BuildArrowModel(Point3D point1, Point3D point2, double diameter, Material material, RenderQuality renderQuality = RenderQuality.High)
         {
-            return BuildModel(BuildArrowGeometry(point1, point2, diameter), material);
+            return BuildModel(BuildArrowGeometry(point1, point2, diameter, renderQuality), material);
         }
 
         #endregion
@@ -131,21 +149,21 @@ namespace ReScanVisualizer.Helper3D
 
         #endregion
 
-        public static Model3DGroup BuildBaseModel(Base3D repere, Brush cx, Brush cy, Brush cz, double diameter = 0.1)
+        public static Model3DGroup BuildBaseModel(Base3D repere, Brush cx, Brush cy, Brush cz, double diameter = 0.1, RenderQuality renderQuality = RenderQuality.High)
         {
             Model3DGroup group = new Model3DGroup();
-            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.X), diameter, cx));
-            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Y), diameter, cy));
-            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Z), diameter, cz));
+            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.X), diameter, cx, renderQuality));
+            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Y), diameter, cy, renderQuality));
+            group.Children.Add(BuildArrowModel(repere.Origin, Point3D.Add(repere.Origin, repere.Z), diameter, cz, renderQuality));
             return group;
         }
 
-        public static Model3DGroup BuildBaseModel(Point3D origin, Vector3D x, Vector3D y, Vector3D z, Brush cx, Brush cy, Brush cz, double diameter = 0.1)
+        public static Model3DGroup BuildBaseModel(Point3D origin, Vector3D x, Vector3D y, Vector3D z, Brush cx, Brush cy, Brush cz, double diameter = 0.1, RenderQuality renderQuality = RenderQuality.High)
         {
             Model3DGroup group = new Model3DGroup();
-            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, x), diameter, cx));
-            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, y), diameter, cy));
-            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, z), diameter, cz));
+            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, x), diameter, cx, renderQuality));
+            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, y), diameter, cy, renderQuality));
+            group.Children.Add(BuildArrowModel(origin, Point3D.Add(origin, z), diameter, cz, renderQuality));
             return group;
         }
     }

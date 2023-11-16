@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using ReScanVisualizer.Commands;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 
@@ -24,6 +25,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         private readonly MainViewModel _mainViewModel;
 
         public ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> Items { get; private set; }
+
+        public List<RenderQuality> RenderQualities { get; }
 
         private uint _itemsToAddCount;
         public uint ItemsToAddCount
@@ -60,6 +63,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
+        private RenderQuality _commonRenderQuality;
+        public RenderQuality CommonRenderQuality
+        {
+            get => _commonRenderQuality;
+            set => SetValue(ref _commonRenderQuality, value);
+        }
+
         public CommandKey AddScatterGraphBuilderCommand { get; private set; }
         public CommandKey BuildCommand { get; private set; }
         public CommandKey LoadCommand { get; private set; }
@@ -73,6 +83,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             _commonScaleFactor = 1.0;
             _maxPoints = 0;
             _commonPointRadius = 0.25;
+            _commonRenderQuality = RenderQuality.High;
+            RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
 
             Items = new ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>();
 
@@ -229,6 +241,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
+        public void ApplyCommonRenderQuality()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Key != null)
+                {
+                    item.Key.RenderQuality = _commonRenderQuality;
+                }
+            }
+        }
+
         public void AddBuilder(ScatterGraphBuilderBase builder)
         {
             foreach (var item in Items)
@@ -314,10 +337,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 ScatterGraphViewModel? scatterGraphViewModel = null;
                 try
                 {
-                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Key.PointRadius)
+                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Key.PointRadius, item.Key.RenderQuality)
                     {
                         Name = item.Key.Name.Replace(" builder", "")
                     };
+                    if (item.Key is ScatterGraphFileBuilder fileBuilder)
+                    {
+                        scatterGraphViewModel.Name = fileBuilder.FileName;
+                    }
                 }
                 catch (ArgumentOutOfRangeException e)
                 {

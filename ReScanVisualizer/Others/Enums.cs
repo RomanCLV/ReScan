@@ -13,4 +13,13 @@
         Y,
         Z
     }
+
+    public enum RenderQuality
+    {
+        VeryLow = -2,
+        Low = -1,
+        Medium = 0,
+        High,
+        VeryHigh
+    }
 }

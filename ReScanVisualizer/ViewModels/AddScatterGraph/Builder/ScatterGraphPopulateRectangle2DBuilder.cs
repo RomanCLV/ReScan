@@ -167,7 +167,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             State = ScatterGraphBuilderState.Ready;
         }
 
-        /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, uint, uint)"/> method.</returns>
+        /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Enums, double, double, uint, uint)"/> method.</returns>
         public override ScatterGraphBuildResult Build()
         {
             Application.Current.Dispatcher.Invoke(() => State = ScatterGraphBuilderState.Working);

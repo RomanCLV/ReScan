@@ -64,5 +64,13 @@ namespace ReScanVisualizer.Views
                 }
             }
         }
+
+        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel scatterGraphView)
+            {
+                scatterGraphView.InverseIsHidden();
+            }
+        }
     }
 }

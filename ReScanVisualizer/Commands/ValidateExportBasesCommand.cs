@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.Views;
 
+#nullable enable
+
 namespace ReScanVisualizer.Commands
 {
     public class ValidateExportBasesCommand : CommandBase
@@ -38,12 +40,12 @@ namespace ReScanVisualizer.Commands
             OnCanExecuteChanged();
         }
 
-        public override bool CanExecute(object parameter)
+        public override bool CanExecute(object? parameter)
         {
             return base.CanExecute(parameter) && _viewModel.Items.Any(x => x.IsSelected);
         }
 
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             if (_viewModel.Export())
             {

@@ -21,6 +21,8 @@ namespace ReScanVisualizer.Models
 
         public bool IsHidden { get; }
 
+        public RenderQuality RenderQuality { get; set; }
+
         public void InverseIsHidden();
 
         public void Hide();

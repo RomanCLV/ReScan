@@ -88,6 +88,15 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
+        private RenderQuality _renderQuality;
+        public RenderQuality RenderQuality
+        {
+            get => _renderQuality;
+            set => SetValue(ref _renderQuality, value);
+        }
+
+        public List<RenderQuality> RenderQualities { get; }
+
         public ScatterGraphBuilderBase() : this(Colors.White)
         {
         }
@@ -98,6 +107,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _message = string.Empty;
             _color = color;
             _pointRadius = 0.25;
+            _renderQuality = RenderQuality.High;
+            RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
         }
 
         /// <summary>

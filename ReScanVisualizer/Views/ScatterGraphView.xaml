@@ -17,7 +17,7 @@
             <TabItem Header="General">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Name" Style="{StaticResource myTextBlockLeft}" />
+                        <TextBlock Text="Name" Width="85" Style="{StaticResource myTextBlockLeft}" />
                         <TextBox   Style="{StaticResource myTextBox}" Width="100">
                             <TextBox.Text>
                                 <Binding Path="Name" UpdateSourceTrigger="PropertyChanged">
@@ -27,6 +27,43 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                        <TextBox   Style="{StaticResource myTextBox}" Width="100">
+                            <TextBox.Text>
+                                <Binding Path="ScaleFactor" StringFormat="N2">
+                                    <Binding.ValidationRules>
+                                        <validators:PositiveNumberValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Points radius" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                        <TextBox Style="{StaticResource myTextBox}" Width="100">
+                            <TextBox.Text>
+                                <Binding Path="PointsRadius" StringFormat="N2">
+                                    <Binding.ValidationRules>
+                                        <validators:PositiveNumberValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Render quality" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                        <ComboBox Margin="6" ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding RenderQuality}" MinWidth="100" />
+                    </StackPanel>
+                    <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
+                            <Button.Content>
+                                <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Visible" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
@@ -60,29 +97,57 @@
                         </Button>
                         <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
+                </StackPanel>
+            </TabItem>
+            
+            <TabItem Header="Barycenter">
+                <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Scale factor" Width="75" Style="{StaticResource myTextBlockLeft}" />
-                        <TextBox   Style="{StaticResource myTextBox}" Width="100">
-                            <TextBox.Text>
-                                <Binding Path="ScaleFactor" StringFormat="N2">
-                                    <Binding.ValidationRules>
-                                        <validators:PositiveNumberValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
+                            <Button.Content>
+                                <Image Source="{Binding Barycenter.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Barycenter visible" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
+                </StackPanel>
+            </TabItem>
+            
+            <TabItem Header="Average plan">
+                <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Points radius" Width="75" Style="{StaticResource myTextBlockLeft}" />
-                        <TextBox Style="{StaticResource myTextBox}" Width="100">
-                            <TextBox.Text>
-                                <Binding Path="PointsRadius" StringFormat="N2">
-                                    <Binding.ValidationRules>
-                                        <validators:PositiveNumberValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="AveraglePlanVisibilityButton_Click" Margin="5">
+                            <Button.Content>
+                                <Image Source="{Binding AveragePlan.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            
+            <TabItem Header="Base">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
+                            <Button.Content>
+                                <Image Source="{Binding Base3D.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Points">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="PointsVisibilityButton_Click" Margin="5">
+                            <Button.Content>
+                                <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
                 </StackPanel>
             </TabItem>

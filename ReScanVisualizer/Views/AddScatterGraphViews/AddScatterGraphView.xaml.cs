@@ -77,6 +77,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 Popup popup = (Popup)panel.Children[1];
                 if (popup.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
                 {
+                    ClosePopup();
                     _selectedBuilder = item.Key;
                     _openedPopup = popup;
                     popup.Child.MouseLeave += Child_MouseLeave;
@@ -247,6 +248,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             if (DataContext is AddScatterGraphViewModel viewModel)
             {
                 viewModel.ApplyCommonPointRadius();
+            }
+        }
+
+        private void ApplyQualityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonRenderQuality();
             }
         }
     }
