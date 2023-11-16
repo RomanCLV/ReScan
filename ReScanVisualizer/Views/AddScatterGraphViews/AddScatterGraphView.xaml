@@ -58,12 +58,14 @@
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="Add Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
                 <DockPanel Margin="50">
-                    <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Left" Orientation="Horizontal">
-                        <Button Style="{StaticResource myButton}"
-                                VerticalAlignment="Bottom"
-                                Command="{Binding ElementName=AddScatterGraphBuilderCommandKey, Path=Command}"
-                                ToolTip="{Binding AddScatterGraphBuilderCommand.Description}"
-                                >
+                    <DockPanel DockPanel.Dock="Top">
+                        <Button 
+                            DockPanel.Dock="Left" 
+                            Style="{StaticResource myButton}"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding ElementName=AddScatterGraphBuilderCommandKey, Path=Command}"
+                            ToolTip="{Binding AddScatterGraphBuilderCommand.Description}"
+                            >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource add}" Width="25" Height="25" />
@@ -71,21 +73,24 @@
                                 </StackPanel>
                             </Button.Content>
                         </Button>
-                        <StackPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="Common parameters:" Style="{StaticResource myTextBlockLeft}"/>
+                        <Button DockPanel.Dock="Left" Content="Randomize colors" Style="{StaticResource myButton}" VerticalAlignment="Top" Click="RandomizeColorButton_Click"/>
+
+                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Max points for all graph" Style="{StaticResource myTextBlock}"/>
+                                <TextBlock Text="Max points graph" Style="{StaticResource myTextBlock}"/>
                                 <TextBox Text="{Binding MaxPoints}" Width="75"  Style="{StaticResource myTextBox}"
-                                         GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                    GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                             </StackPanel>
                             <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
                                     ToolTip="Find the reduction factor of all builded graphes to reach the specified max points."
                                     Click="ApplyMaxPointsButton_Click"/>
                         </StackPanel>
-                        <StackPanel>
+                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Common scale factor" Style="{StaticResource myTextBlock}"/>
+                                <TextBlock Text="Scale factor" Style="{StaticResource myTextBlock}"/>
                                 <TextBox Width="75"  Style="{StaticResource myTextBox}"
-                                         GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                        GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
                                     <TextBox.Text>
                                         <Binding Path="CommonScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
                                             <Binding.ValidationRules>
@@ -96,10 +101,29 @@
                                 </TextBox>
                             </StackPanel>
                             <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
-                                    ToolTip="Apply this scale factor for all builded graphes."
-                                    Click="ApplyCommonScaleFactorButton_Click"/>
+                                ToolTip="Apply this scale factor for all builded graphes."
+                                Click="ApplyCommonScaleFactorButton_Click"/>
                         </StackPanel>
-                    </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Point radius" Style="{StaticResource myTextBlock}"/>
+                                <TextBox Width="75"  Style="{StaticResource myTextBox}"
+                                    GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                    <TextBox.Text>
+                                        <Binding Path="CommonPointRadius" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <validators:PositiveNumberValidationRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </StackPanel>
+                            <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
+                                ToolTip="Apply this point radius for all builded graphes."
+                                Click="ApplyCommonPointRadiusButton_Click"/>
+                        </StackPanel>
+                        <StackPanel />
+                    </DockPanel>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=BuildCommandKey, Path=Command}"
@@ -300,11 +324,28 @@
                                                     </Binding>
                                                 </TextBox.Text>
                                             </TextBox>
-                                            
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
+                                <!-- Colonne Point Radius -->
+                                <GridViewColumn Header="Point radius">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Style="{StaticResource myTextBox}"
+                                                    GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                                <TextBox.Text>
+                                                    <Binding Path="Key.PointRadius" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
+                                                        <Binding.ValidationRules>
+                                                            <validators:PositiveNumberValidationRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                
                                 <!-- Colonne Actions -->
                                 <GridViewColumn Header="Actions" Width="205">
                                     <GridViewColumn.CellTemplate>

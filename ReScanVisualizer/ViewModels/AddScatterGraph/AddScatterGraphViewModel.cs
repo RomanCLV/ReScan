@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
 using ReScanVisualizer.Views.AddScatterGraphViews;
@@ -43,6 +46,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             set => SetValue(ref _commonScaleFactor, value);
         }
 
+        private double _commonPointRadius;
+        public double CommonPointRadius
+        {
+            get => _commonPointRadius;
+            set
+            {
+                if (_commonPointRadius <= 0.0)
+                {
+                    _commonPointRadius = 0.25;
+                }
+                SetValue(ref _commonPointRadius, value);
+            }
+        }
+
         public CommandKey AddScatterGraphBuilderCommand { get; private set; }
         public CommandKey BuildCommand { get; private set; }
         public CommandKey LoadCommand { get; private set; }
@@ -55,6 +72,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             _mainViewModel = mainViewModel;
             _commonScaleFactor = 1.0;
             _maxPoints = 0;
+            _commonPointRadius = 0.25;
 
             Items = new ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>();
 
@@ -155,6 +173,40 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             ItemsToAddCount = (uint)count;
         }
 
+        public void RandomizeColor()
+        {
+            PropertyInfo[] propertyInfos = typeof(Colors).GetProperties();
+            List<Color> colors = new List<Color>();
+            Random random = new Random();
+            string pName;
+
+            foreach (var propertyInfo in propertyInfos) 
+            {
+                pName = propertyInfo.Name;
+                if (pName.StartsWith("Dark") || pName == "Black")
+                {
+                    continue;
+                }
+                colors.Add((Color)propertyInfo.GetValue(propertyInfo));
+            }
+            
+            foreach (var item in Items)
+            {
+                item.Key.Color = colors[random.Next(colors.Count)];
+            }
+        }
+
+        public void ApplyMaxPoints()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Value != null && item.Value.Count > _maxPoints)
+                {
+                    item.Value.ReductionFactor = 100.0 - ((_maxPoints * 100.0) / item.Value.Count);
+                }
+            }
+        }
+
         public void ApplyCommonFactor()
         {
             foreach (var item in Items)
@@ -166,13 +218,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-        public void ApplyMaxPoints()
+        public void ApplyCommonPointRadius()
         {
             foreach (var item in Items)
             {
-                if (item.Value != null && item.Value.Count > _maxPoints)
+                if (item.Key != null)
                 {
-                    item.Value.ReductionFactor = 100.0 - ((_maxPoints * 100.0) / item.Value.Count);
+                    item.Key.PointRadius = _commonPointRadius;
                 }
             }
         }
@@ -262,8 +314,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 ScatterGraphViewModel? scatterGraphViewModel = null;
                 try
                 {
-                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor);
-                    scatterGraphViewModel.Name = item.Key.Name.Replace(" builder", "");
+                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Key.PointRadius)
+                    {
+                        Name = item.Key.Name.Replace(" builder", "")
+                    };
                 }
                 catch (ArgumentOutOfRangeException e)
                 {

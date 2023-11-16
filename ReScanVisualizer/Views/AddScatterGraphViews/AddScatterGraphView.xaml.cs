@@ -218,6 +218,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             }
         }
 
+        private void RandomizeColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.RandomizeColor();
+            }
+        }
+
         private void ApplyMaxPointsButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is AddScatterGraphViewModel viewModel)
@@ -231,6 +239,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             if (DataContext is AddScatterGraphViewModel viewModel)
             {
                 viewModel.ApplyCommonFactor();
+            }
+        }
+
+        private void ApplyCommonPointRadiusButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonPointRadius();
             }
         }
     }

@@ -396,7 +396,7 @@ namespace ReScanVisualizer.ViewModels
                 currentPoint = matrix.Transform(currentPoint);
 
                 // projection over the plan
-                currentPoint.Z = 0.0;
+                // currentPoint.Z = 0.0;
 
                 currentDistance = Math.Max(Math.Abs(currentPoint.X), Math.Abs(currentPoint.Y));
                 if (currentDistance > maxDistance)

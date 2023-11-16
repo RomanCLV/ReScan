@@ -74,6 +74,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public virtual string Details => string.Empty;
 
+        private double _pointRadius;
+        public double PointRadius
+        {
+            get => _pointRadius;
+            set
+            {
+                if (value <= 0.0)
+                {
+                    value = 0.25;
+                }
+                SetValue(ref _pointRadius, value);
+            }
+        }
+
         public ScatterGraphBuilderBase() : this(Colors.White)
         {
         }
@@ -83,7 +97,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _state = ScatterGraphBuilderState.Ready;
             _message = string.Empty;
             _color = color;
-            //_canBuild = true;
+            _pointRadius = 0.25;
         }
 
         /// <summary>
