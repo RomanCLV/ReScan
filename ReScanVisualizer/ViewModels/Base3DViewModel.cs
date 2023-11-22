@@ -156,6 +156,11 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        public bool IsRotating { get; private set; }
+        private Vector3D _beginRotateX;
+        private Vector3D _beginRotateY;
+        private Vector3D _beginRotateZ;
+
         private static uint _instanceCreated = 0;
 
         public event EventHandler<bool>? IsHiddenChanged;
@@ -228,6 +233,61 @@ namespace ReScanVisualizer.ViewModels
         public void Show()
         {
             IsHidden = false;
+        }
+
+        /// <summary>
+        /// Indicates the start of a base rotation. To call before <see cref="Rotate(Vector3D, double, bool)"/>.<br />
+        /// Sets <see cref="IsRotating"/> to true and saves the current positions of the vectors for use during rotation.
+        /// </summary>
+        public void BeginRotate()
+        {
+            IsRotating = true;
+            _beginRotateX = Base3D.X;
+            _beginRotateY = Base3D.Y;
+            _beginRotateZ = Base3D.Z;
+        }
+
+        /// <summary>
+        /// Indicates the end of a rotation. To be called after <see cref="Rotate(Vector3D, double, bool)"/>.
+        /// </summary>
+        public void EndRotate()
+        {
+            IsRotating = false;
+        }
+
+        /// <summary>
+        /// Rotate the base according to a given direction and an angle.<br />
+        /// <see cref="BeginRotate"/> is called automatically if <see cref="IsRotating"/> is false.
+        /// </summary>
+        /// <param name="rotationAxis">The direction</param>
+        /// <param name="rotationAngle">The angle in degrees</param>
+        /// <param name="autoEndRotate">Call <see cref="EndRotate"/> automatically.<br />
+        /// If you have only one rotation, let it to true. Else, set it to false and don't forget to call <see cref="EndRotate"/> when all the rotations have been applied.
+        /// </param>
+        public void Rotate(Vector3D rotationAxis, double rotationAngle, bool autoCallEndRotate = true)
+        {
+            if (rotationAngle == 0.0)
+            {
+                return;
+            }
+            if (!IsRotating)
+            {
+                BeginRotate();
+            }
+            Matrix3D rot = Matrix3D.Identity;
+            rot.Rotate(new Quaternion(rotationAxis, rotationAngle));
+
+            _base3D.X = Vector3D.Multiply(_beginRotateX, rot);
+            _base3D.Y = Vector3D.Multiply(_beginRotateY, rot);
+            _base3D.Z = Vector3D.Multiply(_beginRotateZ, rot);
+            if (autoCallEndRotate)
+            {
+                EndRotate();
+            }
+            OnPropertyChanged(nameof(X));
+            OnPropertyChanged(nameof(Y));
+            OnPropertyChanged(nameof(Z));
+            UpdateModelGeometry();
         }
 
         public void UpdateBase(Base3D base3D, bool updateOrigin = true)

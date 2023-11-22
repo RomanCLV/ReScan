@@ -41,5 +41,27 @@ namespace ReScanVisualizer.Views
                 viewModel.ApplyMoveTo();
             }
         }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] is TabItem item && DataContext is BaseViewModel viewModel)
+            {
+                string tag = (string)item.Tag;
+                if (tag != "AxisRotation")
+                {
+                    viewModel.EndRotateBase();
+                }
+                else
+                {
+                    viewModel.UpdateRotationXYZFromBase();
+                }
+
+                if (tag == "Reorient")
+                {
+                    viewModel.UpdateReorientCartesianFromBase();
+                    viewModel.UpdateAnglesFromCartesian();
+                }
+            }
+        }
     }
 }

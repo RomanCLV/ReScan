@@ -11,7 +11,9 @@ namespace ReScanVisualizer.ViewModels
 {
     public class BaseViewModel : ViewModelBase
     {
-        public Base3DViewModel Base { get; private set; }
+        private readonly Base3DViewModel _base;
+
+        public Base3DViewModel Base => _base;
 
         #region Translate
 
@@ -40,6 +42,9 @@ namespace ReScanVisualizer.ViewModels
 
         #region Reorient
 
+        private bool _isUpdatingAngles;
+        private bool _isUpdatingCartesian;
+
         public List<Axis> AllReorientAxis { get; private set; }
 
         private Axis _reorientAxis;
@@ -59,54 +64,76 @@ namespace ReScanVisualizer.ViewModels
         public double ReorientX
         {
             get => _reorientX;
-            private set => SetValue(ref _reorientX, value);
+            private set
+            {
+                if (SetValue(ref _reorientX, value))
+                {
+                    UpdateAnglesFromCartesian();
+                    ReorientBase();
+                }
+            }
         }
 
         private double _reorientY;
         public double ReorientY
         {
             get => _reorientY;
-            private set => SetValue(ref _reorientY, value);
-
+            private set
+            {
+                if (SetValue(ref _reorientY, value))
+                {
+                    UpdateAnglesFromCartesian();
+                    ReorientBase();
+                }
+            }
         }
 
         private double _reorientZ;
         public double ReorientZ
         {
             get => _reorientZ;
-            private set => SetValue(ref _reorientZ, value);
-        }
-
-        private int _reorientTheta;
-        public int ReorientTheta
-        {
-            get => _reorientTheta;
-            set
+            private set
             {
-                if (value > 180 || value < -180)
+                if (SetValue(ref _reorientZ, value))
                 {
-                    value = 180;
-                }
-                if (SetValue(ref _reorientTheta, value))
-                {
-                    UpdateCartesianFromAngles();
+                    UpdateAnglesFromCartesian();
+                    ReorientBase();
                 }
             }
         }
 
-        private int _reorientPhi;
-        public int ReorientPhi
+        private double _reorientTheta;
+        public double ReorientTheta
+        {
+            get => _reorientTheta;
+            set
+            {
+                if (value > 180.0 || value < -180.0)
+                {
+                    value = 180.0;
+                }
+                if (SetValue(ref _reorientTheta, value))
+                {
+                    UpdateCartesianFromAngles();
+                    ReorientBase();
+                }
+            }
+        }
+
+        private double _reorientPhi;
+        public double ReorientPhi
         {
             get => _reorientPhi;
             set
             {
-                if (value > 180 || value < -180)
+                if (value > 180.0 || value < -180.0)
                 {
-                    value = 180;
+                    value = 180.0;
                 }
                 if (SetValue(ref _reorientPhi, value))
                 {
                     UpdateCartesianFromAngles();
+                    ReorientBase();
                 }
             }
         }
@@ -114,6 +141,13 @@ namespace ReScanVisualizer.ViewModels
         #endregion
 
         #region Rotate
+
+        private bool _rotateXYZEnabled;
+        public bool RotateXYZEnabled
+        {
+            get => _rotateXYZEnabled;
+            set => SetValue(ref _rotateXYZEnabled, value);
+        }
 
         public List<RotationAxis> AllRotationAxis { get; private set; }
 
@@ -125,55 +159,63 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _rotationAxis, value))
                 {
-                    
+                    if (_rotationAxis is RotationAxis.X)
+                    {
+                        RotationX = _base.X.X;
+                        RotationY = _base.X.Y;
+                        RotationZ = _base.X.Z;
+                    }
+                    else if (_rotationAxis is RotationAxis.Y)
+                    {
+                        RotationX = _base.Y.X;
+                        RotationY = _base.Y.Y;
+                        RotationZ = _base.Y.Z;
+                    }
+                    else if (_rotationAxis is RotationAxis.Z)
+                    {
+                        RotationX = _base.Z.X;
+                        RotationY = _base.Z.Y;
+                        RotationZ = _base.Z.Z;
+                    }
+                    RotationAngle = 0.0;
+                    EndRotateBase();
+                    RotateXYZEnabled = _rotationAxis is RotationAxis.Personalized;
                 }
             }
         }
 
-        private int _rotationAngle;
-        public int RotationAngle
+        private double _rotationAngle;
+        public double RotationAngle
         {
             get => _rotationAngle;
-            set => SetValue(ref _rotationAngle, value);
+            set
+            {
+                if (SetValue(ref _rotationAngle, value))
+                {
+                    RotateBase();
+                }
+            }
         }
 
         private double _rotationX;
         public double RotationX
         {
             get => _rotationX;
-            set
-            {
-                if (SetValue(ref _rotationX, value))
-                {
-                    UpdateRotationAxisSelection();
-                }
-            }
+            set => SetValue(ref _rotationX, value);
         }
 
         private double _rotationY;
         public double RotationY
         {
             get => _rotationY;
-            set
-            {
-                if (SetValue(ref _rotationY, value))
-                {
-                    UpdateRotationAxisSelection();
-                }
-            }
+            set => SetValue(ref _rotationY, value);
         }
 
         private double _rotationZ;
         public double RotationZ
         {
             get => _rotationZ;
-            set
-            {
-                if (SetValue(ref _rotationZ, value))
-                {
-                    UpdateRotationAxisSelection();
-                }
-            }
+            set => SetValue(ref _rotationZ, value);
         }
 
         #endregion
@@ -182,51 +224,140 @@ namespace ReScanVisualizer.ViewModels
 
         public BaseViewModel(Base3DViewModel base3DViewModel)
         {
+            _base = base3DViewModel;
+            _isUpdatingAngles = false;
+            _isUpdatingCartesian = false;
+
+            // translate
             _translateX = 0.0;
             _translateY = 0.0;
             _translateZ = 0.0;
 
-            // TODO: set next values according to base3DViewModel
+            // reorient
             AllReorientAxis = Tools.GetAxisList();
             _reorientAxis = Axis.X;
+            _reorientX = _base.X.X;
+            _reorientY = _base.X.Y;
+            _reorientZ = _base.X.Z;
+            double r = Math.Sqrt(_reorientX * _reorientX + _reorientY * _reorientY + _reorientZ * _reorientZ);
+            _reorientTheta = Tools.RadianToDegree(Math.Acos(_reorientZ / r));
+            _reorientPhi = Tools.RadianToDegree(Math.Atan(_reorientY / _reorientX));
 
-            _reorientX = 1.0;
-            _reorientY = 0.0;
-            _reorientZ = 0.0;
-            _reorientTheta = 90;
-            _reorientPhi = 0;
-            // end todo
-
+            // rotate
             AllRotationAxis = Tools.GetRotationAxesList();
-            _rotationAxis = base3DViewModel.BelongsToAGraph ? RotationAxis.Z : RotationAxis.X;
-            _rotationAngle = 0;
-            _rotationX = 1.0;
+            if (_base.BelongsToAGraph)
+            {
+                _rotationAxis = RotationAxis.Z;
+                _rotationX = 0.0;
+                _rotationZ = 1.0;
+            }
+            else
+            {
+                _rotationAxis = RotationAxis.X;
+                _rotationX = 1.0;
+                _rotationZ = 0.0;
+            }
+            _rotateXYZEnabled = _rotationAxis is RotationAxis.Personalized;
             _rotationY = 0.0;
-            _rotationZ = 0.0;
-
-            Base = base3DViewModel;
         }
 
-        private void UpdateCartesianFromAngles()
+        ~BaseViewModel()
         {
-            double p = Tools.DegreeToRadian(_reorientPhi);
-            double t = Tools.DegreeToRadian(_reorientTheta);
-
-            double cosp = Tools.Cos(p);
-            double sinp = Tools.Sin(p);
-            double cost = Tools.Cos(t);
-            double sint = Tools.Sin(t);
-
-            ReorientX = cosp * sint;
-            ReorientY = sinp * sint;
-            ReorientZ = cost;
-
-            ReorientBase();
+            Dispose();
         }
 
-        private void UpdateRotationAxisSelection()
+        public override void Dispose()
         {
-            // update rotation axis
+            if (!IsDisposed)
+            {
+                EndRotateBase();
+                base.Dispose();
+                IsDisposed = true;
+            }
+        }
+
+        public void UpdateRotationXYZFromBase()
+        {
+            switch (_rotationAxis)
+            {
+                case RotationAxis.X:
+                    RotationX = _base.X.X;
+                    RotationY = _base.X.Y;
+                    RotationZ = _base.X.Z;
+                    break;
+
+                case RotationAxis.Y:
+                    RotationX = _base.Y.X;
+                    RotationY = _base.Y.Y;
+                    RotationZ = _base.Y.Z;
+                    break;
+
+                case RotationAxis.Z:
+                    RotationX = _base.Z.X;
+                    RotationY = _base.Z.Y;
+                    RotationZ = _base.Z.Z;
+                    break;
+            }
+        }
+
+        public void UpdateReorientCartesianFromBase()
+        {
+            _isUpdatingCartesian = true;
+
+            switch (_reorientAxis)
+            {
+                case Axis.X:
+                    ReorientX = _base.X.X;
+                    ReorientY = _base.X.Y;
+                    ReorientZ = _base.X.Z;
+                    break;
+
+                case Axis.Y:
+                    ReorientX = _base.Y.X;
+                    ReorientY = _base.Y.Y;
+                    ReorientZ = _base.Y.Z;
+                    break;
+
+                case Axis.Z:
+                    ReorientX = _base.Z.X;
+                    ReorientY = _base.Z.Y;
+                    ReorientZ = _base.Z.Z;
+                    break;
+            }
+
+            _isUpdatingCartesian = false;
+        }
+
+        public void UpdateAnglesFromCartesian()
+        {
+            if (!_isUpdatingCartesian)
+            {
+                _isUpdatingAngles = true;
+                double r = Math.Sqrt(_reorientX * _reorientX + _reorientY * _reorientY + _reorientZ * _reorientZ);
+                ReorientTheta = Tools.RadianToDegree(Math.Acos(_reorientZ / r));
+                ReorientPhi = _reorientX == 0 ? 0.0 : Tools.RadianToDegree(Math.Atan(_reorientY / _reorientX));
+                _isUpdatingAngles = false;
+            }
+        }
+
+        public void UpdateCartesianFromAngles()
+        {
+            if (!_isUpdatingAngles)
+            {
+                _isUpdatingCartesian = true;
+                double p = Tools.DegreeToRadian(_reorientPhi);
+                double t = Tools.DegreeToRadian(_reorientTheta);
+
+                double cosp = Tools.Cos(p);
+                double sinp = Tools.Sin(p);
+                double cost = Tools.Cos(t);
+                double sint = Tools.Sin(t);
+
+                ReorientX = cosp * sint;
+                ReorientY = sinp * sint;
+                ReorientZ = cost;
+                _isUpdatingCartesian = false;
+            }
         }
 
         public void ApplyTranslation()
@@ -245,10 +376,27 @@ namespace ReScanVisualizer.ViewModels
             ApplyTranslation();
         }
 
+        private void RotateBase()
+        {
+            if (_rotationAngle != 0.0)
+            {
+                Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), _rotationAngle, false);
+            }
+        }
+
+        public void EndRotateBase()
+        {
+            RotationAngle = 0.0;
+            Base.EndRotate();
+        }
+
         private void ReorientBase()
         {
-            Base3D orientedBase = Tools.ComputeOrientedBase(new Vector3D(_reorientX, _reorientY, _reorientZ), _reorientAxis);
-            Base.UpdateBase(orientedBase, false);
+            if (!_isUpdatingAngles && !_isUpdatingCartesian)
+            {
+                Base3D orientedBase = Tools.ComputeOrientedBase(new Vector3D(_reorientX, _reorientY, _reorientZ), _reorientAxis);
+                Base.UpdateBase(orientedBase, false);
+            }
         }
     }
 }
