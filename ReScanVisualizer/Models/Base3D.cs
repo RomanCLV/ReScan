@@ -151,7 +151,7 @@ namespace ReScanVisualizer.Models
 
         public Plan GetPlan(Plan2D plan2D)
         {
-            var normal = plan2D switch
+            Vector3D normal = plan2D switch
             {
                 Plan2D.XY => _z,
                 Plan2D.XZ => _y,

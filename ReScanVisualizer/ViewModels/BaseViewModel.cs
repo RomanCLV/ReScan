@@ -50,7 +50,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _reorientAxis, value))
                 {
-                    RotateBase();
+                    ReorientBase();
                 }
             }
         }
@@ -125,44 +125,51 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _rotationAxis, value))
                 {
-                    RotateBase();
+                    
                 }
             }
         }
 
-        private double _rotationDirectionX;
-        public double RotationDirectionX
+        private int _rotationAngle;
+        public int RotationAngle
         {
-            get => _rotationDirectionX;
+            get => _rotationAngle;
+            set => SetValue(ref _rotationAngle, value);
+        }
+
+        private double _rotationX;
+        public double RotationX
+        {
+            get => _rotationX;
             set
             {
-                if (SetValue(ref _rotationDirectionX, value))
+                if (SetValue(ref _rotationX, value))
                 {
                     UpdateRotationAxisSelection();
                 }
             }
         }
 
-        private double _rotationDirectionY;
-        public double RotationDirectionY
+        private double _rotationY;
+        public double RotationY
         {
-            get => _rotationDirectionY;
+            get => _rotationY;
             set
             {
-                if (SetValue(ref _rotationDirectionY, value))
+                if (SetValue(ref _rotationY, value))
                 {
                     UpdateRotationAxisSelection();
                 }
             }
         }
 
-        private double _rotationDirectionZ;
-        public double RotationDirectionZ
+        private double _rotationZ;
+        public double RotationZ
         {
-            get => _rotationDirectionZ;
+            get => _rotationZ;
             set
             {
-                if (SetValue(ref _rotationDirectionZ, value))
+                if (SetValue(ref _rotationZ, value))
                 {
                     UpdateRotationAxisSelection();
                 }
@@ -191,10 +198,11 @@ namespace ReScanVisualizer.ViewModels
             // end todo
 
             AllRotationAxis = Tools.GetRotationAxesList();
-            _rotationAxis = RotationAxis.X;
-            _rotationDirectionX = 1.0;
-            _rotationDirectionY = 0.0;
-            _rotationDirectionZ = 0.0;
+            _rotationAxis = base3DViewModel.BelongsToAGraph ? RotationAxis.Z : RotationAxis.X;
+            _rotationAngle = 0;
+            _rotationX = 1.0;
+            _rotationY = 0.0;
+            _rotationZ = 0.0;
 
             Base = base3DViewModel;
         }
@@ -213,12 +221,12 @@ namespace ReScanVisualizer.ViewModels
             ReorientY = sinp * sint;
             ReorientZ = cost;
 
-            RotateBase();
+            ReorientBase();
         }
 
         private void UpdateRotationAxisSelection()
         {
-
+            // update rotation axis
         }
 
         public void ApplyTranslation()
@@ -237,7 +245,7 @@ namespace ReScanVisualizer.ViewModels
             ApplyTranslation();
         }
 
-        private void RotateBase()
+        private void ReorientBase()
         {
             Base3D orientedBase = Tools.ComputeOrientedBase(new Vector3D(_reorientX, _reorientY, _reorientZ), _reorientAxis);
             Base.UpdateBase(orientedBase, false);
