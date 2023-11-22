@@ -91,7 +91,15 @@ namespace ReScanVisualizer.ViewModels
 
         private void AddBase()
         {
-            Bases.Add(Base3DViewModel.CreateCountedInstance(new Base3D(new Point3D(1, 1, 1))));
+            Random random = new Random();
+            double phi = random.NextDouble() * Math.PI;
+            double theta = random.NextDouble() * Math.PI;
+            double sint = Tools.Sin(theta);
+            double cost = Tools.Cos(theta);
+            double sinp = Tools.Sin(phi);
+            double cosp = Tools.Cos(phi);
+
+            Bases.Add(Base3DViewModel.CreateCountedInstance(new Base3D(new Point3D(sint * cosp, sint * sinp, cost))));
         }
 
         public void AddScatterGraph(ScatterGraphViewModel scatterGraphViewModel)

@@ -98,6 +98,8 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        public bool BelongsToAGraph { get; }
+
         private readonly Model3DGroup _model;
         public Model3D Model => _model;
 
@@ -158,17 +160,14 @@ namespace ReScanVisualizer.ViewModels
 
         public event EventHandler<bool>? IsHiddenChanged;
 
-        public Base3DViewModel(double scaleFactor = 1.0) : this(new Base3D(), scaleFactor)
-        {
-        }
-
-        public Base3DViewModel(Base3D base3D, double scaleFactor, RenderQuality renderQuality = RenderQuality.High)
+        public Base3DViewModel(Base3D base3D, double scaleFactor = 1.0, bool belongsToAGraph = false, RenderQuality renderQuality = RenderQuality.High)
         {
             _base3D = base3D;
             _scaleFactor = scaleFactor;
             _name = $"Base";
             _isHidden = false;
             _oldModelMaterials = new Material[3];
+            BelongsToAGraph = belongsToAGraph;
             _renderQuality = renderQuality;
             _model = Helper3D.Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _scaleFactor, _renderQuality);
         }
@@ -181,7 +180,7 @@ namespace ReScanVisualizer.ViewModels
         public static Base3DViewModel CreateCountedInstance(Base3D base3D, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
             _instanceCreated++;
-            return new Base3DViewModel(base3D, scaleFactor, renderQuality)
+            return new Base3DViewModel(base3D, scaleFactor, false, renderQuality)
             {
                 _name = $"Base {_instanceCreated}"
             };

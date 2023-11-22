@@ -33,5 +33,13 @@ namespace ReScanVisualizer.Views
                 viewModel.ApplyTranslation();
             }
         }
+
+        private void MoveToButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is BaseViewModel viewModel)
+            {
+                viewModel.ApplyMoveTo();
+            }
+        }
     }
 }

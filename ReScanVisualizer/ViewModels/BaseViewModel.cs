@@ -11,8 +11,6 @@ namespace ReScanVisualizer.ViewModels
 {
     public class BaseViewModel : ViewModelBase
     {
-        public List<Axis> AllAxis { get; private set; }
-
         public Base3DViewModel Base { get; private set; }
 
         #region Translate
@@ -40,125 +38,187 @@ namespace ReScanVisualizer.ViewModels
 
         #endregion
 
-        #region Rotate
+        #region Reorient
 
-        private double _x;
-        public double X
+        public List<Axis> AllReorientAxis { get; private set; }
+
+        private Axis _reorientAxis;
+        public Axis ReorientAxis
         {
-            get => _x;
-            private set => SetValue(ref _x, value);
-        }
-
-        private double _y;
-        public double Y
-        {
-            get => _y;
-            private set => SetValue(ref _y, value);
-
-        }
-
-        private double _z;
-        public double Z
-        {
-            get => _z;
-            private set => SetValue(ref _z, value);
-        }
-
-        private int _theta;
-        public int Theta
-        {
-            get => _theta;
+            get => _reorientAxis;
             set
             {
-                if (value > 180 || value < -180)
-                {
-                    value = 180;
-                }
-                if (SetValue(ref _theta, value))
-                {
-                    UpdateCartesianFromAngles();
-                }
-            }
-        }
-
-        private int _phi;
-        public int Phi
-        {
-            get => _phi;
-            set
-            {
-                if (value > 180 || value < -180)
-                {
-                    value = 180;
-                }
-                if (SetValue(ref _phi, value))
-                {
-                    UpdateCartesianFromAngles();
-                }
-            }
-        }
-
-        private Axis _axis;
-        public Axis Axis
-        {
-            get => _axis;
-            set
-            {
-                if (SetValue(ref _axis, value))
+                if (SetValue(ref _reorientAxis, value))
                 {
                     RotateBase();
                 }
             }
         }
 
+        private double _reorientX;
+        public double ReorientX
+        {
+            get => _reorientX;
+            private set => SetValue(ref _reorientX, value);
+        }
+
+        private double _reorientY;
+        public double ReorientY
+        {
+            get => _reorientY;
+            private set => SetValue(ref _reorientY, value);
+
+        }
+
+        private double _reorientZ;
+        public double ReorientZ
+        {
+            get => _reorientZ;
+            private set => SetValue(ref _reorientZ, value);
+        }
+
+        private int _reorientTheta;
+        public int ReorientTheta
+        {
+            get => _reorientTheta;
+            set
+            {
+                if (value > 180 || value < -180)
+                {
+                    value = 180;
+                }
+                if (SetValue(ref _reorientTheta, value))
+                {
+                    UpdateCartesianFromAngles();
+                }
+            }
+        }
+
+        private int _reorientPhi;
+        public int ReorientPhi
+        {
+            get => _reorientPhi;
+            set
+            {
+                if (value > 180 || value < -180)
+                {
+                    value = 180;
+                }
+                if (SetValue(ref _reorientPhi, value))
+                {
+                    UpdateCartesianFromAngles();
+                }
+            }
+        }
+
         #endregion
 
-        public BaseViewModel() : this(new Base3DViewModel())
+        #region Rotate
+
+        public List<RotationAxis> AllRotationAxis { get; private set; }
+
+        private RotationAxis _rotationAxis;
+        public RotationAxis RotationAxis
         {
+            get => _rotationAxis;
+            set
+            {
+                if (SetValue(ref _rotationAxis, value))
+                {
+                    RotateBase();
+                }
+            }
         }
+
+        private double _rotationDirectionX;
+        public double RotationDirectionX
+        {
+            get => _rotationDirectionX;
+            set
+            {
+                if (SetValue(ref _rotationDirectionX, value))
+                {
+                    UpdateRotationAxisSelection();
+                }
+            }
+        }
+
+        private double _rotationDirectionY;
+        public double RotationDirectionY
+        {
+            get => _rotationDirectionY;
+            set
+            {
+                if (SetValue(ref _rotationDirectionY, value))
+                {
+                    UpdateRotationAxisSelection();
+                }
+            }
+        }
+
+        private double _rotationDirectionZ;
+        public double RotationDirectionZ
+        {
+            get => _rotationDirectionZ;
+            set
+            {
+                if (SetValue(ref _rotationDirectionZ, value))
+                {
+                    UpdateRotationAxisSelection();
+                }
+            }
+        }
+
+        #endregion
+
+        public bool BelongsToAGraph => !(Base is null) && Base.BelongsToAGraph;
 
         public BaseViewModel(Base3DViewModel base3DViewModel)
         {
             _translateX = 0.0;
             _translateY = 0.0;
             _translateZ = 0.0;
+
             // TODO: set next values according to base3DViewModel
-            _x = 1.0;
-            _y = 0.0;
-            _z = 0.0;
-            _theta = 90;
-            _phi = 0;
+            AllReorientAxis = Tools.GetAxisList();
+            _reorientAxis = Axis.X;
+
+            _reorientX = 1.0;
+            _reorientY = 0.0;
+            _reorientZ = 0.0;
+            _reorientTheta = 90;
+            _reorientPhi = 0;
+            // end todo
+
+            AllRotationAxis = Tools.GetRotationAxesList();
+            _rotationAxis = RotationAxis.X;
+            _rotationDirectionX = 1.0;
+            _rotationDirectionY = 0.0;
+            _rotationDirectionZ = 0.0;
 
             Base = base3DViewModel;
-            AllAxis = new List<Axis>();
-            LoadAxisList();
-            _axis = AllAxis[0];
-        }
-
-        private void LoadAxisList()
-        {
-            AllAxis.Clear();
-            foreach (object item in Enum.GetValues(typeof(Axis)))
-            {
-                AllAxis.Add((Axis)item);
-            }
         }
 
         private void UpdateCartesianFromAngles()
         {
-            double p = Tools.DegreeToRadian(_phi);
-            double t = Tools.DegreeToRadian(_theta);
+            double p = Tools.DegreeToRadian(_reorientPhi);
+            double t = Tools.DegreeToRadian(_reorientTheta);
 
-            double cosp = Math.Cos(p).Clamp().Clamp(1).Clamp(-1);
-            double sinp = Math.Sin(p).Clamp().Clamp(1).Clamp(-1);
-            double cost = Math.Cos(t).Clamp().Clamp(1).Clamp(-1);
-            double sint = Math.Sin(t).Clamp().Clamp(1).Clamp(-1);
+            double cosp = Tools.Cos(p);
+            double sinp = Tools.Sin(p);
+            double cost = Tools.Cos(t);
+            double sint = Tools.Sin(t);
 
-            X = cosp * sint;
-            Y = sinp * sint;
-            Z = cost;
+            ReorientX = cosp * sint;
+            ReorientY = sinp * sint;
+            ReorientZ = cost;
 
             RotateBase();
+        }
+
+        private void UpdateRotationAxisSelection()
+        {
+
         }
 
         public void ApplyTranslation()
@@ -169,9 +229,17 @@ namespace ReScanVisualizer.ViewModels
             TranslateZ = 0.0;
         }
 
+        public void ApplyMoveTo()
+        {
+            _translateX -= Base.Origin.X;
+            _translateY -= Base.Origin.Y;
+            _translateZ -= Base.Origin.Z;
+            ApplyTranslation();
+        }
+
         private void RotateBase()
         {
-            Base3D orientedBase = Tools.ComputeOrientedBase(new Vector3D(_x, _y, _z), _axis);
+            Base3D orientedBase = Tools.ComputeOrientedBase(new Vector3D(_reorientX, _reorientY, _reorientZ), _reorientAxis);
             Base.UpdateBase(orientedBase, false);
         }
     }

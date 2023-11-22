@@ -19,17 +19,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
 
         public ScatterGraphPopulateBuilderBase(Color color) : base(color)
         {
-            AllPlans = GeneratePlan2DList();
-        }
-
-        private List<Plan2D> GeneratePlan2DList()
-        {
-            List<Plan2D> plans = new List<Plan2D>();
-            foreach (Plan2D plan in typeof(Plan2D).GetEnumValues())
-            {
-                plans.Add(plan);
-            }
-            return plans;
+            AllPlans = Tools.GetPlan2DList();
         }
     }
 }

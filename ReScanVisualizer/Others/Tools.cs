@@ -56,6 +56,58 @@ namespace ReScanVisualizer
             return areColinear;
         }
 
+        /// <summary>
+        /// Retourne le cosinus de l'angle spécifié.
+        /// </summary>
+        /// <param name="d">Angle, mesuré en radians.</param>
+        /// <returns>Cosinus de d. Si d est égal à <see cref="System.Double.NaN"/>, à <see cref="System.Double.NegativeInfinity"/> ou à <see cref="System.Double.PositiveInfinity"/>, cette méthode retourne <see cref="System.Double.NaN"/>.</returns>
+        public static double Cos(double d)
+        {
+            double c = Math.Cos(d);
+            if (!double.IsNaN(c) && !double.IsInfinity(c))
+            {
+                if (c <= -1.0 + Const.ZERO_CLAMP)
+                {
+                    c = -1.0;
+                }
+                else if (c >= 1.0 - Const.ZERO_CLAMP)
+                {
+                    c = 1.0;
+                }
+                else if (c <= Const.ZERO_CLAMP && c >= -Const.ZERO_CLAMP)
+                {
+                    c = 0.0;
+                }
+            }
+            return c;
+        }
+
+        /// <summary>
+        /// Retourne le sinus de l'angle spécifié.
+        /// </summary>
+        /// <param name="d">Angle, mesuré en radians.</param>
+        /// <returns>Sinus de d. Si d est égal à <see cref="System.Double.NaN"/>, à <see cref="System.Double.NegativeInfinity"/> ou à <see cref="System.Double.PositiveInfinity"/>, cette méthode retourne <see cref="System.Double.NaN"/>.</returns>
+        public static double Sin(double d)
+        {
+            double s = Math.Sin(d);
+            if (!double.IsNaN(s) && !double.IsInfinity(s))
+            {
+                if (s <= -1.0 + Const.ZERO_CLAMP)
+                {
+                    s = -1.0;
+                }
+                else if (s >= 1.0 - Const.ZERO_CLAMP)
+                {
+                    s = 1.0;
+                }
+                else if (s <= Const.ZERO_CLAMP && s >= -Const.ZERO_CLAMP)
+                {
+                    s = 0.0;
+                }
+            }
+            return s;
+        }
+
         /// <param name="axis">Rotation axis</param>
         /// <param name="angle">Angle in radian</param>
         public static Matrix3D CreateRotationMatrix(Axis axis, double angle)
@@ -92,8 +144,8 @@ namespace ReScanVisualizer
             double uyz = u.Y * u.Z;
             double uzz = u.Z * u.Z;
 
-            double cosa = Math.Cos(angle).Clamp().Clamp(-1).Clamp(1);
-            double sina = Math.Sin(angle).Clamp().Clamp(-1).Clamp(1);
+            double cosa = Cos(angle);
+            double sina = Sin(angle);
 
             double _1_cosa = 1.0 - cosa;
             double ux_sina = u.X * sina;
@@ -140,33 +192,10 @@ namespace ReScanVisualizer
                     throw new NotImplementedException();
             }
 
-            //angle = angle.Clamp().Clamp(-180).Clamp(180) % 360.0;
             angle = angle.Clamp().Clamp(-180).Clamp(180) % 180.0;
 
             if (angle != 0.0)
             {
-                //if (angle == 180.0 || angle == -180.0)
-                //{
-                //    switch (axis)
-                //    {
-                //        case Axis.X:
-                //            rot.M22 *= -1.0;
-                //            rot.M33 *= -1.0;
-                //            break;
-                //        case Axis.Y:
-                //            rot.M11 *= -1.0;
-                //            rot.M33 *= -1.0;
-                //            break;
-                //        case Axis.Z:
-                //            rot.M11 *= -1.0;
-                //            rot.M22 *= -1.0;
-                //            break;
-                //    }
-                //}
-                //else
-                //{
-                //    rot.Rotate(new Quaternion(rotationAxis, -angle));
-                //}
                 rot.Rotate(new Quaternion(rotationAxis, -angle));
 
                 rot.Clamp();
@@ -187,6 +216,21 @@ namespace ReScanVisualizer
                 RenderQuality.High,
                 RenderQuality.VeryHigh,
             };
+        }
+
+        public static List<Axis> GetAxisList()
+        {
+            return new List<Axis> { Axis.X, Axis.Y, Axis.Z };
+        }
+
+        public static List<RotationAxis> GetRotationAxesList()
+        {
+            return new List<RotationAxis> { RotationAxis.X, RotationAxis.Y, RotationAxis.Z, RotationAxis.Personalized };
+        }
+
+        public static List<Plan2D> GetPlan2DList()
+        {
+            return new List<Plan2D> { Plan2D.XY, Plan2D.XZ, Plan2D.YZ };
         }
     }
 }

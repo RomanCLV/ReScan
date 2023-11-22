@@ -14,6 +14,14 @@
         Z
     }
 
+    public enum RotationAxis
+    {
+        X,
+        Y,
+        Z,
+        Personalized
+    }
+
     public enum RenderQuality
     {
         VeryLow = -2,
