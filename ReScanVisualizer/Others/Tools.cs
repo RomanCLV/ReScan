@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer
@@ -231,6 +233,26 @@ namespace ReScanVisualizer
         public static List<Plan2D> GetPlan2DList()
         {
             return new List<Plan2D> { Plan2D.XY, Plan2D.XZ, Plan2D.YZ };
+        }
+
+        public static Color GetRandomLightColor()
+        {
+            PropertyInfo[] propertyInfos = typeof(Colors).GetProperties();
+            List<Color> colors = new List<Color>();
+            Random random = new Random();
+            string pName;
+
+            foreach (var propertyInfo in propertyInfos)
+            {
+                pName = propertyInfo.Name;
+                if (pName.StartsWith("Dark") || pName == "Black")
+                {
+                    continue;
+                }
+                colors.Add((Color)propertyInfo.GetValue(propertyInfo));
+            }
+
+            return colors[random.Next(colors.Count)];
         }
     }
 }

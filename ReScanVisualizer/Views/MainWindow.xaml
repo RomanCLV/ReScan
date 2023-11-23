@@ -73,6 +73,53 @@
                     </MenuItem>
 
                 </MenuItem>
+
+                <MenuItem Header="_Global parameters" ToolTip="Global parameters" Style="{StaticResource menuItemTitle}">
+
+                    <MenuItem Header="General render quality" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Very low"  Click="VeryLowRenderQualityMenuItem_Click"/>
+                        <MenuItem Header="Low"       Click="LowRenderQualityMenuItem_Click"/>
+                        <MenuItem Header="Medium"    Click="MediumRenderQualityMenuItem_Click"/>
+                        <MenuItem Header="High"      Click="HighRenderQualityMenuItem_Click"/>
+                        <MenuItem Header="Very high" Click="VeryHighRenderQualityMenuItem_Click"/>
+                    </MenuItem>
+
+                    <Separator />
+
+                    <MenuItem Header="Randomize all colors" Style="{StaticResource menuItemItem}" Click="RandomizeColorMenuItem_Click" />
+
+                    <Separator />
+
+                    <MenuItem Header="Scatter graphs visibility" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Show all graphs" Click="ShowAllGraphsMenuItem_Click"/>
+                        <MenuItem Header="Hide all graphs" Click="HideAllGraphsMenuItem_Click"/>
+                    </MenuItem>
+
+                    <MenuItem Header="Points' scatter graphs visibility" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Show all points' graphs" Click="ShowAllPointsGraphsMenuItem_Click"/>
+                        <MenuItem Header="Hide all points' graphs" Click="HideAllPointsGraphsMenuItem_Click"/>
+                    </MenuItem>
+
+                    <MenuItem Header="Average plans visibility" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Show all average plan" Click="ShowAllAveragePlansMenuItem_Click"/>
+                        <MenuItem Header="Hide all average plan" Click="HideAllAveragePlansMenuItem_Click"/>
+                    </MenuItem>
+
+                    <MenuItem Header="Barycenters graphs visibility" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Show all barycenters" Click="ShowAllBarycentersMenuItem_Click"/>
+                        <MenuItem Header="Hide all barycenters" Click="HideAllBarycentersMenuItem_Click"/>
+                    </MenuItem>
+
+                    <MenuItem Header="Bases' graphs visibility" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Show all bases' graphs" Click="ShowAllBasesGraphsMenuItem_Click"/>
+                        <MenuItem Header="Hide all bases' graphs" Click="HideAllBasesGraphsMenuItem_Click"/>
+                    </MenuItem>
+
+                    <MenuItem Header="Added bases visibility" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Show all added bases" Click="ShowAllAddedBasesMenuItem_Click"/>
+                        <MenuItem Header="Hide all added bases" Click="HideAllAddedBasesMenuItem_Click"/>
+                    </MenuItem>
+                </MenuItem>
             </Menu>
         </StackPanel>
 

@@ -187,24 +187,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 
         public void RandomizeColor()
         {
-            PropertyInfo[] propertyInfos = typeof(Colors).GetProperties();
-            List<Color> colors = new List<Color>();
-            Random random = new Random();
-            string pName;
-
-            foreach (var propertyInfo in propertyInfos) 
-            {
-                pName = propertyInfo.Name;
-                if (pName.StartsWith("Dark") || pName == "Black")
-                {
-                    continue;
-                }
-                colors.Add((Color)propertyInfo.GetValue(propertyInfo));
-            }
-            
             foreach (var item in Items)
             {
-                item.Key.Color = colors[random.Next(colors.Count)];
+                item.Key.Color = Tools.GetRandomLightColor();
             }
         }
 

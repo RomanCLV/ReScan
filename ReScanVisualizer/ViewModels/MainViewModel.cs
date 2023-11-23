@@ -85,6 +85,8 @@ namespace ReScanVisualizer.ViewModels
                 IsDisposed = true;
                 ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 Bases.CollectionChanged -= Bases_CollectionChanged;
+                ClearScatterGraphs();
+                ClearBases();
                 base.Dispose();
             }
         }
@@ -118,6 +120,7 @@ namespace ReScanVisualizer.ViewModels
                     foreach (object? item in e.NewItems)
                     {
                         ScatterGraphViewModel graphViewModel = (ScatterGraphViewModel)item;
+                        graphViewModel.Samples.CollectionChanged += Samples_CollectionChanged;
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             Model3DGroup group = new Model3DGroup();
@@ -134,19 +137,20 @@ namespace ReScanVisualizer.ViewModels
                     foreach (object? item in e.OldItems)
                     {
                         ScatterGraphViewModel graphViewModel = (ScatterGraphViewModel)item;
+                        graphViewModel.Samples.CollectionChanged -= Samples_CollectionChanged;
                         for (int i = 0; i < Models.Children.Count; i++)
                         {
                             if (Models.Children[i] is Model3DGroup group)
                             {
                                 if (group.Children[0].Equals(graphViewModel.Model))
                                 {
-                                    if (SelectedViewModel != null)
+                                    if (_selectedViewModel != null)
                                     {
-                                        if (graphViewModel.Equals(SelectedViewModel) ||
-                                            graphViewModel.AveragePlan.Equals(SelectedViewModel) ||
-                                            graphViewModel.Barycenter.Equals(SelectedViewModel) ||
-                                            (SelectedViewModel is BaseViewModel bvModel && graphViewModel.Base3D.Equals(bvModel.Base)) ||
-                                            graphViewModel.Samples.Any(s => s.Equals(SelectedViewModel)))
+                                        if (graphViewModel.Equals(_selectedViewModel) ||
+                                            graphViewModel.AveragePlan.Equals(_selectedViewModel) ||
+                                            graphViewModel.Barycenter.Equals(_selectedViewModel) ||
+                                            (_selectedViewModel is BaseViewModel bvModel && graphViewModel.Base3D.Equals(bvModel.Base)) ||
+                                            graphViewModel.Samples.Any(s => s.Equals(_selectedViewModel)))
                                         {
                                             SelectedViewModel = null;
                                         }
@@ -165,7 +169,7 @@ namespace ReScanVisualizer.ViewModels
 
                 case NotifyCollectionChangedAction.Reset:
                     Models.Children.Clear();
-                    if (SelectedViewModel is BaseViewModel baseViewModel)
+                    if (_selectedViewModel is BaseViewModel baseViewModel)
                     {
                         if (Bases.All(b => !b.Equals(baseViewModel.Base)))
                         {
@@ -175,6 +179,32 @@ namespace ReScanVisualizer.ViewModels
                     else
                     {
                         SelectedViewModel = null;
+                    }
+                    break;
+            }
+        }
+
+        private void Samples_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
+                    bool found = false;
+                    if (_selectedViewModel is SampleViewModel)
+                    {
+                        foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+                        {
+                            if (scatterGraphViewModel.Samples.Contains(_selectedViewModel))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            SelectedViewModel = null;
+                        }
                     }
                     break;
             }
@@ -223,6 +253,133 @@ namespace ReScanVisualizer.ViewModels
                         }
                     }
                     break;
+            }
+        }
+
+        public void ClearScatterGraphs()
+        {
+            foreach (ScatterGraphViewModel item in ScatterGraphs)
+            {
+                item.Samples.CollectionChanged -= Samples_CollectionChanged;
+                item.Dispose();
+            }
+            Application.Current?.Dispatcher.Invoke(ScatterGraphs.Clear);
+        }
+
+        public void ClearBases()
+        {
+            Application.Current?.Dispatcher.Invoke(Bases.Clear);
+        }
+
+        internal void SetAllRenderQuality(RenderQuality renderQuality)
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.RenderQuality = renderQuality;
+            }
+        }
+
+        public void RandomizeAllColors()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.Color.Color = Tools.GetRandomLightColor();
+            }
+        }
+
+        public void ShowAllGraphs()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.Show();
+            }
+        }
+
+        public void HideAllGraphs()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.Hide();
+            }
+        }
+
+        public void ShowAllPointsGraphs()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.ShowPoints();
+            }
+        }
+
+        public void HideAllPointsGraphs()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.HidePoints();
+            }
+        }
+
+        public void ShowAllBarycenters()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.Barycenter.Show();
+            }
+        }
+
+        public void HideAllBarycenters()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.Barycenter.Hide();
+            }
+        }
+
+        public void ShowAllAveragePlans()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.AveragePlan.Show();
+            }
+        }
+
+        public void HideAllAveragePlans()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.AveragePlan.Hide();
+            }
+        }
+
+        public void ShowAllBasesGraphs()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.Base3D.Show();
+            }
+        }
+
+        public void HideAllBasesGraphs()
+        {
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                scatterGraphViewModel.Base3D.Hide();
+            }
+        }
+
+        public void ShowAllAddedBases()
+        {
+            foreach (Base3DViewModel base3DViewModel in Bases)
+            {
+                base3DViewModel.Show();
+            }
+        }
+
+        public void HideAllAddedBases()
+        {
+            foreach (Base3DViewModel base3DViewModel in Bases)
+            {
+                base3DViewModel.Hide();
             }
         }
     }

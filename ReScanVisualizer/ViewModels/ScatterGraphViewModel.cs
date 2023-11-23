@@ -197,6 +197,7 @@ namespace ReScanVisualizer.ViewModels
         /// ScatterGraphViewModel constuctor.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
+
         public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double pointRadius = 0.25, RenderQuality renderQuality = RenderQuality.High, bool hideBarycenter = false, bool hideAveragePlan = false, bool hideBase = false)
         {
             if (scaleFactor <= 0.0)
@@ -265,12 +266,7 @@ namespace ReScanVisualizer.ViewModels
                 if (Samples != null)
                 {
                     Samples.CollectionChanged -= Points_CollectionChanged;
-                    foreach (SampleViewModel sample in Samples)
-                    {
-                        sample.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
-                        sample?.Dispose();
-                    }
-                    Application.Current?.Dispatcher.Invoke(() => Clear());
+                    Application.Current?.Dispatcher.Invoke(Clear);
                 }
                 _averagePlan?.Dispose();
                 _base3D?.Dispose();
@@ -358,6 +354,7 @@ namespace ReScanVisualizer.ViewModels
                 sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
                 sampleViewModel.RemoveItem -= SampleViewModel_RemoveItem;
                 sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
+                sampleViewModel.Dispose();
             }
             Samples.Clear();
         }

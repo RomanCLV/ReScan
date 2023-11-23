@@ -37,7 +37,7 @@
                                 ToolTip="{Binding ValidateCommand.Description}">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource load}" Width="25" Height="25" />
+                                    <Image Source="{StaticResource update}" Width="25" Height="25" />
                                     <TextBlock Text="Export" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
                                 </StackPanel>
                             </Button.Content>

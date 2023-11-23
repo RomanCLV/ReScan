@@ -35,7 +35,7 @@ namespace ReScanVisualizer.Views
 
         private void BaseClearButton_Click(object sender, RoutedEventArgs e)
         {
-            ((MainViewModel)DataContext).Bases.Clear();
+            ((MainViewModel)DataContext).ClearBases();
         }
 
         private void BaseTreeViewItem_MouseDown(object sender, MouseButtonEventArgs e)
@@ -62,7 +62,7 @@ namespace ReScanVisualizer.Views
 
         private void GraphClearButton_Click(object sender, RoutedEventArgs e)
         {
-            ((MainViewModel)DataContext).ScatterGraphs.Clear();
+            ((MainViewModel)DataContext).ClearScatterGraphs();
         }
 
         private void ScatterGraphTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
@@ -117,6 +117,150 @@ namespace ReScanVisualizer.Views
             if (DataContext is MainViewModel viewModel)
             {
                 viewModel.SelectedViewModel = (SampleViewModel)((SampleTreeViewItemHeader)sender).DataContext;
+            }
+        }
+
+        private void VeryLowRenderQualityMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SetAllRenderQuality(RenderQuality.VeryLow);
+            }
+        }
+
+        private void LowRenderQualityMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SetAllRenderQuality(RenderQuality.Low);
+            }
+        }
+
+        private void MediumRenderQualityMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SetAllRenderQuality(RenderQuality.Medium);
+            }
+        }
+
+        private void HighRenderQualityMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SetAllRenderQuality(RenderQuality.High);
+            }
+        }
+
+        private void VeryHighRenderQualityMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SetAllRenderQuality(RenderQuality.VeryHigh);
+            }
+        }
+
+        private void RandomizeColorMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.RandomizeAllColors();
+            }
+        }
+
+        private void ShowAllGraphsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.ShowAllGraphs();
+            }
+        }
+
+        private void HideAllGraphsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.HideAllGraphs();
+            }
+        }
+
+        private void ShowAllPointsGraphsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.ShowAllPointsGraphs();
+            }
+        }
+
+        private void HideAllPointsGraphsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.HideAllPointsGraphs();
+            }
+        }
+
+        private void ShowAllAveragePlansMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.ShowAllAveragePlans();
+            }
+        }
+
+        private void HideAllAveragePlansMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.HideAllAveragePlans();
+            }
+        }
+
+        private void ShowAllBarycentersMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.ShowAllBarycenters();
+            }
+        }
+
+        private void HideAllBarycentersMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.HideAllBarycenters();
+            }
+        }
+
+        private void ShowAllBasesGraphsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.ShowAllBasesGraphs();
+            }
+        }
+
+        private void HideAllBasesGraphsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.HideAllBasesGraphs();
+            }
+        }
+
+        private void ShowAllAddedBasesMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.ShowAllAddedBases();
+            }
+        }
+
+        private void HideAllAddedBasesMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.HideAllAddedBases();
             }
         }
     }
