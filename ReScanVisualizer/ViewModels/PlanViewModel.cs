@@ -265,12 +265,24 @@ namespace ReScanVisualizer.ViewModels
             IsHiddenChanged?.Invoke(this, _isHidden);
         }
 
+        public void UpdateCenter(Point3D center)
+        {
+            _center = center;
+            UpdateModelGeometry();
+        }
+
         public void UpdatePlan(Plan plan, Vector3D up, double length)
         {
             _plan.SetABCD(plan);
             _up = up;
             _lenght = length;
             UpdateModelGeometry();
+        }
+
+        public void UpdatePlan(Point3D center, Plan plan, Vector3D up, double length)
+        {
+            _center = center;
+            UpdatePlan(plan, up, length);
         }
 
         public override string ToString()

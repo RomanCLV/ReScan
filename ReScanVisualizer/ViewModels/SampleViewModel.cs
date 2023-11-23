@@ -16,6 +16,8 @@ namespace ReScanVisualizer.ViewModels
 {
     public class SampleViewModel : ViewModelBase, I3DElement
     {
+        public event EventHandler? RemoveItem;
+
         private double _scaleFactor;
         public double ScaleFactor
         {
@@ -161,6 +163,11 @@ namespace ReScanVisualizer.ViewModels
                 base.Dispose();
                 IsDisposed = true;
             }
+        }
+
+        public void InvokeRemoveItem()
+        {
+            RemoveItem?.Invoke(this, EventArgs.Empty);
         }
 
         private void Color_PropertyChanged(object sender, PropertyChangedEventArgs e)

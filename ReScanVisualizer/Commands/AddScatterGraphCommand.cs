@@ -23,7 +23,7 @@ namespace ReScanVisualizer.Commands
 
         public override void Execute(object? parameter)
         {
-            AddScatterGraphView view = new AddScatterGraphView()
+            AddScatterGraphWindow view = new AddScatterGraphWindow()
             {
                 Owner = Application.Current.MainWindow,
             };

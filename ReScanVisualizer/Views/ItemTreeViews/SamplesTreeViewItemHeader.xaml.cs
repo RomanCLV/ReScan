@@ -26,7 +26,7 @@ namespace ReScanVisualizer.Views.ItemTreeViews
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is ScatterGraphViewModel viewModel)
             {
@@ -38,6 +38,29 @@ namespace ReScanVisualizer.Views.ItemTreeViews
                 {
                     viewModel.HidePoints();
                 }
+            }
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                AddPointViewModel addPointViewModel = new AddPointViewModel(viewModel);
+                AddPointWindow window = new AddPointWindow
+                {
+                    Owner = Application.Current.MainWindow,
+                    DataContext = addPointViewModel
+                };
+                window.ShowDialog();
+                addPointViewModel.Dispose();
+            }
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                viewModel.Clear();
             }
         }
     }

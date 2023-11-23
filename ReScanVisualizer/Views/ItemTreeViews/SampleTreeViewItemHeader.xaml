@@ -17,7 +17,7 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Horizontal">
-        <Button Style="{StaticResource myButtonIconNoPadding}" Click="Button_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
+        <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
             <Button.Content>
                 <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
             </Button.Content>
@@ -32,5 +32,12 @@
             <TextBlock Text="{Binding Point.Z, StringFormat=N2}" />
             <TextBlock Text=")" />
         </StackPanel>
+
+        <Button Style="{StaticResource myButtonIconNoPadding}" Click="RemoveButton_Click" Height="19" Width="19" ToolTip="Delete" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button.Content>
+                <Image Source="{StaticResource delete}" Height="19" Width="19" />
+            </Button.Content>
+        </Button>
+
     </StackPanel>
 </UserControl>

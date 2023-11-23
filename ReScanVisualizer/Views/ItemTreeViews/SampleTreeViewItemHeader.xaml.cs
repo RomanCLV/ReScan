@@ -26,11 +26,19 @@ namespace ReScanVisualizer.Views.ItemTreeViews
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is SampleViewModel viewModel)
             {
                 viewModel.InverseIsHidden();
+            }
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is SampleViewModel viewModel)
+            {
+                viewModel.InvokeRemoveItem();
             }
         }
     }

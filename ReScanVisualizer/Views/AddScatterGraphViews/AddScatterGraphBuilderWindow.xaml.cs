@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace ReScanVisualizer.Views.AddScatterGraphViews
 {
     /// <summary>
-    /// Logique d'interaction pour AddScatterGraphView.xaml
+    /// Logique d'interaction pour AddScatterGraphBuilderWindow.xaml
     /// </summary>
-    public partial class AddScatterGraphBuilderView : Window
+    public partial class AddScatterGraphBuilderWindow : Window
     {
-        public AddScatterGraphBuilderView()
+        public AddScatterGraphBuilderWindow()
         {
             InitializeComponent();
         }

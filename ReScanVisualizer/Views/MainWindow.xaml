@@ -117,7 +117,7 @@
                     >
                     <StackPanel>
                         <DockPanel Visibility="{Binding ElementName=BasesTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" Click="BaseClearButton_Click">
+                            <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear bases" Click="BaseClearButton_Click">
                                 <Button.Content>
                                     <Image Source="{StaticResource delete}" />
                                 </Button.Content>
@@ -155,7 +155,7 @@
                         </TreeView>
 
                         <DockPanel Visibility="{Binding ElementName=GraphsTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" Click="GraphClearButton_Click">
+                            <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear graphs" Click="GraphClearButton_Click">
                                 <Button.Content>
                                     <Image Source="{StaticResource delete}" />
                                 </Button.Content>

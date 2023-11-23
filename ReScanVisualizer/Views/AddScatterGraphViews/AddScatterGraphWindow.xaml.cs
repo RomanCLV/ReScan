@@ -22,16 +22,16 @@ using System.Windows.Shapes;
 namespace ReScanVisualizer.Views.AddScatterGraphViews
 {
     /// <summary>
-    /// Logique d'interaction pour LoadScatterGraphView.xaml
+    /// Logique d'interaction pour AddScatterGraphWindow.xaml
     /// </summary>
-    public partial class AddScatterGraphView : Window
+    public partial class AddScatterGraphWindow : Window
     {
 
         private ScatterGraphBuilderBase? _selectedBuilder;
         private Popup? _openedPopup;
         private bool _isEditingTextBox;
 
-        public AddScatterGraphView()
+        public AddScatterGraphWindow()
         {
             _isEditingTextBox = false;
             _selectedBuilder = null;

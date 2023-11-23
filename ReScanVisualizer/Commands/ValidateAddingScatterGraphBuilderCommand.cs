@@ -17,11 +17,11 @@ namespace ReScanVisualizer.Commands
     public class ValidateAddingScatterGraphBuilderCommand : CommandBase
     {
         private readonly AddScatterGraphViewModel _addScatterGraphViewModel;
-        private readonly AddScatterGraphBuilderView _addScatterGraphBuilderView;
+        private readonly AddScatterGraphBuilderWindow _addScatterGraphBuilderView;
         private readonly AddScatterGraphBuilderViewModel _addScatterGraphBuilderModelView;
         private ScatterGraphBuilderBase? _builder;
 
-        public ValidateAddingScatterGraphBuilderCommand(AddScatterGraphViewModel addScatterGraphViewModel, AddScatterGraphBuilderView addScatterGraphView, AddScatterGraphBuilderViewModel addScatterGraphModelView)
+        public ValidateAddingScatterGraphBuilderCommand(AddScatterGraphViewModel addScatterGraphViewModel, AddScatterGraphBuilderWindow addScatterGraphView, AddScatterGraphBuilderViewModel addScatterGraphModelView)
         {
             _addScatterGraphViewModel = addScatterGraphViewModel;
             _addScatterGraphBuilderView = addScatterGraphView;

@@ -95,7 +95,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         public CommandKey ValidateCommand { get; }
         public CommandKey CancelCommand { get; }
 
-        public AddScatterGraphBuilderViewModel(AddScatterGraphBuilderView addScatterGraphView, AddScatterGraphViewModel addScatterGraphViewModel)
+        public AddScatterGraphBuilderViewModel(AddScatterGraphBuilderWindow addScatterGraphView, AddScatterGraphViewModel addScatterGraphViewModel)
         {
             _isUnselectingAll = false;
             _isEmptySelected = false;

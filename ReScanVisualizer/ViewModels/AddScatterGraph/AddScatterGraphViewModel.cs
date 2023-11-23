@@ -21,7 +21,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 {
     public class AddScatterGraphViewModel : ViewModelBase
     {
-        private readonly AddScatterGraphView _view;
+        private readonly AddScatterGraphWindow _view;
         private readonly MainViewModel _mainViewModel;
 
         public ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> Items { get; private set; }
@@ -76,7 +76,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         public CommandKey LoadAndCloseCommand { get; private set; }
         public CommandKey CancelCommand { get; private set; }
 
-        public AddScatterGraphViewModel(AddScatterGraphView view, MainViewModel mainViewModel)
+        public AddScatterGraphViewModel(AddScatterGraphWindow view, MainViewModel mainViewModel)
         {
             _view = view;
             _mainViewModel = mainViewModel;

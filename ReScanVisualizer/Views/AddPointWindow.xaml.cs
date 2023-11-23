@@ -11,26 +11,31 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ReScanVisualizer.Views
 {
     /// <summary>
-    /// Logique d'interaction pour Point3DView.xaml
+    /// Logique d'interaction pour AddPointWindow.xaml
     /// </summary>
-    public partial class SampleView : UserControl
+    public partial class AddPointWindow : Window
     {
-        public SampleView()
+        public AddPointWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is SampleViewModel viewModel)
+            Close();
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddPointViewModel viewModel)
             {
-                viewModel.InvokeRemoveItem();
+                viewModel.AddPoint();
+                Close();
             }
         }
     }

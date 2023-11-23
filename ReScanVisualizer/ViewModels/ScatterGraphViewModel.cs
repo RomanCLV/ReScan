@@ -212,6 +212,8 @@ namespace ReScanVisualizer.ViewModels
             {
                 SampleViewModel sampleViewModel = new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius, _renderQuality);
                 sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
+                sampleViewModel.RemoveItem += SampleViewModel_RemoveItem;
+                sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
                 Samples.Add(sampleViewModel);
                 _model.Children.Add(sampleViewModel.Model);
             }
@@ -258,7 +260,7 @@ namespace ReScanVisualizer.ViewModels
                         sample.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
                         sample?.Dispose();
                     }
-                    Application.Current?.Dispatcher.Invoke(() => Samples.Clear());
+                    Application.Current?.Dispatcher.Invoke(() => Clear());
                 }
                 _averagePlan?.Dispose();
                 _base3D?.Dispose();
@@ -283,6 +285,12 @@ namespace ReScanVisualizer.ViewModels
 
         private void RecomputeAll()
         {
+            _scatterGraph.Clear();
+            foreach (SampleViewModel item in Samples)
+            {
+                _scatterGraph.AddPoint(item.Point.Point);
+            }
+
             Point3D barycenter = _scatterGraph.ComputeBarycenter();
             Plan averagePlan = ComputeAveragePlan();
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
@@ -290,7 +298,7 @@ namespace ReScanVisualizer.ViewModels
 
             _barycenter.UpdatePoint(barycenter);
             _base3D.UpdateBase(base3D);
-            _averagePlan.UpdatePlan(averagePlan, base3D.X, averagePlanLength);
+            _averagePlan.UpdatePlan(barycenter, averagePlan, base3D.X, averagePlanLength);
         }
 
         private void Points_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -300,15 +308,30 @@ namespace ReScanVisualizer.ViewModels
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    foreach (object? o in e.NewItems)
+                    {
+                        SampleViewModel sampleViewModel = (SampleViewModel)o;
+                        sampleViewModel.IsHidden = ArePointsHidden;
+                        sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
+                        sampleViewModel.RemoveItem += SampleViewModel_RemoveItem;
+                        sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
+                        _model.Children.Add(sampleViewModel.Model);
+                    }
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                case NotifyCollectionChangedAction.Reset:
                     foreach (object? o in e.OldItems)
                     {
                         SampleViewModel sampleViewModel = (SampleViewModel)o;
                         sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
+                        sampleViewModel.RemoveItem -= SampleViewModel_RemoveItem;
+                        sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
+                        RemoveModelOfSample(sampleViewModel);
                     }
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    _model.Children.Clear();
                     break;
 
                 default:
@@ -316,6 +339,48 @@ namespace ReScanVisualizer.ViewModels
             }
 
             OnPropertyChanged(nameof(ItemsCount));
+        }
+
+        public void Clear()
+        {
+            foreach (SampleViewModel sampleViewModel in Samples)
+            {
+                sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
+                sampleViewModel.RemoveItem -= SampleViewModel_RemoveItem;
+                sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
+            }
+            Samples.Clear();
+        }
+
+        private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RecomputeAll();
+        }
+
+        private void SampleViewModel_RemoveItem(object sender, EventArgs e)
+        {
+            RemoveSample((SampleViewModel)sender);
+        }
+
+        public void RemoveSample(SampleViewModel sampleViewModel)
+        {
+            sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
+            sampleViewModel.RemoveItem -= SampleViewModel_RemoveItem;
+            sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
+            RemoveModelOfSample(sampleViewModel);
+            Samples.Remove(sampleViewModel);
+        }
+
+        private void RemoveModelOfSample(SampleViewModel sampleViewModel)
+        {
+            for (int i = 0; i < _model.Children.Count; i++)
+            {
+                if (sampleViewModel.Model.Equals(_model.Children[i]))
+                {
+                    _model.Children.RemoveAt(i);
+                    break;
+                }
+            }
         }
 
         private void OnIsHiddenChanged()
@@ -371,7 +436,7 @@ namespace ReScanVisualizer.ViewModels
                     return;
                 }
             }
-            ArePointsHidden = true;
+            ArePointsHidden = Samples.Count != 0;
         }
 
         private Point3D ComputeBarycenter()

@@ -12,10 +12,10 @@ namespace ReScanVisualizer.Commands
 {
     public class AddScatterGraphBuilderCommand : CommandBase
     {
-        private readonly AddScatterGraphView _addScatterGraphView;
+        private readonly AddScatterGraphWindow _addScatterGraphView;
         private readonly AddScatterGraphViewModel _addScatterGraphViewModel;
 
-        public AddScatterGraphBuilderCommand(AddScatterGraphView addScatterGraphView, AddScatterGraphViewModel addScatterGraphViewModel)
+        public AddScatterGraphBuilderCommand(AddScatterGraphWindow addScatterGraphView, AddScatterGraphViewModel addScatterGraphViewModel)
         {
             _addScatterGraphView =  addScatterGraphView;
             _addScatterGraphViewModel = addScatterGraphViewModel;
@@ -23,7 +23,7 @@ namespace ReScanVisualizer.Commands
 
         public override void Execute(object? parameter)
         {
-            AddScatterGraphBuilderView view = new AddScatterGraphBuilderView()
+            AddScatterGraphBuilderWindow view = new AddScatterGraphBuilderWindow()
             {
                 Owner = _addScatterGraphView
             };
