@@ -72,5 +72,13 @@ namespace ReScanVisualizer.Views
                 scatterGraphView.InverseIsHidden();
             }
         }
+
+        private void ExportGraphButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel scatterGraphView)
+            {
+                scatterGraphView.Export();
+            }
+        }
     }
 }

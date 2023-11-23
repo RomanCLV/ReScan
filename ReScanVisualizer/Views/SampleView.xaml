@@ -15,7 +15,14 @@
 
         <forms:PointForm DataContext="{Binding Point}" />
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Delete" Style="{StaticResource myButton}" Click="Button_Click"/>
+            <Button Style="{StaticResource myButton}" ToolTip="Delete"  Click="Button_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource delete}" Width="25" Height="25" />
+                        <TextBlock Text="Delete" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -97,6 +97,20 @@
                         </Button>
                         <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding WriteHeaders}" Margin="5 0 20 0" Content="Write headers" Width="100" Foreground="{StaticResource foregroundColor}"  VerticalAlignment="Center"/>
+
+                        <Button Style="{StaticResource myButton}" ToolTip="Delete" Click="ExportGraphButton_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource load}" Width="25" Height="25" />
+                                    <TextBlock Text="Export" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
             </TabItem>
             

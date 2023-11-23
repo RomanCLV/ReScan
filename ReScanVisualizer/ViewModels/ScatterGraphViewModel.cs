@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf;
+using Microsoft.Win32;
 using ReScanVisualizer.Models;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -176,6 +178,13 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _name, value);
         }
 
+        private bool _writeHeaders;
+        public bool WriteHeaders
+        {
+            get => _writeHeaders;
+            set => SetValue(ref _writeHeaders, value);
+        }
+
         public ScatterGraphViewModel() : this(new ScatterGraph(), Colors.White)
         {
         }
@@ -204,6 +213,7 @@ namespace ReScanVisualizer.ViewModels
             Color = new ColorViewModel(color);
             _isHidden = color.A == 0;
             _arePointsHidden = false;
+            _writeHeaders = true;
 
             _model = new Model3DGroup();
             Samples = new ObservableCollection<SampleViewModel>();
@@ -525,6 +535,29 @@ namespace ReScanVisualizer.ViewModels
             foreach (SampleViewModel point in Samples)
             {
                 point.Color.Set(Color.Color);
+            }
+        }
+
+        public void Export()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                Title = "Export scatter graph",
+                Filter = "Fichiers CSV (*.csv)|*.csv",
+                DefaultExt = ".csv"
+            };
+            saveFileDialog.ShowDialog();
+
+            if (!string.IsNullOrEmpty(saveFileDialog.FileName))
+            {
+                try
+                {
+                    ScatterGraph.SaveCSV(saveFileDialog.FileName, _scatterGraph, true, false);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }
