@@ -105,8 +105,8 @@ namespace ReScanVisualizer.ViewModels
 
         public ColorViewModel Color
         {
-            get => throw new InvalidOperationException("Can't access to Color"); 
-            set => throw new InvalidOperationException("Can't access to Color"); 
+            get => throw new InvalidOperationException("Can't access to Color");
+            set => throw new InvalidOperationException("Can't access to Color");
         }
 
         private readonly Material?[] _oldModelMaterials;
@@ -156,10 +156,8 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public bool IsRotating { get; private set; }
-        private Vector3D _beginRotateX;
-        private Vector3D _beginRotateY;
-        private Vector3D _beginRotateZ;
+        public bool IsRotating => _base3D is null ? false : _base3D.IsRotating;
+
 
         private static uint _instanceCreated = 0;
 
@@ -199,6 +197,8 @@ namespace ReScanVisualizer.ViewModels
         private Base3D GetBaseScalled()
         {
             Point3D origin = _base3D.Origin.Multiply(_scaleFactor);
+            // TODO: add a scale factor for axis
+            //double scaleFactor = Math.Max(_scaleFactor, 0.5);
             Vector3D x = Vector3D.Multiply(_base3D.X, _scaleFactor);
             Vector3D y = Vector3D.Multiply(_base3D.Y, _scaleFactor);
             Vector3D z = Vector3D.Multiply(_base3D.Z, _scaleFactor);
@@ -241,10 +241,7 @@ namespace ReScanVisualizer.ViewModels
         /// </summary>
         public void BeginRotate()
         {
-            IsRotating = true;
-            _beginRotateX = Base3D.X;
-            _beginRotateY = Base3D.Y;
-            _beginRotateZ = Base3D.Z;
+            _base3D.BeginRotate();
         }
 
         /// <summary>
@@ -252,7 +249,7 @@ namespace ReScanVisualizer.ViewModels
         /// </summary>
         public void EndRotate()
         {
-            IsRotating = false;
+            _base3D.EndRotate();
         }
 
         /// <summary>
@@ -261,33 +258,19 @@ namespace ReScanVisualizer.ViewModels
         /// </summary>
         /// <param name="rotationAxis">The direction</param>
         /// <param name="rotationAngle">The angle in degrees</param>
-        /// <param name="autoEndRotate">Call <see cref="EndRotate"/> automatically.<br />
+        /// <param name="autoCallEndRotate">Call <see cref="EndRotate"/> automatically.<br />
         /// If you have only one rotation, let it to true. Else, set it to false and don't forget to call <see cref="EndRotate"/> when all the rotations have been applied.
         /// </param>
         public void Rotate(Vector3D rotationAxis, double rotationAngle, bool autoCallEndRotate = true)
         {
-            if (rotationAngle == 0.0)
+            if (rotationAngle != 0.0)
             {
-                return;
+                _base3D.Rotate(rotationAxis, rotationAngle, autoCallEndRotate);
+                OnPropertyChanged(nameof(X));
+                OnPropertyChanged(nameof(Y));
+                OnPropertyChanged(nameof(Z));
+                UpdateModelGeometry();
             }
-            if (!IsRotating)
-            {
-                BeginRotate();
-            }
-            Matrix3D rot = Matrix3D.Identity;
-            rot.Rotate(new Quaternion(rotationAxis, rotationAngle));
-
-            _base3D.X = Vector3D.Multiply(_beginRotateX, rot);
-            _base3D.Y = Vector3D.Multiply(_beginRotateY, rot);
-            _base3D.Z = Vector3D.Multiply(_beginRotateZ, rot);
-            if (autoCallEndRotate)
-            {
-                EndRotate();
-            }
-            OnPropertyChanged(nameof(X));
-            OnPropertyChanged(nameof(Y));
-            OnPropertyChanged(nameof(Z));
-            UpdateModelGeometry();
         }
 
         public void UpdateBase(Base3D base3D, bool updateOrigin = true)

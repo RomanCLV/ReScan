@@ -381,11 +381,11 @@ namespace ReScanVisualizer.Models
 
         public bool ArePointsCoplanar()
         {
-            if ( _points.Count <= 3)
+            if (_points.Count <= 3)
             {
                 return true;
             }
-   
+
             Point3D p0 = _points[0];
             Vector3D vector1 = _points[1] - p0;
             Vector3D vector2 = new Vector3D();
@@ -520,7 +520,7 @@ namespace ReScanVisualizer.Models
             }
 
             z = new Vector3D(a, b, c);
-            
+
             if (z.Length == 0)
             {
                 z.Z = 1.0;
@@ -537,13 +537,28 @@ namespace ReScanVisualizer.Models
         {
             Point3D barycenter = scatterGraph.ComputeBarycenter();
             Plan averagePlan = scatterGraph.ComputeAveragePlan();
-            return ComputeRepere3D(barycenter, averagePlan);
+            return ComputeRepere3D(barycenter, averagePlan, true);
         }
 
-        public static Base3D ComputeRepere3D(Point3D origin, Plan averagePlan)
+        public static Base3D ComputeRepere3D(Point3D origin, Plan averagePlan, bool putXOnXY)
         {
             Base3D repere = Tools.ComputeOrientedBase(averagePlan.GetNormal(), Axis.Z);
             repere.Origin = origin;
+
+            if (putXOnXY)
+            {
+                Vector3D xProjected = repere.X;
+                xProjected.Z = 0;
+
+                double angle = Vector3D.AngleBetween(xProjected, repere.X);
+                repere.Rotate(repere.Z, angle, true);
+
+                Trace.WriteLine($"Angle: {Math.Round(angle, 2)}\tX: {repere.X}");
+                //xProjected = repere.X;
+                //xProjected.Z = 0;
+                //double angle2 = Vector3D.AngleBetween(xProjected, repere.X);
+            }
+
             return repere;
         }
 

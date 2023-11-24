@@ -75,6 +75,12 @@ namespace ReScanVisualizer.Models
             }
         }
 
+        public bool IsRotating { get; private set; }
+
+        private Vector3D _beginRotateX;
+        private Vector3D _beginRotateY;
+        private Vector3D _beginRotateZ;
+
         public Base3D() : this(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1))
         { }
 
@@ -135,8 +141,8 @@ namespace ReScanVisualizer.Models
         public Matrix3D GetRotationMatrix()
         {
             Vector3D xAxis = new Vector3D(1, 0, 0);
-            Vector3D rotationAxis = Vector3D.CrossProduct(xAxis, X);
-            double angle = Vector3D.AngleBetween(xAxis, X);
+            Vector3D rotationAxis = Vector3D.CrossProduct(xAxis, _x);
+            double angle = Vector3D.AngleBetween(xAxis, _x);
             Matrix3D rot;
             if (angle == 0)
             {
@@ -159,6 +165,63 @@ namespace ReScanVisualizer.Models
                 _ => throw new InvalidOperationException("Unexpected plan."),
             };
             return new Plan(normal, -(normal.X * _origin.X + normal.Y * _origin.Y + normal.Z * _origin.Z));
+        }
+
+        /// <summary>
+        /// Indicates the start of a base rotation. To call before <see cref="Rotate(Vector3D, double, bool)"/>.<br />
+        /// Sets <see cref="IsRotating"/> to true and saves the current positions of the vectors for use during rotation.
+        /// </summary>
+        public void BeginRotate()
+        {
+            IsRotating = true;
+            _beginRotateX = _x;
+            _beginRotateY = _y;
+            _beginRotateZ = _z;
+        }
+
+        /// <summary>
+        /// Indicates the end of a rotation. To be called after <see cref="Rotate(Vector3D, double, bool)"/>.
+        /// </summary>
+        public void EndRotate()
+        {
+            IsRotating = false;
+        }
+
+        /// <summary>
+        /// Rotate the base according to a given direction and an angle.<br />
+        /// <see cref="BeginRotate"/> is called automatically if <see cref="IsRotating"/> is false.
+        /// </summary>
+        /// <param name="rotationAxis">The direction</param>
+        /// <param name="rotationAngle">The angle in degrees</param>
+        /// <param name="autoCallEndRotate">Call <see cref="EndRotate"/> automatically.<br />
+        /// If you have only one rotation, let it to true. Else, set it to false and don't forget to call <see cref="EndRotate"/> when all the rotations have been applied.
+        /// </param>
+        public void Rotate(Vector3D rotationAxis, double rotationAngle, bool autoCallEndRotate = true)
+        {
+            if (rotationAngle == 0.0)
+            {
+                return;
+            }
+            if (!IsRotating)
+            {
+                BeginRotate();
+            }
+            Matrix3D rot = Matrix3D.Identity;
+            rot.Rotate(new Quaternion(rotationAxis, rotationAngle));
+
+            _x = Vector3D.Multiply(_beginRotateX, rot);
+            _y = Vector3D.Multiply(_beginRotateY, rot);
+            _z = Vector3D.Multiply(_beginRotateZ, rot);
+            _x.Normalize();
+            _y.Normalize();
+            _z.Normalize();
+            OnXChanged();
+            OnYChanged();
+            OnZChanged();
+            if (autoCallEndRotate)
+            {
+                EndRotate();
+            }
         }
 
         public override string ToString()

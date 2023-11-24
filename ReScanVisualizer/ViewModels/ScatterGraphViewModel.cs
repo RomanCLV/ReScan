@@ -516,7 +516,7 @@ namespace ReScanVisualizer.ViewModels
                 }
                 else
                 {
-                    base3D = ScatterGraph.ComputeRepere3D(barycenter, averagePlan);
+                    base3D = ScatterGraph.ComputeRepere3D(barycenter, averagePlan, true);
                 }
             }
             return base3D;
