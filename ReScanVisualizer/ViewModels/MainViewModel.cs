@@ -10,7 +10,6 @@ using ReScanVisualizer.Views;
 using System.Reflection;
 using ReScanVisualizer.Commands;
 using System.Windows.Input;
-using HelixToolkit.Wpf;
 using System.Windows;
 using ReScanVisualizer.Models;
 using System.Security.Cryptography;
