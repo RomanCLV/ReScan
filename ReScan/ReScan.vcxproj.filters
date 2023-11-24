@@ -69,7 +69,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\ReScanVisualizer\Resources\Icon\icon.ico">
+    <Image Include="icon.ico">
       <Filter>Fichiers de ressources</Filter>
     </Image>
   </ItemGroup>
