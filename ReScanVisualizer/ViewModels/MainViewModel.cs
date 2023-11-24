@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
-using ReScanVisualizer.Views;
-using System.Reflection;
-using ReScanVisualizer.Commands;
 using System.Windows.Input;
 using System.Windows;
-using ReScanVisualizer.Models;
-using System.Security.Cryptography;
 using System.Collections.Specialized;
+using ReScanVisualizer.Models;
+using ReScanVisualizer.Commands;
 
 #nullable enable
 
@@ -33,7 +30,14 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _selectedViewModel.Dispose();
                 }
-                SetValue(ref _selectedViewModel, value);
+                if (SetValue(ref _selectedViewModel, value))
+                {
+                    if (_selectedViewModel is BaseViewModel baseViewModel)
+                    {
+                        baseViewModel.UpdateReorientCartesianFromBase();
+                        baseViewModel.UpdateRotationXYZFromBase();
+                    }
+                }
             }
         }
 
