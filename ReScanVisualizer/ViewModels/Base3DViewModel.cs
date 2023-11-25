@@ -35,6 +35,23 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        private double _axisScaleFactor;
+        public double AxisScaleFactor
+        {
+            get => _axisScaleFactor;
+            set
+            {
+                if (value <= 0.0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Axis scale factor must be greater than 0.");
+                }
+                if (SetValue(ref _axisScaleFactor, value))
+                {
+                    UpdateModelGeometry();
+                }
+            }
+        }
+
         private string _name;
         public string Name
         {
@@ -163,27 +180,28 @@ namespace ReScanVisualizer.ViewModels
 
         public event EventHandler<bool>? IsHiddenChanged;
 
-        public Base3DViewModel(Base3D base3D, double scaleFactor = 1.0, bool belongsToAGraph = false, RenderQuality renderQuality = RenderQuality.High)
+        public Base3DViewModel(Base3D base3D, double scaleFactor = 1.0, double axisScaleFactor = 1.0, bool belongsToAGraph = false, RenderQuality renderQuality = RenderQuality.High)
         {
             _base3D = base3D;
             _scaleFactor = scaleFactor;
+            _axisScaleFactor = axisScaleFactor;
             _name = $"Base";
             _isHidden = false;
             _oldModelMaterials = new Material[3];
             BelongsToAGraph = belongsToAGraph;
             _renderQuality = renderQuality;
-            _model = Helper3D.Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _scaleFactor, _renderQuality);
+            _model = Helper3D.Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _axisScaleFactor, _renderQuality);
         }
 
-        public static Base3DViewModel CreateCountedInstance(double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
+        public static Base3DViewModel CreateCountedInstance(double scaleFactor = 1.0, double axisScaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
-            return CreateCountedInstance(new Base3D(), scaleFactor, renderQuality);
+            return CreateCountedInstance(new Base3D(), scaleFactor, axisScaleFactor, renderQuality);
         }
 
-        public static Base3DViewModel CreateCountedInstance(Base3D base3D, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
+        public static Base3DViewModel CreateCountedInstance(Base3D base3D, double scaleFactor = 1.0, double axisScaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
             _instanceCreated++;
-            return new Base3DViewModel(base3D, scaleFactor, false, renderQuality)
+            return new Base3DViewModel(base3D, scaleFactor, axisScaleFactor, false, renderQuality)
             {
                 _name = $"Base {_instanceCreated}"
             };
@@ -196,13 +214,11 @@ namespace ReScanVisualizer.ViewModels
 
         private Base3D GetBaseScalled()
         {
-            Point3D origin = _base3D.Origin.Multiply(_scaleFactor);
-            // TODO: add a scale factor for axis
-            //double scaleFactor = Math.Max(_scaleFactor, 0.5);
-            Vector3D x = Vector3D.Multiply(_base3D.X, _scaleFactor);
-            Vector3D y = Vector3D.Multiply(_base3D.Y, _scaleFactor);
-            Vector3D z = Vector3D.Multiply(_base3D.Z, _scaleFactor);
-            return new Base3D(origin, x, y, z);
+            return new Base3D(
+                _base3D.Origin.Multiply(_scaleFactor),
+                Vector3D.Multiply(_base3D.X, _axisScaleFactor),
+                Vector3D.Multiply(_base3D.Y, _axisScaleFactor),
+                Vector3D.Multiply(_base3D.Z, _axisScaleFactor));
         }
 
         public void Translate(Vector3D translation)
@@ -292,9 +308,9 @@ namespace ReScanVisualizer.ViewModels
         public void UpdateModelGeometry()
         {
             Base3D base3D = GetBaseScalled();
-            ((GeometryModel3D)_model.Children[0]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.X), 0.1 * _scaleFactor, _renderQuality);
-            ((GeometryModel3D)_model.Children[1]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.Y), 0.1 * _scaleFactor, _renderQuality);
-            ((GeometryModel3D)_model.Children[2]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.Z), 0.1 * _scaleFactor, _renderQuality);
+            ((GeometryModel3D)_model.Children[0]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.X), 0.1 * _axisScaleFactor, _renderQuality);
+            ((GeometryModel3D)_model.Children[2]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.Z), 0.1 * _axisScaleFactor, _renderQuality);
+            ((GeometryModel3D)_model.Children[1]).Geometry = Helper3D.Helper3D.BuildArrowGeometry(base3D.Origin, Point3D.Add(base3D.Origin, base3D.Y), 0.1 * _axisScaleFactor, _renderQuality);
         }
 
         public void UpdateModelMaterial()

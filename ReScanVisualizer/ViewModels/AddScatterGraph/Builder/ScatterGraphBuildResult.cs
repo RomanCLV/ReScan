@@ -149,6 +149,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
         }
 
+        private double _axisScaleFactor;
+        public double AxisScaleFactor
+        {
+            get => _axisScaleFactor;
+            set
+            {
+                if (value <= 0.0)
+                {
+                    value = 1.0;
+                }
+                SetValue(ref _axisScaleFactor, value);
+            }
+        }
+
         public string Details =>
             (_suggestedScaleFactor == 0.0 ? "" : $"Farthest point from origin: {(int)_farthestPointLength}. Suggested scale factor: {Math.Round(_suggestedScaleFactor, 2)}") +
             (_exception is null ? "" : $"\n{_exception.Message}");
@@ -174,6 +188,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _minReductionFactor = 0.0;
             _reductionFactor = _minReductionFactor;
             _scaleFactor = 1.0;
+            _axisScaleFactor = 1.0;
             _suggestedScaleFactor = 0.0;
             _farthestPointLength = 0.0;
             _isAdded = false;

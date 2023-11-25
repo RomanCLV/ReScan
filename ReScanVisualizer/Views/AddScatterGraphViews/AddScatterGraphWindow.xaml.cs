@@ -239,7 +239,15 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         {
             if (DataContext is AddScatterGraphViewModel viewModel)
             {
-                viewModel.ApplyCommonFactor();
+                viewModel.ApplyCommonScaleFactor();
+            }
+        }
+
+        private void ApplyCommonAxisScaleFactorButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonAxisScaleFactor();
             }
         }
 
@@ -251,11 +259,35 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             }
         }
 
-        private void ApplyQualityButton_Click(object sender, RoutedEventArgs e)
+        private void ApplyCommonRenderQualityButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is AddScatterGraphViewModel viewModel)
             {
                 viewModel.ApplyCommonRenderQuality();
+            }
+        }
+
+        private void ApplyCommonDisplayBarycenterButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonDisplayBarycenter();
+            }
+        }
+
+        private void ApplyCommonDisplayAveragePlanButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonDisplayAveragePlan();
+            }
+        }
+
+        private void ApplyCommonDisplayBaseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonDisplayBase();
             }
         }
     }

@@ -95,6 +95,27 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             set => SetValue(ref _renderQuality, value);
         }
 
+        private bool _displayBarycenter;
+        public bool DisplayBarycenter
+        {
+            get => _displayBarycenter;
+            set => SetValue(ref _displayBarycenter, value);
+        }
+
+        private bool _displayAveragePlan;
+        public bool DisplayAveragePlan
+        {
+            get => _displayAveragePlan;
+            set => SetValue(ref _displayAveragePlan, value);
+        }
+
+        private bool _displayBase;
+        public bool DisplayBase
+        {
+            get => _displayBase;
+            set => SetValue(ref _displayBase, value);
+        }
+
         public List<RenderQuality> RenderQualities { get; }
 
         public ScatterGraphBuilderBase() : this(Colors.White)
@@ -109,6 +130,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             _pointRadius = 0.25;
             _renderQuality = RenderQuality.High;
             RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
+            _displayBarycenter = true;
+            _displayAveragePlan = true;
+            _displayBase = true;
         }
 
         /// <summary>

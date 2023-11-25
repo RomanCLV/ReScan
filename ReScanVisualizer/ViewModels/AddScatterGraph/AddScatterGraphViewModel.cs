@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using ReScanVisualizer.Commands;
@@ -49,6 +50,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             set => SetValue(ref _commonScaleFactor, value);
         }
 
+        private double _commonAxisScaleFactor;
+        public double CommonAxisScaleFactor
+        {
+            get => _commonAxisScaleFactor;
+            set => SetValue(ref _commonAxisScaleFactor, value);
+        }
+
         private double _commonPointRadius;
         public double CommonPointRadius
         {
@@ -70,6 +78,27 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             set => SetValue(ref _commonRenderQuality, value);
         }
 
+        private bool _commonDisplayBarycenter;
+        public bool CommonDisplayBarycenter
+        {
+            get => _commonDisplayBarycenter;
+            set => SetValue(ref _commonDisplayBarycenter, value);
+        }
+
+        private bool _commonDisplayAveragePlan;
+        public bool CommonDisplayAveragePlan
+        {
+            get => _commonDisplayAveragePlan;
+            set => SetValue(ref _commonDisplayAveragePlan, value);
+        }
+
+        private bool _commonDisplayBase;
+        public bool CommonDisplayBase
+        {
+            get => _commonDisplayBase;
+            set => SetValue(ref _commonDisplayBase, value);
+        }
+
         public CommandKey AddScatterGraphBuilderCommand { get; private set; }
         public CommandKey BuildCommand { get; private set; }
         public CommandKey LoadCommand { get; private set; }
@@ -81,10 +110,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             _view = view;
             _mainViewModel = mainViewModel;
             _commonScaleFactor = 1.0;
+            _commonAxisScaleFactor = 1.0;
             _maxPoints = 0;
             _commonPointRadius = 0.25;
             _commonRenderQuality = RenderQuality.High;
             RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
+            _commonDisplayBarycenter = true;
+            _commonDisplayAveragePlan = true;
+            _commonDisplayBase = true;
 
             Items = new ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>();
 
@@ -204,13 +237,24 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
-        public void ApplyCommonFactor()
+        public void ApplyCommonScaleFactor()
         {
             foreach (var item in Items)
             {
                 if (item.Value != null)
                 {
                     item.Value.ScaleFactor = _commonScaleFactor;
+                }
+            }
+        }
+
+        public void ApplyCommonAxisScaleFactor()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Value != null)
+                {
+                    item.Value.AxisScaleFactor = _commonAxisScaleFactor;
                 }
             }
         }
@@ -233,6 +277,39 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 if (item.Key != null)
                 {
                     item.Key.RenderQuality = _commonRenderQuality;
+                }
+            }
+        }
+
+        public void ApplyCommonDisplayBarycenter()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Key != null)
+                {
+                    item.Key.DisplayBarycenter = _commonDisplayBarycenter;
+                }
+            }
+        }
+
+        public void ApplyCommonDisplayAveragePlan()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Key != null)
+                {
+                    item.Key.DisplayAveragePlan = _commonDisplayAveragePlan;
+                }
+            }
+        }
+
+        public void ApplyCommonDisplayBase()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Key != null)
+                {
+                    item.Key.DisplayBase = _commonDisplayBase;
                 }
             }
         }
@@ -322,7 +399,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
                 ScatterGraphViewModel? scatterGraphViewModel = null;
                 try
                 {
-                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Key.PointRadius, item.Key.RenderQuality)
+                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Value.AxisScaleFactor, item.Key.PointRadius, item.Key.RenderQuality, !item.Key.DisplayBarycenter, !item.Key.DisplayAveragePlan, !item.Key.DisplayBase)
                     {
                         Name = item.Key.Name.Replace(" builder", "")
                     };

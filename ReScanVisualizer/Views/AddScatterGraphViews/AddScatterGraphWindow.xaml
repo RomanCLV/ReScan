@@ -10,7 +10,10 @@
         xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
         mc:Ignorable="d"
         Title="Add scatter graph" 
-        Height="720" Width="1380"
+        Height="720" Width="1280"
+        MinHeight="720" MinWidth="1280"
+        d:Height="1080" d:Width="1920"
+        WindowState="Maximized"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource backgroundColor}"
         Foreground="{StaticResource foregroundColor}"
@@ -79,39 +82,53 @@
                         <Button DockPanel.Dock="Left" Content="Randomize colors" Style="{StaticResource myButton}" VerticalAlignment="Top" Click="RandomizeColorButton_Click"/>
 
                         <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Max points graph" Style="{StaticResource myTextBlock}"/>
-                                <TextBox Text="{Binding MaxPoints}" Width="75"  Style="{StaticResource myTextBox}"
+                            <TextBlock Text="Max points graph" Style="{StaticResource myTextBlock}"/>
+                            <TextBox Text="{Binding MaxPoints}" Width="75"  Style="{StaticResource myTextBox}"
                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                            </StackPanel>
-                            <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
+
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
                                     ToolTip="Find the reduction factor of all builded graphes to reach the specified max points."
                                     Click="ApplyMaxPointsButton_Click"/>
                         </StackPanel>
-                        
+
                         <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Scale factor" Style="{StaticResource myTextBlock}"/>
-                                <TextBox Width="75"  Style="{StaticResource myTextBox}"
-                                        GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
-                                    <TextBox.Text>
-                                        <Binding Path="CommonScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
-                                            <Binding.ValidationRules>
-                                                <validators:PositiveNumberValidationRule />
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox.Text>
-                                </TextBox>
-                            </StackPanel>
-                            <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
+                            <TextBlock Text="Scale factor" Style="{StaticResource myTextBlock}"/>
+                            <TextBox Width="75"  Style="{StaticResource myTextBox}"
+                                GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                <TextBox.Text>
+                                    <Binding Path="CommonScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validators:PositiveNumberValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
                                 ToolTip="Apply this scale factor for all builded graphes."
                                 Click="ApplyCommonScaleFactorButton_Click"/>
                         </StackPanel>
-                        
+
                         <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Point radius" Style="{StaticResource myTextBlock}"/>
-                                <TextBox Width="75"  Style="{StaticResource myTextBox}"
+                            <TextBlock Text="Axis scale factor" Style="{StaticResource myTextBlock}"/>
+                            <TextBox Width="75"  Style="{StaticResource myTextBox}"
+                                    GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                <TextBox.Text>
+                                    <Binding Path="CommonAxisScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validators:PositiveNumberValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
+                                    ToolTip="Apply this axis scale factor for all builded graphes."
+                                    Click="ApplyCommonAxisScaleFactorButton_Click"/>
+                        </StackPanel>
+
+                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
+                            <TextBlock Text="Point radius" Style="{StaticResource myTextBlock}"/>
+                            <TextBox Width="75"  Style="{StaticResource myTextBox}"
                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
                                     <TextBox.Text>
                                         <Binding Path="CommonPointRadius" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
@@ -121,22 +138,52 @@
                                         </Binding>
                                     </TextBox.Text>
                                 </TextBox>
-                            </StackPanel>
-                            <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
                                 ToolTip="Apply this point radius for all added graphes."
                                 Click="ApplyCommonPointRadiusButton_Click"/>
                         </StackPanel>
-                        
+
                         <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Render quality" Style="{StaticResource myTextBlock}"/>
-                                <ComboBox ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding CommonRenderQuality}" Margin="5" MinWidth="80" />
-                            </StackPanel>
-                            <Button Content="Apply" HorizontalAlignment="Right" Width="75" Style="{StaticResource myButton}" 
+                            <TextBlock Text="Render quality" Style="{StaticResource myTextBlock}"/>
+                            <ComboBox ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding CommonRenderQuality}" Margin="5" MinWidth="80" />
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
                                     ToolTip="Apply the selected render quality for all added graphes."
-                                    Click="ApplyQualityButton_Click"/>
+                                    Click="ApplyCommonRenderQualityButton_Click"/>
                         </StackPanel>
-                        
+
+                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
+                            <CheckBox IsChecked="{Binding CommonDisplayBarycenter}" Foreground="{StaticResource foregroundColor}" Margin="5">
+                                <CheckBox.Content>
+                                    <TextBlock Text="Display barycenter" Width="75" TextWrapping="Wrap" TextAlignment="Center" />
+                                </CheckBox.Content>
+                            </CheckBox>
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" HorizontalAlignment="Right"
+                                    ToolTip="Apply the display barycenter for all added graphes."
+                                    Click="ApplyCommonDisplayBarycenterButton_Click"/>
+                        </StackPanel>
+
+                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
+                            <CheckBox IsChecked="{Binding CommonDisplayAveragePlan}" Foreground="{StaticResource foregroundColor}" Margin="5" >
+                                <CheckBox.Content>
+                                    <TextBlock Text="Display average plan" Width="75" TextWrapping="Wrap" TextAlignment="Center" />
+                                </CheckBox.Content>
+                            </CheckBox>
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" HorizontalAlignment="Right"
+                                    ToolTip="Apply the display average plan for all added graphes."
+                                    Click="ApplyCommonDisplayAveragePlanButton_Click"/>
+                        </StackPanel>
+
+                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
+                            <CheckBox IsChecked="{Binding CommonDisplayBase}" Foreground="{StaticResource foregroundColor}" Margin="5" VerticalContentAlignment="Center">
+                                <CheckBox.Content>
+                                    <TextBlock Text="Display base" Width="75" TextWrapping="Wrap" TextAlignment="Center" />
+                                </CheckBox.Content>
+                            </CheckBox>
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" HorizontalAlignment="Right" 
+                                    ToolTip="Apply the display base for all added graphes."
+                                    Click="ApplyCommonDisplayBaseButton_Click"/>
+                        </StackPanel>
+
                         <StackPanel />
                     </DockPanel>
                     
@@ -183,14 +230,14 @@
                         <TextBlock Text="Count of items to add:" Style="{StaticResource myTextBlock}" />
                         <TextBlock Text="{Binding ItemsToAddCount}" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
-                        <ListView 
-                            x:Name="lv"
-                            ItemsSource="{Binding Items}"
-                            Background="{StaticResource backgroundListColor}" 
-                            KeyUp="ListView_KeyUp"
-                            FocusVisualStyle="{x:Null}"
-                            >
-                            <ListView.ItemContainerStyle>
+                    <ListView 
+                        x:Name="lv"
+                        ItemsSource="{Binding Items}"
+                        Background="{StaticResource backgroundListColor}" 
+                        KeyUp="ListView_KeyUp"
+                        FocusVisualStyle="{x:Null}"
+                        >
+                        <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}">
                                     <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                                     <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
@@ -206,224 +253,277 @@
                                     </Style.Triggers>
                                 </Style>
                             </ListView.ItemContainerStyle>
-                            <ListView.View>
-                                <GridView>
-                                    <!-- Colonne Contains Header -->
-                                    <GridViewColumn Header="State" Width="50">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Image 
-                            Source="{Binding Key.State, Converter={StaticResource ScatterGraphBuilderStateToBitmapImageConverter}}"
-                            ToolTip="{Binding Key.State}"
-                            Width="25" Height="25"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
+                        <ListView.View>
+                            <GridView>
+                                <!-- Colonne Contains Header -->
+                                <GridViewColumn Header="State" Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image 
+                                                Source="{Binding Key.State, Converter={StaticResource ScatterGraphBuilderStateToBitmapImageConverter}}"
+                                                ToolTip="{Binding Key.State}"
+                                                Width="25" Height="25"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                                    <!-- Colonne Color -->
-                                    <GridViewColumn Header="Color" Width="50">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <StackPanel>
-                                                    <!-- Rectangle for Color Display -->
-                                                    <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
-                                       MouseUp="Rectangle_MouseUp"
-                                       Fill="{Binding Key.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
-                                       Width="16" Height="16"
-                                       ToolTip="{Binding Key.Color}"
-                                       ToolTipService.Placement="Top"/>
+                                <!-- Colonne Color -->
+                                <GridViewColumn Header="Color" Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <!-- Rectangle for Color Display -->
+                                                <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                                                    MouseUp="Rectangle_MouseUp"
+                                                    Fill="{Binding Key.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                                                    Width="16" Height="16"
+                                                    ToolTip="{Binding Key.Color}"
+                                                    ToolTipService.Placement="Top"/>
+                                                <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
+                                                    <uc:ColorSelector 
+                                                        Background="{StaticResource backgroundColor}"
+                                                        BorderBrush="Black"
+                                                        BorderThickness="1"
+                                                        Padding="5"
+                                                        ColorChanged="ColorSelector_ColorChanged" />
+                                                </Popup>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                                                    <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
-                                                        <uc:ColorSelector 
-                                    Background="{StaticResource backgroundColor}"
-                                    BorderBrush="Black"
-                                    BorderThickness="1"
-                                    Padding="5"
-                                    ColorChanged="ColorSelector_ColorChanged" />
-                                                    </Popup>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
+                                <!-- Colonne Name -->
+                                <GridViewColumn Header="Name" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Key.Name}" Style="{StaticResource myTextBlockLeft}">
+                                                <TextBlock.ToolTip>
+                                                    <ToolTip Content="{Binding Key.FullName}" />
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                                    <!-- Colonne Name -->
-                                    <GridViewColumn Header="Name" Width="100">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Key.Name}" Style="{StaticResource myTextBlockLeft}">
-                                                    <TextBlock.ToolTip>
-                                                        <ToolTip Content="{Binding Key.FullName}" />
-                                                    </TextBlock.ToolTip>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
+                                <!-- Colonne Details -->
+                                <GridViewColumn Header="Details" Width="240">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Style="{StaticResource myTextBlockLeft}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource StringConcaterMultiConverter}">
+                                                        <Binding Path="Key.Details" />
+                                                        <Binding Path="Value.Details" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                                    <!-- Colonne Details -->
-                                    <GridViewColumn Header="Details" Width="240">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Style="{StaticResource myTextBlockLeft}">
-                                                    <TextBlock.Text>
-                                                        <MultiBinding Converter="{StaticResource StringConcaterMultiConverter}">
-                                                            <Binding Path="Key.Details" />
-                                                            <Binding Path="Value.Details" />
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
+                                <!-- Colonne Count -->
+                                <GridViewColumn Header="Count" Width="50">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Value.Count}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                                    <!-- Colonne Count -->
-                                    <GridViewColumn Header="Count" Width="50">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Value.Count}" HorizontalAlignment="Center" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
+                                <!-- Colonne Reduction enabled -->
+                                <GridViewColumn Header="Reduction enabled" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Value.HasToReduce}">
+                                                <CheckBox.IsEnabled>
+                                                    <MultiBinding Converter="{StaticResource ScatterGraphBuilderResultReductionEnabledConverter}">
+                                                        <Binding Path="Value.IsSuccess" />
+                                                        <Binding Path="Value.HasToReduceForced" />
+                                                    </MultiBinding>
+                                                </CheckBox.IsEnabled>
+                                            </CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                                    <!-- Colonne Reduction enabled -->
-                                    <GridViewColumn Header="Reduction enabled" Width="120">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Value.HasToReduce}">
-                                                    <CheckBox.IsEnabled>
-                                                        <MultiBinding Converter="{StaticResource ScatterGraphBuilderResultReductionEnabledConverter}">
+                                <!-- Colonne Reduction Factor -->
+                                <GridViewColumn Header="Reduction factor" Width="175">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBox Style="{StaticResource myTextBox}" Width="50"
+                                                         IsEnabled="{Binding Value.IsSuccess}"
+                                                         Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}"
+                                                         GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+
+                                                <Slider Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="100" VerticalAlignment="Center"
+                                                        IsEnabled="{Binding Value.IsSuccess}"
+                                                        Value="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Reduced Count -->
+                                <GridViewColumn Header="Reduced Count" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Value.ReducedCount}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Scale Factor -->
+                                <GridViewColumn Header="Scale factor" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Style="{StaticResource myTextBox}"
+                                                GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                                <TextBox.Text>
+                                                    <Binding Path="Value.ScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
+                                                        <Binding.ValidationRules>
+                                                            <validators:PositiveNumberValidationRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Axis Scale Factor -->
+                                <GridViewColumn Header="Axis scale factor" Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Style="{StaticResource myTextBox}"
+                                                    GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                                <TextBox.Text>
+                                                    <Binding Path="Value.AxisScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
+                                                        <Binding.ValidationRules>
+                                                            <validators:PositiveNumberValidationRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Point Radius -->
+                                <GridViewColumn Header="Point radius" Width="85">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Style="{StaticResource myTextBox}"
+                                                GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
+                                                <TextBox.Text>
+                                                    <Binding Path="Key.PointRadius" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
+                                                        <Binding.ValidationRules>
+                                                            <validators:PositiveNumberValidationRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Render Quality -->
+                                <GridViewColumn Header="Render quality" Width="88">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox ItemsSource="{Binding Key.RenderQualities}" SelectedValue="{Binding Key.RenderQuality}" MinWidth="76" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Display Barycenter -->
+                                <GridViewColumn Width="70">
+                                    <GridViewColumn.Header>
+                                        <TextBlock Text="Display Barycenter" Width="70" TextWrapping="Wrap" TextAlignment="Center" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding Key.DisplayBarycenter}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                
+                                <!-- Colonne Display Average Plan -->
+                                <GridViewColumn Width="80">
+                                    <GridViewColumn.Header>
+                                        <TextBlock Text="Display Average Plan" Width="80" TextWrapping="Wrap" TextAlignment="Center" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding Key.DisplayAveragePlan}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                
+                                <!-- Colonne Display Base -->
+                                <GridViewColumn Width="55">
+                                    <GridViewColumn.Header>
+                                        <TextBlock Text="Display Base" Width="55" TextWrapping="Wrap" TextAlignment="Center" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding Key.DisplayBase}" HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Actions -->
+                                <GridViewColumn Header="Actions" Width="205">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding Key.State, Converter={StaticResource BuilderStateNotWorkingToBoolConverter}}">
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Build" Click="BuildButton_Click">
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource play}" />
+                                                    </Button.Content>
+                                                </Button>
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Edit" Click="EditButton_Click">
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource config}" />
+                                                    </Button.Content>
+                                                </Button>
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Reduce" Click="ReduceButton_Click">
+                                                    <Button.IsEnabled>
+                                                        <MultiBinding Converter="{StaticResource ReduceItemButtonEnabledMultiConverter}">
+                                                            <Binding Path="Key.State" />
+                                                            <Binding Path="Value" />
                                                             <Binding Path="Value.IsSuccess" />
-                                                            <Binding Path="Value.HasToReduceForced" />
                                                         </MultiBinding>
-                                                    </CheckBox.IsEnabled>
-                                                </CheckBox>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <!-- Colonne Reduction Factor -->
-                                    <GridViewColumn Header="Reduction factor" Width="175">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBox  Style="{StaticResource myTextBox}" Width="50"
-                                      IsEnabled="{Binding Value.IsSuccess}"
-                                      Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}"
-                                      GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-
-                                                    <Slider   Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="100" VerticalAlignment="Center"
-                                      IsEnabled="{Binding Value.IsSuccess}"
-                                      Value="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged}"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <!-- Colonne Reduced Count -->
-                                    <GridViewColumn Header="Reduced Count" Width="100">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Value.ReducedCount}" HorizontalAlignment="Center" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <!-- Colonne Scale Factor -->
-                                    <GridViewColumn Header="Scale factor" Width="100">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBox Style="{StaticResource myTextBox}"
-                                 GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
-                                                    <TextBox.Text>
-                                                        <Binding Path="Value.ScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
-                                                            <Binding.ValidationRules>
-                                                                <validators:PositiveNumberValidationRule />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </TextBox.Text>
-                                                </TextBox>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <!-- Colonne Point Radius -->
-                                    <GridViewColumn Header="Point radius" Width="85">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBox Style="{StaticResource myTextBox}"
-                                GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
-                                                    <TextBox.Text>
-                                                        <Binding Path="Key.PointRadius" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
-                                                            <Binding.ValidationRules>
-                                                                <validators:PositiveNumberValidationRule />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </TextBox.Text>
-                                                </TextBox>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <!-- Colonne Render Quality -->
-                                    <GridViewColumn Header="Render quality" Width="88">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <ComboBox ItemsSource="{Binding Key.RenderQualities}" SelectedValue="{Binding Key.RenderQuality}" MinWidth="76" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <!-- Colonne Actions -->
-                                    <GridViewColumn Header="Actions" Width="205">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal" IsEnabled="{Binding Key.State, Converter={StaticResource BuilderStateNotWorkingToBoolConverter}}">
-                                                    <Button Style="{StaticResource myButtonIcon}" ToolTip="Build" Click="BuildButton_Click">
-                                                        <Button.Content>
-                                                            <Image Source="{StaticResource play}" />
-                                                        </Button.Content>
-                                                    </Button>
-                                                    <Button Style="{StaticResource myButtonIcon}" ToolTip="Edit" Click="EditButton_Click">
-                                                        <Button.Content>
-                                                            <Image Source="{StaticResource config}" />
-                                                        </Button.Content>
-                                                    </Button>
-                                                    <Button Style="{StaticResource myButtonIcon}" ToolTip="Reduce" Click="ReduceButton_Click">
-                                                        <Button.IsEnabled>
-                                                            <MultiBinding Converter="{StaticResource ReduceItemButtonEnabledMultiConverter}">
-                                                                <Binding Path="Key.State" />
-                                                                <Binding Path="Value" />
-                                                                <Binding Path="Value.IsSuccess" />
-                                                            </MultiBinding>
-                                                        </Button.IsEnabled>
-                                                        <Button.Content>
-                                                            <Image Source="{StaticResource working}" />
-                                                        </Button.Content>
-                                                    </Button>
-                                                    <Button Style="{StaticResource myButtonIcon}" ToolTip="Load" Click="LoadButton_Click">
-                                                        <Button.IsEnabled>
-                                                            <MultiBinding Converter="{StaticResource LoadItemButtonEnabledMultiConverter}">
-                                                                <Binding Path="Key.State" />
-                                                                <Binding Path="Value" />
-                                                                <Binding Path="Value.IsSuccess" />
-                                                                <Binding Path="Value.IsAdded" />
-                                                            </MultiBinding>
-                                                        </Button.IsEnabled>
-                                                        <Button.Content>
-                                                            <Image Source="{StaticResource load}" />
-                                                        </Button.Content>
-                                                    </Button>
-                                                    <Button Style="{StaticResource myButtonIcon}" ToolTip="Delete" Click="DeleteButton_Click">
-                                                        <Button.Content>
-                                                            <Image Source="{StaticResource delete}" />
-                                                        </Button.Content>
-                                                    </Button>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
+                                                    </Button.IsEnabled>
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource working}" />
+                                                    </Button.Content>
+                                                </Button>
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Load" Click="LoadButton_Click">
+                                                    <Button.IsEnabled>
+                                                        <MultiBinding Converter="{StaticResource LoadItemButtonEnabledMultiConverter}">
+                                                            <Binding Path="Key.State" />
+                                                            <Binding Path="Value" />
+                                                            <Binding Path="Value.IsSuccess" />
+                                                            <Binding Path="Value.IsAdded" />
+                                                        </MultiBinding>
+                                                    </Button.IsEnabled>
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource load}" />
+                                                    </Button.Content>
+                                                </Button>
+                                                <Button Style="{StaticResource myButtonIcon}" ToolTip="Delete" Click="DeleteButton_Click">
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource delete}" />
+                                                    </Button.Content>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </DockPanel>
             </DockPanel>
         </ScrollViewer>

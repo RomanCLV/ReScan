@@ -254,5 +254,20 @@ namespace ReScanVisualizer
 
             return colors[random.Next(colors.Count)];
         }
+
+        /// <summary>
+        /// Get the angle in degrees between the plan XY and the given vector.
+        /// </summary>
+        /// <param name="vector">The vector</param>
+        /// <returns>The relative (or absolute if specified) angle in degrees.</returns>
+        public static double AngleZ(Vector3D vector, bool absolut = false)
+        {
+            double z = vector.Z;
+            if (z < 0.0 &&  absolut)
+            {
+                z = -z;
+            }
+            return RadianToDegree(Math.Atan(z / Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y)));
+        }
     }
 }

@@ -17,8 +17,11 @@ namespace ReScanVisualizer
     /// </summary>
     public partial class App : Application
     {
+        public static DateTime StartedDate { get; private set; }
+
         public App()
         {
+            StartedDate = DateTime.Now;
         }
 
         protected override void OnStartup(StartupEventArgs e)

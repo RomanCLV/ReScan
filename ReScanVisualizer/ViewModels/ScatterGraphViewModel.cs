@@ -198,7 +198,7 @@ namespace ReScanVisualizer.ViewModels
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
 
-        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double pointRadius = 0.25, RenderQuality renderQuality = RenderQuality.High, bool hideBarycenter = false, bool hideAveragePlan = false, bool hideBase = false)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double axisScaleFactor = 1.0, double pointRadius = 0.25, RenderQuality renderQuality = RenderQuality.High, bool hideBarycenter = false, bool hideAveragePlan = false, bool hideBase = false)
         {
             if (scaleFactor <= 0.0)
             {
@@ -236,7 +236,7 @@ namespace ReScanVisualizer.ViewModels
             double averagePlanLength = ComputeAveragePlanLength(base3D);
 
             _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality);
-            _base3D = new Base3DViewModel(base3D, _scaleFactor, true, _renderQuality)
+            _base3D = new Base3DViewModel(base3D, _scaleFactor, axisScaleFactor, true, _renderQuality)
             {
                 Name = "Plan base"
             };
