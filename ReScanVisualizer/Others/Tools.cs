@@ -260,10 +260,10 @@ namespace ReScanVisualizer
         /// </summary>
         /// <param name="vector">The vector</param>
         /// <returns>The relative (or absolute if specified) angle in degrees.</returns>
-        public static double AngleZ(Vector3D vector, bool absolut = false)
+        public static double AngleZ(Vector3D vector, bool absolute = false)
         {
             double z = vector.Z;
-            if (z < 0.0 &&  absolut)
+            if (z < 0.0 && absolute)
             {
                 z = -z;
             }
