@@ -206,10 +206,6 @@ namespace ReScanVisualizer.Models
         /// </param>
         public void Rotate(Vector3D rotationAxis, double rotationAngle, bool autoCallEndRotate = true)
         {
-            if (rotationAngle == 0.0)
-            {
-                return;
-            }
             if (!IsRotating)
             {
                 BeginRotate();

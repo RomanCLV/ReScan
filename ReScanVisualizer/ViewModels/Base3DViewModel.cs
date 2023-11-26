@@ -297,14 +297,11 @@ namespace ReScanVisualizer.ViewModels
         /// </param>
         public void Rotate(Vector3D rotationAxis, double rotationAngle, bool autoCallEndRotate = true)
         {
-            if (rotationAngle != 0.0)
-            {
-                _base3D.Rotate(rotationAxis, rotationAngle, autoCallEndRotate);
-                OnPropertyChanged(nameof(X));
-                OnPropertyChanged(nameof(Y));
-                OnPropertyChanged(nameof(Z));
-                UpdateModelGeometry();
-            }
+            _base3D.Rotate(rotationAxis, rotationAngle, autoCallEndRotate);
+            OnPropertyChanged(nameof(X));
+            OnPropertyChanged(nameof(Y));
+            OnPropertyChanged(nameof(Z));
+            UpdateModelGeometry();
         }
 
         public void UpdateBase(Base3D base3D, bool updateOrigin = true)

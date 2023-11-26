@@ -104,11 +104,11 @@ namespace ReScanVisualizer.Views
             }
         }
 
-        private void BaseTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        private void BaseTreeViewItem_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is MainViewModel viewModel)
             {
-                Base3DViewModel base3DviewModel = (Base3DViewModel)((BaseTreeViewItemHeader)sender).DataContext;
+                Base3DViewModel base3DviewModel = (Base3DViewModel)((BaseTreeViewItem)sender).DataContext;
                 viewModel.SelectedViewModel = new BaseViewModel(base3DviewModel);
             }
         }

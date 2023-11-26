@@ -170,7 +170,24 @@ namespace ReScanVisualizer.ViewModels
         public bool IsSelected
         {
             get => _isSelected;
-            private set => SetValue(ref _isSelected, value);
+            private set
+            {
+                if (SetValue(ref _isSelected, value))
+                {
+                    if (IsSelected)
+                    {
+                        Barycenter.Select();
+                        AveragePlan.Select();
+                        Base3D.Select();
+                    }
+                    else
+                    {
+                        Barycenter.Unselect();
+                        AveragePlan.Unselect();
+                        Base3D.Unselect();
+                    }
+                }
+            }
         }
 
         public int ItemsCount

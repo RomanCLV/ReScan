@@ -378,16 +378,14 @@ namespace ReScanVisualizer.ViewModels
 
         private void RotateBase()
         {
-            if (_rotationAngle != 0.0)
-            {
-                Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), _rotationAngle, false);
-            }
+            Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), _rotationAngle, false);
         }
 
         public void EndRotateBase()
         {
-            RotationAngle = 0.0;
             Base.EndRotate();
+            _rotationAngle = 0.0;
+            OnPropertyChanged(nameof(RotationAngle));
         }
 
         private void ReorientBase()

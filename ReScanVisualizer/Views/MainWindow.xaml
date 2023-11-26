@@ -221,7 +221,7 @@
                             </TreeView.ItemContainerStyle>
                             <TreeView.ItemTemplate>
                                 <DataTemplate>
-                                    <TreeViewItem IsExpanded="True" FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}">
+                                    <TreeViewItem IsExpanded="True" Margin="-20 0 0 0" FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}">
                                         <TreeViewItem.Header>
                                             <itw:ScatterGraphTreeViewItemHeader MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
                                         </TreeViewItem.Header>
@@ -235,7 +235,7 @@
                                                 <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" MouseDown="AveragePlanTreeViewItemHeader_MouseDown"/>
                                             </TreeViewItem.Header>
                                         </TreeViewItem>
-                                        <itw:BaseTreeViewItem DataContext="{Binding Base3D}" MouseDown="BaseTreeViewItemHeader_MouseDown"/>
+                                        <itw:BaseTreeViewItem DataContext="{Binding Base3D}" PreviewMouseDown="BaseTreeViewItem_PreviewMouseDown"/>
                                         <TreeViewItem ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
                                             <TreeViewItem.Header>
                                                 <itw:SamplesTreeViewItemHeader />
