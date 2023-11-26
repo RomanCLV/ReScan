@@ -15,6 +15,8 @@ namespace ReScanVisualizer.ViewModels
 {
     public class Base3DViewModel : ViewModelBase, I3DElement
     {
+        public event EventHandler<bool>? IsHiddenChanged;
+
         private readonly Base3D _base3D;
         public Base3D Base3D => _base3D;
 
@@ -173,12 +175,17 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            private set => SetValue(ref _isSelected, value);
+        }
+
         public bool IsRotating => _base3D is null ? false : _base3D.IsRotating;
 
 
         private static uint _instanceCreated = 0;
-
-        public event EventHandler<bool>? IsHiddenChanged;
 
         public Base3DViewModel(Base3D base3D, double scaleFactor = 1.0, double axisScaleFactor = 1.0, bool belongsToAGraph = false, RenderQuality renderQuality = RenderQuality.High)
         {
@@ -190,6 +197,7 @@ namespace ReScanVisualizer.ViewModels
             _oldModelMaterials = new Material[3];
             BelongsToAGraph = belongsToAGraph;
             _renderQuality = renderQuality;
+            _isSelected = false;
             _model = Helper3D.Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _axisScaleFactor, _renderQuality);
         }
 
@@ -249,6 +257,16 @@ namespace ReScanVisualizer.ViewModels
         public void Show()
         {
             IsHidden = false;
+        }
+
+        public void Select()
+        {
+            IsSelected = true;
+        }
+
+        public void Unselect()
+        {
+            IsSelected = false;
         }
 
         /// <summary>
@@ -316,6 +334,11 @@ namespace ReScanVisualizer.ViewModels
         public void UpdateModelMaterial()
         {
             throw new InvalidOperationException("UpdateModelMaterial not allowed for Base3DViewModel.");
+        }
+
+        public bool IsBelongingToModel(GeometryModel3D geometryModel3D)
+        {
+            return _model.Children.AsQueryable().Any(x => ((GeometryModel3D)x).Geometry.Equals(geometryModel3D.Geometry));
         }
     }
 }

@@ -10,5 +10,7 @@ namespace ReScanVisualizer.Models
     public interface IModelisable
     {
         public Model3D Model { get; }
+
+        public bool IsBelongingToModel(GeometryModel3D geometryModel3D);
     }
 }

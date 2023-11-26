@@ -17,6 +17,8 @@ namespace ReScanVisualizer.ViewModels
 {
     public class PlanViewModel : ViewModelBase, I3DElement
     {
+        public event EventHandler<bool>? IsHiddenChanged;
+
         private double _scaleFactor;
         public double ScaleFactor
         {
@@ -169,7 +171,12 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _renderQuality, value);
         }
 
-        public event EventHandler<bool>? IsHiddenChanged;
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            private set => SetValue(ref _isSelected, value);
+        }
 
         private readonly GeometryModel3D _model;
         public Model3D Model => _model;
@@ -189,7 +196,6 @@ namespace ReScanVisualizer.ViewModels
             {
                 throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
             }
-            IsDisposed = false;
             _scaleFactor = scaleFactor;
             _plan = plan;
             _center = center;
@@ -198,6 +204,7 @@ namespace ReScanVisualizer.ViewModels
             Color = new ColorViewModel(color);
             _isHidden = color.A == 0;
             _renderQuality = renderQuality;
+            _isSelected = false;
             _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;
@@ -249,6 +256,16 @@ namespace ReScanVisualizer.ViewModels
             IsHidden = false;
         }
 
+        public void Select()
+        {
+            IsSelected = true;
+        }
+
+        public void Unselect()
+        {
+            IsSelected = false;
+        }
+
         public void UpdateModelGeometry()
         {
             _model.Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0);
@@ -258,6 +275,11 @@ namespace ReScanVisualizer.ViewModels
         {
             _model.Material = MaterialHelper.CreateMaterial(new SolidColorBrush(Color.Color));
             _model.BackMaterial = _model.Material;
+        }
+
+        public bool IsBelongingToModel(GeometryModel3D geometryModel3D)
+        {
+            return _model.Geometry.Equals(geometryModel3D.Geometry);
         }
 
         private void OnIsHidenChanged()

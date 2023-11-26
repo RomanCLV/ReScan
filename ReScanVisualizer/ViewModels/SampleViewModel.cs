@@ -16,6 +16,7 @@ namespace ReScanVisualizer.ViewModels
 {
     public class SampleViewModel : ViewModelBase, I3DElement
     {
+        public event EventHandler<bool>? IsHiddenChanged;
         public event EventHandler? RemoveItem;
 
         private double _scaleFactor;
@@ -102,7 +103,12 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public event EventHandler<bool>? IsHiddenChanged;
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            private set => SetValue(ref _isSelected, value);
+        }
 
         private readonly GeometryModel3D _model;
 
@@ -130,11 +136,11 @@ namespace ReScanVisualizer.ViewModels
             {
                 throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
             }
-            IsDisposed = false;
             Color = new ColorViewModel(color);
             _scaleFactor = scaleFactor;
             _isHidden = color.A == 0;
             _renderQuality = renderQuality;
+            _isSelected = false;
             _radius = radius;
             Point = new Point3DViewModel(point3D)
             {
@@ -206,6 +212,16 @@ namespace ReScanVisualizer.ViewModels
             IsHidden = false;
         }
 
+        public void Select()
+        {
+            IsSelected = true;
+        }
+
+        public void Unselect()
+        {
+            IsSelected = false;
+        }
+
         public void UpdatePoint(Point3D barycenter)
         {
             Point.Set(barycenter);
@@ -220,6 +236,11 @@ namespace ReScanVisualizer.ViewModels
         {
             _model.Material = MaterialHelper.CreateMaterial(new SolidColorBrush(Color.Color));
             _model.BackMaterial = _model.Material;
+        }
+
+        public bool IsBelongingToModel(GeometryModel3D geometryModel3D)
+        {
+            return _model.Geometry.Equals(geometryModel3D.Geometry);
         }
 
         private void OnIsHidenChanged()

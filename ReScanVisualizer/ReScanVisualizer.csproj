@@ -92,6 +92,7 @@
     <Compile Include="Commands\ExportBasesCommand.cs" />
     <Compile Include="Commands\ValidateEditingScatterGraphBuilderCommand.cs" />
     <Compile Include="Commands\ValidateExportBasesCommand.cs" />
+    <Compile Include="Converters\BoolToFontWeightConverter.cs" />
     <Compile Include="Converters\IsHiddenToOpacityConverter.cs" />
     <Compile Include="Converters\IsHiddenToImageConverter.cs" />
     <Compile Include="Converters\ReduceItemButtonEnabledMultiConverter.cs" />
@@ -190,6 +191,9 @@
     <Compile Include="Views\ItemTreeViews\BarycenterTreeViewItemHeader.xaml.cs">
       <DependentUpon>BarycenterTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ItemTreeViews\BaseTreeViewItem.xaml.cs">
+      <DependentUpon>BaseTreeViewItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ItemTreeViews\BaseTreeViewItemHeader.xaml.cs">
       <DependentUpon>BaseTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
@@ -280,6 +284,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ItemTreeViews\BarycenterTreeViewItemHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\BaseTreeViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static HelixToolkit.Wpf.Viewport3DHelper;
 
 #nullable enable
 
@@ -262,6 +263,32 @@ namespace ReScanVisualizer.Views
             {
                 viewModel.HideAllAddedBases();
             }
+        }
+
+        private void HelixViewport3D_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            HelixViewport3D viewport3D = (HelixViewport3D)sender;
+
+            Point mouseposition = e.GetPosition(viewport3D);
+            Point3D testpoint3D = new Point3D(mouseposition.X, mouseposition.Y, 0);
+            Vector3D testdirection = new Vector3D(mouseposition.X, mouseposition.Y, 10);
+            PointHitTestParameters pointparams = new PointHitTestParameters(mouseposition);
+            RayHitTestParameters rayparams = new RayHitTestParameters(testpoint3D, testdirection);
+
+            //test for a result in the Viewport3D
+            VisualTreeHelper.HitTest(viewport3D, null, HTResult, pointparams);
+        }
+
+        public HitTestResultBehavior HTResult(HitTestResult rawresult)
+        {
+            if (DataContext is MainViewModel viewModel && 
+                rawresult is RayHitTestResult rayResult && 
+                rayResult is RayMeshGeometry3DHitTestResult rayMeshResult && 
+                rayMeshResult.ModelHit is GeometryModel3D hitgeo)
+            {
+                viewModel.SelectHitGeometry(hitgeo);
+            }
+            return HitTestResultBehavior.Continue;
         }
     }
 }

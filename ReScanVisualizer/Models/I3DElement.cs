@@ -19,6 +19,8 @@ namespace ReScanVisualizer.Models
 
         public event EventHandler<bool>? IsHiddenChanged;
 
+        public bool IsSelected { get; }
+
         public bool IsHidden { get; }
 
         public RenderQuality RenderQuality { get; set; }
@@ -32,5 +34,9 @@ namespace ReScanVisualizer.Models
         public void UpdateModelGeometry();
 
         public void UpdateModelMaterial();
+
+        public void Select();
+
+        public void Unselect();
     }
 }

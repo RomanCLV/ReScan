@@ -24,6 +24,8 @@ namespace ReScanVisualizer.ViewModels
 {
     public class ScatterGraphViewModel : ViewModelBase, I3DElement
     {
+        public event EventHandler<bool>? IsHiddenChanged;
+
         private double _scaleFactor;
         public double ScaleFactor
         {
@@ -46,8 +48,6 @@ namespace ReScanVisualizer.ViewModels
                 }
             }
         }
-
-        public event EventHandler<bool>? IsHiddenChanged;
 
         private readonly ScatterGraph _scatterGraph;
 
@@ -166,6 +166,13 @@ namespace ReScanVisualizer.ViewModels
 
         public List<RenderQuality> RenderQualities { get; }
 
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            private set => SetValue(ref _isSelected, value);
+        }
+
         public int ItemsCount
         {
             get => Samples.Count + 5; // Points count + barycenter (1) + averplan (1) + base (x, y, z) (3)
@@ -204,12 +211,12 @@ namespace ReScanVisualizer.ViewModels
             {
                 throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
             }
-            IsDisposed = false;
             _name = "Scatter Graph";
             _scaleFactor = scaleFactor;
             _scatterGraph = scatterGraph;
             _pointsRadius = pointRadius;
             _renderQuality = renderQuality;
+            _isSelected = false;
             RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
             Color = new ColorViewModel(color);
             _isHidden = color.A == 0;
@@ -428,6 +435,16 @@ namespace ReScanVisualizer.ViewModels
             ArePointsHidden = false;
         }
 
+        public void Select()
+        {
+            IsSelected = true;
+        }
+
+        public void Unselect()
+        {
+            IsSelected = false;
+        }
+
         private void SampleViewModel_IsHiddenChanged(object sender, bool e)
         {
             UpdateArePointsHidden();
@@ -533,6 +550,15 @@ namespace ReScanVisualizer.ViewModels
             {
                 point.Color.Set(Color.Color);
             }
+        }
+
+        public bool IsBelongingToModel(GeometryModel3D geometryModel3D)
+        {
+            return
+                Barycenter.IsBelongingToModel(geometryModel3D) ||
+                AveragePlan.IsBelongingToModel(geometryModel3D) ||
+                Base3D.IsBelongingToModel(geometryModel3D) ||
+                Samples.Any(x => x.IsBelongingToModel(geometryModel3D));
         }
 
         public void Export()

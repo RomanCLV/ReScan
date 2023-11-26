@@ -26,14 +26,28 @@ namespace ReScanVisualizer.ViewModels
             get => _selectedViewModel;
             set
             {
-                if (_selectedViewModel is BaseViewModel && !_selectedViewModel.Equals(value))
+                if (_selectedViewModel != null && !_selectedViewModel.Equals(value))
                 {
-                    _selectedViewModel.Dispose();
-                }
-                if (SetValue(ref _selectedViewModel, value))
-                {
+                    if (_selectedViewModel is I3DElement element)
+                    {
+                        element.Unselect();
+                    }
                     if (_selectedViewModel is BaseViewModel baseViewModel)
                     {
+                        baseViewModel.Base.Unselect();
+                        baseViewModel.Dispose();
+                    }
+                }
+                
+                if (SetValue(ref _selectedViewModel, value))
+                {
+                    if (_selectedViewModel is I3DElement element)
+                    {
+                        element.Select();
+                    }
+                    if (_selectedViewModel is BaseViewModel baseViewModel)
+                    {
+                        baseViewModel.Base.Select();
                         baseViewModel.UpdateReorientCartesianFromBase();
                         baseViewModel.UpdateRotationXYZFromBase();
                     }
@@ -383,6 +397,27 @@ namespace ReScanVisualizer.ViewModels
             foreach (Base3DViewModel base3DViewModel in Bases)
             {
                 base3DViewModel.Hide();
+            }
+        }
+
+        public void SelectHitGeometry(GeometryModel3D hitgeo)
+        {
+            foreach (Base3DViewModel base3DViewModel in Bases)
+            {
+                if (base3DViewModel.IsBelongingToModel(hitgeo))
+                {
+                    SelectedViewModel = new BaseViewModel(base3DViewModel);
+                    return;
+                }
+            }
+
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                if (scatterGraphViewModel.IsBelongingToModel(hitgeo))
+                {
+                    SelectedViewModel = scatterGraphViewModel;
+                    return;
+                }
             }
         }
     }
