@@ -545,22 +545,32 @@ namespace ReScanVisualizer.Models
             Base3D repere = Tools.ComputeOrientedBase(averagePlan.GetNormal(), Axis.Z);
             repere.Origin = origin;
 
+            Base3D repereCopy = new Base3D(repere);
 
             if (putXOnXY)
             {
                 string path = $"log compute repere {App.StartedDate.ToString("yyyy MM dd - HH mm ss")}.csv";
+                bool writeHeaders = !File.Exists(path);
                 using (StreamWriter writer = new StreamWriter(path, true))
                 {
+                    if (writeHeaders)
+                    {
+                        writer.WriteLine("angle abs;angle rel;rotate abs;rotate rel;z.x");
+                    }
                     Vector3D xProjected = repere.X;
                     xProjected.Z = 0;
+
                     // TODO: ici c'est la merde
-                    double angle = Vector3D.AngleBetween(xProjected, repere.X);
+                    double angle1 = Vector3D.AngleBetween(xProjected, repere.X);
                     double angle2 = Tools.AngleZ(repere.X);
-                    repere.Rotate(repere.Z, angle, true);
 
-                    double angleAfter = Tools.AngleZ(repere.X);
+                    repere.Rotate(repere.Z, angle1);
+                    repereCopy.Rotate(repere.Z, angle2);
 
-                    writer.WriteLine($"{angle};{angle2};{angleAfter}");
+                    double angleAfter1 = Tools.AngleZ(repere.X);
+                    double angleAfter2 = Tools.AngleZ(repereCopy.X);
+
+                    writer.WriteLine($"{angle1};{angle2};{angleAfter1};{angleAfter2};{(repere.Z.X > 0 ? "45" : "-45")}");
                 }
             }
 

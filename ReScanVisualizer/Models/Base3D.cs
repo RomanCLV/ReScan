@@ -98,6 +98,14 @@ namespace ReScanVisualizer.Models
             _z = z;
         }
 
+        public Base3D(Base3D base3D)
+        {
+            _origin = base3D._origin;
+            _x = base3D._x;
+            _y = base3D._y;
+            _z = base3D._z;
+        }
+
         public void Translate(double x = 0.0, double y = 0.0, double z = 0.0)
         {
             if (x != 0.0)
