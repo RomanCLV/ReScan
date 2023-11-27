@@ -337,5 +337,10 @@ namespace ReScanVisualizer.ViewModels
         {
             return _model.Children.AsQueryable().Any(x => ((GeometryModel3D)x).Geometry.Equals(geometryModel3D.Geometry));
         }
+
+        public void Flip()
+        {
+            Rotate(_base3D.Y, 180);
+        }
     }
 }

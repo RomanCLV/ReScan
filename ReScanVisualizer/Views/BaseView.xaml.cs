@@ -63,5 +63,22 @@ namespace ReScanVisualizer.Views
                 }
             }
         }
+
+        private void FlipButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is BaseViewModel viewModel)
+            {
+                viewModel.Flip();
+            }
+        }
+
+        private void RotateNDegreeButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            if (double.TryParse(button.Tag.ToString(), out double degree) && DataContext is BaseViewModel viewModel)
+            {
+                viewModel.RotateNDegree(degree);
+            }
+        }
     }
 }

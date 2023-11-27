@@ -222,6 +222,13 @@ namespace ReScanVisualizer.Models
             }
         }
 
+        public void Flip()
+        {
+            X *= -1.0;
+            Y *= -1.0;
+            Z *= -1.0;
+        }
+
         public override string ToString()
         {
             return $"{X.X};{X.Y};{X.Z};{Y.X};{Y.Y};{Y.Z};{Z.X};{Z.Y};{Z.Z}";

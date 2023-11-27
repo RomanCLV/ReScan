@@ -396,5 +396,15 @@ namespace ReScanVisualizer.ViewModels
                 Base.UpdateBase(orientedBase, false);
             }
         }
+
+        public void Flip()
+        {
+            Base.Flip();
+        }
+
+        public void RotateNDegree(double degree)
+        {
+            Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), degree);
+        }
     }
 }
