@@ -7,6 +7,28 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Plan"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="125"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- A -->
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="A:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBox   Grid.Column="1" Grid.Row="0" Text="{Binding A, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
+        <!-- B -->
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="B:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding B, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
+        <!-- C -->
+        <TextBlock Grid.Column="0" Grid.Row="2" Text="C:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding C, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
+        <!-- D -->
+        <TextBlock Grid.Column="0" Grid.Row="2" Text="D:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding D, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
+
     </Grid>
 </UserControl>

@@ -19,6 +19,13 @@ namespace ReScanVisualizer.ViewModels
         public event EventHandler<bool>? IsHiddenChanged;
         public event EventHandler? RemoveItem;
 
+        private bool _canEdit;
+        public bool CanEdit
+        {
+            get => _canEdit;
+            set => SetValue(ref _canEdit, value);
+        }
+
         private double _scaleFactor;
         public double ScaleFactor
         {
@@ -137,6 +144,7 @@ namespace ReScanVisualizer.ViewModels
                 throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
             }
             Color = new ColorViewModel(color);
+            _canEdit = true;
             _scaleFactor = scaleFactor;
             _isHidden = color.A == 0;
             _renderQuality = renderQuality;

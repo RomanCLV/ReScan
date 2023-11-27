@@ -144,7 +144,7 @@
                             <local:ScatterGraphView />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:SampleViewModel}">
-                            <local:SampleView />
+                            <local:SampleView IsEnabled="{Binding CanEdit}" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:PlanViewModel}">
                             <local:PlanView />

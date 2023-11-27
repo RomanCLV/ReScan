@@ -260,11 +260,13 @@ namespace ReScanVisualizer.ViewModels
             double averagePlanLength = ComputeAveragePlanLength(base3D);
 
             _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality);
+            _barycenter.CanEdit = false;
             _base3D = new Base3DViewModel(base3D, _scaleFactor, axisScaleFactor, true, _renderQuality)
             {
                 Name = "Plan base"
             };
             _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), averagePlanLength, _scaleFactor, _renderQuality);
+            _averagePlan.CanEdit = false;
 
             _barycenter.IsHidden = hideBarycenter;
             _averagePlan.IsHidden = hideAveragePlan;
