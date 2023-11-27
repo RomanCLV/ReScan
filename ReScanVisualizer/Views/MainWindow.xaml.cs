@@ -265,6 +265,29 @@ namespace ReScanVisualizer.Views
             }
         }
 
+        private void HelixViewport3D_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Back:
+                case Key.Delete:
+                    MainViewModel mainViewModel = (MainViewModel)DataContext;
+                    ViewModelBase? selectedModel = mainViewModel.SelectedViewModel;
+                    if (selectedModel != null)
+                    {
+                        if (selectedModel is ScatterGraphViewModel scatterGraphViewModel)
+                        {
+                            mainViewModel.ScatterGraphs.Remove(scatterGraphViewModel);
+                        }
+                        else if (selectedModel is SampleViewModel sampleViewModel && !(selectedModel is BarycenterViewModel))
+                        {
+                            sampleViewModel.InvokeRemoveItem();
+                        }
+                    }
+                    break;
+            }
+        }
+
         private void HelixViewport3D_MouseDown(object sender, MouseButtonEventArgs e)
         {
             HelixViewport3D viewport3D = (HelixViewport3D)sender;

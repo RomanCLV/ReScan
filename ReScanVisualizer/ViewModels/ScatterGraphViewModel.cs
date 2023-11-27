@@ -79,8 +79,8 @@ namespace ReScanVisualizer.ViewModels
 
         public ObservableCollection<SampleViewModel> Samples { get; private set; }
 
-        private SampleViewModel _barycenter;
-        public SampleViewModel Barycenter
+        private BarycenterViewModel _barycenter;
+        public BarycenterViewModel Barycenter
         {
             get => _barycenter;
             private set => SetValue(ref _barycenter, value);
@@ -259,8 +259,7 @@ namespace ReScanVisualizer.ViewModels
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
             double averagePlanLength = ComputeAveragePlanLength(base3D);
 
-            _barycenter = new SampleViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality);
-            _barycenter.CanEdit = false;
+            _barycenter = new BarycenterViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality);
             _base3D = new Base3DViewModel(base3D, _scaleFactor, axisScaleFactor, true, _renderQuality)
             {
                 Name = "Plan base"
