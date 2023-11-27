@@ -232,7 +232,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             {
                 if (item.Value != null && item.Value.Count > _maxPoints)
                 {
-                    item.Value.ReductionFactor = 100.0 - ((_maxPoints * 100.0) / item.Value.Count);
+                    item.Value.ReductionFactor = Math.Round(100.0 - ((_maxPoints * 100.0) / item.Value.Count), 3);
+                    double factor;
+                    while (item.Value.ReducedCount != _maxPoints)
+                    {
+                        factor = item.Value.ReducedCount < _maxPoints ? -1 : 1;
+                        item.Value.ReductionFactor += 0.001 * factor;
+                    }
                 }
             }
         }

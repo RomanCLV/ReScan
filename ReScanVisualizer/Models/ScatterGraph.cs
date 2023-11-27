@@ -560,35 +560,6 @@ namespace ReScanVisualizer.Models
                 } while (angleAfter > 0.1);
             }
 
-            //if (putXOnXY)
-            //{
-            //    Base3D repereCopy = new Base3D(repere);
-            //    string path = $"log compute repere {App.StartedDate.ToString("yyyy MM dd - HH mm ss")}.csv";
-            //    bool writeHeaders = !File.Exists(path);
-            //    string sens = repere.Z.X > 0 ? "10" : "-10";
-
-            //    Vector3D z = repere.Z;
-            //    Vector3D xProjected = repere.X;
-            //    xProjected.Z = 0;
-
-            //    // TODO: ici c'est la merde
-            //    double angle1 = Vector3D.AngleBetween(xProjected, repere.X);
-            //    double angle2 = Tools.AngleZ(repere.X);
-
-            //    repere.Rotate(z, angle1);
-            //    repereCopy.Rotate(z, angle2);
-
-            //    double angleAfter1 = Tools.AngleZ(repere.X);
-            //    double angleAfter2 = Tools.AngleZ(repereCopy.X);
-
-            //    using StreamWriter writer = new StreamWriter(path, true);
-            //    if (writeHeaders)
-            //    {
-            //        writer.WriteLine("angle abs;angle rel;rotate abs;rotate rel;sens z.x");
-            //    }
-            //    writer.WriteLine($"{angle1};{angle2};{angleAfter1};{angleAfter2};{sens}");
-            //}
-
             return repere;
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using ReScanVisualizer.Models;
@@ -203,6 +204,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
                 {
                     MinReductionFactor = 100.0 * ( 1.0 - (double)ScatterGraphBuilderBase.MAX_COUNT / _scatterGraph.Count);
                     HasToReduceForced = true;
+
+                    double factor;
+                    while (ReducedCount != ScatterGraphBuilderBase.MAX_COUNT)
+                    {
+                        factor = ReducedCount < ScatterGraphBuilderBase.MAX_COUNT ? -1 : 1;
+                        MinReductionFactor += 0.001 * factor;
+                        ReductionFactor = _minReductionFactor;
+                    }
                 }
             }
         }
