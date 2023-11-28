@@ -5,17 +5,44 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views"
              xmlns:forms="clr-namespace:ReScanVisualizer.Views.Forms"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+             xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="250" d:DesignWidth="400">
+             d:DesignHeight="250" d:DesignWidth="400"
+             >
+    <UserControl.Resources>
+        <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition MaxHeight="150"/>
+            <RowDefinition MaxHeight="120"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <forms:PointForm DataContext="{Binding Point}" />
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Style="{StaticResource myButton}" ToolTip="Delete"  Click="Button_Click">
+        <forms:PointForm   Grid.Row="0" DataContext="{Binding Point}" />
+
+        <StackPanel>
+            <!-- Rectangle for Color Display -->
+            <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                MouseUp="Rectangle_MouseUp"
+                Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                Width="16" Height="16"
+                ToolTip="{Binding Color.Color}"
+                ToolTipService.Placement="Top"/>
+            
+            <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
+                <uc:ColorSelector 
+                    Background="{StaticResource backgroundColor}"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    Padding="5"
+                    ColorChanged="ColorSelector_ColorChanged" />
+            </Popup>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource myButton}" ToolTip="Delete" Click="DeleteButton_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource delete}" Width="25" Height="25" />

@@ -158,103 +158,114 @@
                     <ContentControl Content="{Binding SelectedViewModel}" />
                 </ScrollViewer>
 
-                <ScrollViewer 
-                    HorizontalScrollBarVisibility="Auto" 
-                    VerticalScrollBarVisibility="Auto"
-                    FocusVisualStyle="{x:Null}"
-                    Margin="0 0 5 10"
-                    >
-                    <StackPanel>
-                        <DockPanel Visibility="{Binding ElementName=BasesTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear bases" Click="BaseClearButton_Click">
-                                <Button.Content>
-                                    <Image Source="{StaticResource delete}" />
-                                </Button.Content>
-                            </Button>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Bases (" Style="{StaticResource mainViewSectionTitle}"  Margin="5 5 0 5"/>
-                                <TextBlock Text="{Binding Bases.Count}" Style="{StaticResource mainViewSectionTitle}" Margin="0" />
-                                <TextBlock Text=")" Style="{StaticResource mainViewSectionTitle}" Margin="0 5 5 5" />
-                            </StackPanel>
-                        </DockPanel>
-                        <TreeView 
-                            Background="Transparent" 
-                            BorderThickness="0" 
-                            ItemsSource="{Binding Bases, UpdateSourceTrigger=PropertyChanged}"
-                            x:Name="BasesTreeView">
-                            <TreeView.ItemContainerStyle>
-                                <Style TargetType="{x:Type TreeViewItem}">
-                                    <Style.Setters>
-                                        <EventSetter Event="KeyUp"             Handler="BaseTreeViewItem_KeyUp"/>
-                                        <EventSetter Event="MouseLeftButtonUp" Handler="BaseTreeViewItem_MouseDown" />
-                                    </Style.Setters>
-                                </Style>
-                            </TreeView.ItemContainerStyle>
-                            <TreeView.ItemTemplate>
-                                <DataTemplate>
-                                    <itw:BaseTreeViewItem />
-                                </DataTemplate>
-                            </TreeView.ItemTemplate>
-                        </TreeView>
+                <TabControl Background="Transparent" Margin="0 0 5 10">
+                    <TabItem Header="Bases">
+                        <StackPanel>
+                            <DockPanel Visibility="{Binding ElementName=BasesTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear bases" Click="BaseClearButton_Click">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource delete}" />
+                                    </Button.Content>
+                                </Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Bases (" Style="{StaticResource mainViewSectionTitle}"  Margin="5 5 0 5"/>
+                                    <TextBlock Text="{Binding Bases.Count}" Style="{StaticResource mainViewSectionTitle}" Margin="0" />
+                                    <TextBlock Text=")" Style="{StaticResource mainViewSectionTitle}" Margin="0 5 5 5" />
+                                </StackPanel>
+                            </DockPanel>
+                            <ScrollViewer
+                                HorizontalScrollBarVisibility="Auto" 
+                                VerticalScrollBarVisibility="Auto"
+                                FocusVisualStyle="{x:Null}">
+                                <TreeView 
+                                    Background="Transparent" 
+                                    BorderThickness="0" 
+                                    ItemsSource="{Binding Bases, UpdateSourceTrigger=PropertyChanged}"
+                                    x:Name="BasesTreeView">
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="{x:Type TreeViewItem}">
+                                            <Style.Setters>
+                                                <EventSetter Event="KeyUp"             Handler="BaseTreeViewItem_KeyUp"/>
+                                                <EventSetter Event="MouseLeftButtonUp" Handler="BaseTreeViewItem_MouseDown" />
+                                            </Style.Setters>
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                    <TreeView.ItemTemplate>
+                                        <DataTemplate>
+                                            <itw:BaseTreeViewItem />
+                                        </DataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </TabItem>
 
-                        <DockPanel Visibility="{Binding ElementName=GraphsTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear graphs" Click="GraphClearButton_Click">
-                                <Button.Content>
-                                    <Image Source="{StaticResource delete}" />
-                                </Button.Content>
-                            </Button>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Scatter Graphs (" Style="{StaticResource mainViewSectionTitle}" Margin="5 5 0 5" />
-                                <TextBlock Text="{Binding ScatterGraphs.Count}" Style="{StaticResource mainViewSectionTitle}" Margin="0" />
-                                <TextBlock Text=")" Style="{StaticResource mainViewSectionTitle}" Margin="0 5 5 5" />
-                            </StackPanel>
-                        </DockPanel>
-                        <TreeView 
-                            Background="Transparent" 
-                            BorderThickness="0" 
-                            ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}"
-                            x:Name="GraphsTreeView"
-                            >
-                            <TreeView.ItemContainerStyle>
-                                <Style TargetType="{x:Type TreeViewItem}">
-                                    <EventSetter Event="KeyUp" Handler="ScatterGraphTreeViewItem_KeyUp"/>
-                                </Style>
-                            </TreeView.ItemContainerStyle>
-                            <TreeView.ItemTemplate>
-                                <DataTemplate>
-                                    <TreeViewItem IsExpanded="True" Margin="-20 0 0 10"
-                                                  FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
-                                                  FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}">
-                                        <TreeViewItem.Header>
-                                            <itw:ScatterGraphTreeViewItemHeader MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
-                                        </TreeViewItem.Header>
-                                        <TreeViewItem>
-                                            <TreeViewItem.Header>
-                                                <itw:BarycenterTreeViewItemHeader DataContext="{Binding Barycenter, UpdateSourceTrigger=PropertyChanged}" MouseDown="BarycenterTreeViewItemHeader_MouseDown" />
-                                            </TreeViewItem.Header>
-                                        </TreeViewItem>
-                                        <TreeViewItem>
-                                            <TreeViewItem.Header>
-                                                <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" MouseDown="AveragePlanTreeViewItemHeader_MouseDown"/>
-                                            </TreeViewItem.Header>
-                                        </TreeViewItem>
-                                        <itw:BaseTreeViewItem DataContext="{Binding Base3D}" PreviewMouseDown="BaseTreeViewItem_PreviewMouseDown"/>
-                                        <TreeViewItem ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
-                                            <TreeViewItem.Header>
-                                                <itw:SamplesTreeViewItemHeader />
-                                            </TreeViewItem.Header>
-                                            <TreeViewItem.ItemTemplate>
-                                                <DataTemplate>
-                                                    <itw:SampleTreeViewItemHeader MouseDown="SampleTreeViewItemHeader_MouseDown"/>
-                                                </DataTemplate>
-                                            </TreeViewItem.ItemTemplate>
-                                        </TreeViewItem>
-                                    </TreeViewItem>
-                                </DataTemplate>
-                            </TreeView.ItemTemplate>
-                        </TreeView>
-                    </StackPanel>
-                </ScrollViewer>
+                    <TabItem Header="Scatter graphs">
+                        <StackPanel>
+                            <DockPanel Visibility="{Binding ElementName=GraphsTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear graphs" Click="GraphClearButton_Click">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource delete}" />
+                                    </Button.Content>
+                                </Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Scatter Graphs (" Style="{StaticResource mainViewSectionTitle}" Margin="5 5 0 5" />
+                                    <TextBlock Text="{Binding ScatterGraphs.Count}" Style="{StaticResource mainViewSectionTitle}" Margin="0" />
+                                    <TextBlock Text=")" Style="{StaticResource mainViewSectionTitle}" Margin="0 5 5 5" />
+                                </StackPanel>
+                            </DockPanel>
+                            <ScrollViewer
+                                HorizontalScrollBarVisibility="Auto" 
+                                VerticalScrollBarVisibility="Auto"
+                                FocusVisualStyle="{x:Null}">
+                                <TreeView 
+                                    Background="Transparent" 
+                                    BorderThickness="0" 
+                                    ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}"
+                                    x:Name="GraphsTreeView"
+                                    >
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="{x:Type TreeViewItem}">
+                                            <EventSetter Event="KeyUp" Handler="ScatterGraphTreeViewItem_KeyUp"/>
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                    <TreeView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TreeViewItem IsExpanded="True" Margin="-20 0 0 10"
+                                                    FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
+                                                    FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}">
+                                                <TreeViewItem.Header>
+                                                    <itw:ScatterGraphTreeViewItemHeader MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
+                                                </TreeViewItem.Header>
+                                                <TreeViewItem>
+                                                    <TreeViewItem.Header>
+                                                        <itw:BarycenterTreeViewItemHeader DataContext="{Binding Barycenter, UpdateSourceTrigger=PropertyChanged}" MouseDown="BarycenterTreeViewItemHeader_MouseDown" />
+                                                    </TreeViewItem.Header>
+                                                </TreeViewItem>
+                                                <TreeViewItem>
+                                                    <TreeViewItem.Header>
+                                                        <itw:AveragePlanTreeViewItemHeader DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" MouseDown="AveragePlanTreeViewItemHeader_MouseDown"/>
+                                                    </TreeViewItem.Header>
+                                                </TreeViewItem>
+                                                <itw:BaseTreeViewItem DataContext="{Binding Base3D}" PreviewMouseDown="BaseTreeViewItem_PreviewMouseDown"/>
+                                                <TreeViewItem ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
+                                                    <TreeViewItem.Header>
+                                                        <itw:SamplesTreeViewItemHeader />
+                                                    </TreeViewItem.Header>
+                                                    <TreeViewItem.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <itw:SampleTreeViewItemHeader MouseDown="SampleTreeViewItemHeader_MouseDown"/>
+                                                        </DataTemplate>
+                                                    </TreeViewItem.ItemTemplate>
+                                                </TreeViewItem>
+                                            </TreeViewItem>
+                                        </DataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
             </DockPanel>
             
             <GridSplitter Grid.Column="0" Width="5" Background="{StaticResource backgroundListColor}" />

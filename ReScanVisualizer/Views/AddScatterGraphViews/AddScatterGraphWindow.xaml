@@ -230,6 +230,7 @@
                         <TextBlock Text="Count of items to add:" Style="{StaticResource myTextBlock}" />
                         <TextBlock Text="{Binding ItemsToAddCount}" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
+                    
                     <ListView 
                         x:Name="lv"
                         ItemsSource="{Binding Items}"
