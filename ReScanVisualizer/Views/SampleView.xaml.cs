@@ -17,6 +17,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+#nullable enable
+
 namespace ReScanVisualizer.Views
 {
     /// <summary>
@@ -24,11 +26,18 @@ namespace ReScanVisualizer.Views
     /// </summary>
     public partial class SampleView : UserControl
     {
+        private Popup? _openedPopup;
+
         public SampleView()
         {
             InitializeComponent();
+            _openedPopup = null;
         }
-        
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ClosePopup();
+        }
 
         public void ColorSelector_ColorChanged(object sender, Color c)
         {
@@ -40,37 +49,29 @@ namespace ReScanVisualizer.Views
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is SampleViewModel viewModel)
+            if (DataContext is SampleViewModel viewModel && !(viewModel is BarycenterViewModel))
             {
                 viewModel.InvokeRemoveItem();
             }
         }
-
-        private ScatterGraphBuilderBase? _selectedBuilder;
-        private Popup? _openedPopup;
-
 
         private void Rectangle_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (sender is Rectangle rect)
             {
                 StackPanel panel = (StackPanel)rect.Parent;
-                Popup popup = (Popup)panel.Children[1];
-                if (popup.DataContext is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
+                Popup popup = (Popup)panel.Children[2];
+
+                if (popup.DataContext is BarycenterViewModel barycenterViewModel)
                 {
                     ClosePopup();
-                    _selectedBuilder = item.Key;
                     _openedPopup = popup;
                     popup.Child.MouseLeave += Child_MouseLeave;
                     popup.IsOpen = true;
                     if (popup.Child is ColorSelector selector)
                     {
-                        selector.Color = item.Key.Color;
+                        selector.Color = barycenterViewModel.Color.Color;
                     }
-                }
-                else
-                {
-                    _selectedBuilder = null;
                 }
             }
         }
@@ -91,7 +92,6 @@ namespace ReScanVisualizer.Views
 
         private void ColorPopup_Closed(object sender, EventArgs e)
         {
-            _selectedBuilder = null;
             _openedPopup = null;
         }
     }

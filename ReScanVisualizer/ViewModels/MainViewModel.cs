@@ -30,6 +30,16 @@ namespace ReScanVisualizer.ViewModels
                 {
                     if (_selectedViewModel is I3DElement element)
                     {
+                        if (!(_selectedViewModel is ScatterGraphViewModel))
+                        {
+                            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+                            {
+                                if (scatterGraphViewModel.IsSelected)
+                                {
+                                    scatterGraphViewModel.Unselect();
+                                }
+                            }
+                        }
                         element.Unselect();
                     }
                     if (_selectedViewModel is BaseViewModel baseViewModel)
@@ -38,7 +48,7 @@ namespace ReScanVisualizer.ViewModels
                         baseViewModel.Dispose();
                     }
                 }
-                
+
                 if (SetValue(ref _selectedViewModel, value))
                 {
                     if (_selectedViewModel is I3DElement element)
@@ -420,7 +430,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (scatterGraphViewModel.IsBelongingToModel(hitgeo))
                 {
-                    if (scatterGraphViewModel.Equals(SelectedViewModel))
+                    if (scatterGraphViewModel.IsSelected /*scatterGraphViewModel.Equals(SelectedViewModel)*/)
                     {
                         if (scatterGraphViewModel.IsSelected)
                         {
@@ -435,12 +445,17 @@ namespace ReScanVisualizer.ViewModels
                             }
                             else if (scatterGraphViewModel.Base3D.IsBelongingToModel(hitgeo))
                             {
-                                SelectedViewModel = scatterGraphViewModel.Base3D;
+                                SelectedViewModel = new BaseViewModel(scatterGraphViewModel.Base3D);
                             }
-                            else if ((svm = scatterGraphViewModel.Samples.First(x => x.IsBelongingToModel(hitgeo))) != null) 
+                            else if ((svm = scatterGraphViewModel.Samples.First(x => x.IsBelongingToModel(hitgeo))) != null)
                             {
                                 SelectedViewModel = svm;
                             }
+                            if (SelectedViewModel is I3DElement element)
+                            {
+                                element.Select();
+                            }
+                            scatterGraphViewModel.Select();
                         }
                     }
                     else

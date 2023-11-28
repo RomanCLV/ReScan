@@ -4,8 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+             xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Foreground="{StaticResource foregroundColor}"
+             >
+    <UserControl.Resources>
+        <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="75"/>
@@ -15,20 +22,43 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="20">
+            <TextBlock Text="Color:" VerticalAlignment="Center"/>
+            <!-- Rectangle for Color Display -->
+            <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+               Margin="10 5"
+               MouseUp="Rectangle_MouseUp"
+               Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+               Width="16" Height="16"
+               ToolTip="{Binding Color.Color}"
+               ToolTipService.Placement="Top"/>
+
+            <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
+                <uc:ColorSelector 
+                    Background="{StaticResource backgroundColor}"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    Padding="5"
+                    ColorChanged="ColorSelector_ColorChanged" />
+            </Popup>
+        </StackPanel>
+
         <!-- A -->
-        <TextBlock Grid.Column="0" Grid.Row="0" Text="A:" Margin="10" Style="{StaticResource myTextBlock}"/>
-        <TextBox   Grid.Column="1" Grid.Row="0" Text="{Binding A, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="A:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding A, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
         <!-- B -->
-        <TextBlock Grid.Column="0" Grid.Row="1" Text="B:" Margin="10" Style="{StaticResource myTextBlock}"/>
-        <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding B, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
+        <TextBlock Grid.Column="0" Grid.Row="2" Text="B:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding B, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
         <!-- C -->
-        <TextBlock Grid.Column="0" Grid.Row="2" Text="C:" Margin="10" Style="{StaticResource myTextBlock}"/>
-        <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding C, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
+        <TextBlock Grid.Column="0" Grid.Row="3" Text="C:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBox   Grid.Column="1" Grid.Row="3" Text="{Binding C, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
         <!-- D -->
-        <TextBlock Grid.Column="0" Grid.Row="2" Text="D:" Margin="10" Style="{StaticResource myTextBlock}"/>
-        <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding D, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
+        <TextBlock Grid.Column="0" Grid.Row="4" Text="D:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBox   Grid.Column="1" Grid.Row="4" Text="{Binding D, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
 
     </Grid>
 </UserControl>
