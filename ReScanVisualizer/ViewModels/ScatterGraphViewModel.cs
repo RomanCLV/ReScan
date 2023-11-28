@@ -190,6 +190,13 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        private bool _isMouseOver;
+        public bool IsMouseOver
+        {
+            get => _isMouseOver;
+            set => SetValue(ref _isMouseOver, value);
+        }
+
         public int ItemsCount
         {
             get => Samples.Count + 5; // Points count + barycenter (1) + averplan (1) + base (x, y, z) (3)
@@ -234,6 +241,7 @@ namespace ReScanVisualizer.ViewModels
             _pointsRadius = pointRadius;
             _renderQuality = renderQuality;
             _isSelected = false;
+            _isMouseOver = false;
             RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
             Color = new ColorViewModel(color);
             _isHidden = color.A == 0;

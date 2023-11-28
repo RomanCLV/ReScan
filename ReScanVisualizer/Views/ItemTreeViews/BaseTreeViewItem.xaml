@@ -11,9 +11,12 @@
     <UserControl.Resources>
         <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
         <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
+        <converters:BoolToFontStyleConverter x:Key="BoolToFontStyleConverter" />
     </UserControl.Resources>
 
-    <TreeViewItem IsExpanded="False" Margin="-20 0 0 0" FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}">
+    <TreeViewItem IsExpanded="False" Margin="-20 0 0 0"
+                  FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
+                  FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}">
         <TreeViewItem.Header>
             <local:BaseTreeViewItemHeader />
         </TreeViewItem.Header>

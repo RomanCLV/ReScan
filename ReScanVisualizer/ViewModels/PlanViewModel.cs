@@ -185,6 +185,13 @@ namespace ReScanVisualizer.ViewModels
             private set => SetValue(ref _isSelected, value);
         }
 
+        private bool _isMouseOver;
+        public bool IsMouseOver
+        {
+            get => _isMouseOver;
+            set => SetValue(ref _isMouseOver, value);
+        }
+
         private readonly GeometryModel3D _model;
         public Model3D Model => _model;
 
@@ -213,6 +220,7 @@ namespace ReScanVisualizer.ViewModels
             _isHidden = color.A == 0;
             _renderQuality = renderQuality;
             _isSelected = false;
+            _isMouseOver = false;
             _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;

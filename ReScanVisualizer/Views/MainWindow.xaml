@@ -17,6 +17,7 @@
         <converters:CommandKeyToInputGestureTextConverter x:Key="CommandKeyToInputGestureTextConverter" />
         <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
         <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
+        <converters:BoolToFontStyleConverter x:Key="BoolToFontStyleConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
 
@@ -221,7 +222,9 @@
                             </TreeView.ItemContainerStyle>
                             <TreeView.ItemTemplate>
                                 <DataTemplate>
-                                    <TreeViewItem IsExpanded="True" Margin="-20 0 0 0" FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}">
+                                    <TreeViewItem IsExpanded="True" Margin="-20 0 0 10"
+                                                  FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
+                                                  FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}">
                                         <TreeViewItem.Header>
                                             <itw:ScatterGraphTreeViewItemHeader MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
                                         </TreeViewItem.Header>
@@ -256,7 +259,7 @@
             
             <GridSplitter Grid.Column="0" Width="5" Background="{StaticResource backgroundListColor}" />
 
-            <HelixToolkit:HelixViewport3D Grid.Column="1" ShowCameraInfo="False" MouseDown="HelixViewport3D_MouseDown" KeyUp="HelixViewport3D_KeyUp">
+            <HelixToolkit:HelixViewport3D x:Name="_viewPort" Grid.Column="1" ShowCameraInfo="False" MouseMove="HelixViewport3D_MouseMove" MouseDown="HelixViewport3D_MouseDown" KeyUp="HelixViewport3D_KeyUp">
                 <HelixToolkit:HelixViewport3D.Background>
                     <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
                         <GradientStop Color="#FF0061FF" Offset="0"/>

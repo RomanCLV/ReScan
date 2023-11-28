@@ -21,6 +21,8 @@ namespace ReScanVisualizer.Models
 
         public bool IsSelected { get; }
 
+        public bool IsMouseOver { get; set; }
+
         public bool IsHidden { get; }
 
         public RenderQuality RenderQuality { get; set; }

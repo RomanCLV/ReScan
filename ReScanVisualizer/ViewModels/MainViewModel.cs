@@ -400,6 +400,11 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        public bool IsBelongingToOriginModel(GeometryModel3D hitgeo)
+        {
+            return OriginModel.Children.Any(x => x.Equals(hitgeo));
+        }
+
         public void SelectHitGeometry(GeometryModel3D hitgeo)
         {
             foreach (Base3DViewModel base3DViewModel in Bases)
@@ -415,7 +420,71 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (scatterGraphViewModel.IsBelongingToModel(hitgeo))
                 {
-                    SelectedViewModel = scatterGraphViewModel;
+                    if (scatterGraphViewModel.Equals(SelectedViewModel))
+                    {
+                        if (scatterGraphViewModel.IsSelected)
+                        {
+                            SampleViewModel svm;
+                            if (scatterGraphViewModel.Barycenter.IsBelongingToModel(hitgeo))
+                            {
+                                SelectedViewModel = scatterGraphViewModel.Barycenter;
+                            }
+                            else if (scatterGraphViewModel.AveragePlan.IsBelongingToModel(hitgeo))
+                            {
+                                SelectedViewModel = scatterGraphViewModel.AveragePlan;
+                            }
+                            else if (scatterGraphViewModel.Base3D.IsBelongingToModel(hitgeo))
+                            {
+                                SelectedViewModel = scatterGraphViewModel.Base3D;
+                            }
+                            else if ((svm = scatterGraphViewModel.Samples.First(x => x.IsBelongingToModel(hitgeo))) != null) 
+                            {
+                                SelectedViewModel = svm;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        SelectedViewModel = scatterGraphViewModel;
+                    }
+                    return;
+                }
+            }
+        }
+
+        private I3DElement? _viewModelMouseOver;
+
+        public void UnselectMouseOverGeometry()
+        {
+            if (_viewModelMouseOver != null)
+            {
+                if (_viewModelMouseOver is ScatterGraphViewModel scatterGraphViewModel)
+                {
+                    scatterGraphViewModel.Base3D.IsMouseOver = false;
+                }
+                _viewModelMouseOver.IsMouseOver = false;
+            }
+        }
+
+        public void SelectMouseOverGeometry(GeometryModel3D geometryModel3DMouseOver)
+        {
+            foreach (Base3DViewModel base3DViewModel in Bases)
+            {
+                if (base3DViewModel.IsBelongingToModel(geometryModel3DMouseOver))
+                {
+                    _viewModelMouseOver = base3DViewModel;
+                    _viewModelMouseOver.IsMouseOver = true;
+                    return;
+                }
+            }
+
+            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            {
+                if (scatterGraphViewModel.IsBelongingToModel(geometryModel3DMouseOver))
+                {
+                    _viewModelMouseOver = scatterGraphViewModel;
+                    _viewModelMouseOver.IsMouseOver = true;
+                    scatterGraphViewModel.Base3D.IsMouseOver = true;
                     return;
                 }
             }

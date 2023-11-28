@@ -182,7 +182,14 @@ namespace ReScanVisualizer.ViewModels
             private set => SetValue(ref _isSelected, value);
         }
 
-        public bool IsRotating => _base3D is null ? false : _base3D.IsRotating;
+        private bool _isMouseOver;
+        public bool IsMouseOver
+        {
+            get => _isMouseOver;
+            set => SetValue(ref _isMouseOver, value);
+        }
+
+        public bool IsRotating => !(_base3D is null) && _base3D.IsRotating;
 
 
         private static uint _instanceCreated = 0;
@@ -198,6 +205,7 @@ namespace ReScanVisualizer.ViewModels
             BelongsToAGraph = belongsToAGraph;
             _renderQuality = renderQuality;
             _isSelected = false;
+            _isMouseOver = false;
             _model = Helper3D.Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _axisScaleFactor, _renderQuality);
         }
 

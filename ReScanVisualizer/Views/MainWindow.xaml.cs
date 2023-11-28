@@ -5,6 +5,7 @@ using ReScanVisualizer.Views.ItemTreeViews;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,9 +30,12 @@ namespace ReScanVisualizer.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private GeometryModel3D? _geometryModel3DMouseOver;
+
         public MainWindow()
         {
             InitializeComponent();
+            _geometryModel3DMouseOver = null;
         }
 
         private void BaseClearButton_Click(object sender, RoutedEventArgs e)
@@ -92,7 +96,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is MainViewModel viewModel)
             {
-                viewModel.SelectedViewModel = (SampleViewModel) ((BarycenterTreeViewItemHeader)sender).DataContext;
+                viewModel.SelectedViewModel = (SampleViewModel)((BarycenterTreeViewItemHeader)sender).DataContext;
             }
         }
 
@@ -100,7 +104,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is MainViewModel viewModel)
             {
-                viewModel.SelectedViewModel = (PlanViewModel) ((AveragePlanTreeViewItemHeader)sender).DataContext;
+                viewModel.SelectedViewModel = (PlanViewModel)((AveragePlanTreeViewItemHeader)sender).DataContext;
             }
         }
 
@@ -265,6 +269,14 @@ namespace ReScanVisualizer.Views
             }
         }
 
+        private bool IsGridModel(GeometryModel3D hitgeo)
+        {
+            GridLinesVisual3D gridLines = _viewPort.Children
+                .OfType<GridLinesVisual3D>()
+                .FirstOrDefault();
+            return !(gridLines == null) && gridLines.Model.Equals(hitgeo);
+        }
+
         private void HelixViewport3D_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.Key)
@@ -288,7 +300,7 @@ namespace ReScanVisualizer.Views
             }
         }
 
-        private void HelixViewport3D_MouseDown(object sender, MouseButtonEventArgs e)
+        private void HelixViewport3D_MouseMove(object sender, MouseEventArgs e)
         {
             HelixViewport3D viewport3D = (HelixViewport3D)sender;
 
@@ -304,14 +316,45 @@ namespace ReScanVisualizer.Views
 
         public HitTestResultBehavior HTResult(HitTestResult rawresult)
         {
-            if (DataContext is MainViewModel viewModel && 
-                rawresult is RayHitTestResult rayResult && 
-                rayResult is RayMeshGeometry3DHitTestResult rayMeshResult && 
-                rayMeshResult.ModelHit is GeometryModel3D hitgeo)
+            MainViewModel viewModel = (MainViewModel)DataContext;
+            if (rawresult is RayHitTestResult rayResult &&
+                rayResult is RayMeshGeometry3DHitTestResult rayMeshResult &&
+                rayMeshResult.ModelHit is GeometryModel3D hitgeo &&
+                !viewModel.IsBelongingToOriginModel(hitgeo) &&
+                !IsGridModel(hitgeo))
             {
-                viewModel.SelectHitGeometry(hitgeo);
+                if (Cursor != Cursors.Hand)
+                {
+                    Cursor = Cursors.Hand;
+                }
+                if (!hitgeo.Equals(_geometryModel3DMouseOver))
+                {
+                    if (_geometryModel3DMouseOver != null)
+                    {
+                        viewModel.UnselectMouseOverGeometry();
+                    }
+                    _geometryModel3DMouseOver = hitgeo;
+                    viewModel.SelectMouseOverGeometry(_geometryModel3DMouseOver);
+                }
             }
-            return HitTestResultBehavior.Continue;
+            else
+            {
+                if (Cursor != Cursors.Arrow)
+                {
+                    Cursor = Cursors.Arrow;
+                }
+                _geometryModel3DMouseOver = null;
+                viewModel.UnselectMouseOverGeometry();
+            }
+            return HitTestResultBehavior.Stop;
+        }
+
+        private void HelixViewport3D_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_geometryModel3DMouseOver != null && DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectHitGeometry(_geometryModel3DMouseOver);
+            }
         }
     }
 }
