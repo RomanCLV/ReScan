@@ -7,67 +7,85 @@
              xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="375">
+             d:DesignHeight="200" d:DesignWidth="375"
+             Foreground="{StaticResource foregroundColor}">
     <UserControl.Resources>
         <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter" />
+        <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
     </UserControl.Resources>
-    
+
     <Grid Background="{StaticResource gray24}">
         <TabControl Background="Transparent" SelectionChanged="TabControl_SelectionChanged">
-            
+
             <TabItem Header="General" Tag="General">
-                <Grid Margin="0 25 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="75"/>
-                        <ColumnDefinition Width="75"/>
-                        <ColumnDefinition Width="75"/>
-                        <ColumnDefinition Width="75"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0 25 0 0">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding Base.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                </Button.Content>
+                            </Button>
+                            <StackPanel Orientation="Horizontal" Margin="20 0 0 0" VerticalAlignment="Center">
+                                <TextBlock Text="Opacity:" Style="{StaticResource myTextBlockLeft}" />
+                                <TextBox Text="{Binding Base.Opacity, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" Width="60" />
+                                <Slider  Value="{Binding Base.Opacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" Width="100    " />
+                            </StackPanel>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="75"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" Style="{StaticResource myTextBlock}" />
-                    <TextBox   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource myTextBox}" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
-                        <TextBox.Text>
-                            <Binding Path="Base.Name" UpdateSourceTrigger="PropertyChanged">
-                                <Binding.ValidationRules>
-                                    <validators:NotEmptyValidationRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" Style="{StaticResource myTextBlock}" />
+                            <TextBox   Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource myTextBox}" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
+                                <TextBox.Text>
+                                    <Binding Path="Base.Name" UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validators:NotEmptyValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
 
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Origin" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="X axis" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="1" Grid.Column="3" Text="Y axis" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="1" Grid.Column="4" Text="Z axis" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Origin" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="X axis" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="Y axis" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="1" Grid.Column="4" Text="Z axis" Style="{StaticResource myTextBlock}" />
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
 
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Base.Origin.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Base.Origin.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Base.Origin.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Base.Origin.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Base.Origin.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Base.Origin.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
 
-                    <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Base.X.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding Base.X.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Base.X.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Base.X.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding Base.X.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Base.X.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
 
-                    <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Base.Y.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding Base.Y.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Base.Y.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Base.Y.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding Base.Y.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Base.Y.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
 
-                    <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding Base.Z.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="3" Grid.Column="4" Text="{Binding Base.Z.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                    <TextBox Grid.Row="4" Grid.Column="4" Text="{Binding Base.Z.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                </Grid>
+                            <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding Base.Z.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="3" Grid.Column="4" Text="{Binding Base.Z.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <TextBox Grid.Row="4" Grid.Column="4" Text="{Binding Base.Z.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
 
             <TabItem Header="Translate" Tag="Translate" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
@@ -172,7 +190,7 @@
                 </Grid>
 
             </TabItem>
-            
+
             <TabItem Header="Reorient" Tag="Reorient">
                 <Grid Margin="0 25 0 0">
                     <Grid.ColumnDefinitions>
@@ -233,7 +251,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            
+
         </TabControl>
     </Grid>
 </UserControl>

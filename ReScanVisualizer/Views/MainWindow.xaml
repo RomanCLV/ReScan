@@ -193,10 +193,11 @@
                                     <TreeView.ItemTemplate>
                                         <DataTemplate>
                                             <TreeViewItem IsExpanded="True" Margin="-20 0 0 10"
-                                                FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
                                                 FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}">
                                                 <TreeViewItem.Header>
-                                                    <itw:ScatterGraphTreeViewItemHeader MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
+                                                    <itw:ScatterGraphTreeViewItemHeader 
+                                                        FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
+                                                        MouseDown="ScatterGraphTreeViewItemHeader_MouseDown" />
                                                 </TreeViewItem.Header>
                                                 <TreeViewItem>
                                                     <TreeViewItem.Header>

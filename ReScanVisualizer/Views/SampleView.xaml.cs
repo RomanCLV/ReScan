@@ -47,14 +47,6 @@ namespace ReScanVisualizer.Views
             }
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is SampleViewModel viewModel && !(viewModel is BarycenterViewModel))
-            {
-                viewModel.InvokeRemoveItem();
-            }
-        }
-
         private void Rectangle_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (sender is Rectangle rect)
@@ -93,6 +85,22 @@ namespace ReScanVisualizer.Views
         private void ColorPopup_Closed(object sender, EventArgs e)
         {
             _openedPopup = null;
+        }
+
+        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is SampleViewModel viewModel)
+            {
+                viewModel.InverseIsHidden();
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is SampleViewModel viewModel && !(viewModel is BarycenterViewModel))
+            {
+                viewModel.InvokeRemoveItem();
+            }
         }
     }
 }

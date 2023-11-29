@@ -80,5 +80,13 @@ namespace ReScanVisualizer.Views
         {
             _openedPopup = null;
         }
+
+        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PlanViewModel viewModel)
+            {
+                viewModel.InverseIsHidden();
+            }
+        }
     }
 }

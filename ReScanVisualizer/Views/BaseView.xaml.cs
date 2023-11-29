@@ -80,5 +80,13 @@ namespace ReScanVisualizer.Views
                 viewModel.RotateNDegree(degree);
             }
         }
+
+        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is BaseViewModel viewModel)
+            {
+                viewModel.Base.InverseIsHidden();
+            }
+        }
     }
 }

@@ -130,6 +130,33 @@ namespace ReScanVisualizer.ViewModels
 
         private readonly Material?[] _oldModelMaterials;
 
+        private byte _opacity;
+        public byte Opacity
+        {
+            get => _opacity;
+            set
+            {
+                if (SetValue(ref _opacity, value))
+                {
+                    if (_opacity == 0 && !_isHidden)
+                    {
+                        IsHidden = true;
+                    }
+                    else if (_opacity != 0 && _isHidden)
+                    {
+                        IsHidden = false;
+                    }
+                    else
+                    {
+                        if (!_isHidden)
+                        {
+                            UpdateModelMaterial();
+                        }
+                    }
+                }
+            }
+        }
+
         private bool _isHidden;
         public bool IsHidden
         {
@@ -147,14 +174,22 @@ namespace ReScanVisualizer.ViewModels
                             model.Material = null;
                             model.BackMaterial = null;
                         }
+                        Opacity = 0;
                     }
                     else
                     {
-                        for (int i = 0; i < _model.Children.Count; i++)
+                        if (_opacity == 0)
                         {
-                            GeometryModel3D model = (GeometryModel3D)_model.Children[i];
-                            model.Material = _oldModelMaterials[i];
-                            model.BackMaterial = model.Material;
+                            Opacity = 255;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < _model.Children.Count; i++)
+                            {
+                                GeometryModel3D model = (GeometryModel3D)_model.Children[i];
+                                model.Material = _oldModelMaterials[i];
+                                model.BackMaterial = model.Material;
+                            }
                         }
                     }
                     OnIsHidenChanged();
@@ -200,6 +235,7 @@ namespace ReScanVisualizer.ViewModels
             _scaleFactor = scaleFactor;
             _axisScaleFactor = axisScaleFactor;
             _name = $"Base";
+            _opacity = 255;
             _isHidden = false;
             _oldModelMaterials = new Material[3];
             BelongsToAGraph = belongsToAGraph;
@@ -317,11 +353,11 @@ namespace ReScanVisualizer.ViewModels
             if (updateOrigin)
             {
                 _base3D.Origin = base3D.Origin;
+                OnPropertyChanged(nameof(Origin));
             }
             _base3D.X = base3D.X;
             _base3D.Y = base3D.Y;
             _base3D.Z = base3D.Z;
-            OnPropertyChanged(nameof(Origin));
             OnPropertyChanged(nameof(X));
             OnPropertyChanged(nameof(Y));
             OnPropertyChanged(nameof(Z));
@@ -338,7 +374,25 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelMaterial()
         {
-            throw new InvalidOperationException("UpdateModelMaterial not allowed for Base3DViewModel.");
+            GeometryModel3D geometryModel3D;
+            SolidColorBrush brush;
+            // x
+            geometryModel3D = (GeometryModel3D)(_model.Children[0]);
+            brush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(_opacity, 255, 0, 0));
+            geometryModel3D.Material = MaterialHelper.CreateMaterial(brush);
+            geometryModel3D.BackMaterial = geometryModel3D.Material;
+
+            // y
+            geometryModel3D = (GeometryModel3D)(_model.Children[1]);
+            brush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(_opacity, 0, 255, 0));
+            geometryModel3D.Material = MaterialHelper.CreateMaterial(brush);
+            geometryModel3D.BackMaterial = geometryModel3D.Material;
+
+            // z
+            geometryModel3D = (GeometryModel3D)(_model.Children[2]);
+            brush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(_opacity, 0, 0, 255));
+            geometryModel3D.Material = MaterialHelper.CreateMaterial(brush);
+            geometryModel3D.BackMaterial = geometryModel3D.Material;
         }
 
         public bool IsBelongingToModel(GeometryModel3D geometryModel3D)

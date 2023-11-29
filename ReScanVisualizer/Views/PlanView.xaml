@@ -12,6 +12,7 @@
              >
     <UserControl.Resources>
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+        <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -26,27 +27,35 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="20">
-            <TextBlock Text="Color:" VerticalAlignment="Center"/>
-            <!-- Rectangle for Color Display -->
-            <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
-               Margin="10 5"
-               MouseUp="Rectangle_MouseUp"
-               Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
-               Width="16" Height="16"
-               ToolTip="{Binding Color.Color}"
-               ToolTipService.Placement="Top"/>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="20">
+            <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
+                <Button.Content>
+                    <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                </Button.Content>
+            </Button>
 
-            <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
-                <uc:ColorSelector 
-                    Background="{StaticResource backgroundColor}"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    Padding="5"
-                    ColorChanged="ColorSelector_ColorChanged" />
-            </Popup>
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Color:" VerticalAlignment="Center"/>
+                <!-- Rectangle for Color Display -->
+                <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                    Margin="10 5"
+                    MouseUp="Rectangle_MouseUp"
+                    Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                    Width="16" Height="16"
+                    ToolTip="{Binding Color.Color}"
+                    ToolTipService.Placement="Top"/> 
+
+                <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
+                    <uc:ColorSelector 
+                        Background="{StaticResource backgroundColor}"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        Padding="5"
+                        ColorChanged="ColorSelector_ColorChanged" />
+                </Popup>
+            </StackPanel>
         </StackPanel>
-
+        
         <!-- A -->
         <TextBlock Grid.Column="0" Grid.Row="1" Text="A:" Margin="10" Style="{StaticResource myTextBlock}"/>
         <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding A, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
