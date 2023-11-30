@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class PlanViewModel : ViewModelBase, I3DElement
+    public class PlanViewModel : ViewModelBase, I3DElement, IScatterGraphElement
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
@@ -158,7 +158,6 @@ namespace ReScanVisualizer.ViewModels
                         if (Color.A == 0)
                         {
                             Color.A = 191;
-                            //UpdateModelMaterial();
                         }
                         else
                         {
@@ -195,6 +194,22 @@ namespace ReScanVisualizer.ViewModels
         private readonly GeometryModel3D _model;
         public Model3D Model => _model;
 
+        private ScatterGraphViewModel? _scatterGraph;
+        public ScatterGraphViewModel? ScatterGraph
+        {
+            get => _scatterGraph;
+            set
+            {
+                if (SetValue(ref _scatterGraph, value))
+                {
+                    OnPropertyChanged(nameof(BelongsToAGraph));
+                }
+            }
+        }
+
+        public bool BelongsToAGraph => _scatterGraph != null;
+
+
         public PlanViewModel() : this(new Plan(), new Point3D(), new Vector3D(0, 0, 1), Colors.LightBlue.ChangeAlpha(191))
         { }
 
@@ -210,6 +225,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
             }
+            _scatterGraph = null;
             _canEdit = true;
             _scaleFactor = scaleFactor;
             _plan = plan;
@@ -275,6 +291,15 @@ namespace ReScanVisualizer.ViewModels
         public void Select()
         {
             IsSelected = true;
+        }
+
+        public void Select(bool progateToOwner)
+        {
+            Select();
+            if (progateToOwner && _scatterGraph != null)
+            {
+                _scatterGraph.Select();
+            }
         }
 
         public void Unselect()

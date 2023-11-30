@@ -44,16 +44,19 @@ namespace ReScanVisualizer.UserControls
 
         public event EventHandler<Color>? ColorChanged;
 
+        private bool _onColorChanging;
+
         public Color Color
         {
-            get 
-            { 
+            get
+            {
                 return (Color)GetValue(ColorProperty);
             }
             set
             {
-                if (Color != value) 
-                { 
+                if (Color != value)
+                {
+                    _onColorChanging = true;
                     SetValue(ColorProperty, value);
                     if (ColorRed != value.R)
                     {
@@ -71,7 +74,9 @@ namespace ReScanVisualizer.UserControls
                     {
                         ColorAlpha = value.A;
                     }
+                    _onColorChanging = false;
                     UpdateComboBoxSelection();
+                    OnColorChanged();
                 }
             }
         }
@@ -79,7 +84,7 @@ namespace ReScanVisualizer.UserControls
         public byte ColorRed
         {
             get { return (byte)GetValue(ColorRedProperty); }
-            set 
+            set
             {
                 if (ColorRed != value)
                 {
@@ -180,18 +185,24 @@ namespace ReScanVisualizer.UserControls
         private static void OnColorComponentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ColorSelector selector = (ColorSelector)d;
-            selector.UpdateColor();
+            if (!selector._onColorChanging)
+            {
+                selector.UpdateColor();
+            }
         }
 
         private static void OnColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ColorSelector selector = (ColorSelector)d;
             Color newColor = (Color)e.NewValue;
-            if (selector.ColorRed   != newColor.R) selector.ColorRed   = newColor.R;
+            if (selector.ColorRed != newColor.R) selector.ColorRed = newColor.R;
             if (selector.ColorGreen != newColor.G) selector.ColorGreen = newColor.G;
-            if (selector.ColorBlue  != newColor.B) selector.ColorBlue  = newColor.B;
+            if (selector.ColorBlue != newColor.B) selector.ColorBlue = newColor.B;
             if (selector.ColorAlpha != newColor.A) selector.ColorAlpha = newColor.A;
-            selector.OnColorChanged();
+            if (!selector._onColorChanging)
+            {
+                selector.OnColorChanged();
+            }
         }
     }
 }

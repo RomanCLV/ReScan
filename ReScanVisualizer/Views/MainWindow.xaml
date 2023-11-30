@@ -210,14 +210,13 @@
                                                 <TreeViewItem>
                                                     <TreeViewItem.Header>
                                                         <itw:AveragePlanTreeViewItemHeader
-                                                            DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}" 
+                                                            DataContext="{Binding AveragePlan, UpdateSourceTrigger=PropertyChanged}"
                                                             FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
                                                             MouseDown="AveragePlanTreeViewItemHeader_MouseDown"/>
                                                     </TreeViewItem.Header>
                                                 </TreeViewItem>
                                                 <itw:BaseTreeViewItem 
                                                     DataContext="{Binding Base3D}" 
-                                                    FontWeight="{Binding Base.IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
                                                     PreviewMouseDown="BaseTreeViewItem_PreviewMouseDown"/>
                                                 <TreeViewItem ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
                                                     <TreeViewItem.Header>
@@ -285,7 +284,13 @@
             
             <GridSplitter Grid.Column="0" Width="5" Background="{StaticResource backgroundListColor}" />
 
-            <HelixToolkit:HelixViewport3D x:Name="_viewPort" Grid.Column="1" ShowCameraInfo="False" MouseMove="HelixViewport3D_MouseMove" MouseDown="HelixViewport3D_MouseDown" KeyUp="HelixViewport3D_KeyUp">
+            <HelixToolkit:HelixViewport3D 
+                x:Name="_viewPort" Grid.Column="1" 
+                ShowCameraInfo="False" 
+                MouseMove="HelixViewport3D_MouseMove" 
+                MouseDown="HelixViewport3D_MouseDown" 
+                MouseLeave="ViewPort_MouseLeave"
+                KeyUp="HelixViewport3D_KeyUp">
                 <HelixToolkit:HelixViewport3D.Background>
                     <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
                         <GradientStop Color="#FF0061FF" Offset="0"/>

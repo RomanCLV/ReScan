@@ -14,7 +14,7 @@ using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class SampleViewModel : ViewModelBase, I3DElement
+    public class SampleViewModel : ViewModelBase, I3DElement, IScatterGraphElement
     {
         public event EventHandler<bool>? IsHiddenChanged;
         public event EventHandler? RemoveItem;
@@ -124,6 +124,21 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _isMouseOver, value);
         }
 
+        private ScatterGraphViewModel? _scatterGraph;
+        public ScatterGraphViewModel? ScatterGraph
+        {
+            get => _scatterGraph;
+            set
+            {
+                if (SetValue(ref _scatterGraph, value))
+                {
+                    OnPropertyChanged(nameof(BelongsToAGraph));
+                }
+            }
+        }
+
+        public bool BelongsToAGraph => _scatterGraph != null;
+
         private readonly GeometryModel3D _model;
 
         public Model3D Model => _model;
@@ -150,6 +165,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 throw new ArgumentOutOfRangeException(nameof(scaleFactor), "Scale factor must be greater than 0.");
             }
+            _scatterGraph = null;
             Color = new ColorViewModel(color);
             _canEdit = true;
             _scaleFactor = scaleFactor;
@@ -231,6 +247,15 @@ namespace ReScanVisualizer.ViewModels
         public void Select()
         {
             IsSelected = true;
+        }
+
+        public void Select(bool progateToOwner)
+        {
+            Select();
+            if (progateToOwner && _scatterGraph != null) 
+            {
+                _scatterGraph.Select();
+            }
         }
 
         public void Unselect()

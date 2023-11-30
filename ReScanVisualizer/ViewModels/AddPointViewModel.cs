@@ -21,7 +21,10 @@ namespace ReScanVisualizer.ViewModels
 
         public void AddPoint()
         {
-            SampleViewModel sampleViewModel = new SampleViewModel(Point.Point, _scatterGraphViewModel.Color.Color, _scatterGraphViewModel.ScaleFactor, _scatterGraphViewModel.PointsRadius, _scatterGraphViewModel.RenderQuality);
+            SampleViewModel sampleViewModel = new SampleViewModel(Point.Point, _scatterGraphViewModel.Color.Color, _scatterGraphViewModel.ScaleFactor, _scatterGraphViewModel.PointsRadius, _scatterGraphViewModel.RenderQuality)
+            {
+                ScatterGraph = _scatterGraphViewModel
+            };
             _scatterGraphViewModel.Samples.Add(sampleViewModel);
         }
     }

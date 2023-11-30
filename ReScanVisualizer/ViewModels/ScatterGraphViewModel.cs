@@ -171,24 +171,6 @@ namespace ReScanVisualizer.ViewModels
         {
             get => _isSelected;
             private set => SetValue(ref _isSelected, value);
-            //private set
-            //{
-            //if (SetValue(ref _isSelected, value))
-            //{
-            //if (IsSelected)
-            //{
-            //    Barycenter.Select();
-            //    AveragePlan.Select();
-            //    Base3D.Select();
-            //}
-            //else
-            //{
-            //    Barycenter.Unselect();
-            //    AveragePlan.Unselect();
-            //    Base3D.Unselect();
-            //}
-            //}
-            //}
         }
 
         private bool _isMouseOver;
@@ -254,7 +236,10 @@ namespace ReScanVisualizer.ViewModels
 
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
-                SampleViewModel sampleViewModel = new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius, _renderQuality);
+                SampleViewModel sampleViewModel = new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius, _renderQuality)
+                {
+                    ScatterGraph = this
+                };
                 sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
                 sampleViewModel.RemoveItem += SampleViewModel_RemoveItem;
                 sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
@@ -268,13 +253,20 @@ namespace ReScanVisualizer.ViewModels
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
             double averagePlanLength = ComputeAveragePlanLength(base3D);
 
-            _barycenter = new BarycenterViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality);
-            _base3D = new Base3DViewModel(base3D, _scaleFactor, axisScaleFactor, true, _renderQuality)
+            _barycenter = new BarycenterViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality)
             {
-                Name = "Plan base"
+                ScatterGraph = this
             };
-            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), averagePlanLength, _scaleFactor, _renderQuality);
-            _averagePlan.CanEdit = false;
+            _base3D = new Base3DViewModel(base3D, _scaleFactor, axisScaleFactor, _renderQuality)
+            {
+                Name = "Plan base",
+                ScatterGraph = this
+            };
+            _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), averagePlanLength, _scaleFactor, _renderQuality)
+            {
+                ScatterGraph = this,
+                CanEdit = false
+            };
 
             _barycenter.IsHidden = hideBarycenter;
             _averagePlan.IsHidden = hideAveragePlan;

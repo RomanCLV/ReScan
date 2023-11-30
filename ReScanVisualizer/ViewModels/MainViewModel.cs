@@ -11,6 +11,7 @@ using System.Windows;
 using System.Collections.Specialized;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.Commands;
+using System.Xml.Linq;
 
 #nullable enable
 
@@ -26,20 +27,13 @@ namespace ReScanVisualizer.ViewModels
             get => _selectedViewModel;
             set
             {
+                // unselect all
                 if (_selectedViewModel != null && !_selectedViewModel.Equals(value))
                 {
+                    ScatterGraphs.AsParallel().ForAll(x => x.Unselect());
+                    Bases.AsParallel().ForAll(x => x.Unselect());
                     if (_selectedViewModel is I3DElement element)
                     {
-                        if (!(_selectedViewModel is ScatterGraphViewModel))
-                        {
-                            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
-                            {
-                                if (scatterGraphViewModel.IsSelected)
-                                {
-                                    scatterGraphViewModel.Unselect();
-                                }
-                            }
-                        }
                         element.Unselect();
                     }
                     if (_selectedViewModel is BaseViewModel baseViewModel)
@@ -51,13 +45,17 @@ namespace ReScanVisualizer.ViewModels
 
                 if (SetValue(ref _selectedViewModel, value))
                 {
-                    if (_selectedViewModel is I3DElement element)
+                    if (_selectedViewModel is IScatterGraphElement scatterGraphElement)
+                    {
+                        scatterGraphElement.Select(true);
+                    }
+                    else if (_selectedViewModel is I3DElement element)
                     {
                         element.Select();
                     }
                     if (_selectedViewModel is BaseViewModel baseViewModel)
                     {
-                        baseViewModel.Base.Select();
+                        baseViewModel.Base.Select(true);
                         baseViewModel.UpdateReorientCartesianFromBase();
                         baseViewModel.UpdateRotationXYZFromBase();
                     }

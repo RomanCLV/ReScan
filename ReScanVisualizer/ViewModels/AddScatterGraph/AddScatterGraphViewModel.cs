@@ -429,12 +429,22 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
 
         public void LoadAll(bool closeWindow = false)
         {
-            while (Items.Count > 0)
+            //while (Items.Count > 0)
+            //{
+            //    Load(Items[0]);
+            //}
+
+            KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item;
+            for (int i = 0; i < Items.Count; i++)
             {
-                KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item = Items[0];
+                item = Items[i];
                 Load(item);
+                if (item.Value != null && item.Value.IsAdded)
+                {
+                    i--;
+                }
             }
-            if (closeWindow)
+            if (closeWindow && Items.Count == 0)
             {
                 _view.Close();
             }

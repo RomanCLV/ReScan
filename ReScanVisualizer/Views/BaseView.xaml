@@ -27,7 +27,7 @@
                                 </Button.Content>
                             </Button>
                             <StackPanel Orientation="Horizontal" Margin="20 0 0 0" VerticalAlignment="Center">
-                                <TextBlock Text="Opacity:" Style="{StaticResource myTextBlockLeft}" />
+                                <TextBlock Text="Opacity" Style="{StaticResource myTextBlockLeft}" />
                                 <TextBox Text="{Binding Base.Opacity, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" Width="60" />
                                 <Slider  Value="{Binding Base.Opacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" Width="100    " />
                             </StackPanel>

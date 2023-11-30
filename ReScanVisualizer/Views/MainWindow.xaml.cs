@@ -97,6 +97,7 @@ namespace ReScanVisualizer.Views
             if (DataContext is MainViewModel viewModel)
             {
                 viewModel.SelectedViewModel = (SampleViewModel)((BarycenterTreeViewItemHeader)sender).DataContext;
+
             }
         }
 
@@ -287,78 +288,86 @@ namespace ReScanVisualizer.Views
                     break;
 
                 case Key.Back:
-                        case Key.Delete:
-                            ViewModelBase? selectedModel = mainViewModel.SelectedViewModel;
-                            if (selectedModel != null)
-                            {
-                                if (selectedModel is ScatterGraphViewModel scatterGraphViewModel)
-                                {
-                                    mainViewModel.ScatterGraphs.Remove(scatterGraphViewModel);
-                                }
-                                else if (selectedModel is SampleViewModel sampleViewModel && !(selectedModel is BarycenterViewModel))
-                                {
-                                    sampleViewModel.InvokeRemoveItem();
-                                }
-                            }
-                            break;
-                        }
-            }
-
-            private void HelixViewport3D_MouseMove(object sender, MouseEventArgs e)
-            {
-                HelixViewport3D viewport3D = (HelixViewport3D)sender;
-
-                Point mouseposition = e.GetPosition(viewport3D);
-                Point3D testpoint3D = new Point3D(mouseposition.X, mouseposition.Y, 0);
-                Vector3D testdirection = new Vector3D(mouseposition.X, mouseposition.Y, 10);
-                PointHitTestParameters pointparams = new PointHitTestParameters(mouseposition);
-                RayHitTestParameters rayparams = new RayHitTestParameters(testpoint3D, testdirection);
-
-                //test for a result in the Viewport3D
-                VisualTreeHelper.HitTest(viewport3D, null, HTResult, pointparams);
-            }
-
-            public HitTestResultBehavior HTResult(HitTestResult rawresult)
-            {
-                MainViewModel viewModel = (MainViewModel)DataContext;
-                if (rawresult is RayHitTestResult rayResult &&
-                    rayResult is RayMeshGeometry3DHitTestResult rayMeshResult &&
-                    rayMeshResult.ModelHit is GeometryModel3D hitgeo &&
-                    !viewModel.IsBelongingToOriginModel(hitgeo) &&
-                    !IsGridModel(hitgeo))
-                {
-                    if (Cursor != Cursors.Hand)
+                case Key.Delete:
+                    ViewModelBase? selectedModel = mainViewModel.SelectedViewModel;
+                    if (selectedModel != null)
                     {
-                        Cursor = Cursors.Hand;
-                    }
-                    if (!hitgeo.Equals(_geometryModel3DMouseOver))
-                    {
-                        if (_geometryModel3DMouseOver != null)
+                        if (selectedModel is ScatterGraphViewModel scatterGraphViewModel)
                         {
-                            viewModel.UnselectMouseOverGeometry();
+                            mainViewModel.ScatterGraphs.Remove(scatterGraphViewModel);
                         }
-                        _geometryModel3DMouseOver = hitgeo;
-                        viewModel.SelectMouseOverGeometry(_geometryModel3DMouseOver);
+                        else if (selectedModel is SampleViewModel sampleViewModel && !(selectedModel is BarycenterViewModel))
+                        {
+                            sampleViewModel.InvokeRemoveItem();
+                        }
                     }
-                }
-                else
-                {
-                    if (Cursor != Cursors.Arrow)
-                    {
-                        Cursor = Cursors.Arrow;
-                    }
-                    _geometryModel3DMouseOver = null;
-                    viewModel.UnselectMouseOverGeometry();
-                }
-                return HitTestResultBehavior.Stop;
+                    break;
             }
+        }
 
-            private void HelixViewport3D_MouseDown(object sender, MouseButtonEventArgs e)
+        private void HelixViewport3D_MouseMove(object sender, MouseEventArgs e)
+        {
+            HelixViewport3D viewport3D = (HelixViewport3D)sender;
+
+            Point mouseposition = e.GetPosition(viewport3D);
+            Point3D testpoint3D = new Point3D(mouseposition.X, mouseposition.Y, 0);
+            Vector3D testdirection = new Vector3D(mouseposition.X, mouseposition.Y, 10);
+            PointHitTestParameters pointparams = new PointHitTestParameters(mouseposition);
+            RayHitTestParameters rayparams = new RayHitTestParameters(testpoint3D, testdirection);
+
+            //test for a result in the Viewport3D
+            VisualTreeHelper.HitTest(viewport3D, null, HTResult, pointparams);
+        }
+
+        public HitTestResultBehavior HTResult(HitTestResult rawresult)
+        {
+            MainViewModel viewModel = (MainViewModel)DataContext;
+            if (rawresult is RayHitTestResult rayResult &&
+                rayResult is RayMeshGeometry3DHitTestResult rayMeshResult &&
+                rayMeshResult.ModelHit is GeometryModel3D hitgeo &&
+                !viewModel.IsBelongingToOriginModel(hitgeo) &&
+                !IsGridModel(hitgeo))
             {
-                if (_geometryModel3DMouseOver != null && DataContext is MainViewModel viewModel)
+                if (Cursor != Cursors.Hand)
                 {
-                    viewModel.SelectHitGeometry(_geometryModel3DMouseOver);
+                    Cursor = Cursors.Hand;
                 }
+                if (!hitgeo.Equals(_geometryModel3DMouseOver))
+                {
+                    if (_geometryModel3DMouseOver != null)
+                    {
+                        viewModel.UnselectMouseOverGeometry();
+                    }
+                    _geometryModel3DMouseOver = hitgeo;
+                    viewModel.SelectMouseOverGeometry(_geometryModel3DMouseOver);
+                }
+            }
+            else
+            {
+                if (Cursor != Cursors.Arrow)
+                {
+                    Cursor = Cursors.Arrow;
+                }
+                _geometryModel3DMouseOver = null;
+                viewModel.UnselectMouseOverGeometry();
+            }
+            return HitTestResultBehavior.Stop;
+        }
+
+        private void HelixViewport3D_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_geometryModel3DMouseOver != null && DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectHitGeometry(_geometryModel3DMouseOver);
+            }
+        }
+
+        private void ViewPort_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (Cursor != Cursors.Arrow)
+            {
+                Cursor = Cursors.Arrow;
             }
         }
     }
+}

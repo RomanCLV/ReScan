@@ -109,6 +109,7 @@
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
     <Compile Include="Models\IModelisable.cs" />
+    <Compile Include="Models\IScatterGraphElement.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Base3D.cs" />
@@ -183,6 +184,9 @@
     </Compile>
     <Compile Include="Views\Forms\LimitsForm.xaml.cs">
       <DependentUpon>LimitsForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Forms\PlanForm.xaml.cs">
+      <DependentUpon>PlanForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Forms\PointForm.xaml.cs">
       <DependentUpon>PointForm.xaml</DependentUpon>
@@ -274,6 +278,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Forms\LimitsForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Forms\PlanForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

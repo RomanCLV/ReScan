@@ -13,7 +13,7 @@ using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class Base3DViewModel : ViewModelBase, I3DElement
+    public class Base3DViewModel : ViewModelBase, I3DElement, IScatterGraphElement
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
@@ -117,7 +117,20 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public bool BelongsToAGraph { get; }
+        private ScatterGraphViewModel? _scatterGraph;
+        public ScatterGraphViewModel? ScatterGraph
+        {
+            get => _scatterGraph;
+            set
+            {
+                if (SetValue(ref _scatterGraph, value))
+                {
+                    OnPropertyChanged(nameof(BelongsToAGraph));
+                }
+            }
+        }
+
+        public bool BelongsToAGraph => _scatterGraph != null;
 
         private readonly Model3DGroup _model;
         public Model3D Model => _model;
@@ -229,7 +242,7 @@ namespace ReScanVisualizer.ViewModels
 
         private static uint _instanceCreated = 0;
 
-        public Base3DViewModel(Base3D base3D, double scaleFactor = 1.0, double axisScaleFactor = 1.0, bool belongsToAGraph = false, RenderQuality renderQuality = RenderQuality.High)
+        public Base3DViewModel(Base3D base3D, double scaleFactor = 1.0, double axisScaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
             _base3D = base3D;
             _scaleFactor = scaleFactor;
@@ -238,7 +251,6 @@ namespace ReScanVisualizer.ViewModels
             _opacity = 255;
             _isHidden = false;
             _oldModelMaterials = new Material[3];
-            BelongsToAGraph = belongsToAGraph;
             _renderQuality = renderQuality;
             _isSelected = false;
             _isMouseOver = false;
@@ -253,7 +265,7 @@ namespace ReScanVisualizer.ViewModels
         public static Base3DViewModel CreateCountedInstance(Base3D base3D, double scaleFactor = 1.0, double axisScaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
             _instanceCreated++;
-            return new Base3DViewModel(base3D, scaleFactor, axisScaleFactor, false, renderQuality)
+            return new Base3DViewModel(base3D, scaleFactor, axisScaleFactor, renderQuality)
             {
                 _name = $"Base {_instanceCreated}"
             };
@@ -306,6 +318,15 @@ namespace ReScanVisualizer.ViewModels
         public void Select()
         {
             IsSelected = true;
+        }
+
+        public void Select(bool progateToOwner)
+        {
+            Select();
+            if (progateToOwner && _scatterGraph != null)
+            {
+                _scatterGraph.Select();
+            }
         }
 
         public void Unselect()

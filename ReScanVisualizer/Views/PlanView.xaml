@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views"
+             xmlns:forms="clr-namespace:ReScanVisualizer.Views.Forms"
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
              mc:Ignorable="d" 
@@ -55,19 +56,7 @@
                 </Popup>
             </StackPanel>
         </StackPanel>
-        
-        <!-- A -->
-        <TextBlock Grid.Column="0" Grid.Row="1" Text="A:" Margin="10" Style="{StaticResource myTextBlock}"/>
-        <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding A, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
-        <!-- B -->
-        <TextBlock Grid.Column="0" Grid.Row="2" Text="B:" Margin="10" Style="{StaticResource myTextBlock}"/>
-        <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding B, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
-        <!-- C -->
-        <TextBlock Grid.Column="0" Grid.Row="3" Text="C:" Margin="10" Style="{StaticResource myTextBlock}"/>
-        <TextBox   Grid.Column="1" Grid.Row="3" Text="{Binding C, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
-        <!-- D -->
-        <TextBlock Grid.Column="0" Grid.Row="4" Text="D:" Margin="10" Style="{StaticResource myTextBlock}"/>
-        <TextBox   Grid.Column="1" Grid.Row="4" Text="{Binding D, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
 
+        <forms:PlanForm Grid.Column="0" Grid.Row="1" Grid.RowSpan="4" Grid.ColumnSpan="2" IsEnabled="{Binding CanEdit}" />
     </Grid>
 </UserControl>
