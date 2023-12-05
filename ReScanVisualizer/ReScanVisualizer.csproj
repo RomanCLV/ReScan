@@ -143,6 +143,7 @@
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
     <Compile Include="ViewModels\Point3DViewModel.cs" />
+    <Compile Include="ViewModels\ScatterGraphViewModelGroup.cs" />
     <Compile Include="Views\AddPointWindow.xaml.cs">
       <DependentUpon>AddPointWindow.xaml</DependentUpon>
     </Compile>

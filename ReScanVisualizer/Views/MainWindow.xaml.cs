@@ -74,7 +74,26 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is MainViewModel viewModel)
             {
-                viewModel.SelectedViewModel = ((ScatterGraphTreeViewItemHeader)sender).DataContext as ViewModelBase;
+                ScatterGraphViewModel scatterGraphViewModel = (ScatterGraphViewModel)((ScatterGraphTreeViewItemHeader)sender).DataContext;
+                viewModel.ScatterGraphViewModelGroup.Add(scatterGraphViewModel);
+
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                {
+                    if (viewModel.ScatterGraphViewModelGroup.Count() > 1)
+                    {
+                        viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
+                        viewModel.ScatterGraphViewModelGroup.SelectAll();
+                    }
+                    else
+                    {
+                        viewModel.SelectedViewModel = scatterGraphViewModel;
+                    }
+                }
+                else
+                {
+                    viewModel.ScatterGraphViewModelGroup.Clear();
+                    viewModel.SelectedViewModel = scatterGraphViewModel;
+                }
             }
         }
 
