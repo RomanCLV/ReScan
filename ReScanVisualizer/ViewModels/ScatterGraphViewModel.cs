@@ -241,7 +241,6 @@ namespace ReScanVisualizer.ViewModels
                     ScatterGraph = this
                 };
                 sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
-                sampleViewModel.RemoveItem += SampleViewModel_RemoveItem;
                 sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
                 Samples.Add(sampleViewModel);
                 _model.Children.Add(sampleViewModel.Model);
@@ -345,7 +344,6 @@ namespace ReScanVisualizer.ViewModels
                         SampleViewModel sampleViewModel = (SampleViewModel)o;
                         sampleViewModel.IsHidden = ArePointsHidden;
                         sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
-                        sampleViewModel.RemoveItem += SampleViewModel_RemoveItem;
                         sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
                         _model.Children.Add(sampleViewModel.Model);
                     }
@@ -356,7 +354,6 @@ namespace ReScanVisualizer.ViewModels
                     {
                         SampleViewModel sampleViewModel = (SampleViewModel)o;
                         sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
-                        sampleViewModel.RemoveItem -= SampleViewModel_RemoveItem;
                         sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
                         RemoveModelOfSample(sampleViewModel);
                     }
@@ -378,7 +375,6 @@ namespace ReScanVisualizer.ViewModels
             foreach (SampleViewModel sampleViewModel in Samples)
             {
                 sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
-                sampleViewModel.RemoveItem -= SampleViewModel_RemoveItem;
                 sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
                 sampleViewModel.Dispose();
             }
@@ -398,7 +394,6 @@ namespace ReScanVisualizer.ViewModels
         public void RemoveSample(SampleViewModel sampleViewModel)
         {
             sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
-            sampleViewModel.RemoveItem -= SampleViewModel_RemoveItem;
             sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
             RemoveModelOfSample(sampleViewModel);
             Samples.Remove(sampleViewModel);

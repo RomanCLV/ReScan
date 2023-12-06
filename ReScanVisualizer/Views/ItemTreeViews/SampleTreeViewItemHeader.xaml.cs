@@ -38,7 +38,7 @@ namespace ReScanVisualizer.Views.ItemTreeViews
         {
             if (DataContext is SampleViewModel viewModel)
             {
-                viewModel.InvokeRemoveItem();
+                viewModel.ScatterGraph?.Samples.Remove(viewModel);
             }
         }
     }

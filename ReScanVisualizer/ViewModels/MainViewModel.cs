@@ -315,6 +315,26 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        public void RandomizeAllColorsAsync()
+        {
+            //return Task.Run(() =>
+            //{
+            //    foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            //    {
+            //        Task.Delay(20).Wait();
+            //        scatterGraphViewModel.Color.Color = Tools.GetRandomLightColor();
+            //    }
+            //});
+            Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+                {
+                    Task.Delay(20).Wait();
+                    scatterGraphViewModel.Color.Color = Tools.GetRandomLightColor();
+                }
+            });
+        }
+
         public void ShowAllGraphs()
         {
             foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)

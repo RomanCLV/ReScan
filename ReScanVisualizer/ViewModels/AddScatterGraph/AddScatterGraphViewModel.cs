@@ -226,6 +226,18 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
             }
         }
 
+        public void RandomizeColorAsync()
+        {
+            Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                foreach (var item in Items)
+                {
+                    Task.Delay(20).Wait();
+                    item.Key.Color = Tools.GetRandomLightColor();
+                }
+            });
+        }
+
         public void ApplyMaxPoints()
         {
             foreach (var item in Items)

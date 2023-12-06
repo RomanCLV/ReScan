@@ -1,5 +1,6 @@
 ﻿using ReScanVisualizer.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Windows.Media;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class ScatterGraphViewModelGroup : ViewModelBase
+    public class ScatterGraphViewModelGroup : ViewModelBase, IEnumerable<ScatterGraphViewModel>
     {
         private readonly List<ScatterGraphViewModel> _items;
         public IEnumerable<ScatterGraphViewModel> Items
@@ -376,6 +377,16 @@ namespace ReScanVisualizer.ViewModels
                     OnPropertyChanged(propertyName);
                 }
             }
+        }
+
+        public IEnumerator<ScatterGraphViewModel> GetEnumerator()
+        {
+            return _items.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

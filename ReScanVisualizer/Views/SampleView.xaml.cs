@@ -99,7 +99,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is SampleViewModel viewModel && !(viewModel is BarycenterViewModel))
             {
-                viewModel.InvokeRemoveItem();
+                viewModel.ScatterGraph?.Samples.Remove(viewModel);
             }
         }
     }

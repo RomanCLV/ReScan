@@ -223,7 +223,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         {
             if (DataContext is AddScatterGraphViewModel viewModel)
             {
-                viewModel.RandomizeColor();
+                viewModel.RandomizeColorAsync();
             }
         }
 

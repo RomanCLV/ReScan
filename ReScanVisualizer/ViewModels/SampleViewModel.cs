@@ -17,7 +17,6 @@ namespace ReScanVisualizer.ViewModels
     public class SampleViewModel : ViewModelBase, I3DElement, IScatterGraphElement
     {
         public event EventHandler<bool>? IsHiddenChanged;
-        public event EventHandler? RemoveItem;
 
         private bool _canEdit;
         public bool CanEdit
@@ -201,11 +200,6 @@ namespace ReScanVisualizer.ViewModels
                 base.Dispose();
                 IsDisposed = true;
             }
-        }
-
-        public void InvokeRemoveItem()
-        {
-            RemoveItem?.Invoke(this, EventArgs.Empty);
         }
 
         private void Color_PropertyChanged(object sender, PropertyChangedEventArgs e)

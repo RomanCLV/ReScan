@@ -225,7 +225,8 @@
                                                     PreviewMouseDown="BaseTreeViewItem_PreviewMouseDown"/>
                                                 <TreeViewItem ItemsSource="{Binding Samples, UpdateSourceTrigger=PropertyChanged}">
                                                     <TreeViewItem.Header>
-                                                        <itw:SamplesTreeViewItemHeader />
+                                                        <itw:SamplesTreeViewItemHeader
+                                                            MouseDown="SamplesTreeViewItemHeader_MouseDown"/>
                                                     </TreeViewItem.Header>
                                                     <TreeViewItem.ItemTemplate>
                                                         <DataTemplate>

@@ -31,12 +31,36 @@ namespace ReScanVisualizer.Views
     public partial class MainWindow : Window
     {
         private GeometryModel3D? _geometryModel3DMouseOver;
+        private int shiftStartIndex;
+        private int shiftEndIndex;
 
         public MainWindow()
         {
             InitializeComponent();
             _geometryModel3DMouseOver = null;
+            shiftStartIndex = 0;
+            shiftEndIndex = 0;
         }
+
+        #region Bases tree view
+
+        private void BaseTreeViewItem_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sender is TreeViewItem tb && tb.DataContext is Base3DViewModel viewModel)
+            {
+                switch (e.Key)
+                {
+                    case Key.Delete:
+                    case Key.Back:
+                        ((MainViewModel)DataContext).Bases.Remove(viewModel);
+                        break;
+                    case Key.Escape:
+                        ((MainViewModel)DataContext).SelectedViewModel = null;
+                        break;
+                }
+            }
+        }
+
 
         private void BaseClearButton_Click(object sender, RoutedEventArgs e)
         {
@@ -51,15 +75,23 @@ namespace ReScanVisualizer.Views
             }
         }
 
-        private void BaseTreeViewItem_KeyUp(object sender, KeyEventArgs e)
+        #endregion
+
+        #region Graphs tree view
+
+        private void ScatterGraphTreeViewItem_KeyUp(object sender, KeyEventArgs e)
         {
-            if (sender is TreeViewItem tb && tb.DataContext is Base3DViewModel viewModel)
+            if (sender is TreeViewItem tb && tb.DataContext is ScatterGraphViewModel viewModel)
             {
                 switch (e.Key)
                 {
                     case Key.Delete:
                     case Key.Back:
-                        ((MainViewModel)DataContext).Bases.Remove(viewModel);
+                        ((MainViewModel)DataContext).ScatterGraphs.Remove(viewModel);
+                        break;
+                    case Key.Escape:
+                        ((MainViewModel)DataContext).SelectedViewModel = null;
+                        shiftStartIndex = 0;
                         break;
                 }
             }
@@ -72,13 +104,109 @@ namespace ReScanVisualizer.Views
 
         private void ScatterGraphTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            ScatterGraphClicked((ScatterGraphViewModel)((ScatterGraphTreeViewItemHeader)sender).DataContext);
+        }
+
+        private void BarycenterTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            BarycenterClicked((BarycenterViewModel)((BarycenterTreeViewItemHeader)sender).DataContext);
+        }
+
+        private void AveragePlanTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            AveragePlanClicked((PlanViewModel)((AveragePlanTreeViewItemHeader)sender).DataContext);
+        }
+
+        private void BaseTreeViewItem_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            BaseClicked((Base3DViewModel)((BaseTreeViewItem)sender).DataContext);
+        }
+
+        private void SamplesTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ScatterGraphClicked((ScatterGraphViewModel)((SamplesTreeViewItemHeader)sender).DataContext);
+        }
+
+        private void SampleTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            SampleClicked((SampleViewModel)((SampleTreeViewItemHeader)sender).DataContext);
+        }
+
+        private void BarycenterClicked(BarycenterViewModel barycenterViewModel)
+        {
             if (DataContext is MainViewModel viewModel)
             {
-                ScatterGraphViewModel scatterGraphViewModel = (ScatterGraphViewModel)((ScatterGraphTreeViewItemHeader)sender).DataContext;
-                viewModel.ScatterGraphViewModelGroup.Add(scatterGraphViewModel);
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) ||
+                    Keyboard.IsKeyDown(Key.LeftShift))
+                {
+                    ScatterGraphClicked(barycenterViewModel.ScatterGraph!);
+                }
+                else
+                {
+                    viewModel.SelectedViewModel = barycenterViewModel;
+                    SelectShiftSartItem(barycenterViewModel.ScatterGraph!);
+                }
+            }
+        }
 
+        private void AveragePlanClicked(PlanViewModel planViewModel)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) ||
+                    Keyboard.IsKeyDown(Key.LeftShift))
+                {
+                    ScatterGraphClicked(planViewModel.ScatterGraph!);
+                }
+                else
+                {
+                    viewModel.SelectedViewModel = planViewModel;
+                    SelectShiftSartItem(planViewModel.ScatterGraph!);
+                }
+            }
+        }
+
+        private void BaseClicked(Base3DViewModel base3DviewModel)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) ||
+                    Keyboard.IsKeyDown(Key.LeftShift))
+                {
+                    ScatterGraphClicked(base3DviewModel.ScatterGraph!);
+                }
+                else
+                {
+                    viewModel.SelectedViewModel = new BaseViewModel(base3DviewModel);
+                    SelectShiftSartItem(base3DviewModel.ScatterGraph!);
+                }
+            }
+        }
+
+        private void SampleClicked(SampleViewModel sampleViewModel)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) ||
+                    Keyboard.IsKeyDown(Key.LeftShift))
+                {
+                    ScatterGraphClicked(sampleViewModel.ScatterGraph!);
+                }
+                else
+                {
+                    viewModel.SelectedViewModel = sampleViewModel;
+                    SelectShiftSartItem(sampleViewModel.ScatterGraph!);
+                }
+            }
+        }
+
+        private void ScatterGraphClicked(ScatterGraphViewModel scatterGraphViewModel)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
+                    viewModel.ScatterGraphViewModelGroup.Add(scatterGraphViewModel);
                     if (viewModel.ScatterGraphViewModelGroup.Count() > 1)
                     {
                         viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
@@ -87,63 +215,50 @@ namespace ReScanVisualizer.Views
                     else
                     {
                         viewModel.SelectedViewModel = scatterGraphViewModel;
+                        scatterGraphViewModel.Select();
                     }
+                }
+                else if (Keyboard.IsKeyDown(Key.LeftShift))
+                {
+                    SelectShiftEndItem(scatterGraphViewModel);
+                    ApplyShiftSelection();
                 }
                 else
                 {
+                    SelectShiftSartItem(scatterGraphViewModel);
                     viewModel.ScatterGraphViewModelGroup.Clear();
+                    viewModel.ScatterGraphViewModelGroup.Add(scatterGraphViewModel);
                     viewModel.SelectedViewModel = scatterGraphViewModel;
+                    scatterGraphViewModel.Select();
                 }
             }
         }
 
-        private void ScatterGraphTreeViewItem_KeyUp(object sender, KeyEventArgs e)
+        private void SelectShiftSartItem(ScatterGraphViewModel scatterGraphViewModel)
         {
-            if (sender is TreeViewItem tb && tb.DataContext is ScatterGraphViewModel viewModel)
-            {
-                switch (e.Key)
-                {
-                    case Key.Delete:
-                    case Key.Back:
-                        ((MainViewModel)DataContext).ScatterGraphs.Remove(viewModel);
-                        break;
-                }
-            }
+            shiftStartIndex = GraphsTreeView.Items.IndexOf(scatterGraphViewModel);
         }
 
-        private void BarycenterTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        private void SelectShiftEndItem(ScatterGraphViewModel scatterGraphViewModel)
         {
-            if (DataContext is MainViewModel viewModel)
-            {
-                viewModel.SelectedViewModel = (SampleViewModel)((BarycenterTreeViewItemHeader)sender).DataContext;
-
-            }
+            shiftEndIndex = GraphsTreeView.Items.IndexOf(scatterGraphViewModel);
         }
 
-        private void AveragePlanTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ApplyShiftSelection()
         {
-            if (DataContext is MainViewModel viewModel)
+            MainViewModel viewModel = (MainViewModel)DataContext;
+            viewModel.ScatterGraphViewModelGroup.Clear();
+            for (int i = Math.Min(shiftStartIndex, shiftEndIndex); i <= Math.Max(shiftStartIndex, shiftEndIndex); i++)
             {
-                viewModel.SelectedViewModel = (PlanViewModel)((AveragePlanTreeViewItemHeader)sender).DataContext;
+                viewModel.ScatterGraphViewModelGroup.Add((ScatterGraphViewModel)GraphsTreeView.Items[i]);
             }
+            viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
+            viewModel.ScatterGraphViewModelGroup.SelectAll();
         }
 
-        private void BaseTreeViewItem_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (DataContext is MainViewModel viewModel)
-            {
-                Base3DViewModel base3DviewModel = (Base3DViewModel)((BaseTreeViewItem)sender).DataContext;
-                viewModel.SelectedViewModel = new BaseViewModel(base3DviewModel);
-            }
-        }
+        #endregion
 
-        private void SampleTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (DataContext is MainViewModel viewModel)
-            {
-                viewModel.SelectedViewModel = (SampleViewModel)((SampleTreeViewItemHeader)sender).DataContext;
-            }
-        }
+        #region Menu
 
         private void VeryLowRenderQualityMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -189,7 +304,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is MainViewModel viewModel)
             {
-                viewModel.RandomizeAllColors();
+                viewModel.RandomizeAllColorsAsync();
             }
         }
 
@@ -289,6 +404,10 @@ namespace ReScanVisualizer.Views
             }
         }
 
+        #endregion
+
+        #region Viewport
+
         private bool IsGridModel(GeometryModel3D hitgeo)
         {
             GridLinesVisual3D gridLines = _viewPort.Children
@@ -311,13 +430,22 @@ namespace ReScanVisualizer.Views
                     ViewModelBase? selectedModel = mainViewModel.SelectedViewModel;
                     if (selectedModel != null)
                     {
-                        if (selectedModel is ScatterGraphViewModel scatterGraphViewModel)
+                        if (selectedModel is ScatterGraphViewModelGroup scatterGraphViewModelGroup)
+                        {
+                            foreach (ScatterGraphViewModel item in scatterGraphViewModelGroup)
+                            {
+                                mainViewModel.ScatterGraphs.Remove(item);
+                            }
+                            scatterGraphViewModelGroup.Clear();
+                            mainViewModel.SelectedViewModel = null;
+                        }
+                        else if (selectedModel is ScatterGraphViewModel scatterGraphViewModel)
                         {
                             mainViewModel.ScatterGraphs.Remove(scatterGraphViewModel);
                         }
                         else if (selectedModel is SampleViewModel sampleViewModel && !(selectedModel is BarycenterViewModel))
                         {
-                            sampleViewModel.InvokeRemoveItem();
+                            sampleViewModel.ScatterGraph!.Samples.Remove(sampleViewModel);
                         }
                     }
                     break;
@@ -377,7 +505,82 @@ namespace ReScanVisualizer.Views
         {
             if (_geometryModel3DMouseOver != null && DataContext is MainViewModel viewModel)
             {
+                //ViewModelBase? oldSelectedModel = viewModel.SelectedViewModel;
                 viewModel.SelectHitGeometry(_geometryModel3DMouseOver);
+                //HandleMultiSelectionViewportClicked(oldSelectedModel, viewModel.SelectedViewModel);
+                ViewModelBase? viewModelBase = viewModel.SelectedViewModel;
+                if (viewModelBase is ScatterGraphViewModel scatterGraphViewModel)
+                {
+                    ScatterGraphClicked(scatterGraphViewModel);
+                }
+                else if (viewModelBase is BarycenterViewModel barycenterViewModel)
+                {
+                    BarycenterClicked(barycenterViewModel);
+                }
+                else if (viewModelBase is PlanViewModel planViewModel)
+                {
+                    AveragePlanClicked(planViewModel);
+                }
+                else if (viewModelBase is BaseViewModel baseViewModel)
+                {
+                    BaseClicked(baseViewModel.Base);
+                }
+                else if (viewModelBase is SampleViewModel sampleViewModel)
+                {
+                    SampleClicked(sampleViewModel);
+                }
+            }
+        }
+
+        private void HandleMultiSelectionViewportClicked(ViewModelBase? oldSelectedModel, ViewModelBase? currentSelectedModel)
+        {
+            if (currentSelectedModel != null)
+            {
+                MainViewModel viewModel = (MainViewModel)DataContext;
+                if (oldSelectedModel is null)
+                {
+                    FindStartOrEndShiftElement(currentSelectedModel, SelectShiftSartItem);
+                }
+                else
+                {
+                    if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                    {
+
+                    }
+                    else if (Keyboard.IsKeyDown(Key.LeftShift))
+                    {
+                        FindStartOrEndShiftElement(currentSelectedModel, SelectShiftEndItem);
+                        ApplyShiftSelection();
+                    }
+                    else
+                    {
+                        FindStartOrEndShiftElement(currentSelectedModel, SelectShiftSartItem);
+                    }
+                }
+            }
+        }
+
+        private void FindStartOrEndShiftElement(ViewModelBase viewModelBase, Action<ScatterGraphViewModel> action)
+        {
+            if (viewModelBase is ScatterGraphViewModel scatterGraphViewModel)
+            {
+                action(scatterGraphViewModel);
+            }
+            else if (viewModelBase is BarycenterViewModel barycenterViewModel)
+            {
+                action(barycenterViewModel.ScatterGraph!);
+            }
+            else if (viewModelBase is PlanViewModel planViewModel)
+            {
+                action(planViewModel.ScatterGraph!);
+            }
+            else if (viewModelBase is BaseViewModel baseViewModel)
+            {
+                action(baseViewModel.Base.ScatterGraph!);
+            }
+            else if (viewModelBase is SampleViewModel sampleViewModel)
+            {
+                action(sampleViewModel.ScatterGraph!);
             }
         }
 
@@ -388,5 +591,7 @@ namespace ReScanVisualizer.Views
                 Cursor = Cursors.Arrow;
             }
         }
+
+        #endregion
     }
 }
