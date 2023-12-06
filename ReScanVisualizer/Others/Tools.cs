@@ -269,5 +269,16 @@ namespace ReScanVisualizer
             }
             return RadianToDegree(Math.Atan(z / Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y)));
         }
+
+        public static bool IsNumericType(Type type)
+        {
+            if (type == null)
+                return false;
+
+            return type == typeof(byte) || type == typeof(sbyte) || type == typeof(short) ||
+                   type == typeof(ushort) || type == typeof(int) || type == typeof(uint) ||
+                   type == typeof(long) || type == typeof(ulong) || type == typeof(float) ||
+                   type == typeof(double) || type == typeof(decimal);
+        }
     }
 }

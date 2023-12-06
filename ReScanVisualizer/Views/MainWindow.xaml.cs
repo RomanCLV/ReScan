@@ -206,16 +206,37 @@ namespace ReScanVisualizer.Views
             {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
-                    viewModel.ScatterGraphViewModelGroup.Add(scatterGraphViewModel);
-                    if (viewModel.ScatterGraphViewModelGroup.Count() > 1)
+                    if (scatterGraphViewModel.IsSelected)
                     {
-                        viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
-                        viewModel.ScatterGraphViewModelGroup.SelectAll();
+                        viewModel.ScatterGraphViewModelGroup.Remove(scatterGraphViewModel);
+                        scatterGraphViewModel.Unselect();
+                        if (viewModel.ScatterGraphViewModelGroup.Count == 0)
+                        {
+                            viewModel.SelectedViewModel = null;
+                        }
+                        else if (viewModel.ScatterGraphViewModelGroup.Count == 1)
+                        {
+                            viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup[0];
+                        }
+                        else
+                        {
+                            viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
+                            viewModel.ScatterGraphViewModelGroup.SelectAll();
+                        }
                     }
                     else
                     {
-                        viewModel.SelectedViewModel = scatterGraphViewModel;
-                        scatterGraphViewModel.Select();
+                        viewModel.ScatterGraphViewModelGroup.Add(scatterGraphViewModel);
+                        if (viewModel.ScatterGraphViewModelGroup.Count > 1)
+                        {
+                            viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
+                            viewModel.ScatterGraphViewModelGroup.SelectAll();
+                        }
+                        else
+                        {
+                            viewModel.SelectedViewModel = scatterGraphViewModel;
+                            scatterGraphViewModel.Select();
+                        }
                     }
                 }
                 else if (Keyboard.IsKeyDown(Key.LeftShift))
@@ -430,7 +451,7 @@ namespace ReScanVisualizer.Views
                     ViewModelBase? selectedModel = mainViewModel.SelectedViewModel;
                     if (selectedModel != null)
                     {
-                        if (selectedModel is ScatterGraphViewModelGroup scatterGraphViewModelGroup)
+                        if (selectedModel is ScatterGraphGroupViewModel scatterGraphViewModelGroup)
                         {
                             foreach (ScatterGraphViewModel item in scatterGraphViewModelGroup)
                             {

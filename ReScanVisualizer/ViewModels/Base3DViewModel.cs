@@ -143,6 +143,7 @@ namespace ReScanVisualizer.ViewModels
 
         private readonly Material?[] _oldModelMaterials;
 
+        private byte _oldOpacity;
         private byte _opacity;
         public byte Opacity
         {
@@ -187,22 +188,25 @@ namespace ReScanVisualizer.ViewModels
                             model.Material = null;
                             model.BackMaterial = null;
                         }
+                        _oldOpacity = _opacity;
                         Opacity = 0;
                     }
                     else
                     {
-                        if (_opacity == 0)
+                        if (_oldOpacity == 0)
                         {
                             Opacity = 255;
                         }
                         else
                         {
+                            _opacity = _oldOpacity;
                             for (int i = 0; i < _model.Children.Count; i++)
                             {
                                 GeometryModel3D model = (GeometryModel3D)_model.Children[i];
                                 model.Material = _oldModelMaterials[i];
                                 model.BackMaterial = model.Material;
                             }
+                            OnPropertyChanged(nameof(Opacity));
                         }
                     }
                     OnIsHidenChanged();

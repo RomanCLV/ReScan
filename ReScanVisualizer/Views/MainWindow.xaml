@@ -9,7 +9,9 @@
         xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         mc:Ignorable="d"
-        Title="ReScan Visualizer" Height="720" Width="1280"
+        Title="ReScan Visualizer" 
+        Height="720" Width="1280"
+        MinHeight="720" MinWidth="1280"
         WindowState="Maximized"
         Background="{StaticResource backgroundColor}"
         >
@@ -127,7 +129,7 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="50" Width="380"/>
+                <ColumnDefinition MinWidth="50" Width="400"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
@@ -153,6 +155,9 @@
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:BaseViewModel}">
                             <local:BaseView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:ScatterGraphGroupViewModel}">
+                            <local:ScatterGraphGroupView />
                         </DataTemplate>
                     </ScrollViewer.Resources>
 

@@ -22,76 +22,41 @@ using System.Windows.Shapes;
 namespace ReScanVisualizer.Views
 {
     /// <summary>
-    /// Logique d'interaction pour ScatterGraphView.xaml
+    /// Logique d'interaction pour ScatterGraphGroupView.xaml
     /// </summary>
-    public partial class ScatterGraphView : UserControl
+    public partial class ScatterGraphGroupView : UserControl
     {
         private Popup? _openedPopup;
 
-        public ScatterGraphView()
+        public ScatterGraphGroupView()
         {
             InitializeComponent();
             _openedPopup = null;
         }
 
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
         {
-            ClosePopup();
+            ((ScatterGraphGroupViewModel)DataContext).InverseAreHidden();
         }
 
         private void BarycenterVisibilityButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ScatterGraphViewModel scatterGraphView)
-            {
-                scatterGraphView.Barycenter.InverseIsHidden();
-            }
+            ((ScatterGraphGroupViewModel)DataContext).InverseAreBarycentersHidden();
         }
 
         private void AveraglePlanVisibilityButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ScatterGraphViewModel scatterGraphView)
-            {
-                scatterGraphView.AveragePlan.InverseIsHidden();
-            }
+            ((ScatterGraphGroupViewModel)DataContext).InverseArePlansHidden();
         }
 
         private void Base3DVisibilityButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ScatterGraphViewModel scatterGraphView)
-            {
-                scatterGraphView.Base3D.InverseIsHidden();
-            }
+            ((ScatterGraphGroupViewModel)DataContext).InverseAreBasesHidden();
         }
 
         private void PointsVisibilityButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ScatterGraphViewModel viewModel)
-            {
-                if (viewModel.ArePointsHidden)
-                {
-                    viewModel.ShowPoints();
-                }
-                else
-                {
-                    viewModel.HidePoints();
-                }
-            }
-        }
-
-        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ScatterGraphViewModel scatterGraphView)
-            {
-                scatterGraphView.InverseIsHidden();
-            }
-        }
-
-        private void ExportGraphButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ScatterGraphViewModel scatterGraphView)
-            {
-                scatterGraphView.Export();
-            }
+            ((ScatterGraphGroupViewModel)DataContext).InverseArePointsHidden();
         }
 
         private void Rectangle_MouseUp(object sender, MouseButtonEventArgs e)
@@ -101,7 +66,7 @@ namespace ReScanVisualizer.Views
                 StackPanel panel = (StackPanel)rect.Parent;
                 Popup popup = panel.Children.OfType<Popup>().First();
 
-                if (popup.DataContext is ScatterGraphViewModel element)
+                if (popup.DataContext is ScatterGraphGroupViewModel element)
                 {
                     ClosePopup();
                     _openedPopup = popup;
@@ -111,15 +76,15 @@ namespace ReScanVisualizer.Views
                     {
                         if (BarycenterRectangle.Equals(rect))
                         {
-                            selector.Color = element.Barycenter.Color.Color;
+                            selector.Color = element.BarycentersColorViewModel.Color;
                         }
                         else if (AveragePlanRectangle.Equals(rect))
                         {
-                            selector.Color = element.AveragePlan.Color.Color;
+                            selector.Color = element.PlansColorViewModel.Color;
                         }
                         else if (PointsRectangle.Equals(rect))
                         {
-                            selector.Color = element.Color.Color;
+                            selector.Color = element.PointsColorViewModel.Color;
                         }
                     }
                 }
@@ -147,19 +112,19 @@ namespace ReScanVisualizer.Views
 
         private void ColorSelector_ColorChanged(object sender, Color e)
         {
-            if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
+            if (DataContext is ScatterGraphGroupViewModel scatterGraphGroupViewModel)
             {
                 if (BarycenterColorSelector.Equals(sender))
                 {
-                    scatterGraphViewModel.Barycenter.Color.Set(e);
+                    scatterGraphGroupViewModel.BarycentersColorViewModel.Set(e);
                 }
                 else if (AveragePlanColorSelector.Equals(sender))
                 {
-                    scatterGraphViewModel.AveragePlan.Color.Set(e);
+                    scatterGraphGroupViewModel.PlansColorViewModel.Set(e);
                 }
                 else if (PointsColorSelector.Equals(sender))
                 {
-                    scatterGraphViewModel.Color.Set(e);
+                    scatterGraphGroupViewModel.PointsColorViewModel.Set(e);
                 }
             }
         }
@@ -180,33 +145,6 @@ namespace ReScanVisualizer.Views
                 {
                     PointsColorSelector.Color = scatterGraphViewModel.Color.Color;
                 }
-            }
-        }
-
-        private void SelectBarycenterButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ScatterGraphViewModel scatterGraphView)
-            {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = scatterGraphView.Barycenter;
-                scatterGraphView.Select();
-            }
-        }
-
-        private void SelectAveragePlanButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ScatterGraphViewModel scatterGraphView)
-            {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = scatterGraphView.AveragePlan;
-                scatterGraphView.Select();
-            }
-        }
-
-        private void SelectBaseButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ScatterGraphViewModel scatterGraphView)
-            {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = new BaseViewModel(scatterGraphView.Base3D);
-                scatterGraphView.Select();
             }
         }
     }

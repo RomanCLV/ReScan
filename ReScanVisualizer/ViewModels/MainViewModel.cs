@@ -71,7 +71,7 @@ namespace ReScanVisualizer.ViewModels
 
         public Model3DGroup BasesModels { get; private set; }
 
-        public ScatterGraphViewModelGroup ScatterGraphViewModelGroup { get; private set; }
+        public ScatterGraphGroupViewModel ScatterGraphViewModelGroup { get; private set; }
 
         public CommandKey AddScatterGraphCommand { get; }
 
@@ -91,7 +91,7 @@ namespace ReScanVisualizer.ViewModels
 
             ScatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
             Bases = new ObservableCollection<Base3DViewModel>();
-            ScatterGraphViewModelGroup = new ScatterGraphViewModelGroup();
+            ScatterGraphViewModelGroup = new ScatterGraphGroupViewModel();
 
             AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
             AddBaseCommand = new CommandKey(new ActionCommand(AddBase), Key.B, ModifierKeys.Control | ModifierKeys.Shift, "Add a new base");

@@ -15,7 +15,7 @@ namespace ReScanVisualizer.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             BitmapImage image = new BitmapImage();
-            image.LoadFromBitmap((bool)value ? Resources.eye_closed : Resources.eye);
+            image.LoadFromBitmap(value is null ? Resources.eye_unknow : ((bool)value ? Resources.eye_closed : Resources.eye));
             return image;
         }
 

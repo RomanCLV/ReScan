@@ -205,5 +205,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
             }
             return scatterGraphBuildResult;
         }
+
+        public override Task<ScatterGraphBuildResult> BuildAsync()
+        {
+            Task.Delay(20).Wait();
+            return base.BuildAsync();
+        }
     }
 }

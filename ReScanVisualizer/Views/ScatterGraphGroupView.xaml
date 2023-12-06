@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ReScanVisualizer.Views.ScatterGraphView"
+﻿<UserControl x:Class="ReScanVisualizer.Views.ScatterGraphGroupView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,35 +10,23 @@
              xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="400"
-             Foreground="{StaticResource foregroundColor}"
-             Unloaded="UserControl_Unloaded"
              >
     <UserControl.Resources>
         <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter"/>
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
+        <converters:NullableObjectToStringConverter x:Key="NullableObjectToStringConverter"/>
     </UserControl.Resources>
     <Grid>
         <TabControl Background="Transparent">
             <TabItem Header="General">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Name" Width="85" Style="{StaticResource myTextBlockLeft}" />
-                        <TextBox   Style="{StaticResource myTextBox}" Width="100">
-                            <TextBox.Text>
-                                <Binding Path="Name" UpdateSourceTrigger="PropertyChanged">
-                                    <Binding.ValidationRules>
-                                        <validators:NotEmptyValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
+
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />
                         <TextBox   Style="{StaticResource myTextBox}" Width="100">
                             <TextBox.Text>
-                                <Binding Path="ScaleFactor" StringFormat="N3">
+                                <Binding Path="ScaleFactor" Converter="{StaticResource NullableObjectToStringConverter}" ConverterParameter="N3">
                                     <Binding.ValidationRules>
                                         <validators:PositiveNumberValidationRule />
                                     </Binding.ValidationRules>
@@ -50,7 +38,7 @@
                         <TextBlock Text="Points radius" Width="85" Style="{StaticResource myTextBlockLeft}" />
                         <TextBox Style="{StaticResource myTextBox}" Width="100">
                             <TextBox.Text>
-                                <Binding Path="PointsRadius" StringFormat="N2">
+                                <Binding Path="PointsRadius" Converter="{StaticResource NullableObjectToStringConverter}" ConverterParameter="N2">
                                     <Binding.ValidationRules>
                                         <validators:PositiveNumberValidationRule />
                                     </Binding.ValidationRules>
@@ -66,7 +54,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
                             <Button.Content>
-                                <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                <Image Source="{Binding AreHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
                             </Button.Content>
                         </Button>
                         <TextBlock Text="Visible" Style="{StaticResource myTextBlock}" />
@@ -74,7 +62,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
                             <Button.Content>
-                                <Image Source="{Binding Barycenter.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                <Image Source="{Binding AreBarycentersHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
                             </Button.Content>
                         </Button>
                         <TextBlock Text="Barycenter visible" Style="{StaticResource myTextBlock}" />
@@ -82,7 +70,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="AveraglePlanVisibilityButton_Click" Margin="5">
                             <Button.Content>
-                                <Image Source="{Binding AveragePlan.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                <Image Source="{Binding ArePlansHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
                             </Button.Content>
                         </Button>
                         <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
@@ -90,7 +78,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
                             <Button.Content>
-                                <Image Source="{Binding Base3D.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                <Image Source="{Binding AreBasesHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
                             </Button.Content>
                         </Button>
                         <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
@@ -105,35 +93,22 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding WriteHeaders}" Margin="5 0 20 0" Content="Write headers" Width="100" Foreground="{StaticResource foregroundColor}"  VerticalAlignment="Center"/>
-
-                        <Button Style="{StaticResource myButton}" ToolTip="Export" Click="ExportGraphButton_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource update}" Width="25" Height="25" />
-                                    <TextBlock Text="Export" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                    </StackPanel>
                 </StackPanel>
             </TabItem>
-            
+
             <TabItem Header="Barycenter">
                 <StackPanel>
-                    <DockPanel>
-                        <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}" />
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
                         <!-- Rectangle for Color Display -->
                         <Rectangle 
                             x:Name="BarycenterRectangle"
                             HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                             Margin="10 5"
                             MouseUp="Rectangle_MouseUp"
-                            Fill="{Binding Barycenter.Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                            Fill="{Binding BarycentersColorViewModel.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
                             Width="16" Height="16"
-                            ToolTip="{Binding Barycenter.Color.Color}"
+                            ToolTip="{Binding BarycentersColorViewModel.Color}"
                             ToolTipService.Placement="Top"/>
 
                         <Popup Placement="Bottom" Closed="ColorPopup_Closed">
@@ -146,91 +121,75 @@
                                 Padding="5"
                                 ColorChanged="ColorSelector_ColorChanged" />
                         </Popup>
-
                     </StackPanel>
-
-                        <Button Content="Select" Style="{StaticResource myButton}" HorizontalAlignment="Right" Click="SelectBarycenterButton_Click" />
-                    </DockPanel>
                     <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
                             <Button.Content>
-                                <Image Source="{Binding Barycenter.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                <Image Source="{Binding AreBarycentersHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
                             </Button.Content>
                         </Button>
                         <TextBlock Text="Barycenter visible" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
-                    
-                    <StackPanel IsEnabled="{Binding Barycenter.CanEdit}">
-                        <forms:PointForm DataContext="{Binding Barycenter.Point}" />
-                    </StackPanel>
                 </StackPanel>
             </TabItem>
-            
+
             <TabItem Header="Average plan">
                 <StackPanel>
-                    <DockPanel>
-                        <StackPanel Orientation="Horizontal" >
-                            <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
-                            <!-- Rectangle for Color Display -->
-                            <Rectangle 
-                                x:Name="AveragePlanRectangle"
-                                HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
-                                Margin="10 5"
-                                MouseUp="Rectangle_MouseUp"
-                                Fill="{Binding AveragePlan.Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
-                                Width="16" Height="16"
-                                ToolTip="{Binding AveragePlan.Color.Color}"
-                                ToolTipService.Placement="Top"/>
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
+                        <!-- Rectangle for Color Display -->
+                        <Rectangle 
+                            x:Name="AveragePlanRectangle"
+                            HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                            Margin="10 5"
+                            MouseUp="Rectangle_MouseUp"
+                            Fill="{Binding PlansColorViewModel.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                            Width="16" Height="16"
+                            ToolTip="{Binding PlansColorViewModel.Color}"
+                            ToolTipService.Placement="Top"/>
 
-                            <Popup Placement="Bottom" Closed="ColorPopup_Closed">
-                                <uc:ColorSelector 
-                                    x:Name="AveragePlanColorSelector"
-                                    Loaded="ColorSelector_Loaded"
-                                    Background="{StaticResource backgroundColor}"
-                                    BorderBrush="Black"
-                                    BorderThickness="1"
-                                    Padding="5"
-                                    ColorChanged="ColorSelector_ColorChanged" />
-                            </Popup>
+                        <Popup Placement="Bottom" Closed="ColorPopup_Closed">
+                            <uc:ColorSelector 
+                                x:Name="AveragePlanColorSelector"
+                                Loaded="ColorSelector_Loaded"
+                                Background="{StaticResource backgroundColor}"
+                                BorderBrush="Black"
+                                BorderThickness="1"
+                                Padding="5"
+                                ColorChanged="ColorSelector_ColorChanged" />
+                        </Popup>
 
-                        </StackPanel>
-
-                        <Button Content="Select" Style="{StaticResource myButton}" HorizontalAlignment="Right" Click="SelectAveragePlanButton_Click" />
-                    </DockPanel>
+                    </StackPanel>
                     <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="AveraglePlanVisibilityButton_Click" Margin="5">
                             <Button.Content>
-                                <Image Source="{Binding AveragePlan.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                <Image Source="{Binding ArePlansHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
                             </Button.Content>
                         </Button>
                         <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
                     </StackPanel>
-                    
-                    <forms:PlanForm DataContext="{Binding AveragePlan}" />
                 </StackPanel>
             </TabItem>
-            
+
             <TabItem Header="Base">
                 <StackPanel>
-                    <DockPanel>
+                    <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                    <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
                             <Button.Content>
                                 <Image Source="{Binding Base3D.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
                             </Button.Content>
                         </Button>
                         <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
-                        <Button Content="Select" Style="{StaticResource myButton}" HorizontalAlignment="Right" Click="SelectBaseButton_Click" />
-                    </DockPanel>
+                    </StackPanel>
 
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="140"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -242,14 +201,14 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Opacity" Style="{StaticResource myTextBlock}" />
-                        <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding Base3D.Opacity, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
-                        <Slider    Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Value="{Binding Base3D.Opacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Opacity" Style="{StaticResource myTextBlockLeft}" />
+                        <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NullableObjectToStringConverter}, ConverterParameter=N0}" Style="{StaticResource myTextBox}" />
+                        <Slider    Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Value="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" />
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Scale factor" Style="{StaticResource myTextBlock}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Axis scale factor" Style="{StaticResource myTextBlock}" />
                         <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}">
                             <TextBox.Text>
-                                <Binding Path="Base3D.AxisScaleFactor" StringFormat="N2">
+                                <Binding Path="AxisScaleFactor" ConverterParameter="N2" Converter="{StaticResource NullableObjectToStringConverter}">
                                     <Binding.ValidationRules>
                                         <validators:PositiveNumberValidationRule />
                                     </Binding.ValidationRules>
@@ -257,41 +216,6 @@
                             </TextBox.Text>
                         </TextBox>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Name" Style="{StaticResource myTextBlock}" />
-                        <TextBox   Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource myTextBox}" IsEnabled="{Binding Base3D.BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
-                            <TextBox.Text>
-                                <Binding Path="Base3D.Name" UpdateSourceTrigger="PropertyChanged">
-                                    <Binding.ValidationRules>
-                                        <validators:NotEmptyValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="Origin" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="3" Grid.Column="2" Text="X axis" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="3" Grid.Column="3" Text="Y axis" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="3" Grid.Column="4" Text="Z axis" Style="{StaticResource myTextBlock}" />
-
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
-
-                        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Base3D.Origin.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Base3D.Origin.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Base3D.Origin.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-
-                        <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Base3D.X.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                        <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Base3D.X.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                        <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Base3D.X.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-
-                        <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Base3D.Y.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                        <TextBox Grid.Row="5" Grid.Column="3" Text="{Binding Base3D.Y.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                        <TextBox Grid.Row="6" Grid.Column="3" Text="{Binding Base3D.Y.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-
-                        <TextBox Grid.Row="4" Grid.Column="4" Text="{Binding Base3D.Z.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                        <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Base3D.Z.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                        <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Base3D.Z.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
                     </Grid>
                 </StackPanel>
             </TabItem>
@@ -306,10 +230,10 @@
                             HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                             Margin="10 5"
                             MouseUp="Rectangle_MouseUp"
-                            Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                            Fill="{Binding PointsColorViewModel.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
                             Width="16" Height="16"
-                            ToolTip="{Binding Color.Color}"
-                            ToolTipService.Placement="Top"/>
+                            ToolTip="{Binding PointsColorViewModel.Color}"
+                            ToolTipService.Placement="Bottom"/>
 
                         <Popup Placement="Bottom" Closed="ColorPopup_Closed">
                             <uc:ColorSelector 

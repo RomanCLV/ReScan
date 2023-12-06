@@ -96,6 +96,7 @@
     <Compile Include="Converters\BoolToFontWeightConverter.cs" />
     <Compile Include="Converters\IsHiddenToOpacityConverter.cs" />
     <Compile Include="Converters\IsHiddenToImageConverter.cs" />
+    <Compile Include="Converters\NullableObjectToStringConverter.cs" />
     <Compile Include="Converters\ReduceItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Converters\LoadItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Commands\LoadScatterGraphCommand.cs" />
@@ -143,7 +144,7 @@
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
     <Compile Include="ViewModels\Point3DViewModel.cs" />
-    <Compile Include="ViewModels\ScatterGraphViewModelGroup.cs" />
+    <Compile Include="ViewModels\ScatterGraphGroupViewModel.cs" />
     <Compile Include="Views\AddPointWindow.xaml.cs">
       <DependentUpon>AddPointWindow.xaml</DependentUpon>
     </Compile>
@@ -218,6 +219,9 @@
     </Compile>
     <Compile Include="Views\SampleView.xaml.cs">
       <DependentUpon>SampleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScatterGraphGroupView.xaml.cs">
+      <DependentUpon>ScatterGraphGroupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ScatterGraphView.xaml.cs">
       <DependentUpon>ScatterGraphView.xaml</DependentUpon>
@@ -352,6 +356,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ScatterGraphGroupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ScatterGraphView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -433,6 +441,9 @@
   <ItemGroup>
     <Resource Include="Resources\Images\eye_closed.png" />
     <Resource Include="Resources\Images\eye.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\eye_unknow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
