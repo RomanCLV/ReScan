@@ -20,7 +20,6 @@ TODO : upgrades to implement
 - Split graph
 - Fusion graphs
 - Points -> section Points
-    - add button
     - reduce
 - Scatter graph -> section Transform
     -> translate

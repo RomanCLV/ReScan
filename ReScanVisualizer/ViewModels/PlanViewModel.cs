@@ -331,6 +331,7 @@ namespace ReScanVisualizer.ViewModels
         public void UpdateCenter(Point3D center)
         {
             _center = center;
+            OnPropertyChanged(nameof(Center));
             UpdateModelGeometry();
         }
 
@@ -339,12 +340,17 @@ namespace ReScanVisualizer.ViewModels
             _plan.SetABCD(plan);
             _up = up;
             _lenght = length;
+            OnPropertyChanged(nameof(A));
+            OnPropertyChanged(nameof(B));
+            OnPropertyChanged(nameof(C));
+            OnPropertyChanged(nameof(D));
             UpdateModelGeometry();
         }
 
         public void UpdatePlan(Point3D center, Plan plan, Vector3D up, double length)
         {
             _center = center;
+            OnPropertyChanged(nameof(Center));
             UpdatePlan(plan, up, length);
         }
 

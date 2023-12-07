@@ -119,7 +119,8 @@ namespace ReScanVisualizer.Models
         /// Reduce the number of points by skipping points.<br />
         /// <br />
         /// Examples:<br />
-	    /// percent: 10 -> reduce by 10 - if you have 100 points, you will now have 10<br />
+	    /// skipped:  3 -> reduce by  3 - if you have 100 points, you will now have 33 and the taken points are index 0,  3,  6, ..., 99<br />
+	    /// skipped: 10 -> reduce by 10 - if you have 100 points, you will now have 10 and the taken points are index 0, 10, 20, ..., 90<br />
         /// </summary>
         /// <param name="skipped">between 2 and number of points</param>
         public void Reduce(int skipped)

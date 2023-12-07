@@ -374,6 +374,14 @@
                             </Button>
                             <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
                         </StackPanel>
+                        <Button Style="{StaticResource myButton}" ToolTip="Clear" Click="ClearButton_Click" HorizontalAlignment="Left">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource delete}" Width="25" Height="25" />
+                                    <TextBlock Text="Clear" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

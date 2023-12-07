@@ -49,7 +49,7 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private readonly ScatterGraph _scatterGraph;
+        private ScatterGraph _scatterGraph;
 
         private double _pointsRadius;
         public double PointsRadius
@@ -234,17 +234,7 @@ namespace ReScanVisualizer.ViewModels
             _model = new Model3DGroup();
             Samples = new ObservableCollection<SampleViewModel>();
 
-            for (int i = 0; i < _scatterGraph.Count; i++)
-            {
-                SampleViewModel sampleViewModel = new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius, _renderQuality)
-                {
-                    ScatterGraph = this
-                };
-                sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
-                sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
-                Samples.Add(sampleViewModel);
-                _model.Children.Add(sampleViewModel.Model);
-            }
+            SetFrom(_scatterGraph);
             UpdateArePointsHidden();
 
             Point3D barycenter = ComputeBarycenter();
@@ -392,6 +382,22 @@ namespace ReScanVisualizer.ViewModels
             RecomputeAll();
         }
 
+        public void Add(SampleViewModel sampleViewModel)
+        {
+            Samples.Add(sampleViewModel);
+        }
+
+        public void AddRange(IEnumerable<SampleViewModel> sampleViewModels)
+        {
+            Samples.CollectionChanged -= Points_CollectionChanged;
+            foreach (var item in sampleViewModels)
+            {
+                Samples.Add(item);
+            }
+            Samples.CollectionChanged += Points_CollectionChanged;
+            RecomputeAll();
+        }
+
         public void RemoveSample(SampleViewModel sampleViewModel)
         {
             sampleViewModel.ScatterGraph = null;
@@ -411,6 +417,27 @@ namespace ReScanVisualizer.ViewModels
                     break;
                 }
             }
+        }
+
+        public void SetFrom(ScatterGraph scatterGraph)
+        {
+            Samples.CollectionChanged -= Points_CollectionChanged;
+            Clear();
+            _model.Children.Clear();
+            _scatterGraph = scatterGraph;
+            for (int i = 0; i < _scatterGraph.Count; i++)
+            {
+                SampleViewModel sampleViewModel = new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius, _renderQuality)
+                {
+                    ScatterGraph = this
+                };
+                sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
+                sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
+                Samples.Add(sampleViewModel);
+                _model.Children.Add(sampleViewModel.Model);
+            }
+            Samples.CollectionChanged += Points_CollectionChanged;
+            RecomputeAll();
         }
 
         private void OnIsHiddenChanged()
@@ -598,6 +625,34 @@ namespace ReScanVisualizer.ViewModels
                     MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        /// <summary>
+        /// Reduce the number of points by skipping points.<br />
+        /// <br />
+        /// Examples:<br />
+	    /// skipped:  3 -> reduce by  3 - if you have 100 points, you will now have 33 and the taken points are index 0,  3,  6, ..., 99<br />
+	    /// skipped: 10 -> reduce by 10 - if you have 100 points, you will now have 10 and the taken points are index 0, 10, 20, ..., 90<br />
+        /// </summary>
+        /// <param name="skipped">between 2 and number of points</param>
+        public void Reduce(int skipped)
+        {
+            SetFrom(_scatterGraph.GetReduced(skipped));
+        }
+
+        /// <summary>
+        /// Reduce the number of points by the given factor.<br />
+        /// <br />
+	    /// Examples:<br />
+	    /// percent:  10 -> reduced by  10% - if you have 100 points, you will now have 90<br />
+        /// percent:  80 -> reduced by  80% - if you have 100 points, you will now have 20<br />
+        /// percent:   0 -> reduced by   0% - no changes<br />
+        /// percent: 100 -> reduced by 100% - cleared<br />
+        /// </summary>
+        /// <param name="percent">Percentage of reduction (between 0.0 and 100.0).</param>
+        public void ReducePercent(double reductionFactor)
+        {
+            SetFrom(_scatterGraph.GetReducedPercent(reductionFactor));
         }
     }
 }

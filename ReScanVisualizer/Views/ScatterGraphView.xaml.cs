@@ -209,5 +209,43 @@ namespace ReScanVisualizer.Views
                 scatterGraphView.Select();
             }
         }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                AddPointViewModel addPointViewModel = new AddPointViewModel(viewModel);
+                AddPointWindow window = new AddPointWindow
+                {
+                    Owner = Application.Current.MainWindow,
+                    DataContext = addPointViewModel
+                };
+                window.ShowDialog();
+                addPointViewModel.Dispose();
+            }
+        }
+
+        private void ReduceButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                ReduceScatterGraphViewModel reduceScatterGraphViewModel = new ReduceScatterGraphViewModel(viewModel);
+                ReduceScatterGraphWindow window = new ReduceScatterGraphWindow
+                {
+                    Owner = Application.Current.MainWindow,
+                    DataContext = reduceScatterGraphViewModel
+                };
+                window.ShowDialog();
+                reduceScatterGraphViewModel.Dispose();
+            }
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                viewModel.Clear();
+            }
+        }
     }
 }

@@ -144,7 +144,11 @@
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
     <Compile Include="ViewModels\Point3DViewModel.cs" />
+    <Compile Include="ViewModels\ReduceScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\ScatterGraphGroupViewModel.cs" />
+    <Compile Include="Views\ReduceScatterGraphWindow.xaml.cs">
+      <DependentUpon>ReduceScatterGraphWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddPointWindow.xaml.cs">
       <DependentUpon>AddPointWindow.xaml</DependentUpon>
     </Compile>
@@ -229,6 +233,10 @@
     <Page Include="UserControls\ColorSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReduceScatterGraphWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AddPointWindow.xaml">
       <SubType>Designer</SubType>

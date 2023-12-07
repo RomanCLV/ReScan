@@ -176,5 +176,16 @@ namespace ReScanVisualizer.Views
                 viewModel.Flip();
             }
         }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphGroupViewModel viewModel)
+            {
+                foreach (ScatterGraphViewModel item in viewModel)
+                {
+                    item.Clear();
+                }
+            }
+        }
     }
 }

@@ -121,7 +121,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            
+
             <TabItem Header="Barycenter">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -182,7 +182,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            
+
             <TabItem Header="Average plan">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -229,7 +229,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            
+
             <TabItem Header="Base">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -356,6 +356,32 @@
                                 </Button.Content>
                             </Button>
                             <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButton}" ToolTip="Add" Click="AddButton_Click" HorizontalAlignment="Left">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{StaticResource add}" Width="25" Height="25" />
+                                        <TextBlock Text="Add" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Style="{StaticResource myButton}" ToolTip="Reduce" Click="ReduceButton_Click" HorizontalAlignment="Left">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{StaticResource working}" Width="25" Height="25" />
+                                        <TextBlock Text="Reduce" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Style="{StaticResource myButton}" ToolTip="Clear" Click="ClearButton_Click" HorizontalAlignment="Left">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{StaticResource delete}" Width="25" Height="25" />
+                                        <TextBlock Text="Clear" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
