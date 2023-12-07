@@ -15,6 +15,18 @@ using System.Xml.Linq;
 
 #nullable enable
 
+/*
+TODO : upgrades to implement
+- Split graph
+- Fusion graphs
+- Points -> section Points
+    - add button
+    - reduce
+- Scatter graph -> section Transform
+    -> translate
+    -> rotate  
+ */
+
 namespace ReScanVisualizer.ViewModels
 {
     public class MainViewModel : ViewModelBase
