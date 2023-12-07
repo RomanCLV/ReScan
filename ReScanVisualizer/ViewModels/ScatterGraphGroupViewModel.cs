@@ -16,7 +16,36 @@ namespace ReScanVisualizer.ViewModels
 {
     public class ScatterGraphGroupViewModel : ViewModelBase, IEnumerable<ScatterGraphViewModel>
     {
-        // TODO : renforcer la consistance des données si changement de propriété d'un item
+        private readonly static string[] scatterGraphPropertyNames = new string[]
+        {
+            nameof(ScatterGraphViewModel.ScaleFactor),
+            nameof(ScatterGraphViewModel.PointsRadius),
+            nameof(ScatterGraphViewModel.IsHidden),
+            nameof(ScatterGraphViewModel.ArePointsHidden),
+            nameof(ScatterGraphViewModel.Color.Color),
+        };
+
+        private readonly static string[] barycenterPropertyNames = new string[]
+        {
+            nameof(ScatterGraphViewModel.Barycenter.IsHidden),
+            nameof(ScatterGraphViewModel.Barycenter.Radius),
+            nameof(ScatterGraphViewModel.Barycenter.Color),
+        };
+
+        private readonly static string[] averagePlanPropertyNames = new string[]
+        {
+            nameof(ScatterGraphViewModel.AveragePlan.IsHidden),
+            nameof(ScatterGraphViewModel.AveragePlan.Color),
+        };
+
+        private readonly static string[] base3DPropertyNames = new string[]
+        {
+            nameof(ScatterGraphViewModel.Base3D.IsHidden),
+            nameof(ScatterGraphViewModel.Base3D.AxisScaleFactor),
+            nameof(ScatterGraphViewModel.Base3D.Opacity),
+        };
+
+        private bool _inhibitUpdate;
 
         public ScatterGraphViewModel this[int index]
         {
@@ -29,7 +58,7 @@ namespace ReScanVisualizer.ViewModels
         {
             set
             {
-                _items.Clear();
+                Clear();
                 _items.Capacity = value.Count();
                 _items.AddRange(value);
                 foreach (var item in _items)
@@ -54,10 +83,12 @@ namespace ReScanVisualizer.ViewModels
                 }
                 if (SetValue(ref _scaleFactor, value) && _scaleFactor != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.ScaleFactor = (double)_scaleFactor;
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -74,10 +105,12 @@ namespace ReScanVisualizer.ViewModels
                 }
                 if (SetValue(ref _axisScaleFactor, value) && _axisScaleFactor != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.Base3D.AxisScaleFactor = (double)_axisScaleFactor;
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -94,10 +127,34 @@ namespace ReScanVisualizer.ViewModels
                 }
                 if (SetValue(ref _pointsRadius, value) && _pointsRadius != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.PointsRadius = (double)_pointsRadius;
                     }
+                    _inhibitUpdate = false;
+                }
+            }
+        }
+
+        private double? _barycenterRadius;
+        public double? BarycenterRadius
+        {
+            get => _barycenterRadius;
+            set
+            {
+                if (value <= 0.0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Barycenter radius must be greater than 0.");
+                }
+                if (SetValue(ref _barycenterRadius, value) && _barycenterRadius != null)
+                {
+                    _inhibitUpdate = true;
+                    foreach (ScatterGraphViewModel item in _items)
+                    {
+                        item.Barycenter.Radius = (double)_barycenterRadius;
+                    }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -119,10 +176,12 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _baseOpacity, value) && _baseOpacity != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.Base3D.Opacity = (byte)_baseOpacity;
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -135,10 +194,12 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _renderQuality, value) && _renderQuality != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.RenderQuality = (RenderQuality)_renderQuality;
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -153,10 +214,12 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _areHidden, value) && _areHidden != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.IsHidden = (bool)_areHidden;
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -169,6 +232,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _arePointsHidden, value) && _arePointsHidden != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         if ((bool)_arePointsHidden)
@@ -180,6 +244,7 @@ namespace ReScanVisualizer.ViewModels
                             item.ShowPoints();
                         }
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -192,10 +257,12 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _areBarycentersHidden, value) && _areBarycentersHidden != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.Barycenter.IsHidden = (bool)_areBarycentersHidden;
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -208,10 +275,12 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _arePlansHidden, value) && _arePlansHidden != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.AveragePlan.IsHidden = (bool)_arePlansHidden;
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -224,20 +293,24 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _areBasesHidden, value) && _areBasesHidden != null)
                 {
+                    _inhibitUpdate = true;
                     foreach (ScatterGraphViewModel item in _items)
                     {
                         item.Base3D.IsHidden = (bool)_areBasesHidden;
                     }
+                    _inhibitUpdate = false;
                 }
             }
         }
 
         public ScatterGraphGroupViewModel()
         {
+            _inhibitUpdate = false;
             _items = new List<ScatterGraphViewModel>();
             _scaleFactor = null;
             _axisScaleFactor = null;
             _pointsRadius = null;
+            _barycenterRadius = null;
             _isPointsColorDefined = false;
             _isBarycenterColorDefined = false;
             _isPlanColorDefined = false;
@@ -281,54 +354,6 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private void PointsColorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ColorViewModel.Color))
-            {
-                if (_isPointsColorDefined ||
-                    PointsColorViewModel.Color != Colors.Transparent)
-                {
-                    foreach (ScatterGraphViewModel item in _items)
-                    {
-                        item.Color.Set(PointsColorViewModel.Color);
-                    }
-                    _isPointsColorDefined = true;
-                }
-            }
-        }
-
-        private void BarycenterColorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ColorViewModel.Color))
-            {
-                if (_isBarycenterColorDefined ||
-                    BarycentersColorViewModel.Color != Colors.Transparent)
-                {
-                    foreach (ScatterGraphViewModel item in _items)
-                    {
-                        item.Barycenter.Color.Set(BarycentersColorViewModel.Color);
-                    }
-                    _isBarycenterColorDefined = true;
-                }
-            }
-        }
-
-        private void PlanColorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ColorViewModel.Color))
-            {
-                if (_isPlanColorDefined ||
-                    PlansColorViewModel.Color != Colors.Transparent)
-                {
-                    foreach (ScatterGraphViewModel item in _items)
-                    {
-                        item.AveragePlan.Color.Set(PlansColorViewModel.Color);
-                    }
-                    _isPlanColorDefined = true;
-                }
-            }
-        }
-
         public void Add(ScatterGraphViewModel item)
         {
             if (!_items.Contains(item))
@@ -366,43 +391,112 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        private void PointsColorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ColorViewModel.Color))
+            {
+                if (_isPointsColorDefined ||
+                    PointsColorViewModel.Color != Colors.Transparent)
+                {
+                    _inhibitUpdate = true;
+                    foreach (ScatterGraphViewModel item in _items)
+                    {
+                        item.Color.Set(PointsColorViewModel.Color);
+                    }
+                    _inhibitUpdate = false;
+                    _isPointsColorDefined = true;
+                }
+            }
+        }
+
+        private void BarycenterColorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ColorViewModel.Color))
+            {
+                if (_isBarycenterColorDefined ||
+                    BarycentersColorViewModel.Color != Colors.Transparent)
+                {
+                    _inhibitUpdate = true;
+                    foreach (ScatterGraphViewModel item in _items)
+                    {
+                        item.Barycenter.Color.Set(BarycentersColorViewModel.Color);
+                    }
+                    _inhibitUpdate = false;
+                    _isBarycenterColorDefined = true;
+                }
+            }
+        }
+
+        private void PlanColorViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ColorViewModel.Color))
+            {
+                if (_isPlanColorDefined ||
+                    PlansColorViewModel.Color != Colors.Transparent)
+                {
+                    _inhibitUpdate = true;
+                    foreach (ScatterGraphViewModel item in _items)
+                    {
+                        item.AveragePlan.Color.Set(PlansColorViewModel.Color);
+                    }
+                    _inhibitUpdate = false;
+                    _isPlanColorDefined = true;
+                }
+            }
+        }
+
         private void AddPropertyChangedCallback(ScatterGraphViewModel item)
         {
             item.PropertyChanged += Item_PropertyChanged;
+            item.Color.PropertyChanged += Item_PropertyChanged;
             item.Barycenter.PropertyChanged += Barycenter_PropertyChanged;
-            item.Base3D.PropertyChanged += Base3D_PropertyChanged;
+            item.Barycenter.Color.PropertyChanged += Barycenter_PropertyChanged;
             item.AveragePlan.PropertyChanged += AveragePlan_PropertyChanged;
+            item.AveragePlan.Color.PropertyChanged += AveragePlan_PropertyChanged;
+            item.Base3D.PropertyChanged += Base3D_PropertyChanged;
         }
 
         private void RemovePropertyChangedCallback(ScatterGraphViewModel item)
         {
             item.PropertyChanged -= Item_PropertyChanged;
+            item.Color.PropertyChanged -= Item_PropertyChanged;
             item.Barycenter.PropertyChanged -= Barycenter_PropertyChanged;
-            item.Base3D.PropertyChanged -= Base3D_PropertyChanged;
+            item.Barycenter.Color.PropertyChanged -= Barycenter_PropertyChanged;
             item.AveragePlan.PropertyChanged -= AveragePlan_PropertyChanged;
-        }
-
-        private void AveragePlan_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            string[] propertiesName = new string[]
-                {
-                    nameof(ScatterGraphViewModel.)
-                };
-        }
-
-        private void Base3D_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Barycenter_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            throw new NotImplementedException();
+            item.AveragePlan.Color.PropertyChanged -= AveragePlan_PropertyChanged;
+            item.Base3D.PropertyChanged -= Base3D_PropertyChanged;
         }
 
         private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (scatterGraphPropertyNames.Contains(e.PropertyName))
+            {
+                UpdateFromSource();
+            }
+        }
+
+        private void Barycenter_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (barycenterPropertyNames.Contains(e.PropertyName))
+            {
+                UpdateFromSource();
+            }
+        }
+
+        private void AveragePlan_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (averagePlanPropertyNames.Contains(e.PropertyName))
+            {
+                UpdateFromSource();
+            }
+        }
+
+        private void Base3D_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (base3DPropertyNames.Contains(e.PropertyName))
+            {
+                UpdateFromSource();
+            }
         }
 
         public void SelectAll()
@@ -417,11 +511,16 @@ namespace ReScanVisualizer.ViewModels
 
         private void UpdateFromSource()
         {
+            if (_inhibitUpdate)
+            {
+                return;
+            }
             if (_items is null || _items.Count() == 0)
             {
                 ScaleFactor = null;
                 AxisScaleFactor = null;
                 PointsRadius = null;
+                BarycenterRadius = null;
                 _isPointsColorDefined = false;
                 _isBarycenterColorDefined = false;
                 _isPlanColorDefined = false;
@@ -440,6 +539,7 @@ namespace ReScanVisualizer.ViewModels
             UpdateProperty(x => x.ScaleFactor, ref _scaleFactor, nameof(ScaleFactor));
             UpdateProperty(x => x.Base3D.AxisScaleFactor, ref _axisScaleFactor, nameof(AxisScaleFactor));
             UpdateProperty(x => x.PointsRadius, ref _pointsRadius, nameof(PointsRadius));
+            UpdateProperty(x => x.Barycenter.Radius, ref _barycenterRadius, nameof(BarycenterRadius));
             UpdatePropertyColor(x => x.Color.Color, PointsColorViewModel, ref _isPointsColorDefined);
             UpdatePropertyColor(x => x.Barycenter.Color.Color, BarycentersColorViewModel, ref _isBarycenterColorDefined);
             UpdatePropertyColor(x => x.AveragePlan.Color.Color, PlansColorViewModel, ref _isPlanColorDefined);

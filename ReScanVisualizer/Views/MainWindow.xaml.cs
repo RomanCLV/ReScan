@@ -208,35 +208,11 @@ namespace ReScanVisualizer.Views
                 {
                     if (scatterGraphViewModel.IsSelected)
                     {
-                        viewModel.ScatterGraphViewModelGroup.Remove(scatterGraphViewModel);
-                        scatterGraphViewModel.Unselect();
-                        if (viewModel.ScatterGraphViewModelGroup.Count == 0)
-                        {
-                            viewModel.SelectedViewModel = null;
-                        }
-                        else if (viewModel.ScatterGraphViewModelGroup.Count == 1)
-                        {
-                            viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup[0];
-                        }
-                        else
-                        {
-                            viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
-                            viewModel.ScatterGraphViewModelGroup.SelectAll();
-                        }
+                        UnselectCrtlItem(scatterGraphViewModel);
                     }
                     else
                     {
-                        viewModel.ScatterGraphViewModelGroup.Add(scatterGraphViewModel);
-                        if (viewModel.ScatterGraphViewModelGroup.Count > 1)
-                        {
-                            viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
-                            viewModel.ScatterGraphViewModelGroup.SelectAll();
-                        }
-                        else
-                        {
-                            viewModel.SelectedViewModel = scatterGraphViewModel;
-                            scatterGraphViewModel.Select();
-                        }
+                        SelectCrtlItem(scatterGraphViewModel);
                     }
                 }
                 else if (Keyboard.IsKeyDown(Key.LeftShift))
@@ -252,6 +228,42 @@ namespace ReScanVisualizer.Views
                     viewModel.SelectedViewModel = scatterGraphViewModel;
                     scatterGraphViewModel.Select();
                 }
+            }
+        }
+
+        private void UnselectCrtlItem(ScatterGraphViewModel scatterGraphViewModel)
+        {
+            MainViewModel viewModel = (MainViewModel)DataContext;
+            viewModel.ScatterGraphViewModelGroup.Remove(scatterGraphViewModel);
+            scatterGraphViewModel.Unselect();
+            if (viewModel.ScatterGraphViewModelGroup.Count == 0)
+            {
+                viewModel.SelectedViewModel = null;
+            }
+            else if (viewModel.ScatterGraphViewModelGroup.Count == 1)
+            {
+                viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup[0];
+            }
+            else
+            {
+                viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
+                viewModel.ScatterGraphViewModelGroup.SelectAll();
+            }
+        }
+
+        private void SelectCrtlItem(ScatterGraphViewModel scatterGraphViewModel)
+        {
+            MainViewModel viewModel = (MainViewModel)DataContext;
+            viewModel.ScatterGraphViewModelGroup.Add(scatterGraphViewModel);
+            if (viewModel.ScatterGraphViewModelGroup.Count > 1)
+            {
+                viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
+                viewModel.ScatterGraphViewModelGroup.SelectAll();
+            }
+            else
+            {
+                viewModel.SelectedViewModel = scatterGraphViewModel;
+                scatterGraphViewModel.Select();
             }
         }
 
@@ -526,12 +538,11 @@ namespace ReScanVisualizer.Views
         {
             if (_geometryModel3DMouseOver != null && DataContext is MainViewModel viewModel)
             {
-                //ViewModelBase? oldSelectedModel = viewModel.SelectedViewModel;
                 viewModel.SelectHitGeometry(_geometryModel3DMouseOver);
-                //HandleMultiSelectionViewportClicked(oldSelectedModel, viewModel.SelectedViewModel);
                 ViewModelBase? viewModelBase = viewModel.SelectedViewModel;
                 if (viewModelBase is ScatterGraphViewModel scatterGraphViewModel)
                 {
+                    scatterGraphViewModel.Unselect();
                     ScatterGraphClicked(scatterGraphViewModel);
                 }
                 else if (viewModelBase is BarycenterViewModel barycenterViewModel)
@@ -550,58 +561,6 @@ namespace ReScanVisualizer.Views
                 {
                     SampleClicked(sampleViewModel);
                 }
-            }
-        }
-
-        private void HandleMultiSelectionViewportClicked(ViewModelBase? oldSelectedModel, ViewModelBase? currentSelectedModel)
-        {
-            if (currentSelectedModel != null)
-            {
-                MainViewModel viewModel = (MainViewModel)DataContext;
-                if (oldSelectedModel is null)
-                {
-                    FindStartOrEndShiftElement(currentSelectedModel, SelectShiftSartItem);
-                }
-                else
-                {
-                    if (Keyboard.IsKeyDown(Key.LeftCtrl))
-                    {
-
-                    }
-                    else if (Keyboard.IsKeyDown(Key.LeftShift))
-                    {
-                        FindStartOrEndShiftElement(currentSelectedModel, SelectShiftEndItem);
-                        ApplyShiftSelection();
-                    }
-                    else
-                    {
-                        FindStartOrEndShiftElement(currentSelectedModel, SelectShiftSartItem);
-                    }
-                }
-            }
-        }
-
-        private void FindStartOrEndShiftElement(ViewModelBase viewModelBase, Action<ScatterGraphViewModel> action)
-        {
-            if (viewModelBase is ScatterGraphViewModel scatterGraphViewModel)
-            {
-                action(scatterGraphViewModel);
-            }
-            else if (viewModelBase is BarycenterViewModel barycenterViewModel)
-            {
-                action(barycenterViewModel.ScatterGraph!);
-            }
-            else if (viewModelBase is PlanViewModel planViewModel)
-            {
-                action(planViewModel.ScatterGraph!);
-            }
-            else if (viewModelBase is BaseViewModel baseViewModel)
-            {
-                action(baseViewModel.Base.ScatterGraph!);
-            }
-            else if (viewModelBase is SampleViewModel sampleViewModel)
-            {
-                action(sampleViewModel.ScatterGraph!);
             }
         }
 

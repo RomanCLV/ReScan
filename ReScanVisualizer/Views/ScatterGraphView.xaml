@@ -151,6 +151,18 @@
 
                         <Button Content="Select" Style="{StaticResource myButton}" HorizontalAlignment="Right" Click="SelectBarycenterButton_Click" />
                     </DockPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Radius" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                        <TextBox Style="{StaticResource myTextBox}" Width="100">
+                            <TextBox.Text>
+                                <Binding Path="Barycenter.Radius" StringFormat="N2">
+                                    <Binding.ValidationRules>
+                                        <validators:PositiveNumberValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
                     <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
                     <StackPanel Orientation="Horizontal">
                         <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
