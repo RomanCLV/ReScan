@@ -133,35 +133,14 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <DockPanel Grid.Column="0">
-                <StackPanel
-                    Background="Transparent"
-                    DockPanel.Dock="Bottom"
-                    FocusVisualStyle="{x:Null}"
-                    Margin="0 0 5 0">
-                    <StackPanel.Resources>
-                        <DataTemplate DataType="{x:Type viewModels:ScatterGraphViewModel}">
-                            <local:ScatterGraphView />
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type viewModels:SampleViewModel}">
-                            <local:SampleView />
-                            <!-- IsEnabled="{Binding CanEdit}" -->
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type viewModels:PlanViewModel}">
-                            <local:PlanView />
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type viewModels:BaseViewModel}">
-                            <local:BaseView />
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type viewModels:ScatterGraphGroupViewModel}">
-                            <local:ScatterGraphGroupView />
-                        </DataTemplate>
-                    </StackPanel.Resources>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="firstRow" Height="*" MinHeight="250"/>
+                    <!--<RowDefinition Height="250" MinHeight="250" />-->
+                    <RowDefinition Height="Auto" MinHeight="250"/>
+                </Grid.RowDefinitions>
 
-                    <ContentControl Content="{Binding SelectedViewModel}" Height="250" />
-                </StackPanel>
-             
-                <TabControl Background="Transparent" Margin="0 0 5 10">
+                <TabControl Grid.Row="0" Background="Transparent" Margin="0 0 5 5">
                     <TabItem Header="Scatter graphs">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -293,8 +272,32 @@
                         </Grid>
                     </TabItem>
                 </TabControl>
-                
-            </DockPanel>
+
+                <GridSplitter Grid.Row="0" Height="5" ResizeDirection="Rows" Background="{StaticResource backgroundListColor}"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0 0 5 0" />
+
+                <Grid Grid.Row="1" x:Name="contentContainer" Margin="0 0 5 0">
+                    <Grid.Resources>
+                        <DataTemplate DataType="{x:Type viewModels:ScatterGraphViewModel}">
+                            <local:ScatterGraphView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:SampleViewModel}">
+                            <local:SampleView />
+                            <!-- IsEnabled="{Binding CanEdit}" -->
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:PlanViewModel}">
+                            <local:PlanView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:BaseViewModel}">
+                            <local:BaseView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:ScatterGraphGroupViewModel}">
+                            <local:ScatterGraphGroupView />
+                        </DataTemplate>
+                    </Grid.Resources>
+                    <ContentControl Content="{Binding SelectedViewModel}" Height="{Binding ElementName=contentContainer, Path=ActualHeight}"/>
+                </Grid>
+            </Grid>
             
             <GridSplitter Grid.Column="0" Width="5" Background="{StaticResource backgroundListColor}" />
 

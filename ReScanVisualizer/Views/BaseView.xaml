@@ -7,7 +7,7 @@
              xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="375"
+             d:DesignHeight="250" d:DesignWidth="400"
              Foreground="{StaticResource foregroundColor}">
     <UserControl.Resources>
         <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter" />
@@ -18,8 +18,8 @@
         <TabControl Background="Transparent" SelectionChanged="TabControl_SelectionChanged">
 
             <TabItem Header="General" Tag="General">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Margin="0 25 0 0">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0 15 0 0">
                         <StackPanel Orientation="Horizontal">
                             <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
                                 <Button.Content>
@@ -89,167 +89,172 @@
             </TabItem>
 
             <TabItem Header="Translate" Tag="Translate" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
-                <Grid Margin="0 25 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="75"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}"/>
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}"/>
-
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding TranslateX, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TranslateY, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TranslateZ, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-
-                    <Button Grid.Row="3" Grid.Column="1" Content="Translate" Style="{StaticResource myButton}" Click="TranslateButton_Click" />
-                    <Button Grid.Row="4" Grid.Column="1" Content="Move to"   Style="{StaticResource myButton}" Click="MoveToButton_Click" />
-                </Grid>
-            </TabItem>
-
-            <TabItem Header="Axis rotation" Tag="AxisRotation">
-                <Grid Margin="0 25 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition />
-                        <RowDefinition Height="3*"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Style="{StaticResource myTextBlockLeft}"/>
-                    <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" ItemsSource="{Binding AllRotationAxis}" SelectedValue="{Binding RotationAxis}" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsEnabled="{Binding Base.BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-
-                    <TextBlock Grid.Row="1" Text="Direction:" Style="{StaticResource myTextBlockLeft}"/>
-
-                    <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="0 15 0 0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="75"  />
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="75"  />
+                            <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="75"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
                             <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}"/>
 
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Angle" Style="{StaticResource myTextBlock}" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding TranslateX, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TranslateY, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TranslateZ, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
 
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding RotationX, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="{Binding RotateXYZEnabled}" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RotationY, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="{Binding RotateXYZEnabled}" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RotationZ, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="{Binding RotateXYZEnabled}" />
-
-                        <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding RotationAngle, StringFormat=N3, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
-
-                        <Slider Grid.Row="0" Grid.Column="4" Minimum="-180" Maximum="180" Value="{Binding RotationAngle}" VerticalAlignment="Center" />
+                        <Button Grid.Row="3" Grid.Column="1" Content="Translate" Style="{StaticResource myButton}" Click="TranslateButton_Click" />
+                        <Button Grid.Row="4" Grid.Column="1" Content="Move to"   Style="{StaticResource myButton}" Click="MoveToButton_Click" />
                     </Grid>
+                </ScrollViewer>
+            </TabItem>
 
-                    <Grid Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Right">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
+            <TabItem Header="Axis rotation" Tag="AxisRotation">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="0 15 0 0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
+                            <ColumnDefinition Width="auto" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Grid.Row="0" Content=" -15°" Tag=" -15" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-                        <Button Grid.Column="1" Grid.Row="0" Content=" +15°" Tag=" +15" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-                        <Button Grid.Column="0" Grid.Row="1" Content=" -30°" Tag=" -30" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-                        <Button Grid.Column="1" Grid.Row="1" Content=" +30°" Tag=" +30" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-                        <Button Grid.Column="0" Grid.Row="2" Content=" -45°" Tag=" -45" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-                        <Button Grid.Column="1" Grid.Row="2" Content=" +45°" Tag=" +45" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-                        <Button Grid.Column="0" Grid.Row="3" Content=" -60°" Tag=" -60" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-                        <Button Grid.Column="1" Grid.Row="3" Content=" +60°" Tag=" +60" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
-                        <Button Grid.Column="0" Grid.Row="4" Content=" -90°" Tag=" -90" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
-                        <Button Grid.Column="1" Grid.Row="4" Content=" +90°" Tag=" +90" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
-                        <Button Grid.Column="0" Grid.Row="5" Content="-180°" Tag="-180" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
-                        <Button Grid.Column="1" Grid.Row="5" Content="+180°" Tag="+180" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
-                    </Grid>
-                </Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition />
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
 
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Style="{StaticResource myTextBlockLeft}"/>
+                        <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" ItemsSource="{Binding AllRotationAxis}" SelectedValue="{Binding RotationAxis}" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsEnabled="{Binding Base.BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+
+                        <TextBlock Grid.Row="1" Text="Direction:" Style="{StaticResource myTextBlockLeft}"/>
+
+                        <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="75"  />
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="75"  />
+                                <ColumnDefinition Width="75"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Angle" Style="{StaticResource myTextBlock}" />
+
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding RotationX, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="{Binding RotateXYZEnabled}" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RotationY, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="{Binding RotateXYZEnabled}" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RotationZ, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="{Binding RotateXYZEnabled}" />
+
+                            <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding RotationAngle, StringFormat=N3, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
+
+                            <Slider Grid.Row="0" Grid.Column="4" Minimum="-180" Maximum="180" Value="{Binding RotationAngle}" VerticalAlignment="Center" />
+                        </Grid>
+
+                        <Grid Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Right">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Grid.Row="0" Content=" -15°" Tag=" -15" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                            <Button Grid.Column="1" Grid.Row="0" Content=" +15°" Tag=" +15" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                            <Button Grid.Column="0" Grid.Row="1" Content=" -30°" Tag=" -30" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                            <Button Grid.Column="1" Grid.Row="1" Content=" +30°" Tag=" +30" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                            <Button Grid.Column="0" Grid.Row="2" Content=" -45°" Tag=" -45" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                            <Button Grid.Column="1" Grid.Row="2" Content=" +45°" Tag=" +45" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                            <Button Grid.Column="0" Grid.Row="3" Content=" -60°" Tag=" -60" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                            <Button Grid.Column="1" Grid.Row="3" Content=" +60°" Tag=" +60" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                            <Button Grid.Column="0" Grid.Row="4" Content=" -90°" Tag=" -90" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                            <Button Grid.Column="1" Grid.Row="4" Content=" +90°" Tag=" +90" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                            <Button Grid.Column="0" Grid.Row="5" Content="-180°" Tag="-180" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                            <Button Grid.Column="1" Grid.Row="5" Content="+180°" Tag="+180" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
             </TabItem>
 
             <TabItem Header="Reorient" Tag="Reorient">
-                <Grid Margin="0 25 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="0 15 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-                    <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Content="Flip base" Width="75" ToolTip="Flip base" Style="{StaticResource myButton}" Click="FlipButton_Click" />
+                        <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Content="Flip base" Width="75" ToolTip="Flip base" Style="{StaticResource myButton}" Click="FlipButton_Click" />
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Style="{StaticResource myTextBlockLeft}"/>
-                    <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" Height="20"
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Style="{StaticResource myTextBlockLeft}"/>
+                        <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" Height="20"
                                ItemsSource="{Binding AllReorientAxis}" SelectedValue="{Binding ReorientAxis}" 
                                IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"
                                HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 
-                    <Grid Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="75" />
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="75"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="75" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="75"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="Direction:" Style="{StaticResource myTextBlockLeft}"/>
-                        <Image Grid.Row="1" Grid.RowSpan="3" Source="{StaticResource circle}" Width="96" Height="96" Margin="5"/>
+                            <TextBlock Grid.Row="0" Text="Direction:" Style="{StaticResource myTextBlockLeft}"/>
+                            <Image Grid.Row="1" Grid.RowSpan="3" Source="{StaticResource circle}" Width="96" Height="96" Margin="5"/>
 
-                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Cartesian" Style="{StaticResource myTextBlockLeft}" />
-                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Angular" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Cartesian" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Angular" Style="{StaticResource myTextBlockLeft}" />
 
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="X" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Y" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="Z" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="X" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="Y" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="Z" Style="{StaticResource myTextBlock}" />
 
-                        <TextBlock Grid.Row="1" Grid.Column="3" Text="φ" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Grid.Row="2" Grid.Column="3" Text="θ" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="φ" Style="{StaticResource myTextBlock}" />
+                            <TextBlock Grid.Row="2" Grid.Column="3" Text="θ" Style="{StaticResource myTextBlock}" />
 
-                        <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding ReorientX, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False" />
-                        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding ReorientY, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False" />
-                        <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding ReorientZ, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False" />
+                            <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding ReorientX, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False" />
+                            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding ReorientY, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False" />
+                            <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding ReorientZ, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False" />
 
-                        <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding ReorientPhi,   StringFormat=N3, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
-                        <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding ReorientTheta, StringFormat=N3, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
+                            <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding ReorientPhi,   StringFormat=N3, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
+                            <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding ReorientTheta, StringFormat=N3, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
 
-                        <Slider Grid.Row="1" Grid.Column="5" Minimum="-180" Maximum="180" Value="{Binding ReorientPhi}"   VerticalAlignment="Center" />
-                        <Slider Grid.Row="2" Grid.Column="5" Minimum="-180" Maximum="180" Value="{Binding ReorientTheta}" VerticalAlignment="Center" />
+                            <Slider Grid.Row="1" Grid.Column="5" Minimum="-180" Maximum="180" Value="{Binding ReorientPhi}"   VerticalAlignment="Center" />
+                            <Slider Grid.Row="2" Grid.Column="5" Minimum="-180" Maximum="180" Value="{Binding ReorientTheta}" VerticalAlignment="Center" />
+                        </Grid>
                     </Grid>
-                </Grid>
+                </ScrollViewer>
             </TabItem>
 
         </TabControl>

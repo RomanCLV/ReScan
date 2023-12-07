@@ -16,54 +16,56 @@
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition MaxHeight="120"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition MaxHeight="120"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20">
-            <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
-                <Button.Content>
-                    <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
-                </Button.Content>
-            </Button>
-            <StackPanel Orientation="Horizontal" >
-                <TextBlock Text="Color:" VerticalAlignment="Center"/>
-                <!-- Rectangle for Color Display -->
-                <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
-                       Margin="10 5"
-                       MouseUp="Rectangle_MouseUp"
-                       Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
-                       Width="16" Height="16"
-                       ToolTip="{Binding Color.Color}"
-                       ToolTipService.Placement="Top"/>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20">
+                <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
+                    <Button.Content>
+                        <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                    </Button.Content>
+                </Button>
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="Color:" VerticalAlignment="Center"/>
+                    <!-- Rectangle for Color Display -->
+                    <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                   Margin="10 5"
+                   MouseUp="Rectangle_MouseUp"
+                   Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                   Width="16" Height="16"
+                   ToolTip="{Binding Color.Color}"
+                   ToolTipService.Placement="Top"/>
 
-                <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
-                    <uc:ColorSelector 
-                    Background="{StaticResource backgroundColor}"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    Padding="5"
-                    ColorChanged="ColorSelector_ColorChanged" />
-                </Popup>
+                    <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
+                        <uc:ColorSelector 
+                Background="{StaticResource backgroundColor}"
+                BorderBrush="Black"
+                BorderThickness="1"
+                Padding="5"
+                ColorChanged="ColorSelector_ColorChanged" />
+                    </Popup>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
 
-        <StackPanel Grid.Row="1" IsEnabled="{Binding CanEdit}" >
-            <forms:PointForm DataContext="{Binding Point}" />
-        </StackPanel>
+            <StackPanel Grid.Row="1" IsEnabled="{Binding CanEdit}" >
+                <forms:PointForm DataContext="{Binding Point}" />
+            </StackPanel>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding CanEdit}">
-            <Button Style="{StaticResource myButton}" ToolTip="Delete" Click="DeleteButton_Click">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource delete}" Width="25" Height="25" />
-                        <TextBlock Text="Delete" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-        </StackPanel>
-    </Grid>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding CanEdit}">
+                <Button Style="{StaticResource myButton}" ToolTip="Delete" Click="DeleteButton_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{StaticResource delete}" Width="25" Height="25" />
+                            <TextBlock Text="Delete" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

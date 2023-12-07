@@ -8,55 +8,56 @@
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="250" d:DesignWidth="400"
              Foreground="{StaticResource foregroundColor}"
              >
     <UserControl.Resources>
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
     </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="75"/>
-            <ColumnDefinition Width="125"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="125"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="4*"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="20">
-            <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
-                <Button.Content>
-                    <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
-                </Button.Content>
-            </Button>
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="20">
+                <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
+                    <Button.Content>
+                        <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                    </Button.Content>
+                </Button>
 
-            <StackPanel Orientation="Horizontal" >
-                <TextBlock Text="Color:" VerticalAlignment="Center"/>
-                <!-- Rectangle for Color Display -->
-                <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="Color:" VerticalAlignment="Center"/>
+                    <!-- Rectangle for Color Display -->
+                    <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                     Margin="10 5"
                     MouseUp="Rectangle_MouseUp"
                     Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
                     Width="16" Height="16"
                     ToolTip="{Binding Color.Color}"
-                    ToolTipService.Placement="Top"/> 
+                    ToolTipService.Placement="Top"/>
 
-                <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
-                    <uc:ColorSelector 
+                    <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
+                        <uc:ColorSelector 
                         Background="{StaticResource backgroundColor}"
                         BorderBrush="Black"
                         BorderThickness="1"
                         Padding="5"
                         ColorChanged="ColorSelector_ColorChanged" />
-                </Popup>
+                    </Popup>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
 
-        <forms:PlanForm Grid.Column="0" Grid.Row="1" Grid.RowSpan="4" Grid.ColumnSpan="2" IsEnabled="{Binding CanEdit}" />
-    </Grid>
+            <forms:PlanForm Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding CanEdit}" />
+            <forms:PlanForm Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" IsEnabled="{Binding CanEdit}" />
+        </Grid>
+    </ScrollViewer>
 </UserControl>
