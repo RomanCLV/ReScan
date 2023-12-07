@@ -20,88 +20,90 @@
     <Grid>
         <TabControl Background="Transparent">
             <TabItem Header="General">
-                <StackPanel>
-
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />
-                        <TextBox   Style="{StaticResource myTextBox}" Width="100">
-                            <TextBox.Text>
-                                <Binding Path="ScaleFactor" Converter="{StaticResource NullableObjectToStringConverter}" ConverterParameter="N3">
-                                    <Binding.ValidationRules>
-                                        <validators:PositiveNumberValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBox   Style="{StaticResource myTextBox}" Width="100">
+                                <TextBox.Text>
+                                    <Binding Path="ScaleFactor" Converter="{StaticResource NullableObjectToStringConverter}" ConverterParameter="N3">
+                                        <Binding.ValidationRules>
+                                            <validators:PositiveNumberValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Points radius" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBox Style="{StaticResource myTextBox}" Width="100">
+                                <TextBox.Text>
+                                    <Binding Path="PointsRadius" Converter="{StaticResource NullableObjectToStringConverter}" ConverterParameter="N2">
+                                        <Binding.ValidationRules>
+                                            <validators:PositiveNumberValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Render quality" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                            <ComboBox Margin="6" ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding RenderQuality}" MinWidth="100" />
+                        </StackPanel>
+                        <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding AreHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding AreBarycentersHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Barycenter visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="AveraglePlanVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding ArePlansHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding AreBasesHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="PointsVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Points radius" Width="85" Style="{StaticResource myTextBlockLeft}" />
-                        <TextBox Style="{StaticResource myTextBox}" Width="100">
-                            <TextBox.Text>
-                                <Binding Path="PointsRadius" Converter="{StaticResource NullableObjectToStringConverter}" ConverterParameter="N2">
-                                    <Binding.ValidationRules>
-                                        <validators:PositiveNumberValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Render quality" Width="85" Style="{StaticResource myTextBlockLeft}" />
-                        <ComboBox Margin="6" ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding RenderQuality}" MinWidth="100" />
-                    </StackPanel>
-                    <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding AreHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Visible" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding AreBarycentersHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Barycenter visible" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="AveraglePlanVisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding ArePlansHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding AreBasesHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="PointsVisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                    </StackPanel>
-                </StackPanel>
+                </ScrollViewer>
             </TabItem>
 
             <TabItem Header="Barycenter">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
-                        <!-- Rectangle for Color Display -->
-                        <Rectangle 
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
+                            <!-- Rectangle for Color Display -->
+                            <Rectangle 
                             x:Name="BarycenterRectangle"
                             HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                             Margin="10 5"
@@ -111,8 +113,8 @@
                             ToolTip="{Binding BarycentersColorViewModel.Color}"
                             ToolTipService.Placement="Top"/>
 
-                        <Popup Placement="Bottom" Closed="ColorPopup_Closed">
-                            <uc:ColorSelector 
+                            <Popup Placement="Bottom" Closed="ColorPopup_Closed">
+                                <uc:ColorSelector 
                                 x:Name="BarycenterColorSelector"
                                 Loaded="ColorSelector_Loaded"
                                 Background="{StaticResource backgroundColor}"
@@ -120,38 +122,40 @@
                                 BorderThickness="1"
                                 Padding="5"
                                 ColorChanged="ColorSelector_ColorChanged" />
-                        </Popup>
+                            </Popup>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Radius" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBox Style="{StaticResource myTextBox}" Width="100">
+                                <TextBox.Text>
+                                    <Binding Path="BarycenterRadius" Converter="{StaticResource NullableObjectToStringConverter}" ConverterParameter="N2">
+                                        <Binding.ValidationRules>
+                                            <validators:PositiveNumberValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding AreBarycentersHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Barycenter visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Radius" Width="85" Style="{StaticResource myTextBlockLeft}" />
-                        <TextBox Style="{StaticResource myTextBox}" Width="100">
-                            <TextBox.Text>
-                                <Binding Path="BarycenterRadius" Converter="{StaticResource NullableObjectToStringConverter}" ConverterParameter="N2">
-                                    <Binding.ValidationRules>
-                                        <validators:PositiveNumberValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-                    <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="BarycenterVisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding AreBarycentersHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Barycenter visible" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                </StackPanel>
+                </ScrollViewer>
             </TabItem>
 
             <TabItem Header="Average plan">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
-                        <!-- Rectangle for Color Display -->
-                        <Rectangle 
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
+                            <!-- Rectangle for Color Display -->
+                            <Rectangle 
                             x:Name="AveragePlanRectangle"
                             HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                             Margin="10 5"
@@ -161,8 +165,8 @@
                             ToolTip="{Binding PlansColorViewModel.Color}"
                             ToolTipService.Placement="Top"/>
 
-                        <Popup Placement="Bottom" Closed="ColorPopup_Closed">
-                            <uc:ColorSelector 
+                            <Popup Placement="Bottom" Closed="ColorPopup_Closed">
+                                <uc:ColorSelector 
                                 x:Name="AveragePlanColorSelector"
                                 Loaded="ColorSelector_Loaded"
                                 Background="{StaticResource backgroundColor}"
@@ -170,74 +174,78 @@
                                 BorderThickness="1"
                                 Padding="5"
                                 ColorChanged="ColorSelector_ColorChanged" />
-                        </Popup>
+                            </Popup>
 
+                        </StackPanel>
+                        <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="AveraglePlanVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding ArePlansHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
                     </StackPanel>
-                    <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="AveraglePlanVisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding ArePlansHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                </StackPanel>
+                </ScrollViewer>
             </TabItem>
 
             <TabItem Header="Base">
-                <StackPanel>
-                    <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding Base3D.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding Base3D.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="140"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Opacity" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NullableObjectToStringConverter}, ConverterParameter=N0}" Style="{StaticResource myTextBox}" />
+                            <Slider    Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Value="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Axis scale factor" Style="{StaticResource myTextBlock}" />
+                            <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}">
+                                <TextBox.Text>
+                                    <Binding Path="AxisScaleFactor" ConverterParameter="N2" Converter="{StaticResource NullableObjectToStringConverter}">
+                                        <Binding.ValidationRules>
+                                            <validators:PositiveNumberValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                        </Grid>
                     </StackPanel>
-
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="140"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Opacity" Style="{StaticResource myTextBlockLeft}" />
-                        <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NullableObjectToStringConverter}, ConverterParameter=N0}" Style="{StaticResource myTextBox}" />
-                        <Slider    Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Value="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Axis scale factor" Style="{StaticResource myTextBlock}" />
-                        <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}">
-                            <TextBox.Text>
-                                <Binding Path="AxisScaleFactor" ConverterParameter="N2" Converter="{StaticResource NullableObjectToStringConverter}">
-                                    <Binding.ValidationRules>
-                                        <validators:PositiveNumberValidationRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-
-                    </Grid>
-                </StackPanel>
+                </ScrollViewer>
             </TabItem>
 
             <TabItem Header="Points">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
-                        <!-- Rectangle for Color Display -->
-                        <Rectangle
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
+                            <!-- Rectangle for Color Display -->
+                            <Rectangle
                             x:Name="PointsRectangle"
                             HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                             Margin="10 5"
@@ -247,8 +255,8 @@
                             ToolTip="{Binding PointsColorViewModel.Color}"
                             ToolTipService.Placement="Bottom"/>
 
-                        <Popup Placement="Bottom" Closed="ColorPopup_Closed">
-                            <uc:ColorSelector 
+                            <Popup Placement="Bottom" Closed="ColorPopup_Closed">
+                                <uc:ColorSelector 
                                 x:Name="PointsColorSelector"
                                 Loaded="ColorSelector_Loaded"
                                 Background="{StaticResource backgroundColor}"
@@ -256,19 +264,20 @@
                                 BorderThickness="1"
                                 Padding="5"
                                 ColorChanged="ColorSelector_ColorChanged" />
-                        </Popup>
+                            </Popup>
 
+                        </StackPanel>
+                        <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="PointsVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
                     </StackPanel>
-                    <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource myButtonIconNoPadding}" Click="PointsVisibilityButton_Click" Margin="5">
-                            <Button.Content>
-                                <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
-                            </Button.Content>
-                        </Button>
-                        <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                </StackPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>

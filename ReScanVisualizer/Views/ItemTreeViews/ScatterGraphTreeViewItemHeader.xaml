@@ -34,7 +34,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel>
+        <StackPanel Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
             <!-- Rectangle for Color Display -->
             <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                 MouseUp="Rectangle_MouseUp"

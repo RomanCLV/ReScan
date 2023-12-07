@@ -134,15 +134,12 @@
             </Grid.ColumnDefinitions>
 
             <DockPanel Grid.Column="0">
-                <ScrollViewer
+                <StackPanel
                     Background="Transparent"
                     DockPanel.Dock="Bottom"
-                    VerticalScrollBarVisibility="Auto"
-                    HorizontalScrollBarVisibility="Auto" 
                     FocusVisualStyle="{x:Null}"
-                    Height="250"
                     Margin="0 0 5 0">
-                    <ScrollViewer.Resources>
+                    <StackPanel.Resources>
                         <DataTemplate DataType="{x:Type viewModels:ScatterGraphViewModel}">
                             <local:ScatterGraphView />
                         </DataTemplate>
@@ -159,10 +156,10 @@
                         <DataTemplate DataType="{x:Type viewModels:ScatterGraphGroupViewModel}">
                             <local:ScatterGraphGroupView />
                         </DataTemplate>
-                    </ScrollViewer.Resources>
+                    </StackPanel.Resources>
 
-                    <ContentControl Content="{Binding SelectedViewModel}" />
-                </ScrollViewer>
+                    <ContentControl Content="{Binding SelectedViewModel}" Height="250" />
+                </StackPanel>
              
                 <TabControl Background="Transparent" Margin="0 0 5 10">
                     <TabItem Header="Scatter graphs">
