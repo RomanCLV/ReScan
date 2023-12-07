@@ -130,24 +130,24 @@
                                 <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}" />
                                 <!-- Rectangle for Color Display -->
                                 <Rectangle 
-            x:Name="BarycenterRectangle"
-            HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
-            Margin="10 5"
-            MouseUp="Rectangle_MouseUp"
-            Fill="{Binding Barycenter.Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
-            Width="16" Height="16"
-            ToolTip="{Binding Barycenter.Color.Color}"
-            ToolTipService.Placement="Top"/>
+                                    x:Name="BarycenterRectangle"
+                                    HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                                    Margin="10 5"
+                                    MouseUp="Rectangle_MouseUp"
+                                    Fill="{Binding Barycenter.Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                                    Width="16" Height="16"
+                                    ToolTip="{Binding Barycenter.Color.Color}"
+                                    ToolTipService.Placement="Top"/>
 
                                 <Popup Placement="Bottom" Closed="ColorPopup_Closed">
                                     <uc:ColorSelector 
-                x:Name="BarycenterColorSelector"
-                Loaded="ColorSelector_Loaded"
-                Background="{StaticResource backgroundColor}"
-                BorderBrush="Black"
-                BorderThickness="1"
-                Padding="5"
-                ColorChanged="ColorSelector_ColorChanged" />
+                                        x:Name="BarycenterColorSelector"
+                                        Loaded="ColorSelector_Loaded"
+                                        Background="{StaticResource backgroundColor}"
+                                        BorderBrush="Black"
+                                        BorderThickness="1"
+                                        Padding="5"
+                                        ColorChanged="ColorSelector_ColorChanged" />
                                 </Popup>
 
                             </StackPanel>
@@ -191,24 +191,24 @@
                                 <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
                                 <!-- Rectangle for Color Display -->
                                 <Rectangle 
-                x:Name="AveragePlanRectangle"
-                HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
-                Margin="10 5"
-                MouseUp="Rectangle_MouseUp"
-                Fill="{Binding AveragePlan.Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
-                Width="16" Height="16"
-                ToolTip="{Binding AveragePlan.Color.Color}"
-                ToolTipService.Placement="Top"/>
+                                    x:Name="AveragePlanRectangle"
+                                    HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                                    Margin="10 5"
+                                    MouseUp="Rectangle_MouseUp"
+                                    Fill="{Binding AveragePlan.Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                                    Width="16" Height="16"
+                                    ToolTip="{Binding AveragePlan.Color.Color}"
+                                    ToolTipService.Placement="Top"/>
 
                                 <Popup Placement="Bottom" Closed="ColorPopup_Closed">
                                     <uc:ColorSelector 
-                    x:Name="AveragePlanColorSelector"
-                    Loaded="ColorSelector_Loaded"
-                    Background="{StaticResource backgroundColor}"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    Padding="5"
-                    ColorChanged="ColorSelector_ColorChanged" />
+                                        x:Name="AveragePlanColorSelector"
+                                        Loaded="ColorSelector_Loaded"
+                                        Background="{StaticResource backgroundColor}"
+                                        BorderBrush="Black"
+                                        BorderThickness="1"
+                                        Padding="5"
+                                        ColorChanged="ColorSelector_ColorChanged" />
                                 </Popup>
 
                             </StackPanel>
@@ -319,28 +319,32 @@
             <TabItem Header="Points">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Points:" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBlock Text="{Binding Samples.Count}" Style="{StaticResource myTextBlockLeft}" />
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
                             <!-- Rectangle for Color Display -->
                             <Rectangle
-            x:Name="PointsRectangle"
-            HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
-            Margin="10 5"
-            MouseUp="Rectangle_MouseUp"
-            Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
-            Width="16" Height="16"
-            ToolTip="{Binding Color.Color}"
-            ToolTipService.Placement="Top"/>
+                                x:Name="PointsRectangle"
+                                HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                                Margin="10 5"
+                                MouseUp="Rectangle_MouseUp"
+                                Fill="{Binding Color.Color, Converter={StaticResource ColorToSolidColorBrushConverter}}"
+                                Width="16" Height="16"
+                                ToolTip="{Binding Color.Color}"
+                                ToolTipService.Placement="Top"/>
 
                             <Popup Placement="Bottom" Closed="ColorPopup_Closed">
                                 <uc:ColorSelector 
-                x:Name="PointsColorSelector"
-                Loaded="ColorSelector_Loaded"
-                Background="{StaticResource backgroundColor}"
-                BorderBrush="Black"
-                BorderThickness="1"
-                Padding="5"
-                ColorChanged="ColorSelector_ColorChanged" />
+                                    x:Name="PointsColorSelector"
+                                    Loaded="ColorSelector_Loaded"
+                                    Background="{StaticResource backgroundColor}"
+                                    BorderBrush="Black"
+                                    BorderThickness="1"
+                                    Padding="5"
+                                    ColorChanged="ColorSelector_ColorChanged" />
                             </Popup>
 
                         </StackPanel>

@@ -147,5 +147,34 @@ namespace ReScanVisualizer.Views
                 }
             }
         }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] is TabItem item && DataContext is ScatterGraphGroupViewModel viewModel)
+            {
+                string tag = item.Tag is null ? string.Empty : (string)item.Tag;
+                if (tag != "AxisRotation")
+                {
+                    viewModel.EndRotateBase();
+                }
+            }
+        }
+
+        private void RotateNDegreeButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            if (double.TryParse(button.Tag.ToString(), out double degree) && DataContext is ScatterGraphGroupViewModel viewModel)
+            {
+                viewModel.RotateNDegree(degree);
+            }
+        }
+
+        private void FlipButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphGroupViewModel viewModel)
+            {
+                viewModel.Flip();
+            }
+        }
     }
 }

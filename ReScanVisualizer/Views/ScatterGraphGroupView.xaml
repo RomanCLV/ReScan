@@ -18,10 +18,14 @@
         <converters:NullableObjectToStringConverter x:Key="NullableObjectToStringConverter"/>
     </UserControl.Resources>
     <Grid>
-        <TabControl Background="Transparent">
+        <TabControl Background="Transparent" SelectionChanged="TabControl_SelectionChanged">
             <TabItem Header="General">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Items selected:" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBlock Text="{Binding Count}" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />
                             <TextBox   Style="{StaticResource myTextBox}" Width="100">
@@ -191,57 +195,151 @@
             </TabItem>
 
             <TabItem Header="Base">
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
-                        <StackPanel Orientation="Horizontal">
-                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
-                                <Button.Content>
-                                    <Image Source="{Binding Base3D.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
-                                </Button.Content>
-                            </Button>
-                            <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
-                        </StackPanel>
+                <TabControl Background="Transparent" SelectionChanged="TabControl_SelectionChanged">
+                    <TabItem Header="General">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Style="{StaticResource myButtonIconNoPadding}" Click="Base3DVisibilityButton_Click" Margin="5">
+                                        <Button.Content>
+                                            <Image Source="{Binding Base3D.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="70"/>
-                                <ColumnDefinition Width="140"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="140"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Opacity" Style="{StaticResource myTextBlockLeft}" />
-                            <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NullableObjectToStringConverter}, ConverterParameter=N0}" Style="{StaticResource myTextBox}" />
-                            <Slider    Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Value="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Opacity" Style="{StaticResource myTextBlockLeft}" />
+                                    <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NullableObjectToStringConverter}, ConverterParameter=N0}" Style="{StaticResource myTextBox}" />
+                                    <Slider    Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Value="{Binding BaseOpacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Axis scale factor" Style="{StaticResource myTextBlock}" />
-                            <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}">
-                                <TextBox.Text>
-                                    <Binding Path="AxisScaleFactor" ConverterParameter="N2" Converter="{StaticResource NullableObjectToStringConverter}">
-                                        <Binding.ValidationRules>
-                                            <validators:PositiveNumberValidationRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Axis scale factor" Style="{StaticResource myTextBlock}" />
+                                    <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}">
+                                        <TextBox.Text>
+                                            <Binding Path="AxisScaleFactor" ConverterParameter="N2" Converter="{StaticResource NullableObjectToStringConverter}">
+                                                <Binding.ValidationRules>
+                                                    <validators:PositiveNumberValidationRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
 
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!--<TabItem Header="Translate">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                            
+                        </ScrollViewer>
+                    </TabItem>-->
+                    
+                    <TabItem Header="Axis rotation" Tag="AxisRotation">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                            <Grid Margin="0 15 0 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition />
+                                    <RowDefinition Height="3*"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Style="{StaticResource myTextBlockLeft}"/>
+                                <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" ItemsSource="{Binding AllRotationAxis}" SelectedValue="{Binding RotationAxis}" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsEnabled="False"/>
+
+                                <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="75"  />
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Angle" Style="{StaticResource myTextBlock}" />
+
+                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding RotationAngle, StringFormat=N3, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource myTextBox}" />
+
+                                    <Slider Grid.Row="0" Grid.Column="2" Minimum="-180" Maximum="180" Value="{Binding RotationAngle}" VerticalAlignment="Center" />
+                                </Grid>
+
+                                <Grid Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Right">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Grid.Row="0" Content=" -15°" Tag=" -15" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="1" Grid.Row="0" Content=" +15°" Tag=" +15" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="0" Grid.Row="1" Content=" -30°" Tag=" -30" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="1" Grid.Row="1" Content=" +30°" Tag=" +30" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="0" Grid.Row="2" Content=" -45°" Tag=" -45" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="1" Grid.Row="2" Content=" +45°" Tag=" +45" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="0" Grid.Row="3" Content=" -60°" Tag=" -60" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="1" Grid.Row="3" Content=" +60°" Tag=" +60" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="0" Grid.Row="4" Content=" -90°" Tag=" -90" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="1" Grid.Row="4" Content=" +90°" Tag=" +90" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="0" Grid.Row="5" Content="-180°" Tag="-180" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                    <Button Grid.Column="1" Grid.Row="5" Content="+180°" Tag="+180" Style="{StaticResource myButton}" MinWidth="20" Padding="0" Margin="1" Click="RotateNDegreeButton_Click"/>
+                                </Grid>
+                            </Grid>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <TabItem Header="Reorient">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                            <Grid Margin="0 15 0 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Content="Flip base" Width="75" ToolTip="Flip base" Style="{StaticResource myButton}" Click="FlipButton_Click" />
+                            </Grid>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
             </TabItem>
 
             <TabItem Header="Points">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Points:" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBlock Text="{Binding SamplesCount}" Style="{StaticResource myTextBlockLeft}" />
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock Text="Color" VerticalAlignment="Center" Style="{StaticResource myTextBlockLeft}"/>
                             <!-- Rectangle for Color Display -->

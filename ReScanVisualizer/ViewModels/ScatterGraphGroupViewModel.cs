@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Xml.Linq;
 
 #nullable enable
@@ -47,6 +48,58 @@ namespace ReScanVisualizer.ViewModels
 
         private bool _inhibitUpdate;
 
+        #region Translate
+
+        private double _translateX;
+        public double TranslateX
+        {
+            get => _translateX;
+            set => SetValue(ref _translateX, value);
+        }
+
+        private double _translateY;
+        public double TranslateY
+        {
+            get => _translateY;
+            set => SetValue(ref _translateY, value);
+        }
+
+        private double _translateZ;
+        public double TranslateZ
+        {
+            get => _translateZ;
+            set => SetValue(ref _translateZ, value);
+        }
+
+        #endregion
+
+        #region Rotate
+
+        public List<RotationAxis> AllRotationAxis { get; private set; }
+
+        private RotationAxis _rotationAxis;
+        public RotationAxis RotationAxis
+        {
+            get => _rotationAxis;
+            set => SetValue(ref _rotationAxis, value);
+        }
+
+        private double _rotationAngle;
+        public double RotationAngle
+        {
+            get => _rotationAngle;
+            set
+            {
+                if (SetValue(ref _rotationAngle, value))
+                {
+                    RotateBase();
+                }
+            }
+        }
+
+        #endregion
+
+
         public ScatterGraphViewModel this[int index]
         {
             get => _items[index];
@@ -58,6 +111,10 @@ namespace ReScanVisualizer.ViewModels
         {
             set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException(nameof(value), "Items collection can't be null");
+                }
                 Clear();
                 _items.Capacity = value.Count();
                 _items.AddRange(value);
@@ -70,6 +127,8 @@ namespace ReScanVisualizer.ViewModels
         }
 
         public double Count => _items.Count;
+
+        public double SamplesCount => _items.Sum(x => x.Samples.Count);
 
         private double? _scaleFactor;
         public double? ScaleFactor
@@ -325,6 +384,17 @@ namespace ReScanVisualizer.ViewModels
             _areBasesHidden = null;
             _renderQuality = null;
             RenderQualities = Tools.GetRenderQualitiesList();
+
+            // translate
+            _translateX = 0.0;
+            _translateY = 0.0;
+            _translateZ = 0.0;
+
+            // rotate
+            AllRotationAxis = Tools.GetRotationAxesList();
+            _rotationAxis = RotationAxis.Z;
+            _rotationAngle = 0;
+
             UpdateFromSource();
 
             PointsColorViewModel.PropertyChanged += PointsColorViewModel_PropertyChanged;
@@ -349,6 +419,7 @@ namespace ReScanVisualizer.ViewModels
                 PointsColorViewModel.PropertyChanged -= PointsColorViewModel_PropertyChanged;
                 BarycentersColorViewModel.PropertyChanged -= BarycenterColorViewModel_PropertyChanged;
                 PlansColorViewModel.PropertyChanged -= PlanColorViewModel_PropertyChanged;
+                EndRotateBase();
                 base.Dispose();
                 IsDisposed = true;
             }
@@ -360,6 +431,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 _items.Add(item);
                 AddPropertyChangedCallback(item);
+                OnPropertyChanged(nameof(Count));
                 UpdateFromSource();
             }
         }
@@ -370,6 +442,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 _items.Remove(item);
                 RemovePropertyChangedCallback(item);
+                OnPropertyChanged(nameof(Count));
                 UpdateFromSource();
             }
         }
@@ -387,6 +460,7 @@ namespace ReScanVisualizer.ViewModels
                     RemovePropertyChangedCallback(item);
                 }
                 _items.Clear();
+                OnPropertyChanged(nameof(Count));
                 UpdateFromSource();
             }
         }
@@ -636,6 +710,40 @@ namespace ReScanVisualizer.ViewModels
         public void InverseArePointsHidden()
         {
             ArePointsHidden = _arePointsHidden is null ? true : !_arePointsHidden;
+        }
+
+        private void RotateBase()
+        {
+            foreach (var item in _items)
+            {
+                item.Base3D.Rotate(item.Base3D.Z, _rotationAngle, false);
+            }
+        }
+
+        public void EndRotateBase()
+        {
+            foreach (var item in _items)
+            {
+                item.Base3D.EndRotate();
+            }
+            _rotationAngle = 0.0;
+            OnPropertyChanged(nameof(RotationAngle));
+        }
+
+        public void Flip()
+        {
+            foreach (var item in _items)
+            {
+                item.Base3D.Flip();
+            }
+        }
+
+        public void RotateNDegree(double degree)
+        {
+            foreach (var item in _items)
+            {
+                item.Base3D.Rotate(item.Base3D.Z, degree);
+            }
         }
     }
 }

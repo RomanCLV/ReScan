@@ -31,7 +31,10 @@ namespace ReScanVisualizer.ViewModels
                 if (_selectedViewModel != null && !_selectedViewModel.Equals(value))
                 {
                     ScatterGraphs.AsParallel().ForAll(x => x.Unselect());
-                    Bases.AsParallel().ForAll(x => x.Unselect());
+                    foreach (Base3DViewModel base3D in Bases)
+                    {
+                        base3D.Unselect();
+                    }
                     if (_selectedViewModel is I3DElement element)
                     {
                         element.Unselect();
@@ -40,6 +43,10 @@ namespace ReScanVisualizer.ViewModels
                     {
                         baseViewModel.Base.Unselect();
                         baseViewModel.Dispose();
+                    }
+                    if (_selectedViewModel is ScatterGraphGroupViewModel scatterGraphGroupViewModel)
+                    {
+                        scatterGraphGroupViewModel.EndRotateBase();
                     }
                 }
 
