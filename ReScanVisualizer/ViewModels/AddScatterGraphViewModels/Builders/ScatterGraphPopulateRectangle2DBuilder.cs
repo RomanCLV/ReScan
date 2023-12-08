@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     public class ScatterGraphPopulateRectangle2DBuilder : ScatterGraphPopulateBuilderBase
     {

@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ReScanVisualizer.ViewModels;
-using ReScanVisualizer.ViewModels.AddScatterGraph;
-using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 
 #nullable enable

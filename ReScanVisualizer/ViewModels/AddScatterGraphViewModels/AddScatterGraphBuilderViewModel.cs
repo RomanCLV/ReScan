@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.Views.AddScatterGraphViews;
-using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 
 #nullable enable
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 {
     public class AddScatterGraphBuilderViewModel : ViewModelBase
     {

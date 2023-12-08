@@ -19,8 +19,6 @@ using System.Xml.Linq;
 TODO : upgrades to implement
 - Split graph
 - Fusion graphs
-- Points -> section Points
-    - reduce
 - Scatter graph -> section Transform
     -> translate
     -> rotate  
@@ -46,7 +44,7 @@ namespace ReScanVisualizer.ViewModels
                     {
                         base3D.Unselect();
                     }
-                    if (_selectedViewModel is I3DElement element)
+                    if (_selectedViewModel is ISelectable element)
                     {
                         element.Unselect();
                     }
@@ -63,11 +61,12 @@ namespace ReScanVisualizer.ViewModels
 
                 if (SetValue(ref _selectedViewModel, value))
                 {
-                    if (_selectedViewModel is IScatterGraphElement scatterGraphElement)
+                    /*if (_selectedViewModel is IScatterGraphElement scatterGraphElement)
                     {
                         scatterGraphElement.Select(true);
                     }
-                    else if (_selectedViewModel is I3DElement element)
+                    else */
+                    if (_selectedViewModel is ISelectable element)
                     {
                         element.Select();
                     }
@@ -85,15 +84,21 @@ namespace ReScanVisualizer.ViewModels
 
         public ObservableCollection<Base3DViewModel> Bases { get; private set; }
 
+        public ObservableCollection<PartViewModelBase> Parts { get; private set; }
+
         public Model3DGroup Models { get; private set; }
 
         public Model3DGroup BasesModels { get; private set; }
+
+        public Model3DGroup PartsModels { get; private set; }
 
         public ScatterGraphGroupViewModel ScatterGraphViewModelGroup { get; private set; }
 
         public CommandKey AddScatterGraphCommand { get; }
 
         public CommandKey AddBaseCommand { get; }
+
+        public CommandKey AddPartCommand { get; }
 
         public CommandKey ExportBaseCommand { get; }
 
@@ -104,19 +109,23 @@ namespace ReScanVisualizer.ViewModels
 
             Models = new Model3DGroup();
             BasesModels = new Model3DGroup();
+            PartsModels = new Model3DGroup();
 
             SelectedViewModel = null;
 
             ScatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
             Bases = new ObservableCollection<Base3DViewModel>();
+            Parts = new ObservableCollection<PartViewModelBase>();
             ScatterGraphViewModelGroup = new ScatterGraphGroupViewModel();
 
             AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
             AddBaseCommand = new CommandKey(new ActionCommand(AddBase), Key.B, ModifierKeys.Control | ModifierKeys.Shift, "Add a new base");
+            AddPartCommand = new CommandKey(new AddPartCommand(this), Key.P, ModifierKeys.Control | ModifierKeys.Shift, "Add a new part");
             ExportBaseCommand = new CommandKey(new ExportBasesCommand(this), Key.E, ModifierKeys.Control | ModifierKeys.Shift, "Export bases");
 
             ScatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
             Bases.CollectionChanged += Bases_CollectionChanged;
+            Parts.CollectionChanged += Parts_CollectionChanged;
         }
 
         ~MainViewModel()
@@ -129,8 +138,10 @@ namespace ReScanVisualizer.ViewModels
             if (!IsDisposed)
             {
                 IsDisposed = true;
+                Parts.CollectionChanged -= Parts_CollectionChanged;
                 ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 Bases.CollectionChanged -= Bases_CollectionChanged;
+                ClearParts();
                 ClearScatterGraphs();
                 ClearBases();
                 base.Dispose();
@@ -154,7 +165,14 @@ namespace ReScanVisualizer.ViewModels
         {
             if (scatterGraphViewModel != null)
             {
-                Application.Current.Dispatcher.Invoke(() => ScatterGraphs.Add(scatterGraphViewModel));
+                if (Application.Current.Dispatcher.CheckAccess())
+                {
+                    ScatterGraphs.Add(scatterGraphViewModel);
+                }
+                else
+                {
+                    Application.Current.Dispatcher.Invoke(() => ScatterGraphs.Add(scatterGraphViewModel));
+                }
             }
         }
 
@@ -166,6 +184,7 @@ namespace ReScanVisualizer.ViewModels
                     foreach (object? item in e.NewItems)
                     {
                         ScatterGraphViewModel graphViewModel = (ScatterGraphViewModel)item;
+                        graphViewModel.PartsListSource = this;
                         graphViewModel.Samples.CollectionChanged += Samples_CollectionChanged;
                         Application.Current.Dispatcher.Invoke(() =>
                         {
@@ -302,6 +321,42 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
+        private void Parts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (object? item in e.NewItems)
+                    {
+                        PartsModels.Children.Add(((PartViewModelBase)item).Model);
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (object? item in e.OldItems)
+                    {
+                        PartViewModelBase partViewModelBase = (PartViewModelBase)item;
+                        foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+                        {
+                            if (partViewModelBase.Equals(scatterGraphViewModel.Part))
+                            {
+                                scatterGraphViewModel.Part = null;
+                            }
+                            PartsModels.Children.Remove(partViewModelBase.Model);
+                        }
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+                    {
+                        scatterGraphViewModel.Part = null;
+                    }
+                    PartsModels.Children.Clear();
+                    break;
+            }
+        }
+
         public void ClearScatterGraphs()
         {
             foreach (ScatterGraphViewModel item in ScatterGraphs)
@@ -309,12 +364,47 @@ namespace ReScanVisualizer.ViewModels
                 item.Samples.CollectionChanged -= Samples_CollectionChanged;
                 item.Dispose();
             }
-            Application.Current?.Dispatcher.Invoke(ScatterGraphs.Clear);
+            if (Application.Current != null && Application.Current.Dispatcher.CheckAccess())
+            {
+                ScatterGraphs.Clear();
+            }
+            else
+            {
+                Application.Current?.Dispatcher.Invoke(ScatterGraphs.Clear);
+            }
+
         }
 
         public void ClearBases()
         {
-            Application.Current?.Dispatcher.Invoke(Bases.Clear);
+            foreach (Base3DViewModel item in Bases)
+            {
+                item.Dispose();
+            }
+            if (Application.Current != null && Application.Current.Dispatcher.CheckAccess())
+            {
+                Bases.Clear();
+            }
+            else
+            {
+                Application.Current?.Dispatcher.Invoke(Bases.Clear);
+            }
+        }
+
+        public void ClearParts()
+        {
+            foreach (PartViewModelBase item in Parts)
+            {
+                item.Dispose();
+            }
+            if (Application.Current != null && Application.Current.Dispatcher.CheckAccess())
+            {
+                Parts.Clear();
+            }
+            else
+            {
+                Application.Current?.Dispatcher.Invoke(Parts.Clear);
+            }
         }
 
         internal void SetAllRenderQuality(RenderQuality renderQuality)

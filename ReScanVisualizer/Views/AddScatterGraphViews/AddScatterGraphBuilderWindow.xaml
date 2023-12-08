@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
-        xmlns:builders="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraph.Builder"
+        xmlns:builders="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders"
         mc:Ignorable="d"
         Title="Add scatter graph builder" 
         Height="720" Width="1280"

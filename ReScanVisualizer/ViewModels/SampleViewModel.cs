@@ -1,6 +1,6 @@
 ﻿using HelixToolkit.Wpf;
 using ReScanVisualizer.Models;
-using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -222,6 +222,7 @@ namespace ReScanVisualizer.ViewModels
         private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateModelGeometry();
+            OnPropertyChanged(nameof(Point));
         }
 
         public void InverseIsHidden()

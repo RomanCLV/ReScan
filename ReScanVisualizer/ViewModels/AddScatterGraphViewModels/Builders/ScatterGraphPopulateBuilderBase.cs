@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     public abstract class ScatterGraphPopulateBuilderBase : ScatterGraphBuilderBase
     {

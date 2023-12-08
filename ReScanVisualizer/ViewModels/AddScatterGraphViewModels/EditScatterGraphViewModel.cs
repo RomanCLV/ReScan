@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReScanVisualizer.Commands;
-using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 using ReScanVisualizer.Views;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 {
     public class EditScatterGraphViewModel : ViewModelBase
     {

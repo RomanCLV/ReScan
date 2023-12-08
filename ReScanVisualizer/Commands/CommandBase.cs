@@ -23,7 +23,14 @@ namespace ReScanVisualizer.Commands
 
 		protected void OnCanExecuteChanged()
 		{
-			Application.Current.Dispatcher.Invoke(() => CanExecuteChanged?.Invoke(this, new EventArgs()));
+            if (Application.Current.Dispatcher.CheckAccess())
+            {
+				CanExecuteChanged?.Invoke(this, new EventArgs());
+            }
+			else
+			{
+				Application.Current.Dispatcher.Invoke(() => CanExecuteChanged?.Invoke(this, new EventArgs()));
+			}
 		}
 	}
 }

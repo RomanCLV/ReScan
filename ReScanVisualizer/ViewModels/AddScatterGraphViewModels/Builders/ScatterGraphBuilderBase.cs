@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using ReScanVisualizer.Models;
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     public enum ScatterGraphBuilderState
     {

@@ -29,11 +29,18 @@
                     Key="{Binding Path=AddScatterGraphCommand.Key}" 
                     Modifiers="{Binding Path=AddScatterGraphCommand.Modifiers}"
                     />
+        
+        <KeyBinding x:Name="AddPartCommandKey"
+                    Command="{Binding Path=AddPartCommand.Command}"
+                    Key="{Binding Path=AddPartCommand.Key}"
+                    Modifiers="{Binding Path=AddPartCommand.Modifiers}"
+                    />
+        
         <KeyBinding x:Name="AddBaseCommandKey" 
-            Command="{Binding Path=AddBaseCommand.Command}"  
-            Key="{Binding Path=AddBaseCommand.Key}" 
-            Modifiers="{Binding Path=AddBaseCommand.Modifiers}"
-            />
+                    Command="{Binding Path=AddBaseCommand.Command}"  
+                    Key="{Binding Path=AddBaseCommand.Key}" 
+                    Modifiers="{Binding Path=AddBaseCommand.Modifiers}"
+                    />
 
         <KeyBinding x:Name="ExportBaseCommandKey" 
             Command="{Binding Path=ExportBaseCommand.Command}"  
@@ -53,6 +60,14 @@
                     <MenuItem Header="_Add a graph" ToolTip="{Binding AddScatterGraphCommand.Description}" Style="{StaticResource menuItemItem}"
                               Command="{Binding ElementName=AddScatterGraphCommandKey, Path=Command}"
                               InputGestureText="{Binding ElementName=AddScatterGraphCommandKey, Converter={StaticResource CommandKeyToInputGestureTextConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource add}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem Header="_Add a part" ToolTip="{Binding AddPartCommand.Description}" Style="{StaticResource menuItemItem}"
+                              Command="{Binding ElementName=AddPartCommandKey, Path=Command}"
+                              InputGestureText="{Binding ElementName=AddPartCommandKey, Converter={StaticResource CommandKeyToInputGestureTextConverter}}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource add}" />
                         </MenuItem.Icon>
@@ -154,6 +169,11 @@
                                         <Image Source="{StaticResource delete}" />
                                     </Button.Content>
                                 </Button>
+                                <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Add graph" Click="ScatterGraphsAddButton_Click">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource add}" />
+                                    </Button.Content>
+                                </Button>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Scatter Graphs (" Style="{StaticResource mainViewSectionTitle}" Margin="5 5 0 5" />
                                     <TextBlock Text="{Binding ScatterGraphs.Count}" Style="{StaticResource mainViewSectionTitle}" Margin="0" />
@@ -222,9 +242,63 @@
                                     </TreeView.ItemTemplate>
                                 </TreeView>
                             </ScrollViewer>
-                            </Grid>
+                        </Grid>
                     </TabItem>
 
+                    <TabItem Header="Parts">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0">
+                                <!-- Visibility="{Binding ElementName=GraphsTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" -->
+                                <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear parts" Click="PartsClearButton_Click">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource delete}" />
+                                    </Button.Content>
+                                </Button>
+                                <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Add part" Click="PartsAddButton_Click">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource add}" />
+                                    </Button.Content>
+                                </Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Parts (" Style="{StaticResource mainViewSectionTitle}" Margin="5 5 0 5" />
+                                    <TextBlock Text="{Binding Parts.Count}" Style="{StaticResource mainViewSectionTitle}" Margin="0" />
+                                    <TextBlock Text=")" Style="{StaticResource mainViewSectionTitle}" Margin="0 5 5 5" />
+                                </StackPanel>
+                            </DockPanel>
+                            <ScrollViewer
+                                Grid.Row="1"
+                                HorizontalScrollBarVisibility="Auto" 
+                                VerticalScrollBarVisibility="Auto"
+                                FocusVisualStyle="{x:Null}">
+                                <TreeView
+                                    Background="Transparent" 
+                                    BorderThickness="0" 
+                                    ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}"
+                                    x:Name="PartsTreeView"
+                                    >
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="{x:Type TreeViewItem}">
+                                            <Style.Setters>
+                                                <EventSetter Event="KeyUp"             Handler="PartTreeViewItem_KeyUp"/>
+                                                <EventSetter Event="MouseLeftButtonUp" Handler="PartTreeViewItem_MouseDown" />
+                                            </Style.Setters>
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                    <TreeView.ItemTemplate>
+                                        <DataTemplate>
+                                            
+                                        </DataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+                            </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+                    
                     <TabItem Header="Bases">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -236,6 +310,11 @@
                                 <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear bases" Click="BaseClearButton_Click">
                                     <Button.Content>
                                         <Image Source="{StaticResource delete}" />
+                                    </Button.Content>
+                                </Button>
+                                <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Add base" Click="BasesAddButton_Click">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource add}" />
                                     </Button.Content>
                                 </Button>
                                 <StackPanel Orientation="Horizontal">
@@ -320,6 +399,7 @@
 
                 <ModelVisual3D Content="{Binding OriginModel}" />
                 <ModelVisual3D Content="{Binding BasesModels}"/>
+                <ModelVisual3D Content="{Binding PartsModels}"/>
                 <ModelVisual3D Content="{Binding Models}"/>
             </HelixToolkit:HelixViewport3D>
         </Grid>

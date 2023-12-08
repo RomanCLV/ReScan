@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="ReScanVisualizer.Views.ItemTreeViews.PartTreeViewItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
+        <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
+        <converters:BoolToFontStyleConverter x:Key="BoolToFontStyleConverter" />
+    </UserControl.Resources>
+    <TreeViewItem IsExpanded="False" Margin="-20 0 0 0"
+                  FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
+                  FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}">
+        <TreeViewItem.Header>
+            <local:PartTreeViewHeader />
+        </TreeViewItem.Header>
+        <TreeViewItem ItemsSource="{Binding ScattersGraphs}">
+            <TreeViewItem.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}" />
+                </DataTemplate>
+            </TreeViewItem.ItemTemplate>
+        </TreeViewItem>
+    </TreeViewItem>
+</UserControl>

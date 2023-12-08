@@ -4,11 +4,12 @@
 
 namespace ReScanVisualizer.Models
 {
-    public interface IScatterGraphElement
+    public interface IScatterGraphElement : ISelectable
     {
         public ScatterGraphViewModel? ScatterGraph { get; set; }
+        
         public bool BelongsToAGraph { get; }
 
-        public void Select(bool progateToOwner);
+        public void Select(bool propagateToOwner);
     }
 }

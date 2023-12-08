@@ -61,6 +61,10 @@ namespace ReScanVisualizer.Views
             }
         }
 
+        private void BasesAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddBaseCommandKey.Command.Execute(null);
+        }
 
         private void BaseClearButton_Click(object sender, RoutedEventArgs e)
         {
@@ -95,6 +99,11 @@ namespace ReScanVisualizer.Views
                         break;
                 }
             }
+        }
+
+        private void ScatterGraphsAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddScatterGraphCommandKey.Command.Execute(null);
         }
 
         private void GraphClearButton_Click(object sender, RoutedEventArgs e)
@@ -287,6 +296,45 @@ namespace ReScanVisualizer.Views
             }
             viewModel.SelectedViewModel = viewModel.ScatterGraphViewModelGroup;
             viewModel.ScatterGraphViewModelGroup.SelectAll();
+        }
+
+        #endregion
+
+        #region Parts tree view
+
+        private void PartTreeViewItem_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sender is TreeViewItem tb && tb.DataContext is PartViewModelBase viewModel)
+            {
+                switch (e.Key)
+                {
+                    case Key.Delete:
+                    case Key.Back:
+                        ((MainViewModel)DataContext).Parts.Remove(viewModel);
+                        break;
+                    case Key.Escape:
+                        ((MainViewModel)DataContext).SelectedViewModel = null;
+                        break;
+                }
+            }
+        }
+
+        private void PartsAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddPartCommandKey.Command.Execute(null);
+        }
+
+        private void PartsClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((MainViewModel)DataContext).ClearParts();
+        }
+
+        private void PartTreeViewItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TreeViewItem tb && tb.DataContext is PartViewModelBase viewModel)
+            {
+                ((MainViewModel)DataContext).SelectedViewModel = viewModel;
+            }
         }
 
         #endregion

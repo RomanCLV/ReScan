@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="ReScanVisualizer.Views.ItemTreeViews.PartTreeViewHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
+        <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Horizontal" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
+        <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Button.Content>
+                <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+            </Button.Content>
+        </Button>
+        <TextBlock Text="{Binding Name}" />
+        <TextBlock Text=" (" />
+        <TextBlock Text="{Binding ScatterGraphs.Count}" />
+        <TextBlock Text=")" />
+        <Button Style="{StaticResource myButtonIconNoPadding}" Click="DeleteButton_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Button.Content>
+                <Image Source="{StaticResource delete}" Height="12" Width="19" />
+            </Button.Content>
+        </Button>
+    </StackPanel>
+</UserControl>

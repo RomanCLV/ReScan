@@ -13,12 +13,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.Models;
-using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 
 #nullable enable
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 {
     public class AddScatterGraphViewModel : ViewModelBase
     {

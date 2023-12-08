@@ -1,36 +1,38 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
+using ReScanVisualizer.Views.AddPartViews;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using ReScanVisualizer.ViewModels;
-using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
 using ReScanVisualizer.Views.AddScatterGraphViews;
+using ReScanVisualizer.ViewModels.AddPartModelViews;
 
 #nullable enable
 
 namespace ReScanVisualizer.Commands
 {
-    public class AddScatterGraphCommand : CommandBase
+    public class AddPartCommand : CommandBase
     {
         private readonly MainViewModel _mainViewModel;
 
-        public AddScatterGraphCommand(MainViewModel mainViewModel)
+        public AddPartCommand(MainViewModel mainViewModel) 
         {
             _mainViewModel = mainViewModel;
         }
 
         public override void Execute(object? parameter)
         {
-            AddScatterGraphWindow view = new AddScatterGraphWindow()
+            AddPartWindow view = new AddPartWindow()
             {
                 Owner = Application.Current.MainWindow,
             };
-            AddScatterGraphViewModel addScatterGraphViewModel = new AddScatterGraphViewModel(view, _mainViewModel);
-            view.DataContext = addScatterGraphViewModel;
+            AddPartViewModel addPartViewModel = new AddPartViewModel(view, _mainViewModel);
+            view.DataContext = addPartViewModel;
             view.ShowDialog();
-            addScatterGraphViewModel.Dispose();
+            addPartViewModel.Dispose();
         }
     }
 }

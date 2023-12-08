@@ -85,11 +85,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\AddPartCommand.cs" />
     <Compile Include="Commands\AddScatterGraphBuilderCommand.cs" />
     <Compile Include="Commands\AddScatterGraphCommand.cs" />
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Commands\BuildScatterGraphCommand.cs" />
     <Compile Include="Commands\ExportBasesCommand.cs" />
+    <Compile Include="Commands\ValidateAddingPartCommand.cs" />
     <Compile Include="Commands\ValidateEditingScatterGraphBuilderCommand.cs" />
     <Compile Include="Commands\ValidateExportBasesCommand.cs" />
     <Compile Include="Converters\BoolToFontStyleConverter.cs" />
@@ -109,8 +111,10 @@
     <Compile Include="Converters\ScatterGraphBuilderResultReductionEnabledConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
+    <Compile Include="Models\IHideable.cs" />
     <Compile Include="Models\IModelisable.cs" />
     <Compile Include="Models\IScatterGraphElement.cs" />
+    <Compile Include="Models\ISelectable.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Base3D.cs" />
@@ -121,20 +125,23 @@
     </Compile>
     <Compile Include="Validators\NotEmptyValidationRule.cs" />
     <Compile Include="Validators\PositiveNumberValidationRule.cs" />
+    <Compile Include="ViewModels\AddPartModelsViews\AddPartViewModel.cs" />
+    <Compile Include="ViewModels\AddPartModelsViews\Builders\PartBuilderBase.cs" />
+    <Compile Include="ViewModels\AddPartModelsViews\Builders\PartPointBuilder.cs" />
     <Compile Include="ViewModels\AddPointViewModel.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\IScatterGraphBuilderGroup.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphBuildResult.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphEmptyBuilder.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphBuilderViewModel.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphBuilderBase.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphFileBuilder.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphFilesBuilder.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateBuilderBase.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateLineBuilder.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRandomBuilder.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\Builder\ScatterGraphPopulateRectangle2DBuilder.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\AddScatterGraphViewModel.cs" />
-    <Compile Include="ViewModels\AddScatterGraph\EditScatterGraphViewModel.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\IScatterGraphBuilderGroup.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphBuildResult.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphEmptyBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\AddScatterGraphBuilderViewModel.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphBuilderBase.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphFileBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphFilesBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateBuilderBase.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateLineBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateRandomBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateRectangle2DBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\AddScatterGraphViewModel.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\EditScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\BarycenterViewModel.cs" />
     <Compile Include="ViewModels\Base3DViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
@@ -143,9 +150,19 @@
     <Compile Include="ViewModels\KeyValueObservable.cs" />
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
+    <Compile Include="ViewModels\PartViewModel.cs" />
     <Compile Include="ViewModels\Point3DViewModel.cs" />
     <Compile Include="ViewModels\ReduceScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\ScatterGraphGroupViewModel.cs" />
+    <Compile Include="Views\AddPartViews\AddPartWindow.xaml.cs">
+      <DependentUpon>AddPartWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemTreeViews\PartTreeViewHeader.xaml.cs">
+      <DependentUpon>PartTreeViewHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemTreeViews\PartTreeViewItem.xaml.cs">
+      <DependentUpon>PartTreeViewItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ReduceScatterGraphWindow.xaml.cs">
       <DependentUpon>ReduceScatterGraphWindow.xaml</DependentUpon>
     </Compile>
@@ -231,6 +248,18 @@
       <DependentUpon>ScatterGraphView.xaml</DependentUpon>
     </Compile>
     <Page Include="UserControls\ColorSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddPartViews\AddPartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\PartTreeViewHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\PartTreeViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -453,5 +482,6 @@
   <ItemGroup>
     <Resource Include="Resources\Images\eye_unknow.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

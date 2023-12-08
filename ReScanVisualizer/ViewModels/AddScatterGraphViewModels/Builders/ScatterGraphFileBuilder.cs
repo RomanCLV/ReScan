@@ -12,7 +12,7 @@ using ReScanVisualizer.Commands;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.Service;
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     public class ScatterGraphFileBuilder : ScatterGraphBuilderBase, ISelectFilesService
     {

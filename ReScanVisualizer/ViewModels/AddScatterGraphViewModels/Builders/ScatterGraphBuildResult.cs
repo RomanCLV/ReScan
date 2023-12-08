@@ -10,7 +10,7 @@ using ReScanVisualizer.Models;
 
 #nullable enable
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     public class ScatterGraphBuildResult : ViewModelBase
     {

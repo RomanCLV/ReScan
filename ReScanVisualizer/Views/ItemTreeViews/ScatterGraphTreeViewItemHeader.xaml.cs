@@ -1,6 +1,6 @@
 ﻿using ReScanVisualizer.UserControls;
 using ReScanVisualizer.ViewModels;
-using ReScanVisualizer.ViewModels.AddScatterGraph.Builder;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;

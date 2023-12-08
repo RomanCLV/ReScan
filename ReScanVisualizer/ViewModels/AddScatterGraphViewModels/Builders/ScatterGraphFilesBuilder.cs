@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     public class ScatterGraphFilesBuilder : ScatterGraphBuilderBase, ISelectFilesService, IScatterGraphBuilderGroup
     {

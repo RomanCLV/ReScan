@@ -389,6 +389,11 @@ namespace ReScanVisualizer.ViewModels
             UpdateModelGeometry();
         }
 
+        public void UpdateOrigin(Point3D origin)
+        {
+            Origin = origin;
+        }
+
         public void UpdateModelGeometry()
         {
             Base3D base3D = GetBaseScalled();

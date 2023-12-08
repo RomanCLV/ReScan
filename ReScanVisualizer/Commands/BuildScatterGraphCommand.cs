@@ -1,4 +1,4 @@
-﻿using ReScanVisualizer.ViewModels.AddScatterGraph;
+﻿using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 using System;
 using System.Collections.Generic;

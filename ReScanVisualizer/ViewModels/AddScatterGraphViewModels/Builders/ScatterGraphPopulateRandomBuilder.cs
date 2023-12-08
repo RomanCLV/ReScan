@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using ReScanVisualizer.Models;
 
-namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
+namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     public class ScatterGraphPopulateRandomBuilder : ScatterGraphPopulateBuilderBase
     {

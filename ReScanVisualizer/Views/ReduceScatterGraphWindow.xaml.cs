@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+#nullable enable
+
 namespace ReScanVisualizer.Views
 {
     /// <summary>
@@ -41,11 +43,13 @@ namespace ReScanVisualizer.Views
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox comboBox = sender as ComboBox;
-            int index = comboBox.SelectedIndex;
-            percentTextBox.Visibility   = index == 0 ? Visibility.Visible : Visibility.Hidden;
-            skippedTextBox.Visibility   = index == 1 ? Visibility.Visible : Visibility.Hidden;
-            maxPointsTextBox.Visibility = index == 2 ? Visibility.Visible : Visibility.Hidden;
+            if (sender is ComboBox comboBox)
+            {
+                int index = comboBox.SelectedIndex;
+                percentTextBox.Visibility = index == 0 ? Visibility.Visible : Visibility.Hidden;
+                skippedTextBox.Visibility = index == 1 ? Visibility.Visible : Visibility.Hidden;
+                maxPointsTextBox.Visibility = index == 2 ? Visibility.Visible : Visibility.Hidden;
+            }
         }
     }
 }
