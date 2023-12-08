@@ -27,7 +27,7 @@ namespace ReScanVisualizer.ViewModels
                 }
                 if (SetValue(ref _reductionPercent, value))
                 {
-                    ReducedCount = (int)(_scatterGraphViewModel.Samples.Count * ((100.0 - _reductionPercent) / 100.0));
+                    ComputeReducedCountFromSelectMethodeIndex();
                 }
             }
         }
@@ -38,9 +38,9 @@ namespace ReScanVisualizer.ViewModels
             get => _reductionSkipped;
             set
             {
-                if (value <= 0)
+                if (value <= 1)
                 {
-                    value = 0;
+                    value = 1;
                 }
                 else if (value > _scatterGraphViewModel.Samples.Count)
                 {
@@ -48,7 +48,7 @@ namespace ReScanVisualizer.ViewModels
                 }
                 if (SetValue(ref _reductionSkipped, value))
                 {
-                    ReducedCount = _scatterGraphViewModel.Samples.Count / _reductionSkipped;
+                    ComputeReducedCountFromSelectMethodeIndex();
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace ReScanVisualizer.ViewModels
                 }
                 if (SetValue(ref _reductionMaxCount, value))
                 {
-                    ReducedCount = _reductionMaxCount;
+                    ComputeReducedCountFromSelectMethodeIndex();
                 }
             }
         }
@@ -91,6 +91,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _selectedMethodeIndex, value))
                 {
+                    ComputeReducedCountFromSelectMethodeIndex();
                     UpdateMessageFromSelectMethodeIndex();
                 }
             }
@@ -111,8 +112,25 @@ namespace ReScanVisualizer.ViewModels
             _message = string.Empty;
             _selectedMethodeIndex = 0;
             _reductionPercent = 0.0;
-            _reductionSkipped = 0;
+            _reductionSkipped = 1;
             _reductionMaxCount = 0;
+            UpdateMessageFromSelectMethodeIndex();
+        }
+
+        private void ComputeReducedCountFromSelectMethodeIndex()
+        {
+            switch (_selectedMethodeIndex)
+            {
+                case 0:
+                    ReducedCount = (int)(_scatterGraphViewModel.Samples.Count * ((100.0 - _reductionPercent) / 100.0));
+                    break;
+                case 1:
+                    ReducedCount = _scatterGraphViewModel.Samples.Count / _reductionSkipped;
+                    break;
+                case 2:
+                    ReducedCount = _reductionMaxCount;
+                    break;
+            }
         }
 
         private void UpdateMessageFromSelectMethodeIndex()
@@ -123,7 +141,7 @@ namespace ReScanVisualizer.ViewModels
                     Message = $"Reduction percentage (0 - 100):";
                     break;
                 case 1:
-                    Message = $"Skipped (2 - {_scatterGraphViewModel.Samples.Count}):";
+                    Message = $"Skipped (1 - {_scatterGraphViewModel.Samples.Count}):";
                     break;
                 case 2:
                     Message = $"Max points (0 - {_scatterGraphViewModel.Samples.Count}):";
@@ -142,7 +160,23 @@ namespace ReScanVisualizer.ViewModels
                     _scatterGraphViewModel.Reduce(_reductionSkipped);
                     break;
                 case 2:
-                    double reductionFactor = 0.0; // TODO : externalize find reduction factor with max count
+                    int count = _scatterGraphViewModel.Samples.Count;
+                    double reductionFactor = 0.0;
+                    if (count >= _reductionMaxCount)
+                    {
+                        // on trouve le facteur de reduction qui devrait nous donner le nombre de points
+                        // maximal demandé
+                        reductionFactor = Math.Round(100.0 - ((_reductionMaxCount * 100.0) / count), 3);
+                        // on determine le nombre de points après la réduction
+                        int reducedCount = (int)(count * ((100.0 - reductionFactor) / 100.0));
+
+                        double factor = reducedCount < _reductionMaxCount ? -1 : 1; // pour la correction si besoin
+                        while (reducedCount != _reductionMaxCount) // parfois, erreur de +/- 1
+                        {
+                            reductionFactor += 0.001 * factor; // on augmente/diminue le facteur jusqu'a ne plus avoir d'erreur
+                            reducedCount = (int)(count * ((100.0 - reductionFactor) / 100.0));
+                        }
+                    }
                     _scatterGraphViewModel.ReducePercent(reductionFactor);
                     break;
             }

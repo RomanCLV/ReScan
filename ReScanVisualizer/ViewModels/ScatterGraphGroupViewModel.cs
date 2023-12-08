@@ -604,6 +604,7 @@ namespace ReScanVisualizer.ViewModels
                 BaseOpacity = null;
                 AreHidden = null;
                 ArePointsHidden = null;
+                AreBarycentersHidden = null;
                 ArePlansHidden = null;
                 AreBasesHidden = null;
                 RenderQuality = null;
@@ -620,8 +621,8 @@ namespace ReScanVisualizer.ViewModels
             UpdateProperty(x => x.Base3D.Opacity, ref _baseOpacity, nameof(BaseOpacity));
             UpdateProperty(x => x.IsHidden, ref _areHidden, nameof(AreHidden));
             UpdateProperty(x => x.ArePointsHidden, ref _arePointsHidden, nameof(ArePointsHidden));
-            UpdateProperty(x => x.AveragePlan.IsHidden, ref _arePlansHidden, nameof(ArePlansHidden));
             UpdateProperty(x => x.Barycenter.IsHidden, ref _areBarycentersHidden, nameof(AreBarycentersHidden));
+            UpdateProperty(x => x.AveragePlan.IsHidden, ref _arePlansHidden, nameof(ArePlansHidden));
             UpdateProperty(x => x.Base3D.IsHidden, ref _areBasesHidden, nameof(AreBasesHidden));
             UpdateProperty(x => x.RenderQuality, ref _renderQuality, nameof(RenderQuality));
         }

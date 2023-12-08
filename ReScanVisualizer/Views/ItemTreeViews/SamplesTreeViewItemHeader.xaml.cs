@@ -56,6 +56,21 @@ namespace ReScanVisualizer.Views.ItemTreeViews
             }
         }
 
+        private void ReduceButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                ReduceScatterGraphViewModel reduceViewModel = new ReduceScatterGraphViewModel(viewModel);
+                ReduceScatterGraphWindow window = new ReduceScatterGraphWindow
+                {
+                    Owner = Application.Current.MainWindow,
+                    DataContext = reduceViewModel
+                };
+                window.ShowDialog();
+                reduceViewModel.Dispose();
+            }
+        }
+
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is ScatterGraphViewModel viewModel)

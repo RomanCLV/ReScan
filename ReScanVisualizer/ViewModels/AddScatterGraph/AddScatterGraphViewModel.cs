@@ -242,13 +242,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         {
             foreach (var item in Items)
             {
-                if (item.Value != null && item.Value.Count > _maxPoints)
+                if (item.Value != null && item.Value.Count >= _maxPoints)
                 {
+                    // on determine le facteur de reduction en fonction du nombre points max qu'on veut
                     item.Value.ReductionFactor = Math.Round(100.0 - ((_maxPoints * 100.0) / item.Value.Count), 3);
-                    double factor;
-                    while (item.Value.ReducedCount != _maxPoints)
+                    double factor = item.Value.ReducedCount < _maxPoints ? -1 : 1; // pour la correction, si besoin
+                    while (item.Value.ReducedCount != _maxPoints) // parfois erreur de +/- 1
                     {
-                        factor = item.Value.ReducedCount < _maxPoints ? -1 : 1;
+                        // on modifie légèrement le facteur de reduction pour arriver au nombre de points désiré
                         item.Value.ReductionFactor += 0.001 * factor;
                     }
                 }
@@ -385,7 +386,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph
         {
             foreach (var item in Items)
             {
-                if (item.Value is null || !item.Value.IsSuccess)
+                if (item.Value is null || !item.Value.IsSuccess || item.Key.State is ScatterGraphBuilderState.Ready)
                 {
                     await BuildAsync(item);
                 }

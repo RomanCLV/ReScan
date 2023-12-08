@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="50" d:DesignWidth="400"
              x:Name="userControl"
              Background="Transparent"
              >
@@ -16,14 +16,14 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Horizontal">
+    <StackPanel Orientation="Horizontal" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
         <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
             <Button.Content>
                 <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
             </Button.Content>
         </Button>
 
-        <StackPanel Orientation="Horizontal" Margin="5 0" Opacity="{Binding ArePointsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
+        <StackPanel Orientation="Horizontal" Margin="5 0">
             <TextBlock Text="Points (" />
             <TextBlock Text="{Binding Samples.Count}" />
             <TextBlock Text=")" />
@@ -35,6 +35,12 @@
             </Button.Content>
         </Button>
 
+        <Button Style="{StaticResource myButtonIconNoPadding}" Click="ReduceButton_Click" Height="19" Width="19" ToolTip="Reduce">
+            <Button.Content>
+                <Image Source="{StaticResource working}" Height="19" Width="19" />
+            </Button.Content>
+        </Button>
+        
         <Button Style="{StaticResource myButtonIconNoPadding}" Click="ClearButton_Click" Height="19" Width="19" ToolTip="Clear">
             <Button.Content>
                 <Image Source="{StaticResource delete}" Height="19" Width="19" />

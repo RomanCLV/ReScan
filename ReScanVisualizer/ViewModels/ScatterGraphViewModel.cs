@@ -234,7 +234,18 @@ namespace ReScanVisualizer.ViewModels
             _model = new Model3DGroup();
             Samples = new ObservableCollection<SampleViewModel>();
 
-            SetFrom(_scatterGraph);
+            for (int i = 0; i < _scatterGraph.Count; i++)
+            {
+                SampleViewModel sampleViewModel = new SampleViewModel(_scatterGraph[i], Color.Color, _scaleFactor, _pointsRadius, _renderQuality)
+                {
+                    ScatterGraph = this
+                };
+                sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
+                sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
+                Samples.Add(sampleViewModel);
+                _model.Children.Add(sampleViewModel.Model);
+            }
+
             UpdateArePointsHidden();
 
             Point3D barycenter = ComputeBarycenter();

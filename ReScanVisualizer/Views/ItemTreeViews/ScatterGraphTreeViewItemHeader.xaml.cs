@@ -86,5 +86,13 @@ namespace ReScanVisualizer.Views.ItemTreeViews
                 scatterGraphViewModel.InverseIsHidden();
             }
         }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
+            {
+                ((MainViewModel)Application.Current.MainWindow.DataContext).ScatterGraphs.Remove(scatterGraphViewModel);
+            }
+        }
     }
 }

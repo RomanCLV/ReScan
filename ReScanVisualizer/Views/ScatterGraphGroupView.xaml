@@ -96,6 +96,14 @@
                             <TextBlock Text="Points visible" Style="{StaticResource myTextBlock}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButton}" ToolTip="Delete" Click="DeleteButton_Click">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{StaticResource delete}" Width="25" Height="25" />
+                                        <TextBlock Text="Delete" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>

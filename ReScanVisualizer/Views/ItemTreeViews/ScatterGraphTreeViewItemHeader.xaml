@@ -7,7 +7,7 @@
              xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="50" d:DesignWidth="400"
              x:Name="userControl"
              Background="Transparent"
              >
@@ -18,15 +18,15 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Horizontal">
+    <StackPanel Orientation="Horizontal" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
         
         <StackPanel Orientation="Horizontal">
-            <Button Style="{StaticResource myButtonIconNoPadding}" Click="Button_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Button Style="{StaticResource myButtonIconNoPadding}" Click="Button_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Button.Content>
                     <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
                 </Button.Content>
             </Button>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5 0" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5 0">
                 <TextBlock Text="{Binding Name, Mode=OneWay}" />
                 <TextBlock Text=" (" />
                 <TextBlock Text="{Binding ItemsCount}" />
@@ -34,7 +34,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
+        <StackPanel>
             <!-- Rectangle for Color Display -->
             <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                 MouseUp="Rectangle_MouseUp"
@@ -51,6 +51,14 @@
                     Padding="5"
                     ColorChanged="ColorSelector_ColorChanged" />
             </Popup>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button Style="{StaticResource myButtonIconNoPadding}" Click="RemoveButton_Click" Height="19" Width="19" ToolTip="Delete">
+                <Button.Content>
+                    <Image Source="{StaticResource delete}" Height="19" Width="19" />
+                </Button.Content>
+            </Button>
         </StackPanel>
     </StackPanel>
 </UserControl>

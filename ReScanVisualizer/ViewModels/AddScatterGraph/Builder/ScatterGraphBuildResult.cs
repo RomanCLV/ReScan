@@ -200,15 +200,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraph.Builder
         {
             if (_scatterGraph != null)
             {
-                if (_scatterGraph.Count > ScatterGraphBuilderBase.MAX_COUNT)
+                if (_scatterGraph.Count >= ScatterGraphBuilderBase.MAX_COUNT)
                 {
+                    // on determine le facteur de reduction en fonction du nombre points max qu'on veut
                     MinReductionFactor = 100.0 * ( 1.0 - (double)ScatterGraphBuilderBase.MAX_COUNT / _scatterGraph.Count);
                     HasToReduceForced = true;
 
-                    double factor;
-                    while (ReducedCount != ScatterGraphBuilderBase.MAX_COUNT)
+                    double factor = ReducedCount < ScatterGraphBuilderBase.MAX_COUNT ? -1 : 1; // pour la correction, si besoin
+                    while (ReducedCount != ScatterGraphBuilderBase.MAX_COUNT) // parfois erreur de +/- 1
                     {
-                        factor = ReducedCount < ScatterGraphBuilderBase.MAX_COUNT ? -1 : 1;
+                        // on modifie légèrement le facteur de reduction pour arriver au nombre de points désiré
                         MinReductionFactor += 0.001 * factor;
                         ReductionFactor = _minReductionFactor;
                     }

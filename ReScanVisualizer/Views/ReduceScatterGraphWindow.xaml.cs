@@ -38,5 +38,14 @@ namespace ReScanVisualizer.Views
                 Close();
             }
         }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            int index = comboBox.SelectedIndex;
+            percentTextBox.Visibility   = index == 0 ? Visibility.Visible : Visibility.Hidden;
+            skippedTextBox.Visibility   = index == 1 ? Visibility.Visible : Visibility.Hidden;
+            maxPointsTextBox.Visibility = index == 2 ? Visibility.Visible : Visibility.Hidden;
+        }
     }
 }

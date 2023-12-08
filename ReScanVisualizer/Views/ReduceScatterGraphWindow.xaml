@@ -6,36 +6,37 @@
         xmlns:local="clr-namespace:ReScanVisualizer.Views"
         mc:Ignorable="d"
         Title="Reduce scatter graph" 
-        Height="260" Width="260"
+        Height="260" Width="420"
         ResizeMode="NoResize"
         Background="{StaticResource backgroundColor}"
         WindowStartupLocation="CenterOwner"
         >
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-
-        <ComboBox Grid.Row="0" SelectedIndex="{Binding SelectedMethodeIndex}">
-            <ComboBoxItem Content="Reduce by percentage" />
-            <ComboBoxItem Content="Reduce by skipped points" />
-            <ComboBoxItem Content="Reduce by max points" />
-        </ComboBox>
-
-        <TextBlock Text="{Binding Message}" Margin="0 20" TextWrapping="Wrap" />
-
-        <Grid Grid.Row="2" Margin="0 20">
-            <TextBox x:Name="percentTextBox"   Style="{StaticResource myTextBox}" Text="{Binding ReductionPercent,  StringFormat=N3}" />
-            <TextBox x:Name="skippedTextBox"   Style="{StaticResource myTextBox}" Text="{Binding ReductionSkipped}" />
-            <TextBox x:Name="maxPointsTextBox" Style="{StaticResource myTextBox}" Text="{Binding ReductionMaxCount}" />
-        </Grid>
-
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 20 0 0" HorizontalAlignment="Right">
+    <StackPanel Margin="20">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Select a reduce methode." TextWrapping="Wrap" Width="175" Margin="5 10" Style="{StaticResource myTextBlockLeft}" />
+            <ComboBox  SelectedIndex="{Binding SelectedMethodeIndex}" SelectionChanged="ComboBox_SelectionChanged" VerticalAlignment="Center">
+                <ComboBoxItem Content="Reduce by percentage" />
+                <ComboBoxItem Content="Reduce by skipped points" />
+                <ComboBoxItem Content="Reduce by max points" />
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0 20">
+            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Width="170" Margin="5" Style="{StaticResource myTextBlockLeft}" />
+            <Grid Grid.Row="3">
+                <TextBox x:Name="percentTextBox"   Width="80" Style="{StaticResource myTextBox}" Text="{Binding ReductionPercent,  StringFormat=N3, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox x:Name="skippedTextBox"   Width="80" Style="{StaticResource myTextBox}" Text="{Binding ReductionSkipped, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox x:Name="maxPointsTextBox" Width="80" Style="{StaticResource myTextBox}" Text="{Binding ReductionMaxCount, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Count:" Style="{StaticResource myTextBlockLeft}" />
+            <TextBlock Text="{Binding Count}" Style="{StaticResource myTextBlockLeft}" />
+            <TextBlock Text="→" Style="{StaticResource myTextBlockLeft}" />
+            <TextBlock Text="{Binding ReducedCount}" Style="{StaticResource myTextBlockLeft}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 0 0">
             <Button Content="Reduce" Style="{StaticResource myButton}" Click="ReduceButton_Click"/>
             <Button Content="Cancel" Style="{StaticResource myButton}" Click="CancelButton_Click"/>
         </StackPanel>
-    </Grid>
+    </StackPanel>
 </Window>
