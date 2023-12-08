@@ -150,12 +150,16 @@
     <Compile Include="ViewModels\KeyValueObservable.cs" />
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
-    <Compile Include="ViewModels\PartViewModel.cs" />
+    <Compile Include="ViewModels\Parts\PartPointViewModel.cs" />
+    <Compile Include="ViewModels\Parts\PartViewModel.cs" />
     <Compile Include="ViewModels\Point3DViewModel.cs" />
     <Compile Include="ViewModels\ReduceScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\ScatterGraphGroupViewModel.cs" />
     <Compile Include="Views\AddPartViews\AddPartWindow.xaml.cs">
       <DependentUpon>AddPartWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddPartViews\PartPointBuilderView.xaml.cs">
+      <DependentUpon>PartPointBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemTreeViews\PartTreeViewHeader.xaml.cs">
       <DependentUpon>PartTreeViewHeader.xaml</DependentUpon>
@@ -252,6 +256,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddPartViews\AddPartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddPartViews\PartPointBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels.Parts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,13 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
 {
     public class PartPointBuilder : PartBuilderBase
     {
+        public PartPointBuilder() : base()
+        {
+        }
+
+        public override PartViewModelBase Build()
+        {
+            return new PartPointViewModel();
+        }
     }
 }

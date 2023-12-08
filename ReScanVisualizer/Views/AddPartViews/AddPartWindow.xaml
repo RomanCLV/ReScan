@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReScanVisualizer.Views.AddPartViews"
+        xmlns:builders="clr-namespace:ReScanVisualizer.ViewModels.AddPartModelViews.Builders"
         mc:Ignorable="d"
         Title="Add part" 
         Height="720" Width="1280"
@@ -42,6 +43,21 @@
                             />
                     </StackPanel>
                     <StackPanel>
+                        <TextBlock Text="Choose the type of the new part" />
+                        <ComboBox Margin="10" Width="150" HorizontalAlignment="Left" SelectedIndex="{Binding SelectedIndex}">
+                            <ComboBoxItem Content="Point part" />
+                        </ComboBox>
+                        <Separator Margin="10" />
+
+                        <StackPanel>
+                            <StackPanel.Resources>
+                                <DataTemplate DataType="{x:Type builders:PartPointBuilder}">
+                                    <local:PartPointBuilderView />
+                                </DataTemplate>
+                            </StackPanel.Resources>
+                            <ContentControl Content="{Binding Builder}" />
+                        </StackPanel>
+                        
                         <!--<TextBlock Text="{Binding Builder.Message}" Style="{StaticResource myTextBlockLeftError}"  />-->
                     </StackPanel>
                 </DockPanel>

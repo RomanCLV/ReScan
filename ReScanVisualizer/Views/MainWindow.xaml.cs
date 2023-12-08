@@ -1,8 +1,4 @@
-﻿using HelixToolkit.Wpf;
-using ReScanVisualizer.Models;
-using ReScanVisualizer.ViewModels;
-using ReScanVisualizer.Views.ItemTreeViews;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
@@ -19,7 +15,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static HelixToolkit.Wpf.Viewport3DHelper;
+using ReScanVisualizer.Models;
+using ReScanVisualizer.ViewModels;
+using ReScanVisualizer.Views.ItemTreeViews;
+using ReScanVisualizer.ViewModels.Parts;
+using HelixToolkit.Wpf;
 
 #nullable enable
 

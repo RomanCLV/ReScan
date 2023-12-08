@@ -12,7 +12,7 @@ using System.Windows.Media.Media3D;
 
 #nullable enable
 
-namespace ReScanVisualizer.ViewModels
+namespace ReScanVisualizer.ViewModels.Parts
 {
     public abstract class PartViewModelBase : ViewModelBase, I3DElement
     {

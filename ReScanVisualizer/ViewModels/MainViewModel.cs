@@ -12,6 +12,7 @@ using System.Collections.Specialized;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.Commands;
 using System.Xml.Linq;
+using ReScanVisualizer.ViewModels.Parts;
 
 #nullable enable
 

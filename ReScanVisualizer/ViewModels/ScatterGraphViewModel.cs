@@ -1,6 +1,5 @@
 ﻿using HelixToolkit.Wpf;
 using Microsoft.Win32;
-using ReScanVisualizer.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +16,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
+using ReScanVisualizer.Models;
+using ReScanVisualizer.ViewModels.Parts;
 
 #nullable enable
 
