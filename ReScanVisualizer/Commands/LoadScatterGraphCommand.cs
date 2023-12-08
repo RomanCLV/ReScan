@@ -17,12 +17,12 @@ namespace ReScanVisualizer.Commands
     internal class LoadScatterGraphCommand : AsyncCommandBase
     {
         private readonly AddScatterGraphViewModel _viewModel;
-        bool _closeAfterExecture;
+        private readonly bool _closeAfterExecute;
 
-        public LoadScatterGraphCommand(AddScatterGraphViewModel viewModel, bool closeAfterExecture)
+        public LoadScatterGraphCommand(AddScatterGraphViewModel viewModel, bool closeAfterExecute)
         {
             _viewModel = viewModel;
-            _closeAfterExecture = closeAfterExecture;
+            _closeAfterExecute = closeAfterExecute;
 
             _viewModel.Items.CollectionChanged += Items_CollectionChanged;
         }
@@ -78,7 +78,7 @@ namespace ReScanVisualizer.Commands
 
         public override Task ExecuteAsync(object? parameter)
         {
-            return _viewModel.LoadAllAsync(_closeAfterExecture);
+            return _viewModel.LoadAllAsync(_closeAfterExecute);
         }
     }
 }
