@@ -25,7 +25,7 @@ namespace ReScanVisualizer.Commands
         {
             _isExecuting = false;
         }
-
+        
         public override bool CanExecute(object? parameter)
         {
             return !IsExecuting && base.CanExecute(parameter);

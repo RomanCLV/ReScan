@@ -1,9 +1,9 @@
-﻿using ReScanVisualizer.ViewModels.Parts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ReScanVisualizer.ViewModels.Parts;
 
 namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
 {

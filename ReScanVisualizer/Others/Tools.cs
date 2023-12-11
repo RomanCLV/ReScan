@@ -1,13 +1,12 @@
-﻿using ReScanVisualizer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer
 {

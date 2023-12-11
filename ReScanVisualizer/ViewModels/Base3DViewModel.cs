@@ -1,13 +1,12 @@
-﻿using HelixToolkit.Wpf;
-using ReScanVisualizer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using ReScanVisualizer.Models;
+using HelixToolkit.Wpf;
 
 #nullable enable
 
@@ -273,6 +272,15 @@ namespace ReScanVisualizer.ViewModels
             {
                 _name = $"Base {_instanceCreated}"
             };
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                _model.Children.Clear();
+                base.Dispose();
+            }
         }
 
         private void OnIsHidenChanged()

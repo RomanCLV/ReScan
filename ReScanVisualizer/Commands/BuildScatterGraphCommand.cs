@@ -1,10 +1,9 @@
-﻿using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
-using ReScanVisualizer.Views.AddScatterGraphViews;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
 
 #nullable enable
 
@@ -23,7 +22,16 @@ namespace ReScanVisualizer.Commands
 
         ~BuildScatterGraphCommand()
         {
-            _viewModel.Items.CollectionChanged -= Items_CollectionChanged;
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                _viewModel.Items.CollectionChanged -= Items_CollectionChanged;
+                base.Dispose();
+            }
         }
 
         private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

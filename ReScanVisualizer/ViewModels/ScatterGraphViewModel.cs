@@ -1,23 +1,19 @@
-﻿using HelixToolkit.Wpf;
-using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing.Drawing2D;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Windows.Threading;
+using Microsoft.Win32;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Parts;
+using ReScanVisualizer.ViewModels.Samples;
+using HelixToolkit.Wpf;
 
 #nullable enable
 
@@ -323,32 +319,18 @@ namespace ReScanVisualizer.ViewModels
                 if (Color != null)
                 {
                     Color.PropertyChanged -= Color_PropertyChanged;
+                    Color.Dispose();
                 }
                 if (Samples != null)
                 {
                     Samples.CollectionChanged -= Points_CollectionChanged;
-                    if (Application.Current != null && Application.Current.Dispatcher.CheckAccess())
-                    {
-                        Clear();
-                    }
-                    else
-                    {
-                        Application.Current?.Dispatcher.Invoke(Clear);
-                    }
+                    Clear();
                 }
+                _barycenter?.Dispose();
                 _averagePlan?.Dispose();
                 _base3D?.Dispose();
-                _barycenter?.Dispose();
-
-                try
-                {
-                    _model.Children.Clear();
-                }
-                catch (InvalidOperationException)
-                {
-                }
+                _model.Children.Clear();
                 base.Dispose();
-                IsDisposed = true;
             }
         }
 

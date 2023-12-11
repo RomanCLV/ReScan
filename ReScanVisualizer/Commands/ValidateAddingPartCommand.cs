@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.ViewModels.AddPartModelViews;
 using ReScanVisualizer.Views.AddPartViews;
 

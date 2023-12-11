@@ -1,15 +1,12 @@
-﻿using ReScanVisualizer.Models;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using System.Xml.Linq;
+using ReScanVisualizer.Models;
 
 #nullable enable
 
@@ -419,9 +416,12 @@ namespace ReScanVisualizer.ViewModels
                 PointsColorViewModel.PropertyChanged -= PointsColorViewModel_PropertyChanged;
                 BarycentersColorViewModel.PropertyChanged -= BarycenterColorViewModel_PropertyChanged;
                 PlansColorViewModel.PropertyChanged -= PlanColorViewModel_PropertyChanged;
+                PointsColorViewModel.Dispose();
+                BarycentersColorViewModel.Dispose();
+                PlansColorViewModel.Dispose();
                 EndRotateBase();
+                _items.Clear();
                 base.Dispose();
-                IsDisposed = true;
             }
         }
 

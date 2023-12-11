@@ -1,15 +1,13 @@
-﻿using ReScanVisualizer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media.Media3D;
 using System.Windows.Media;
-using HelixToolkit.Wpf;
-using System.Windows;
+using System.Windows.Media.Media3D;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
+using ReScanVisualizer.Models;
+using HelixToolkit.Wpf;
 
 #nullable enable
 
@@ -252,8 +250,8 @@ namespace ReScanVisualizer.ViewModels
             if (!IsDisposed)
             {
                 Color.PropertyChanged -= Color_PropertyChanged;
+                Color.Dispose();
                 base.Dispose();
-                IsDisposed = true;
             }
         }
 

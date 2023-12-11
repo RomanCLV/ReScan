@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 using ReScanVisualizer.Views.AddScatterGraphViews;
@@ -38,10 +36,19 @@ namespace ReScanVisualizer.Commands
 
         ~ValidateAddingScatterGraphBuilderCommand()
         {
-            _addScatterGraphBuilderModelView.PropertyChanged -= AddScatterGraphModelView_PropertyChanged;
-            if (_builder != null)
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
             {
-                _builder.PropertyChanged -= Builder_PropertyChanged;
+                _addScatterGraphBuilderModelView.PropertyChanged -= AddScatterGraphModelView_PropertyChanged;
+                if (_builder != null)
+                {
+                    _builder.PropertyChanged -= Builder_PropertyChanged;
+                }
+                base.Dispose();
             }
         }
 

@@ -58,6 +58,23 @@ namespace ReScanVisualizer.ViewModels
             _description = description;
         }
 
+        ~CommandKey()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                if (Command is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+                base.Dispose();
+            }
+        }
+
         public bool CanExecute(object parameter)
         {
             return Command.CanExecute(parameter);

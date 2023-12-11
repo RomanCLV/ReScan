@@ -29,9 +29,18 @@ namespace ReScanVisualizer.Commands
 
         ~ValidateExportBasesCommand()
         {
-            foreach (var item in _viewModel.Items)
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
             {
-                item.PropertyChanged -= Item_PropertyChanged;
+                foreach (var item in _viewModel.Items)
+                {
+                    item.PropertyChanged -= Item_PropertyChanged;
+                }
+                base.Dispose();
             }
         }
 

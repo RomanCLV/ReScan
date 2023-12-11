@@ -1,14 +1,12 @@
-﻿using ReScanVisualizer.ViewModels;
-using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
-using ReScanVisualizer.Views.AddPartViews;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using ReScanVisualizer.Views.AddScatterGraphViews;
+using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.ViewModels.AddPartModelViews;
+using ReScanVisualizer.Views.AddPartViews;
 
 #nullable enable
 

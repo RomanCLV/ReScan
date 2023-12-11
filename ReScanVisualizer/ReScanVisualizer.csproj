@@ -142,7 +142,7 @@
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateRectangle2DBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\AddScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\EditScatterGraphViewModel.cs" />
-    <Compile Include="ViewModels\BarycenterViewModel.cs" />
+    <Compile Include="ViewModels\Samples\BarycenterViewModel.cs" />
     <Compile Include="ViewModels\Base3DViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ExportBasesViewModel.cs" />
@@ -386,7 +386,7 @@
     <Compile Include="Models\ScatterGraph.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PlanViewModel.cs" />
-    <Compile Include="ViewModels\SampleViewModel.cs" />
+    <Compile Include="ViewModels\Samples\SampleViewModel.cs" />
     <Compile Include="ViewModels\ScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">

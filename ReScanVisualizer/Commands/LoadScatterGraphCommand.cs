@@ -1,14 +1,13 @@
-﻿using ReScanVisualizer.ViewModels;
-using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
-using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
-using ReScanVisualizer.Views.AddScatterGraphViews;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ReScanVisualizer.ViewModels;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 
 #nullable enable
 
@@ -29,7 +28,16 @@ namespace ReScanVisualizer.Commands
 
         ~LoadScatterGraphCommand()
         {
-            _viewModel.Items.CollectionChanged -= Items_CollectionChanged;
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                _viewModel.Items.CollectionChanged -= Items_CollectionChanged;
+                base.Dispose();
+            }
         }
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -70,9 +78,9 @@ namespace ReScanVisualizer.Commands
 
         public override bool CanExecute(object? parameter)
         {
-            return 
-                base.CanExecute(parameter) && 
-                _viewModel.Items.Count > 0 && 
+            return
+                base.CanExecute(parameter) &&
+                _viewModel.Items.Count > 0 &&
                 _viewModel.Items.Any(x => x.Key.State == ScatterGraphBuilderState.Success);
         }
 

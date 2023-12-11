@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +17,7 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.Views.ItemTreeViews;
 using ReScanVisualizer.ViewModels.Parts;
+using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
 
 #nullable enable
@@ -40,6 +39,11 @@ namespace ReScanVisualizer.Views
             _geometryModel3DMouseOver = null;
             shiftStartIndex = 0;
             shiftEndIndex = 0;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ((MainViewModel)DataContext).Dispose();
         }
 
         #region Bases tree view

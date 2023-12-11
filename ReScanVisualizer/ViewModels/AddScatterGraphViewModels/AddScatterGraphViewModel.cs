@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
@@ -140,12 +137,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             if (!IsDisposed)
             {
                 Items.CollectionChanged -= Items_CollectionChanged;
-                foreach (var item in Items)
+                AddScatterGraphBuilderCommand.Dispose();
+                BuildCommand.Dispose();
+                LoadCommand.Dispose();
+                LoadAndCloseCommand.Dispose();
+                CancelCommand.Dispose();
+                foreach (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item in Items)
                 {
                     item.Value!.PropertyChanged -= Value_PropertyChanged;
                 }
+                Items.Clear();
                 base.Dispose();
-                IsDisposed = true;
             }
         }
 

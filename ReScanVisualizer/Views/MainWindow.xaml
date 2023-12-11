@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ReScanVisualizer.Views"
         xmlns:itw="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
         xmlns:viewModels="clr-namespace:ReScanVisualizer.ViewModels"
+        xmlns:viewModelsSamples="clr-namespace:ReScanVisualizer.ViewModels.Samples"
         xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         mc:Ignorable="d"
@@ -14,6 +15,7 @@
         MinHeight="720" MinWidth="1280"
         WindowState="Maximized"
         Background="{StaticResource backgroundColor}"
+        Closing="Window_Closing"
         >
     <Window.Resources>
         <converters:CommandKeyToInputGestureTextConverter x:Key="CommandKeyToInputGestureTextConverter" />
@@ -360,7 +362,7 @@
                         <DataTemplate DataType="{x:Type viewModels:ScatterGraphViewModel}">
                             <local:ScatterGraphView />
                         </DataTemplate>
-                        <DataTemplate DataType="{x:Type viewModels:SampleViewModel}">
+                        <DataTemplate DataType="{x:Type viewModelsSamples:SampleViewModel}">
                             <local:SampleView />
                             <!-- IsEnabled="{Binding CanEdit}" -->
                         </DataTemplate>

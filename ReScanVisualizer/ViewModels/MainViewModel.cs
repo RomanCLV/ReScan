@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media.Media3D;
-using System.Windows.Media;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
 using System.Windows;
-using System.Collections.Specialized;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.Commands;
-using System.Xml.Linq;
 using ReScanVisualizer.ViewModels.Parts;
+using ReScanVisualizer.ViewModels.Samples;
 
 #nullable enable
 
@@ -138,13 +138,20 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
-                IsDisposed = true;
                 Parts.CollectionChanged -= Parts_CollectionChanged;
                 ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 Bases.CollectionChanged -= Bases_CollectionChanged;
+                AddScatterGraphCommand.Dispose();
+                AddBaseCommand.Dispose();
+                AddPartCommand.Dispose();
+                ExportBaseCommand.Dispose();
                 ClearParts();
                 ClearScatterGraphs();
                 ClearBases();
+                Models.Children.Clear();
+                BasesModels.Children.Clear();
+                PartsModels.Children.Clear();
+
                 base.Dispose();
             }
         }
@@ -365,15 +372,7 @@ namespace ReScanVisualizer.ViewModels
                 item.Samples.CollectionChanged -= Samples_CollectionChanged;
                 item.Dispose();
             }
-            if (Application.Current != null && Application.Current.Dispatcher.CheckAccess())
-            {
-                ScatterGraphs.Clear();
-            }
-            else
-            {
-                Application.Current?.Dispatcher.Invoke(ScatterGraphs.Clear);
-            }
-
+            ScatterGraphs.Clear();
         }
 
         public void ClearBases()
@@ -382,14 +381,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 item.Dispose();
             }
-            if (Application.Current != null && Application.Current.Dispatcher.CheckAccess())
-            {
-                Bases.Clear();
-            }
-            else
-            {
-                Application.Current?.Dispatcher.Invoke(Bases.Clear);
-            }
+            Bases.Clear();
         }
 
         public void ClearParts()
@@ -398,14 +390,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 item.Dispose();
             }
-            if (Application.Current != null && Application.Current.Dispatcher.CheckAccess())
-            {
-                Parts.Clear();
-            }
-            else
-            {
-                Application.Current?.Dispatcher.Invoke(Parts.Clear);
-            }
+            Parts.Clear();
         }
 
         internal void SetAllRenderQuality(RenderQuality renderQuality)

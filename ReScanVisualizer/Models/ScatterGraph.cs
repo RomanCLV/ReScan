@@ -1,13 +1,12 @@
-﻿using HelixToolkit.Wpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
 
 namespace ReScanVisualizer.Models
 {

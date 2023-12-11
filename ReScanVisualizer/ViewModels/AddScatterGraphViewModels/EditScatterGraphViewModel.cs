@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
-using ReScanVisualizer.Views;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
@@ -27,6 +26,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             _builder = builder;
 
             ValidateCommand = new CommandKey(new ValidateEditingScatterGraphBuilderCommand(view, _builder), Key.Enter, ModifierKeys.None, "OK");
+        }
+
+        ~EditScatterGraphViewModel()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                ValidateCommand.Dispose();
+                base.Dispose();
+            }
         }
     }
 }

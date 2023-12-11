@@ -1,17 +1,14 @@
-﻿using Microsoft.Win32;
-using ReScanVisualizer.Commands;
-using ReScanVisualizer.Models;
-using ReScanVisualizer.Service;
-using ReScanVisualizer.Views.AddScatterGraphViews;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Win32;
+using ReScanVisualizer.Commands;
+using ReScanVisualizer.Service;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
@@ -94,8 +91,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             if (!IsDisposed)
             {
                 _builders.CollectionChanged -= Builders_CollectionChanged;
+                _builders.Clear();
                 base.Dispose();
-                IsDisposed = true;
             }
         }
     }

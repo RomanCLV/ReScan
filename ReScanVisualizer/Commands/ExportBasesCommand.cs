@@ -1,11 +1,11 @@
-﻿using ReScanVisualizer.ViewModels;
-using ReScanVisualizer.Views;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using ReScanVisualizer.ViewModels;
+using ReScanVisualizer.Views;
 
 #nullable enable
 
@@ -24,8 +24,17 @@ namespace ReScanVisualizer.Commands
 
         ~ExportBasesCommand()
         {
-            _mainViewModel.Bases.CollectionChanged -= Bases_CollectionChanged;
-            _mainViewModel.ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed) 
+            {
+                _mainViewModel.Bases.CollectionChanged -= Bases_CollectionChanged;
+                _mainViewModel.ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
+                base.Dispose();
+            }
         }
 
         private void ScatterGraphs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

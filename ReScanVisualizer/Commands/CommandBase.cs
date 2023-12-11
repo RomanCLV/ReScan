@@ -10,16 +10,35 @@ using System.Windows.Input;
 
 namespace ReScanVisualizer.Commands
 {
-	public abstract class CommandBase : ICommand
+	public abstract class CommandBase : ICommand, IDisposable
 	{
 		public event EventHandler? CanExecuteChanged;
+		private bool _isDisposed;
+        public bool IsDisposed
+        {
+            get => _isDisposed;
+            protected set => _isDisposed = value;
+        }
 
-		public virtual bool CanExecute(object? parameter)
+        public CommandBase()
+        {
+            _isDisposed = false;
+        }
+
+        public virtual void Dispose()
+        {
+            if (!_isDisposed)
+			{
+				_isDisposed |= true;
+			}
+        }
+
+        public virtual bool CanExecute(object? parameter)
 		{
 			return true;
 		}
 
-		public abstract void Execute(object? parameter);
+        public abstract void Execute(object? parameter);
 
 		protected void OnCanExecuteChanged()
 		{

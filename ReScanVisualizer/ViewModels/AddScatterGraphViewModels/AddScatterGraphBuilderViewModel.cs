@@ -107,6 +107,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             CancelCommand = new CommandKey(new ActionCommand(addScatterGraphView.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
+        ~AddScatterGraphBuilderViewModel()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                ValidateCommand.Dispose();
+                CancelCommand.Dispose();
+                base.Dispose();
+            }
+        }
+
         private void UnselectAll()
         {
             if (!_isUnselectingAll)

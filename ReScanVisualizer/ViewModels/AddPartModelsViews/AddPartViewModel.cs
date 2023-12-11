@@ -64,6 +64,21 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
             CancelCommand = new CommandKey(new ActionCommand(addPartView.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
+        ~AddPartViewModel()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                ValidateCommand.Dispose();
+                CancelCommand.Dispose();
+                base.Dispose();
+            }
+        }
+
         private void UpdateBuilder()
         {
             if (_selectedIndex == 0)

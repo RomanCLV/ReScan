@@ -1,5 +1,4 @@
-﻿using ReScanVisualizer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
@@ -117,8 +117,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 Start.PropertyChanged -= StartEnd_PropertyChanged;
                 End.PropertyChanged -= StartEnd_PropertyChanged;
+                Start.Dispose();
+                End.Dispose();
                 base.Dispose();
-                IsDisposed = true;
             }
         }
     }

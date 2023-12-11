@@ -1,7 +1,4 @@
-﻿using HelixToolkit.Wpf;
-using ReScanVisualizer.Models;
-using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,10 +7,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using ReScanVisualizer.Models;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
+using HelixToolkit.Wpf;
 
 #nullable enable
 
-namespace ReScanVisualizer.ViewModels
+namespace ReScanVisualizer.ViewModels.Samples
 {
     public class SampleViewModel : ViewModelBase, I3DElement, IScatterGraphElement
     {
@@ -198,6 +198,8 @@ namespace ReScanVisualizer.ViewModels
             {
                 Color.PropertyChanged -= Color_PropertyChanged;
                 Point.PropertyChanged -= Point_PropertyChanged;
+                Color.Dispose();
+                Point.Dispose();
                 base.Dispose();
                 IsDisposed = true;
             }

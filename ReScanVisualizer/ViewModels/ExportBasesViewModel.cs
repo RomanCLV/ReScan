@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using ReScanVisualizer.Commands;
-using System.Windows.Input;
-using ReScanVisualizer.Views;
-using System.Collections.ObjectModel;
-using ReScanVisualizer.Models;
-using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 using Microsoft.Win32;
-using System.IO;
+using ReScanVisualizer.Commands;
+using ReScanVisualizer.Views;
 
 namespace ReScanVisualizer.ViewModels
 {
@@ -68,18 +67,6 @@ namespace ReScanVisualizer.ViewModels
             CancelCommand = new CommandKey(new ActionCommand(exportBasesWindow.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
-        private void ExportItemViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ExportItemViewModel<ViewModelBase>.IsSelected))
-            {
-                if (!_isSelectingAll)
-                {
-                    _selectAll = Items.AsQueryable().All(i => i.IsSelected);
-                    OnPropertyChanged(nameof(SelectAll));
-                }
-            }
-        }
-
         ~ExportBasesViewModel()
         {
             Dispose();
@@ -89,13 +76,26 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
+                ValidateCommand.Dispose();
+                CancelCommand.Dispose();
                 foreach (var item in Items)
                 {
                     item.PropertyChanged -= ExportItemViewModel_PropertyChanged;
                 }
                 Items.Clear();
                 base.Dispose();
-                IsDisposed = true;
+            }
+        }
+
+        private void ExportItemViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ExportItemViewModel<ViewModelBase>.IsSelected))
+            {
+                if (!_isSelectingAll)
+                {
+                    _selectAll = Items.AsQueryable().All(i => i.IsSelected);
+                    OnPropertyChanged(nameof(SelectAll));
+                }
             }
         }
 

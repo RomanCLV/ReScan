@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 
@@ -26,7 +25,16 @@ namespace ReScanVisualizer.Commands
 
         ~ValidateEditingScatterGraphBuilderCommand()
         {
-            _builder.PropertyChanged -= Builder_PropertyChanged;
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                _builder.PropertyChanged -= Builder_PropertyChanged;
+                base.Dispose();
+            }
         }
 
         private void Builder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

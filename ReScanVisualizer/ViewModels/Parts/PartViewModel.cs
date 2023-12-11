@@ -1,14 +1,15 @@
-﻿using ReScanVisualizer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Media3D;
+using ReScanVisualizer.Models;
+using ReScanVisualizer.ViewModels.Samples;
 
 #nullable enable
 
@@ -117,7 +118,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             get => _renderQuality;
             set
             {
-                if (SetValue(ref _renderQuality, value)) 
+                if (SetValue(ref _renderQuality, value))
                 {
                     foreach (var item in ScatterGraphs)
                     {
@@ -171,11 +172,10 @@ namespace ReScanVisualizer.ViewModels.Parts
         {
             if (!IsDisposed)
             {
-                Clear();
                 ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
+                Clear();
                 _modelGroup.Children.Clear();
                 base.Dispose();
-                IsDisposed = true;
             }
         }
 
