@@ -22,11 +22,11 @@ namespace ReScanVisualizer.Views.ItemTreeViews
     /// <summary>
     /// Logique d'interaction pour ScatterGraphItemTreeView.xaml
     /// </summary>
-    public partial class ScatterGraphTreeViewItemHeader : UserControl
+    public partial class PartScatterGraphTreeViewItemHeader : UserControl
     {
         private Popup? _openedPopup;
 
-        public ScatterGraphTreeViewItemHeader()
+        public PartScatterGraphTreeViewItemHeader()
         {
             InitializeComponent();
         }
@@ -87,10 +87,9 @@ namespace ReScanVisualizer.Views.ItemTreeViews
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ScatterGraphViewModel scatterGraphViewModel && sender is Button button)
+            if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
             {
-                MainViewModel mainViewModel = (MainViewModel)Application.Current.MainWindow.DataContext;
-                mainViewModel.ScatterGraphs.Remove(scatterGraphViewModel);
+                scatterGraphViewModel.Part = null;
             }
         }
     }

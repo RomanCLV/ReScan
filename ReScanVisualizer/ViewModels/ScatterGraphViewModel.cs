@@ -207,24 +207,27 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _writeHeaders, value);
         }
 
+        private bool _isPartChanging;
         private PartViewModelBase? _part;
         public PartViewModelBase? Part
         {
             get => _part;
             set
             {
-                if (_part != null && !_part.Equals(value))
-                {
-                    _part.Remove(this);
-                }
+                PartViewModelBase? partRemoveLater = _part;
                 if (SetValue(ref _part, value))
                 {
+                    if (partRemoveLater != null)
+                    {
+                        partRemoveLater.Remove(this);
+                    }
                     if (_part != null)
                     {
                         ScaleFactor = _part.ScaleFactor;
                         _part.Add(this);
                     }
                 }
+
             }
         }
 

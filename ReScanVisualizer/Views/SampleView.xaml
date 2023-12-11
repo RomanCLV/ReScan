@@ -53,7 +53,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1" IsEnabled="{Binding CanEdit}" >
-                <forms:PointForm DataContext="{Binding Point}" />
+                <forms:PointForm DataContext="{Binding Point}" Width="150" HorizontalAlignment="Left" />
             </StackPanel>
 
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" IsEnabled="{Binding CanEdit}">

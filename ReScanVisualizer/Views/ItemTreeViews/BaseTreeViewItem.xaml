@@ -24,11 +24,11 @@
             <TreeViewItem.Header>
                 <StackPanel Orientation="Horizontal" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
                     <TextBlock Text="X ("/>
-                    <TextBlock Text="{Binding X.X, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding XX, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=" "/>
-                    <TextBlock Text="{Binding X.Y, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding XY, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=" "/>
-                    <TextBlock Text="{Binding X.Z, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding XZ, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=")"/>
                 </StackPanel>
             </TreeViewItem.Header>
@@ -37,11 +37,11 @@
             <TreeViewItem.Header>
                 <StackPanel Orientation="Horizontal" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
                     <TextBlock Text="Y ("/>
-                    <TextBlock Text="{Binding Y.X, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding YX, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=" "/>
-                    <TextBlock Text="{Binding Y.Y, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding YY, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=" "/>
-                    <TextBlock Text="{Binding Y.Z, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding YZ, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=")"/>
                 </StackPanel>
             </TreeViewItem.Header>
@@ -50,11 +50,11 @@
             <TreeViewItem.Header>
                 <StackPanel Orientation="Horizontal" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
                     <TextBlock Text="Z ("/>
-                    <TextBlock Text="{Binding Z.X, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding ZX, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=" "/>
-                    <TextBlock Text="{Binding Z.Y, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding ZY, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=" "/>
-                    <TextBlock Text="{Binding Z.Z, StringFormat=N3, Mode=OneWay}" />
+                    <TextBlock Text="{Binding ZZ, StringFormat=N3, Mode=OneWay}" />
                     <TextBlock Text=")"/>
                 </StackPanel>
             </TreeViewItem.Header>

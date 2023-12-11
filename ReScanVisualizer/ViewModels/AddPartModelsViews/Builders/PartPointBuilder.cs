@@ -11,11 +11,12 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
     {
         public PartPointBuilder() : base()
         {
+            Name = "Point part";
         }
 
         public override PartViewModelBase Build()
         {
-            return new PartPointViewModel();
+            return new PartPointViewModel(OriginBase.Base3D);
         }
     }
 }

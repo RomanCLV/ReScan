@@ -17,7 +17,7 @@
         </StackPanel>
 
         <GroupBox Header="Limits" Margin="10" Padding="30">
-            <forms:LimitsForm />
+            <forms:LimitsForm Width="350" HorizontalAlignment="Left" />
         </GroupBox>
 
         <GroupBox Header="Color" Margin="10" Padding="30">

@@ -12,8 +12,8 @@
              DataContextChanged="UserControl_DataContextChanged"
              >
     <StackPanel>
-        <GroupBox Header="Center" Margin="10">
-            <form:PointForm DataContext="{Binding Center}" />
+        <GroupBox Header="Center" Margin="10" Padding="30">
+            <form:PointForm DataContext="{Binding Center}" Width="150" HorizontalAlignment="Left" />
         </GroupBox>
 
         <GroupBox Header="Dimensions" Margin="10">

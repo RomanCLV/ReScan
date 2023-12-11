@@ -98,6 +98,7 @@
     <Compile Include="Converters\BoolToFontWeightConverter.cs" />
     <Compile Include="Converters\IsHiddenToOpacityConverter.cs" />
     <Compile Include="Converters\IsHiddenToImageConverter.cs" />
+    <Compile Include="Converters\EnumerableNonEmptyConverter.cs" />
     <Compile Include="Converters\NullableObjectToStringConverter.cs" />
     <Compile Include="Converters\ReduceItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Converters\LoadItemButtonEnabledMultiConverter.cs" />
@@ -161,11 +162,17 @@
     <Compile Include="Views\AddPartViews\PartPointBuilderView.xaml.cs">
       <DependentUpon>PartPointBuilderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Forms\Base3DForm.xaml.cs">
+      <DependentUpon>Base3DForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ItemTreeViews\PartTreeViewHeader.xaml.cs">
       <DependentUpon>PartTreeViewHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemTreeViews\PartTreeViewItem.xaml.cs">
       <DependentUpon>PartTreeViewItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemTreeViews\PartScatterGraphTreeViewItemHeader.xaml.cs">
+      <DependentUpon>PartScatterGraphTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReduceScatterGraphWindow.xaml.cs">
       <DependentUpon>ReduceScatterGraphWindow.xaml</DependentUpon>
@@ -263,6 +270,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Forms\Base3DForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ItemTreeViews\PartTreeViewHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -270,6 +281,10 @@
     <Page Include="Views\ItemTreeViews\PartTreeViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemTreeViews\PartScatterGraphTreeViewItemHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ReduceScatterGraphWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

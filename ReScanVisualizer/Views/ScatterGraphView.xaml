@@ -17,6 +17,7 @@
         <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter"/>
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
+        <converters:EnumerableNonEmptyConverter x:Key="EnumerableNonEmptyConverter" />
     </UserControl.Resources>
     <Grid>
         <TabControl Background="Transparent">
@@ -37,7 +38,11 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Part" Width="85" Style="{StaticResource myTextBlockLeft}" />
-                            <ComboBox  Margin="5" Width="100" ItemsSource="{Binding PartsListSource.Parts}" SelectedValue="{Binding Part}"/>
+                            <ComboBox Margin="5" Width="100"
+                                      ItemsSource="{Binding PartsListSource.Parts}" 
+                                      SelectedValue="{Binding Part}"
+                                      DisplayMemberPath="Name"
+                                      IsEnabled="{Binding PartsListSource.Parts, Converter={StaticResource EnumerableNonEmptyConverter}}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />
@@ -191,7 +196,7 @@
                         </StackPanel>
 
                         <StackPanel IsEnabled="{Binding Barycenter.CanEdit}">
-                            <forms:PointForm DataContext="{Binding Barycenter.Point}" />
+                            <forms:PointForm DataContext="{Binding Barycenter.Point}" Width="150" HorizontalAlignment="Left" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
@@ -239,7 +244,7 @@
                             <TextBlock Text="Average plan visible" Style="{StaticResource myTextBlock}" />
                         </StackPanel>
 
-                        <forms:PlanForm DataContext="{Binding AveragePlan}" />
+                        <forms:PlanForm DataContext="{Binding AveragePlan}"  Width="150" HorizontalAlignment="Left" />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -266,13 +271,10 @@
                                 <ColumnDefinition Width="70"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Opacity" Style="{StaticResource myTextBlock}" />
@@ -301,30 +303,7 @@
                                 </TextBox.Text>
                             </TextBox>
 
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="Origin" Style="{StaticResource myTextBlock}" />
-                            <TextBlock Grid.Row="3" Grid.Column="2" Text="X axis" Style="{StaticResource myTextBlock}" />
-                            <TextBlock Grid.Row="3" Grid.Column="3" Text="Y axis" Style="{StaticResource myTextBlock}" />
-                            <TextBlock Grid.Row="3" Grid.Column="4" Text="Z axis" Style="{StaticResource myTextBlock}" />
-
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
-                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
-
-                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Base3D.Origin.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Base3D.Origin.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Base3D.Origin.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-
-                            <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Base3D.X.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                            <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding Base3D.X.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                            <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding Base3D.X.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-
-                            <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Base3D.Y.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                            <TextBox Grid.Row="5" Grid.Column="3" Text="{Binding Base3D.Y.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                            <TextBox Grid.Row="6" Grid.Column="3" Text="{Binding Base3D.Y.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-
-                            <TextBox Grid.Row="4" Grid.Column="4" Text="{Binding Base3D.Z.X, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                            <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Base3D.Z.Y, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
-                            <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Base3D.Z.Z, Mode=OneWay, StringFormat=N3}" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+                            <forms:Base3DForm DataContext="{Binding Base3D}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" IsEnabled="False" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>

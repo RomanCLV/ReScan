@@ -11,12 +11,12 @@
              Foreground="{StaticResource foregroundColor}"
              DataContextChanged="UserControl_DataContextChanged">
     <StackPanel>
-        <GroupBox Header="Start" Margin="10">
-            <form:PointForm DataContext="{Binding Start}" />
+        <GroupBox Header="Start" Margin="10" Padding="30">
+            <form:PointForm DataContext="{Binding Start}" Width="150" HorizontalAlignment="Left" />
         </GroupBox>
 
-        <GroupBox Header="End" Margin="10">
-            <form:PointForm DataContext="{Binding End}" />
+        <GroupBox Header="End" Margin="10" Padding="30" >
+            <form:PointForm DataContext="{Binding End}" Width="150" HorizontalAlignment="Left"/>
         </GroupBox>
 
         <Grid Margin="10">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -75,6 +76,178 @@ namespace ReScanVisualizer.Models
             }
         }
 
+        #region Origin access properties
+
+        public double OX
+        {
+            get => _origin.X;
+            set
+            {
+                if (_origin.X != value)
+                {
+                    _origin.X = value;
+                    OnOriginChanged();
+                }
+            }
+        }
+
+        public double OY
+        {
+            get => _origin.Y;
+            set
+            {
+                if (_origin.Y != value)
+                {
+                    _origin.Y = value;
+                    OnOriginChanged();
+                }
+            }
+        }
+
+        public double OZ
+        {
+            get => _origin.Z;
+            set
+            {
+                if (_origin.Z != value)
+                {
+                    _origin.Z = value;
+                    OnOriginChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region X access properties
+
+        public double XX
+        {
+            get => _x.X;
+            set
+            {
+                if (_x.X != value)
+                {
+                    _x.X = value;
+                    OnXChanged();
+                }
+            }
+        }
+
+        public double XY
+        {
+            get => _x.Y;
+            set
+            {
+                if (_x.Y != value)
+                {
+                    _x.Y = value;
+                    OnXChanged();
+                }
+            }
+        }
+
+        public double XZ
+        {
+            get => _x.Z;
+            set
+            {
+                if (_x.Z != value)
+                {
+                    _x.Z = value;
+                    OnXChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Y access properties
+
+        public double YX
+        {
+            get => _y.X;
+            set
+            {
+                if (_y.X != value)
+                {
+                    _y.X = value;
+                    OnYChanged();
+                }
+            }
+        }
+
+        public double YY
+        {
+            get => _y.Y;
+            set
+            {
+                if (_y.Y != value)
+                {
+                    _y.Y = value;
+                    OnYChanged();
+                }
+            }
+        }
+
+        public double YZ
+        {
+            get => _y.Z;
+            set
+            {
+                if (_y.Z != value)
+                {
+                    _y.Z = value;
+                    OnYChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Z access properties
+
+        public double ZX
+        {
+            get => _z.X;
+            set
+            {
+                if (_z.X != value)
+                {
+                    _z.X = value;
+                    OnYChanged();
+                }
+            }
+        }
+
+        public double ZY
+        {
+            get => _z.Y;
+            set
+            {
+                if (_z.Y != value)
+                {
+                    _z.Y = value;
+                    OnYChanged();
+                }
+            }
+        }
+
+        public double ZZ
+        {
+            get => _z.Z;
+            set
+            {
+                if (_z.Z != value)
+                {
+                    _z.Z = value;
+                    OnYChanged();
+                }
+            }
+        }
+
+        #endregion
+
         public bool IsRotating { get; private set; }
 
         private Vector3D _beginRotateX;
@@ -144,6 +317,29 @@ namespace ReScanVisualizer.Models
         private void OnZChanged()
         {
             ZChanged?.Invoke(this, _z);
+        }
+
+
+        public void NormalizeX()
+        {
+            _x.Normalize();
+        }
+
+        public void NormalizeY()
+        {
+            _y.Normalize();
+        }
+
+        public void NormalizeZ()
+        {
+            _z.Normalize();
+        }
+
+        public void Normalize()
+        {
+            _x.Normalize();
+            _y.Normalize();
+            _z.Normalize();
         }
 
         public Matrix3D GetRotationMatrix()

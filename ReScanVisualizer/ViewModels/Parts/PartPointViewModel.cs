@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace ReScanVisualizer.ViewModels.Parts
 {
     public class PartPointViewModel : PartViewModelBase
     {
-        public PartPointViewModel() : base()
+        public PartPointViewModel(Base3D origin) : base(origin)
         {
         }
     }

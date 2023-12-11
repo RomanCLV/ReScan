@@ -46,6 +46,16 @@ namespace ReScanVisualizer.Views
             ((MainViewModel)DataContext).Dispose();
         }
 
+        private void TabControl_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Escape:
+                    ((MainViewModel)DataContext).SelectedViewModel = null;
+                    break;
+            }
+        }
+
         #region Bases tree view
 
         private void BaseTreeViewItem_KeyUp(object sender, KeyEventArgs e)
@@ -621,6 +631,11 @@ namespace ReScanVisualizer.Views
             if (Cursor != Cursors.Arrow)
             {
                 Cursor = Cursors.Arrow;
+            }
+            if (_geometryModel3DMouseOver != null)
+            {
+                ((MainViewModel)DataContext).UnselectMouseOverGeometry();
+                _geometryModel3DMouseOver = null;
             }
         }
 

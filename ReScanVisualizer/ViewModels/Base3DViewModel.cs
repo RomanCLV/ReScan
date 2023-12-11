@@ -69,6 +69,9 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _base3D.Origin = value;
                     OnPropertyChanged(nameof(Origin));
+                    OnPropertyChanged(nameof(OX));
+                    OnPropertyChanged(nameof(OY));
+                    OnPropertyChanged(nameof(OZ));
                     UpdateModelGeometry();
                 }
             }
@@ -83,6 +86,9 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _base3D.X = value;
                     OnPropertyChanged(nameof(X));
+                    OnPropertyChanged(nameof(XX));
+                    OnPropertyChanged(nameof(XY));
+                    OnPropertyChanged(nameof(XZ));
                     UpdateModelGeometry();
                 }
             }
@@ -96,7 +102,10 @@ namespace ReScanVisualizer.ViewModels
                 if (value != _base3D.Y)
                 {
                     _base3D.Y = value;
-                    OnPropertyChanged(nameof(Y));
+                    OnPropertyChanged(nameof(Y)); 
+                    OnPropertyChanged(nameof(YX));
+                    OnPropertyChanged(nameof(YY));
+                    OnPropertyChanged(nameof(YZ));
                     UpdateModelGeometry();
                 }
             }
@@ -111,10 +120,197 @@ namespace ReScanVisualizer.ViewModels
                 {
                     _base3D.Z = value;
                     OnPropertyChanged(nameof(Z));
+                    OnPropertyChanged(nameof(ZX));
+                    OnPropertyChanged(nameof(ZY));
+                    OnPropertyChanged(nameof(ZZ));
                     UpdateModelGeometry();
                 }
             }
         }
+
+        #region Origin access properties
+
+        public double OX
+        {
+            get => _base3D.Origin.X;
+            set
+            {
+                if (_base3D.Origin.X != value)
+                {
+                    _base3D.OX = value;
+                    OnPropertyChanged(nameof(Origin));
+                    OnPropertyChanged(nameof(OX));
+                }
+            }
+        }
+
+        public double OY
+        {
+            get => _base3D.Origin.Y;
+            set
+            {
+                if (_base3D.Origin.Y != value)
+                {
+                    _base3D.OY = value;
+                    OnPropertyChanged(nameof(Origin));
+                    OnPropertyChanged(nameof(OY));
+                }
+            }
+        }
+
+        public double OZ
+        {
+            get => _base3D.Origin.Z;
+            set
+            {
+                if (_base3D.Origin.Z != value)
+                {
+                    _base3D.OZ = value;
+                    OnPropertyChanged(nameof(Origin));
+                    OnPropertyChanged(nameof(OZ));
+                }
+            }
+        }
+
+        #endregion
+
+        #region X access properties
+
+        public double XX
+        {
+            get => _base3D.X.X;
+            set
+            {
+                if (_base3D.X.X != value)
+                {
+                    _base3D.XX = value;
+                    OnPropertyChanged(nameof(X));
+                    OnPropertyChanged(nameof(XX));
+                }
+            }
+        }
+
+        public double XY
+        {
+            get => _base3D.X.Y;
+            set
+            {
+                if (_base3D.X.Y != value)
+                {
+                    _base3D.XY = value;
+                    OnPropertyChanged(nameof(X));
+                    OnPropertyChanged(nameof(XY));
+                }
+            }
+        }
+
+        public double XZ
+        {
+            get => _base3D.X.Z;
+            set
+            {
+                if (_base3D.X.Z != value)
+                {
+                    _base3D.XZ = value;
+                    OnPropertyChanged(nameof(X));
+                    OnPropertyChanged(nameof(XZ));
+                }
+            }
+        }
+
+        #endregion
+
+        #region Y access properties
+
+        public double YX
+        {
+            get => _base3D.Y.X;
+            set
+            {
+                if (_base3D.Y.X != value)
+                {
+                    _base3D.YX = value;
+                    OnPropertyChanged(nameof(Y));
+                    OnPropertyChanged(nameof(YX));
+                }
+            }
+        }
+
+        public double YY
+        {
+            get => _base3D.Y.Y;
+            set
+            {
+                if (_base3D.Y.Y != value)
+                {
+                    _base3D.YY = value;
+                    OnPropertyChanged(nameof(Y));
+                    OnPropertyChanged(nameof(YY));
+                }
+            }
+        }
+
+        public double YZ
+        {
+            get => _base3D.Y.Z;
+            set
+            {
+                if (_base3D.Y.Z != value)
+                {
+                    _base3D.YZ = value;
+                    OnPropertyChanged(nameof(Y));
+                    OnPropertyChanged(nameof(YZ));
+                }
+            }
+        }
+
+        #endregion
+
+        #region Z access properties
+
+        public double ZX
+        {
+            get => _base3D.Z.X;
+            set
+            {
+                if (_base3D.Z.X != value)
+                {
+                    _base3D.ZX = value;
+                    OnPropertyChanged(nameof(Z));
+                    OnPropertyChanged(nameof(ZX));
+                }
+            }
+        }
+
+        public double ZY
+        {
+            get => _base3D.Z.Y;
+            set
+            {
+                if (_base3D.Z.Y != value)
+                {
+                    _base3D.ZY = value;
+                    OnPropertyChanged(nameof(Z));
+                    OnPropertyChanged(nameof(ZY));
+                }
+            }
+        }
+
+        public double ZZ
+        {
+            get => _base3D.Z.Z;
+            set
+            {
+                if (_base3D.Z.Z != value)
+                {
+                    _base3D.ZZ = value;
+                    OnPropertyChanged(nameof(Z));
+                    OnPropertyChanged(nameof(ZZ));
+                }
+            }
+        }
+
+        #endregion
 
         private ScatterGraphViewModel? _scatterGraph;
         public ScatterGraphViewModel? ScatterGraph

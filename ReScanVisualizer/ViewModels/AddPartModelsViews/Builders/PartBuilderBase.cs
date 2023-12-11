@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Parts;
 
 namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
@@ -16,12 +17,12 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
             set => SetValue(ref _name, value);
         }
 
-        public Point3DViewModel Origin { get; private set; }
+        public Base3DViewModel OriginBase { get; private set; }
 
         public PartBuilderBase()
         {
-            _name = "New part";
-            Origin = new Point3DViewModel();
+            _name = "Part";
+            OriginBase = new Base3DViewModel(new Base3D());
         }
 
         public abstract PartViewModelBase Build();

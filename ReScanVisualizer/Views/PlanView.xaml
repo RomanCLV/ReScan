@@ -24,7 +24,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="4*"/>
-                <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="20">
@@ -56,8 +55,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <forms:PlanForm Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding CanEdit}" />
-            <forms:PlanForm Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" IsEnabled="{Binding CanEdit}" />
+            <forms:PlanForm Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding CanEdit}" Width="150" HorizontalAlignment="Left" />
         </Grid>
     </ScrollViewer>
 </UserControl>

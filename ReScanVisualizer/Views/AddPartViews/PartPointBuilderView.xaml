@@ -15,8 +15,8 @@
             <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="100" Style="{StaticResource myTextBox}"/>
         </StackPanel>
 
-        <GroupBox Header="Origin" Margin="10">
-            <form:PointForm DataContext="{Binding Origin}" />
+        <GroupBox Header="Origin" Margin="10" Padding="30">
+            <form:Base3DForm DataContext="{Binding OriginBase}" Width="300" Height="120" HorizontalAlignment="Left"/>
         </GroupBox>
     </StackPanel>
 </UserControl>

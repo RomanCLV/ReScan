@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Samples;
@@ -50,7 +51,12 @@ namespace ReScanVisualizer.ViewModels.Parts
             }
         }
 
-        public ObservableCollection<ScatterGraphViewModel> ScatterGraphs { get; private set; }
+        private ObservableCollection<ScatterGraphViewModel> _scatterGraphs;
+        public ObservableCollection<ScatterGraphViewModel> ScatterGraphs
+        {
+            get => _scatterGraphs;
+            private set => SetValue(ref _scatterGraphs, value);
+        }
 
         public Base3DViewModel OriginBase { get; private set; }
 
@@ -130,7 +136,7 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         private static uint instanceCreated;
 
-        public PartViewModelBase(double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
+        public PartViewModelBase(Base3D originBase, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
             instanceCreated++;
             _name = "Part " + instanceCreated;
@@ -140,27 +146,14 @@ namespace ReScanVisualizer.ViewModels.Parts
             _isMouseOver = false;
             _isSelected = false;
             _modelGroup = new Model3DGroup();
-            ScatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
-            _barycenter = new BarycenterViewModel();
-            OriginBase = new Base3DViewModel(new Base3D(_barycenter.Point.Point));
+            _scatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
+            _barycenter = new BarycenterViewModel(originBase.Origin, Colors.Yellow, _scaleFactor, 0.25, renderQuality);
+            OriginBase = new Base3DViewModel(originBase, _scaleFactor, 1.0, renderQuality);
 
             _modelGroup.Children.Add(_barycenter.Model);
             _modelGroup.Children.Add(OriginBase.Model);
 
-            ScatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
-        }
-
-        public PartViewModelBase(IEnumerable<ScatterGraphViewModel> scatterGraphs) : this()
-        {
-            ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
-            foreach (var item in scatterGraphs)
-            {
-                item.Barycenter.PropertyChanged += ItemBarycenter_PropertyChanged;
-                item.IsHiddenChanged += ScatterGraphViewModel_IsHiddenChanged;
-                ScatterGraphs.Add(item);
-            }
-            ComputeAll();
-            ScatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
+            _scatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
         }
 
         ~PartViewModelBase()
@@ -172,7 +165,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         {
             if (!IsDisposed)
             {
-                ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
+                _scatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 Clear();
                 _modelGroup.Children.Clear();
                 base.Dispose();
@@ -214,8 +207,8 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         private void ScatterGraphViewModel_IsHiddenChanged(object sender, bool e)
         {
-            if ((_isHidden && ScatterGraphs.Any(x => !x.IsHidden)) ||
-                (!_isHidden && ScatterGraphs.All(x => x.IsHidden)))
+            if ((_isHidden && _scatterGraphs.Any(x => !x.IsHidden)) ||
+                (!_isHidden && _scatterGraphs.All(x => x.IsHidden)))
             {
                 _isHidden = !_isHidden;
                 OnPropertyChanged(nameof(IsHidden));
@@ -232,25 +225,28 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public void Add(ScatterGraphViewModel scatterGraphViewModel)
         {
-            if (!ScatterGraphs.Contains(scatterGraphViewModel))
+            if (!_scatterGraphs.Contains(scatterGraphViewModel))
             {
-                ScatterGraphs.Add(scatterGraphViewModel);
+                _scatterGraphs.Add(scatterGraphViewModel);
             }
         }
 
         public void Remove(ScatterGraphViewModel scatterGraphViewModel)
         {
-            ScatterGraphs.Remove(scatterGraphViewModel);
+            _scatterGraphs.Remove(scatterGraphViewModel);
         }
 
         public void Clear()
         {
-            foreach (ScatterGraphViewModel item in ScatterGraphs)
+            if (_scatterGraphs.Count > 0)
             {
-                item.Barycenter.PropertyChanged -= ItemBarycenter_PropertyChanged;
-                item.IsHiddenChanged -= ScatterGraphViewModel_IsHiddenChanged;
+                foreach (ScatterGraphViewModel item in ScatterGraphs)
+                {
+                    item.Barycenter.PropertyChanged -= ItemBarycenter_PropertyChanged;
+                    item.IsHiddenChanged -= ScatterGraphViewModel_IsHiddenChanged;
+                }
+                _scatterGraphs.Clear();
             }
-            ScatterGraphs.Clear();
         }
 
         public void Hide()
@@ -283,7 +279,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         /// Here, only the barycenter is computed.
         /// </summary>
         /// <param name="setOriginToBarycenter">Set the origin of the part to the new barycenter.</param>
-        protected virtual void ComputeAll(bool setOriginToBarycenter = true)
+        protected virtual void ComputeAll(bool setOriginToBarycenter = false)
         {
             ComputeBarycenter();
             _barycenter.UpdatePoint(ComputeBarycenter());
@@ -299,7 +295,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         /// <returns></returns>
         protected Point3D ComputeBarycenter()
         {
-            if (ScatterGraphs.Count == 0)
+            if (_scatterGraphs.Count == 0)
             {
                 return new Point3D(0.0, 0.0, 0.0);
             }
@@ -310,7 +306,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             double sumZ = 0.0;
 
             int skippedGraphsCount = 0;
-            foreach (var item in ScatterGraphs)
+            foreach (var item in _scatterGraphs)
             {
                 if (item.Samples.Count == 0)
                 {
@@ -323,14 +319,14 @@ namespace ReScanVisualizer.ViewModels.Parts
                 sumZ += point.Z;
             }
 
-            if (skippedGraphsCount == ScatterGraphs.Count)
+            if (skippedGraphsCount == _scatterGraphs.Count)
             {
                 return new Point3D(0.0, 0.0, 0.0);
             }
 
-            double centerX = sumX / (ScatterGraphs.Count - skippedGraphsCount);
-            double centerY = sumY / (ScatterGraphs.Count - skippedGraphsCount);
-            double centerZ = sumZ / (ScatterGraphs.Count - skippedGraphsCount);
+            double centerX = sumX / (_scatterGraphs.Count - skippedGraphsCount);
+            double centerY = sumY / (_scatterGraphs.Count - skippedGraphsCount);
+            double centerZ = sumZ / (_scatterGraphs.Count - skippedGraphsCount);
 
             return new Point3D(centerX, centerY, centerZ);
         }

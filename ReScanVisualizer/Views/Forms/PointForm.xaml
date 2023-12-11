@@ -8,8 +8,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="75"/>
-            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -18,13 +18,13 @@
         </Grid.RowDefinitions>
 
         <!-- X -->
-        <TextBlock Grid.Column="0" Grid.Row="0" Text="X:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="X:" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
         <TextBox   Grid.Column="1" Grid.Row="0" Text="{Binding X, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
         <!-- Y -->
-        <TextBlock Grid.Column="0" Grid.Row="1" Text="Y:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="Y:" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
         <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding Y, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
         <!-- Z -->
-        <TextBlock Grid.Column="0" Grid.Row="2" Text="Z:" Margin="10" Style="{StaticResource myTextBlock}"/>
+        <TextBlock Grid.Column="0" Grid.Row="2" Text="Z:" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
         <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding Z, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
     </Grid>
 </UserControl>
