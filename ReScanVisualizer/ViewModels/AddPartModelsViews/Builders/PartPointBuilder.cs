@@ -11,7 +11,7 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
     {
         public PartPointBuilder() : base()
         {
-            Name = "Point part";
+            //Name = "Point part";
         }
 
         public override PartViewModelBase Build()

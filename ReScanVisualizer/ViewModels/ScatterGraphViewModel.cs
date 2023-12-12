@@ -23,11 +23,27 @@ namespace ReScanVisualizer.ViewModels
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
-        private object? _partsListSource;
-        public object? PartsListSource
+        private IPartSource? _partsListSource;
+        public IPartSource? PartsListSource
         {
             get => _partsListSource;
-            set => SetValue(ref _partsListSource, value);
+            set
+            {
+                if (!Equals(_partsListSource, value))
+                {
+                    if (_partsListSource != null && _partsListSource.Parts is INotifyCollectionChanged oc)
+                    {
+                        oc.CollectionChanged -= SourceParts_CollectionChanged;
+                    }
+                }
+                if (SetValue(ref _partsListSource, value))
+                {
+                    if (_partsListSource != null && _partsListSource.Parts is INotifyCollectionChanged oc)
+                    {
+                        oc.CollectionChanged += SourceParts_CollectionChanged;
+                    }
+                }
+            }
         }
 
         private double _scaleFactor;
@@ -40,10 +56,10 @@ namespace ReScanVisualizer.ViewModels
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), "Scale factor must be greater than 0.");
                 }
-                if (_part != null && _scaleFactor != value)
-                {
-                    throw new InvalidOperationException("The scale factor of a ScatterGraphViewModel cannot be set when it belongs to a part.");
-                }
+                //if (_part != null && _scaleFactor != value)
+                //{
+                //    throw new InvalidOperationException("The scale factor of a ScatterGraphViewModel cannot be set when it belongs to a part.");
+                //}
                 if (SetValue(ref _scaleFactor, value))
                 {
                     _barycenter.ScaleFactor = _scaleFactor;
@@ -207,7 +223,6 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _writeHeaders, value);
         }
 
-        private bool _isPartChanging;
         private PartViewModelBase? _part;
         public PartViewModelBase? Part
         {
@@ -217,14 +232,11 @@ namespace ReScanVisualizer.ViewModels
                 PartViewModelBase? partRemoveLater = _part;
                 if (SetValue(ref _part, value))
                 {
-                    if (partRemoveLater != null)
-                    {
-                        partRemoveLater.Remove(this);
-                    }
+                    partRemoveLater?.Remove(this);
                     if (_part != null)
                     {
-                        ScaleFactor = _part.ScaleFactor;
                         _part.Add(this);
+                        ScaleFactor = _part.ScaleFactor;
                     }
                 }
 
@@ -262,6 +274,7 @@ namespace ReScanVisualizer.ViewModels
             _isHidden = color.A == 0;
             _arePointsHidden = false;
             _writeHeaders = true;
+            _part = null;
 
             _model = new Model3DGroup();
             Samples = new ObservableCollection<SampleViewModel>();
@@ -300,8 +313,6 @@ namespace ReScanVisualizer.ViewModels
                 CanEdit = false
             };
 
-            Part = null;
-
             _barycenter.IsHidden = hideBarycenter;
             _averagePlan.IsHidden = hideAveragePlan;
             _base3D.IsHidden = hideBase;
@@ -319,6 +330,8 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
+                Part = null;
+                PartsListSource = null;
                 if (Color != null)
                 {
                     Color.PropertyChanged -= Color_PropertyChanged;
@@ -340,6 +353,11 @@ namespace ReScanVisualizer.ViewModels
         private void Color_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateModelMaterial();
+        }
+
+        private void SourceParts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(PartsListSource));
         }
 
         private void Points_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

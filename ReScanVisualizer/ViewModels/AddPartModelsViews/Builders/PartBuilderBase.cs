@@ -21,8 +21,22 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
 
         public PartBuilderBase()
         {
-            _name = "Part";
+            _name = "Part " + (PartViewModelBase.InstanceCreated + 1);
             OriginBase = new Base3DViewModel(new Base3D());
+        }
+
+        ~PartBuilderBase()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                OriginBase.Dispose();
+                base.Dispose();
+            }
         }
 
         public abstract PartViewModelBase Build();

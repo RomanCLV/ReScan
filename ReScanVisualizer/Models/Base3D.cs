@@ -17,6 +17,8 @@ namespace ReScanVisualizer.Models
         public event EventHandler<Vector3D>? YChanged;
         public event EventHandler<Vector3D>? ZChanged;
 
+        #region Origin access properties
+
         private Point3D _origin;
         public Point3D Origin
         {
@@ -30,53 +32,6 @@ namespace ReScanVisualizer.Models
                 }
             }
         }
-
-        private Vector3D _x;
-        public Vector3D X
-        {
-            get => _x;
-            set
-            {
-                value.Normalize();
-                if (_x != value)
-                {
-                    _x = value;
-                    OnXChanged();
-                }
-            }
-        }
-
-        private Vector3D _y;
-        public Vector3D Y
-        {
-            get => _y;
-            set
-            {
-                value.Normalize();
-                if (_y != value)
-                {
-                    _y = value;
-                    OnYChanged();
-                }
-            }
-        }
-
-        private Vector3D _z;
-        public Vector3D Z
-        {
-            get => _z;
-            set
-            {
-                value.Normalize();
-                if (_z != value)
-                {
-                    _z = value;
-                    OnZChanged();
-                }
-            }
-        }
-
-        #region Origin access properties
 
         public double OX
         {
@@ -121,6 +76,20 @@ namespace ReScanVisualizer.Models
 
         #region X access properties
 
+        private Vector3D _x;
+        public Vector3D X
+        {
+            get => _x;
+            set
+            {
+                if (_x != value)
+                {
+                    _x = value;
+                    OnXChanged();
+                }
+            }
+        }
+
         public double XX
         {
             get => _x.X;
@@ -164,6 +133,20 @@ namespace ReScanVisualizer.Models
 
         #region Y access properties
 
+        private Vector3D _y;
+        public Vector3D Y
+        {
+            get => _y;
+            set
+            {
+                if (_y != value)
+                {
+                    _y = value;
+                    OnYChanged();
+                }
+            }
+        }
+
         public double YX
         {
             get => _y.X;
@@ -206,6 +189,20 @@ namespace ReScanVisualizer.Models
         #endregion
 
         #region Z access properties
+
+        private Vector3D _z;
+        public Vector3D Z
+        {
+            get => _z;
+            set
+            {
+                if (_z != value)
+                {
+                    _z = value;
+                    OnZChanged();
+                }
+            }
+        }
 
         public double ZX
         {
@@ -319,7 +316,6 @@ namespace ReScanVisualizer.Models
             ZChanged?.Invoke(this, _z);
         }
 
-
         public void NormalizeX()
         {
             _x.Normalize();
@@ -381,6 +377,9 @@ namespace ReScanVisualizer.Models
             _beginRotateX = _x;
             _beginRotateY = _y;
             _beginRotateZ = _z;
+            _beginRotateX.Normalize();
+            _beginRotateY.Normalize();
+            _beginRotateZ.Normalize();
         }
 
         /// <summary>

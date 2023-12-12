@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using ReScanVisualizer.Models;
+using ReScanVisualizer.ViewModels.Parts;
 
 #nullable enable
 
@@ -17,6 +19,7 @@ namespace ReScanVisualizer.ViewModels
         private readonly static string[] scatterGraphPropertyNames = new string[]
         {
             nameof(ScatterGraphViewModel.ScaleFactor),
+            nameof(ScatterGraphViewModel.Part),
             nameof(ScatterGraphViewModel.PointsRadius),
             nameof(ScatterGraphViewModel.IsHidden),
             nameof(ScatterGraphViewModel.ArePointsHidden),
@@ -102,7 +105,6 @@ namespace ReScanVisualizer.ViewModels
             get => _items[index];
         }
 
-
         private readonly List<ScatterGraphViewModel> _items;
         public IEnumerable<ScatterGraphViewModel> Items
         {
@@ -126,6 +128,45 @@ namespace ReScanVisualizer.ViewModels
         public double Count => _items.Count;
 
         public double SamplesCount => _items.Sum(x => x.Samples.Count);
+
+        private IPartSource? _partsListSource;
+        public IPartSource? PartsListSource
+        {
+            get => _partsListSource;
+            set
+            {
+                if (!Equals(_partsListSource, value))
+                {
+                    if (_partsListSource != null && _partsListSource.Parts is INotifyCollectionChanged oc)
+                    {
+                        oc.CollectionChanged -= SourceParts_CollectionChanged;
+                    }
+                }
+                if (SetValue(ref _partsListSource, value))
+                {
+                    if (_partsListSource != null && _partsListSource.Parts is INotifyCollectionChanged oc)
+                    {
+                        oc.CollectionChanged += SourceParts_CollectionChanged;
+                    }
+                }
+            }
+        }
+
+        private PartViewModelBase? _part;
+        public PartViewModelBase? Part
+        {
+            get => _part;
+            set
+            {
+                if (SetValue(ref _part, value))
+                {
+                    foreach (var item in _items)
+                    {
+                        item.Part = value;
+                    }
+                }
+            }
+        }
 
         private double? _scaleFactor;
         public double? ScaleFactor
@@ -364,6 +405,7 @@ namespace ReScanVisualizer.ViewModels
             _inhibitUpdate = false;
             _items = new List<ScatterGraphViewModel>();
             _scaleFactor = null;
+            _part = null;
             _axisScaleFactor = null;
             _pointsRadius = null;
             _barycenterRadius = null;
@@ -413,6 +455,7 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
+                PartsListSource = null;
                 PointsColorViewModel.PropertyChanged -= PointsColorViewModel_PropertyChanged;
                 BarycentersColorViewModel.PropertyChanged -= BarycenterColorViewModel_PropertyChanged;
                 PlansColorViewModel.PropertyChanged -= PlanColorViewModel_PropertyChanged;
@@ -423,6 +466,11 @@ namespace ReScanVisualizer.ViewModels
                 _items.Clear();
                 base.Dispose();
             }
+        }
+
+        private void SourceParts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(PartsListSource));
         }
 
         public void Add(ScatterGraphViewModel item)
@@ -592,6 +640,7 @@ namespace ReScanVisualizer.ViewModels
             if (_items is null || _items.Count() == 0)
             {
                 ScaleFactor = null;
+                Part = null;
                 AxisScaleFactor = null;
                 PointsRadius = null;
                 BarycenterRadius = null;
@@ -612,6 +661,7 @@ namespace ReScanVisualizer.ViewModels
             }
 
             UpdateProperty(x => x.ScaleFactor, ref _scaleFactor, nameof(ScaleFactor));
+            UpdatePropertyPart(x => x.Part, ref _part, nameof(Part));
             UpdateProperty(x => x.Base3D.AxisScaleFactor, ref _axisScaleFactor, nameof(AxisScaleFactor));
             UpdateProperty(x => x.PointsRadius, ref _pointsRadius, nameof(PointsRadius));
             UpdateProperty(x => x.Barycenter.Radius, ref _barycenterRadius, nameof(BarycenterRadius));
@@ -645,21 +695,6 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private void UpdatePropertyColor(Func<ScatterGraphViewModel, Color> getValue, ColorViewModel backfield, ref bool isColorDefined)
-        {
-            Color firstValue = getValue(_items.First());
-            if (_items.All(x => firstValue == getValue(x)))
-            {
-                isColorDefined = true;
-                backfield.Set(firstValue);
-            }
-            else
-            {
-                isColorDefined = false;
-                backfield.Set(Colors.Transparent);
-            }
-        }
-
         private void UpdateProperty(Func<ScatterGraphViewModel, RenderQuality> getValue, ref RenderQuality? backfield, string propertyName)
         {
             RenderQuality firstValue = getValue(_items.First());
@@ -675,6 +710,39 @@ namespace ReScanVisualizer.ViewModels
                     backfield = null;
                     OnPropertyChanged(propertyName);
                 }
+            }
+        }
+
+        private void UpdatePropertyPart(Func<ScatterGraphViewModel, PartViewModelBase?> getValue, ref PartViewModelBase? backfield, string propertyName)
+        {
+            PartViewModelBase? firstValue = getValue(_items.First());
+            if (_items.All(x => firstValue == getValue(x)))
+            {
+                backfield = firstValue;
+                OnPropertyChanged(propertyName);
+            }
+            else
+            {
+                if (backfield != null)
+                {
+                    backfield = null;
+                    OnPropertyChanged(propertyName);
+                }
+            }
+        }
+
+        private void UpdatePropertyColor(Func<ScatterGraphViewModel, Color> getValue, ColorViewModel backfield, ref bool isColorDefined)
+        {
+            Color firstValue = getValue(_items.First());
+            if (_items.All(x => firstValue == getValue(x)))
+            {
+                isColorDefined = true;
+                backfield.Set(firstValue);
+            }
+            else
+            {
+                isColorDefined = false;
+                backfield.Set(Colors.Transparent);
             }
         }
 

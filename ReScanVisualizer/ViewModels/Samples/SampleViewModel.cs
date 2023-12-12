@@ -201,7 +201,6 @@ namespace ReScanVisualizer.ViewModels.Samples
                 Color.Dispose();
                 Point.Dispose();
                 base.Dispose();
-                IsDisposed = true;
             }
         }
 
@@ -223,8 +222,11 @@ namespace ReScanVisualizer.ViewModels.Samples
 
         private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateModelGeometry();
-            OnPropertyChanged(nameof(Point));
+            if (e.PropertyName == nameof(Point.Point))
+            {
+                UpdateModelGeometry();
+                OnPropertyChanged(nameof(Point));
+            }
         }
 
         public void InverseIsHidden()

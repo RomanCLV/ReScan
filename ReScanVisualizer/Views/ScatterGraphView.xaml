@@ -18,6 +18,8 @@
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
         <converters:EnumerableNonEmptyConverter x:Key="EnumerableNonEmptyConverter" />
+        <converters:IsNullConverter x:Key="IsNullConverter" />
+        <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
     </UserControl.Resources>
     <Grid>
         <TabControl Background="Transparent">
@@ -43,10 +45,15 @@
                                       SelectedValue="{Binding Part}"
                                       DisplayMemberPath="Name"
                                       IsEnabled="{Binding PartsListSource.Parts, Converter={StaticResource EnumerableNonEmptyConverter}}"/>
+                            <Button Style="{StaticResource myButtonIcon}" Margin="0" Click="RemovePartButton_Click" IsEnabled="{Binding Part, Converter={StaticResource IsNotNullConverter}}">
+                                <Button.Content>
+                                    <Image Source="{StaticResource delete}" />
+                                </Button.Content>
+                            </Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />
-                            <TextBox   Style="{StaticResource myTextBox}" Width="100">
+                            <TextBox   Style="{StaticResource myTextBox}" Width="100" IsEnabled="{Binding Part, Converter={StaticResource IsNullConverter}}">
                                 <TextBox.Text>
                                     <Binding Path="ScaleFactor" StringFormat="N3">
                                         <Binding.ValidationRules>
@@ -282,7 +289,7 @@
                             <Slider    Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Value="{Binding Base3D.Opacity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="255" VerticalAlignment="Center" />
 
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Scale factor" Style="{StaticResource myTextBlock}" />
-                            <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}">
+                            <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}" IsEnabled="{Binding Part, Converter={StaticResource IsNullConverter}}">
                                 <TextBox.Text>
                                     <Binding Path="Base3D.AxisScaleFactor" StringFormat="N2">
                                         <Binding.ValidationRules>

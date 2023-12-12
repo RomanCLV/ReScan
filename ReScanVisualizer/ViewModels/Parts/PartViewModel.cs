@@ -98,6 +98,8 @@ namespace ReScanVisualizer.ViewModels.Parts
                 }
                 if (SetValue(ref _scaleFactor, value))
                 {
+                    _barycenter.ScaleFactor = _scaleFactor;
+                    OriginBase.ScaleFactor = _scaleFactor;
                     foreach (var item in ScatterGraphs)
                     {
                         item.ScaleFactor = _scaleFactor;
@@ -134,12 +136,12 @@ namespace ReScanVisualizer.ViewModels.Parts
             }
         }
 
-        private static uint instanceCreated;
+        public static uint InstanceCreated { get; private set; }
 
         public PartViewModelBase(Base3D originBase, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
-            instanceCreated++;
-            _name = "Part " + instanceCreated;
+            InstanceCreated++;
+            _name = "Part " + InstanceCreated;
             _isHidden = false;
             _scaleFactor = scaleFactor;
             _renderQuality = renderQuality;
@@ -168,24 +170,30 @@ namespace ReScanVisualizer.ViewModels.Parts
                 _scatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 Clear();
                 _modelGroup.Children.Clear();
+                _barycenter.Dispose();
+                OriginBase.Dispose();
                 base.Dispose();
             }
         }
 
         private void ScatterGraphs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (ScatterGraphs.Count == 0)
+            {
+                ResetFromEmpty();
+            }
+            else if (ScatterGraphs.Count == 1)
+            {
+                SetFromFirstItem();
+            }
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (object? item in e.NewItems)
                     {
                         ScatterGraphViewModel scatterGraphViewModel = (ScatterGraphViewModel)item;
-                        if (!Equals(scatterGraphViewModel.Part))
-                        {
-                            scatterGraphViewModel.Part = this;
-                            scatterGraphViewModel.Barycenter.PropertyChanged += ItemBarycenter_PropertyChanged;
-                            scatterGraphViewModel.IsHiddenChanged += ScatterGraphViewModel_IsHiddenChanged;
-                        }
+                        scatterGraphViewModel.Barycenter.PropertyChanged += ItemBarycenter_PropertyChanged;
+                        scatterGraphViewModel.IsHiddenChanged += ScatterGraphViewModel_IsHiddenChanged;
                     }
                     break;
 
@@ -199,10 +207,31 @@ namespace ReScanVisualizer.ViewModels.Parts
                             scatterGraphViewModel.Barycenter.PropertyChanged -= ItemBarycenter_PropertyChanged;
                             scatterGraphViewModel.IsHiddenChanged -= ScatterGraphViewModel_IsHiddenChanged;
                         }
+                        if (_scatterGraphs.Count == 0)
+                        {
+                            ResetFromEmpty();
+                        }
                     }
                     break;
             }
             ComputeAll();
+        }
+
+        private void SetFromFirstItem()
+        {
+            ScatterGraphViewModel scatterGraphViewModel = _scatterGraphs[0];
+            ScaleFactor = scatterGraphViewModel.ScaleFactor;
+            _barycenter.Radius = scatterGraphViewModel.Barycenter.Radius;
+            OriginBase.AxisScaleFactor = scatterGraphViewModel.Base3D.AxisScaleFactor;
+            RenderQuality = scatterGraphViewModel.RenderQuality;
+        }
+
+        private void ResetFromEmpty()
+        {
+            ScaleFactor = 1.0;
+            _barycenter.Radius = 0.25;
+            OriginBase.AxisScaleFactor = 1.0;
+            RenderQuality = RenderQuality.High;
         }
 
         private void ScatterGraphViewModel_IsHiddenChanged(object sender, bool e)
@@ -281,7 +310,6 @@ namespace ReScanVisualizer.ViewModels.Parts
         /// <param name="setOriginToBarycenter">Set the origin of the part to the new barycenter.</param>
         protected virtual void ComputeAll(bool setOriginToBarycenter = false)
         {
-            ComputeBarycenter();
             _barycenter.UpdatePoint(ComputeBarycenter());
             if (setOriginToBarycenter)
             {

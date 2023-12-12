@@ -75,6 +75,7 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
             {
                 ValidateCommand.Dispose();
                 CancelCommand.Dispose();
+                _builder?.Dispose();
                 base.Dispose();
             }
         }

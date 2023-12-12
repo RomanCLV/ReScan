@@ -37,6 +37,22 @@ namespace ReScanVisualizer.Views
             ClosePopup();
         }
 
+        private void RemovePartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
+            {
+                scatterGraphViewModel.Part = null;
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
+            {
+                ((MainViewModel)Application.Current.MainWindow.DataContext).ScatterGraphs.Remove(scatterGraphViewModel);
+            }
+        }
+
         private void BarycenterVisibilityButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is ScatterGraphViewModel scatterGraphView)
@@ -243,14 +259,6 @@ namespace ReScanVisualizer.Views
             if (DataContext is ScatterGraphViewModel viewModel)
             {
                 viewModel.Clear();
-            }
-        }
-
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
-            {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).ScatterGraphs.Remove(scatterGraphViewModel);
             }
         }
     }

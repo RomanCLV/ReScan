@@ -32,6 +32,28 @@ namespace ReScanVisualizer.Views
             _openedPopup = null;
         }
 
+        private void RemovePartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphGroupViewModel viewModel)
+            {
+                viewModel.Part = null;
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphGroupViewModel viewModel)
+            {
+                MainViewModel mainViewModel = (MainViewModel)Application.Current.MainWindow.DataContext;
+                foreach (ScatterGraphViewModel item in viewModel)
+                {
+                    mainViewModel.ScatterGraphs.Remove(item);
+                }
+                viewModel.Clear();
+                mainViewModel.SelectedViewModel = null;
+            }
+        }
+
         private void VisibilityButton_Click(object sender, RoutedEventArgs e)
         {
             ((ScatterGraphGroupViewModel)DataContext).InverseAreHidden();
@@ -183,20 +205,6 @@ namespace ReScanVisualizer.Views
                 {
                     item.Clear();
                 }
-            }
-        }
-
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ScatterGraphGroupViewModel viewModel)
-            {
-                MainViewModel mainViewModel = (MainViewModel)Application.Current.MainWindow.DataContext;
-                foreach (ScatterGraphViewModel item in viewModel)
-                {
-                    mainViewModel.ScatterGraphs.Remove(item);
-                }
-                viewModel.Clear();
-                mainViewModel.SelectedViewModel = null;
             }
         }
     }

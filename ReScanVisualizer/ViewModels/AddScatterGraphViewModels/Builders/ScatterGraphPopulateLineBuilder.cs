@@ -63,6 +63,18 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             Dispose();
         }
 
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                Start.PropertyChanged -= StartEnd_PropertyChanged;
+                End.PropertyChanged -= StartEnd_PropertyChanged;
+                Start.Dispose();
+                End.Dispose();
+                base.Dispose();
+            }
+        }
+
         private void StartEnd_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Point3DViewModel.Point))
@@ -109,18 +121,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 State = ScatterGraphBuilderState.Error;
             }
             return scatterGraphBuildResult;
-        }
-
-        public override void Dispose()
-        {
-            if (!IsDisposed)
-            {
-                Start.PropertyChanged -= StartEnd_PropertyChanged;
-                End.PropertyChanged -= StartEnd_PropertyChanged;
-                Start.Dispose();
-                End.Dispose();
-                base.Dispose();
-            }
         }
     }
 }

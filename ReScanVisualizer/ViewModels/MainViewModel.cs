@@ -27,7 +27,7 @@ TODO : upgrades to implement
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IPartSource
     {
         public Model3DGroup OriginModel { get; private set; }
 
@@ -87,6 +87,8 @@ namespace ReScanVisualizer.ViewModels
 
         public ObservableCollection<PartViewModelBase> Parts { get; private set; }
 
+        IEnumerable<PartViewModelBase> IPartSource.Parts => Parts;
+
         public Model3DGroup Models { get; private set; }
 
         public Model3DGroup BasesModels { get; private set; }
@@ -117,7 +119,10 @@ namespace ReScanVisualizer.ViewModels
             ScatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
             Bases = new ObservableCollection<Base3DViewModel>();
             Parts = new ObservableCollection<PartViewModelBase>();
-            ScatterGraphViewModelGroup = new ScatterGraphGroupViewModel();
+            ScatterGraphViewModelGroup = new ScatterGraphGroupViewModel
+            {
+                PartsListSource = this
+            };
 
             AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
             AddBaseCommand = new CommandKey(new ActionCommand(AddBase), Key.B, ModifierKeys.Control | ModifierKeys.Shift, "Add a new base");
@@ -138,16 +143,28 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
-                Parts.CollectionChanged -= Parts_CollectionChanged;
-                ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
-                Bases.CollectionChanged -= Bases_CollectionChanged;
+                if (_selectedViewModel is BaseViewModel baseViewModel)
+                {
+                    baseViewModel.Dispose();
+                }
+                _selectedViewModel = null;
                 AddScatterGraphCommand.Dispose();
                 AddBaseCommand.Dispose();
                 AddPartCommand.Dispose();
                 ExportBaseCommand.Dispose();
+                ScatterGraphViewModelGroup.Dispose();
+                foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+                {
+                    scatterGraphViewModel.Part = null;
+                    scatterGraphViewModel.PartsListSource = null;
+                }
+                Parts.CollectionChanged -= Parts_CollectionChanged;
+                ScatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
+                Bases.CollectionChanged -= Bases_CollectionChanged;
                 ClearParts();
                 ClearScatterGraphs();
                 ClearBases();
+
                 Models.Children.Clear();
                 BasesModels.Children.Clear();
                 PartsModels.Children.Clear();
@@ -236,6 +253,7 @@ namespace ReScanVisualizer.ViewModels
                             {
                                 throw new NotImplementedException("Model3D was expected to be a Model3DGroup.");
                             }
+                            graphViewModel.Dispose();
                         }
                     }
                     break;
@@ -262,6 +280,17 @@ namespace ReScanVisualizer.ViewModels
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
+                    foreach (object? item in e.OldItems)
+                    {
+                        SampleViewModel sampleViewModel = (SampleViewModel)item;
+                        if (sampleViewModel.Equals(_selectedViewModel))
+                        {
+                            SelectedViewModel = null;
+                        }
+                        sampleViewModel.Dispose();
+                    }
+                    break;
+
                 case NotifyCollectionChangedAction.Reset:
                     bool found = false;
                     if (_selectedViewModel is SampleViewModel)
@@ -302,7 +331,7 @@ namespace ReScanVisualizer.ViewModels
                             Base3DViewModel base3D = (Base3DViewModel)item;
                             if (BasesModels.Children[i].Equals(base3D.Model))
                             {
-                                if (SelectedViewModel is BaseViewModel baseViewModel)
+                                if (_selectedViewModel is BaseViewModel baseViewModel)
                                 {
                                     if (baseViewModel.Base.Equals(item))
                                     {
@@ -311,6 +340,7 @@ namespace ReScanVisualizer.ViewModels
                                 }
                                 BasesModels.Children.RemoveAt(i);
                                 i--;
+                                base3D.Dispose();
                             }
                         }
                     }
@@ -318,7 +348,7 @@ namespace ReScanVisualizer.ViewModels
 
                 case NotifyCollectionChangedAction.Reset:
                     BasesModels.Children.Clear();
-                    if (SelectedViewModel is BaseViewModel baseViewModel2)
+                    if (_selectedViewModel is BaseViewModel baseViewModel2)
                     {
                         if (ScatterGraphs.All(s => !s.Base3D.Equals(baseViewModel2.Base)))
                         {
@@ -351,6 +381,7 @@ namespace ReScanVisualizer.ViewModels
                                 scatterGraphViewModel.Part = null;
                             }
                             PartsModels.Children.Remove(partViewModelBase.Model);
+                            partViewModelBase.Dispose();
                         }
                     }
                     break;

@@ -39,6 +39,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             Dispose();
         }
 
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                _builders.CollectionChanged -= Builders_CollectionChanged;
+                _builders.Clear();
+                base.Dispose();
+            }
+        }
+
         private void Builders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             State = Builders.All(x =>
@@ -84,16 +94,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         public override ScatterGraphBuildResult Build()
         {
             throw new InvalidOperationException("To build a ScatterGraphFilesBuilder, call Builder.Build()");
-        }
-
-        public override void Dispose()
-        {
-            if (!IsDisposed)
-            {
-                _builders.CollectionChanged -= Builders_CollectionChanged;
-                _builders.Clear();
-                base.Dispose();
-            }
         }
     }
 }

@@ -99,6 +99,8 @@
     <Compile Include="Converters\IsHiddenToOpacityConverter.cs" />
     <Compile Include="Converters\IsHiddenToImageConverter.cs" />
     <Compile Include="Converters\EnumerableNonEmptyConverter.cs" />
+    <Compile Include="Converters\IsNotNullConverter.cs" />
+    <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="Converters\NullableObjectToStringConverter.cs" />
     <Compile Include="Converters\ReduceItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Converters\LoadItemButtonEnabledMultiConverter.cs" />
@@ -114,6 +116,7 @@
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
     <Compile Include="Models\IHideable.cs" />
     <Compile Include="Models\IModelisable.cs" />
+    <Compile Include="Models\IPartSource.cs" />
     <Compile Include="Models\IScatterGraphElement.cs" />
     <Compile Include="Models\ISelectable.cs" />
     <Compile Include="Others\Const.cs" />
