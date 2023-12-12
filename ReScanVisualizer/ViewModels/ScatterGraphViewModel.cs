@@ -238,6 +238,7 @@ namespace ReScanVisualizer.ViewModels
                         _part.Add(this);
                         ScaleFactor = _part.ScaleFactor;
                     }
+                    RecomputeAll();
                 }
 
             }
@@ -559,7 +560,7 @@ namespace ReScanVisualizer.ViewModels
 
             _barycenter.UpdatePoint(barycenter);
             _base3D.UpdateBase(base3D);
-            _averagePlan.UpdatePlan(barycenter, averagePlan, base3D.X, averagePlanLength);
+            _averagePlan.UpdatePlan(barycenter, averagePlan, base3D.X, averagePlanLength); // a faire apres l'update de la base
         }
 
         private Point3D ComputeBarycenter()
@@ -633,6 +634,7 @@ namespace ReScanVisualizer.ViewModels
                 else
                 {
                     base3D = ScatterGraph.ComputeRepere3D(barycenter, averagePlan, true);
+
                 }
             }
             return base3D;

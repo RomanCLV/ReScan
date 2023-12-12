@@ -482,12 +482,27 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         public void LoadAll(bool closeWindow = false)
         {
-            //while (Items.Count > 0)
-            //{
-            //    Load(Items[0]);
-            //}
-
             KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item;
+            // TODO: load all
+            /*
+            
+            - ajouter des controles lors de la création de base d'une Part (importer le reorient d'une base)
+            - créer un miniviewport dans la fenetre afin de voir comment la base est orientée ?
+
+            - dans la classe Part, ajouter l'event OriginChanged qui devra faire recalculer les orientations des bases
+
+            - créer l'option MoveOriginToBarycenter
+            - a faire si l'option MoveOriginToBarycenter est activé
+
+            - trier les items en fonction de la piece associée
+            Pour chaque piece :
+            - compute barycenter
+            - move part.origin to barycenter
+
+             */
+
+            // desactiver le computeall auto car bcp d'item à ajouter
+
             for (int i = 0; i < Items.Count; i++)
             {
                 item = Items[i];
@@ -497,6 +512,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                     i--;
                 }
             }
+
+            // réactiver le computeall auto
+            // faire un computeall
+
             if (closeWindow && Items.Count == 0)
             {
                 _view.Close();
