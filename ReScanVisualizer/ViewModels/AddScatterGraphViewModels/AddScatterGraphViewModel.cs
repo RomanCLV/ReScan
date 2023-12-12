@@ -11,6 +11,7 @@ using System.Windows.Input;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
+using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.Views.AddScatterGraphViews;
 
 #nullable enable
@@ -96,7 +97,22 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             set => SetValue(ref _commonDisplayBase, value);
         }
 
+        private IPartSource _partsListSource;
+        public virtual IPartSource PartsListSource
+        {
+            get => _partsListSource;
+            set => SetValue(ref _partsListSource, value);
+        }
+
+        private PartViewModelBase? _part;
+        public virtual PartViewModelBase? Part
+        {
+            get => _part;
+            set => SetValue(ref _part, value);
+        }
+
         public CommandKey AddScatterGraphBuilderCommand { get; private set; }
+        public CommandKey AddPartCommand { get; private set; }
         public CommandKey BuildCommand { get; private set; }
         public CommandKey LoadCommand { get; private set; }
         public CommandKey LoadAndCloseCommand { get; private set; }
@@ -115,12 +131,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             _commonDisplayBarycenter = true;
             _commonDisplayAveragePlan = true;
             _commonDisplayBase = true;
+            _partsListSource = _mainViewModel;
+            _part = null;
 
             Items = new ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>>();
 
+            _mainViewModel.Parts.CollectionChanged += Parts_CollectionChanged;
             Items.CollectionChanged += Items_CollectionChanged;
 
             AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new builder");
+            AddPartCommand = new CommandKey(new AddPartCommand(_partsListSource), Key.P, ModifierKeys.Control | ModifierKeys.Shift, "Add a new part");
             BuildCommand = new CommandKey(new BuildScatterGraphCommand(this), Key.B, ModifierKeys.Control, "Build");
             LoadCommand = new CommandKey(new LoadScatterGraphCommand(this, false), Key.L, ModifierKeys.Control, "Load");
             LoadAndCloseCommand = new CommandKey(new LoadScatterGraphCommand(this, true), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
@@ -136,6 +156,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
         {
             if (!IsDisposed)
             {
+                _mainViewModel.Parts.CollectionChanged -= Parts_CollectionChanged;
                 Items.CollectionChanged -= Items_CollectionChanged;
                 AddScatterGraphBuilderCommand.Dispose();
                 BuildCommand.Dispose();
@@ -149,6 +170,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                 Items.Clear();
                 base.Dispose();
             }
+        }
+
+        private void Parts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(PartsListSource));
         }
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -238,6 +264,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                     item.Key.Color = Tools.GetRandomLightColor();
                 }
             });
+        }
+
+        public void ApplyCommonPart()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Key != null)
+                {
+                    item.Key.Part = _part;
+                }
+            }
         }
 
         public void ApplyMaxPoints()
@@ -422,7 +459,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                 {
                     scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Value.AxisScaleFactor, item.Key.PointRadius, item.Key.RenderQuality, !item.Key.DisplayBarycenter, !item.Key.DisplayAveragePlan, !item.Key.DisplayBase)
                     {
-                        Name = item.Key.Name.Replace(" builder", "")
+                        Name = item.Key.Name.Replace(" builder", ""),
+                        Part = item.Key.Part,
                     };
                     if (item.Key is ScatterGraphFileBuilder fileBuilder)
                     {

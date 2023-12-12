@@ -81,7 +81,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 UpdateWidth();
                 State = Start.Point != End.Point ? ScatterGraphBuilderState.Ready : ScatterGraphBuilderState.Error;
-                if (CanBuild)
+                if (IsReady)
                 {
                     Message = string.Empty;
                 }

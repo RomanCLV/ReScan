@@ -94,5 +94,13 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             _selectedBuilder = null;
             _openedPopup = null;
         }
+
+        private void RemovePartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphFilesBuilder builder)
+            {
+                builder.Part = null;
+            }
+        }
     }
 }

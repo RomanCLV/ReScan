@@ -71,7 +71,7 @@ namespace ReScanVisualizer.Commands
 
         private void Builder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ScatterGraphBuilderBase.CanBuild))
+            if (e.PropertyName == nameof(ScatterGraphBuilderBase.IsReady))
             {
                 OnCanExecuteChanged();
             }
@@ -79,7 +79,7 @@ namespace ReScanVisualizer.Commands
 
         public override bool CanExecute(object? parameter)
         {
-            return (!(_builder is null) && _builder.CanBuild) && (
+            return (!(_builder is null) && _builder.IsReady) && (
                 _addScatterGraphBuilderModelView.IsEmptySelected ||
                 _addScatterGraphBuilderModelView.IsToPopulateSelected ||
                 _addScatterGraphBuilderModelView.IsToOpenSelected

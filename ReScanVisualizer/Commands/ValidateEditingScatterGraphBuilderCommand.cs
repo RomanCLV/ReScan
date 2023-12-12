@@ -39,7 +39,7 @@ namespace ReScanVisualizer.Commands
 
         private void Builder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ScatterGraphBuilderBase.CanBuild))
+            if (e.PropertyName == nameof(ScatterGraphBuilderBase.IsReady))
             {
                 OnCanExecuteChanged();
             }

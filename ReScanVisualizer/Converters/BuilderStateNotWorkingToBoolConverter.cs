@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 
+
 namespace ReScanVisualizer.Converters
 {
     public class BuilderStateNotWorkingToBoolConverter : IValueConverter

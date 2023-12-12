@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using ReScanVisualizer.Models;
+using ReScanVisualizer.ViewModels.Parts;
+using ReScanVisualizer.Views.ItemTreeViews;
+
+#nullable enable
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
@@ -51,14 +56,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _state, value))
                 {
-                    OnPropertyChanged(nameof(CanBuild));
+                    OnPropertyChanged(nameof(IsReady));
                 }
             }
         }
 
-        public bool CanBuild
+        public bool IsReady
         {
             get => _state is ScatterGraphBuilderState.Ready;
+        }
+
+        public bool CanBuild
+        {
+            get => _state is ScatterGraphBuilderState.Ready ||
+                _state is ScatterGraphBuilderState.Success;
         }
 
         private string _message;
@@ -116,6 +127,36 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             set => SetValue(ref _displayBase, value);
         }
 
+        private IPartSource? _partsListSource;
+        public virtual IPartSource? PartsListSource
+        {
+            get => _partsListSource;
+            set
+            {
+                if (!Equals(_partsListSource, value))
+                {
+                    if (_partsListSource != null && _partsListSource.Parts is INotifyCollectionChanged collectionChanged)
+                    {
+                        collectionChanged.CollectionChanged -= SourceParts_CollectionChanged;
+                    }
+                }
+                if (SetValue(ref _partsListSource, value))
+                {
+                    if (_partsListSource != null && _partsListSource.Parts is INotifyCollectionChanged collectionChanged)
+                    {
+                        collectionChanged.CollectionChanged += SourceParts_CollectionChanged;
+                    }
+                }
+            }
+        }
+
+        private PartViewModelBase? _part;
+        public virtual PartViewModelBase? Part
+        {
+            get => _part;
+            set => SetValue(ref _part, value);
+        }
+
         public List<RenderQuality> RenderQualities { get; }
 
         public ScatterGraphBuilderBase() : this(Colors.White)
@@ -133,6 +174,25 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             _displayBarycenter = true;
             _displayAveragePlan = true;
             _displayBase = true;
+        }
+
+        ~ScatterGraphBuilderBase()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                PartsListSource = null;
+                base.Dispose();
+            }
+        }
+
+        private void SourceParts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(PartsListSource));
         }
 
         /// <summary>

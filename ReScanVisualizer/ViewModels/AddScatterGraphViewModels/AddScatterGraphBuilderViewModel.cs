@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.Views.AddScatterGraphViews;
@@ -88,6 +89,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                         _builder.Dispose();
                         SetValue(ref _builder, value);
                     }
+                }
+                if (_builder != null)
+                {
+                    _builder.PartsListSource = (MainViewModel)Application.Current.MainWindow.DataContext;
                 }
             }
         }

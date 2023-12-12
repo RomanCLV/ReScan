@@ -36,7 +36,7 @@
                                 SelectedValue="{Binding Part}"
                                 DisplayMemberPath="Name"
                                 IsEnabled="{Binding PartsListSource.Parts, Converter={StaticResource EnumerableNonEmptyConverter}}"/>
-                            <Button Style="{StaticResource myButtonIcon}" Margin="0" Click="RemovePartButton_Click" IsEnabled="{Binding Part, Converter={StaticResource IsNotNullConverter}}">
+                            <Button Style="{StaticResource myButtonIcon}" Margin="0" Click="RemovePartButton_Click" ToolTip="Disassociate part" IsEnabled="{Binding Part, Converter={StaticResource IsNotNullConverter}}">
                                 <Button.Content>
                                     <Image Source="{StaticResource delete}" />
                                 </Button.Content>

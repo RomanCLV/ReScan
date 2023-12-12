@@ -9,6 +9,6 @@ namespace ReScanVisualizer.Models
 {
     public interface IPartSource
     {
-        IEnumerable<PartViewModelBase> Parts { get; }
+        IList<PartViewModelBase> Parts { get; }
     }
 }

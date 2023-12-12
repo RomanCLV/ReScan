@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
 using ReScanVisualizer.Commands;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.Service;
+using ReScanVisualizer.ViewModels.Parts;
+
+#nullable enable
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
@@ -18,6 +23,31 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private readonly ObservableCollection<ScatterGraphFileBuilder> _builders;
 
+        public override IPartSource? PartsListSource 
+        { 
+            get => base.PartsListSource; 
+            set
+            {
+                base.PartsListSource = value;
+                UpdateAddPartCommand();
+            }
+        }
+
+        public override PartViewModelBase? Part 
+        { 
+            get => base.Part;
+            set 
+            {
+                base.Part = value;
+                foreach (var builder in _builders)
+                {
+                    builder.Part = value;
+                }
+            } 
+        }
+
+        public CommandKey? AddPartCommand { get; private set; }
+        
         public ICommand SelectFilesCommand { get; private set; }
 
         public override string Name => "Files builder";
@@ -27,10 +57,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         public ScatterGraphFilesBuilder()
         {
             State = ScatterGraphBuilderState.Error;
+            UpdateAddPartCommand();
             SelectFilesCommand = new SelectFilesCommand(this);
             _builders = new ObservableCollection<ScatterGraphFileBuilder>();
             Builders = _builders;
-
             _builders.CollectionChanged += Builders_CollectionChanged;
         }
 
@@ -43,21 +73,30 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         {
             if (!IsDisposed)
             {
+                AddPartCommand?.Dispose();
                 _builders.CollectionChanged -= Builders_CollectionChanged;
                 _builders.Clear();
                 base.Dispose();
             }
         }
 
+        private void UpdateAddPartCommand()
+        {
+            AddPartCommand?.Dispose();
+            AddPartCommand = PartsListSource is null ?
+                new CommandKey(new ActionCommand(() => { }), Key.None, ModifierKeys.None, "No parts source") :
+                new CommandKey(new AddPartCommand(PartsListSource), Key.P, ModifierKeys.Control | ModifierKeys.Shift, "Add a new part");
+        }
+
         private void Builders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             State = Builders.All(x =>
             {
-                if (!x.CanBuild)
+                if (!x.IsReady)
                 {
                     Message = x.Message;
                 }
-                return x.CanBuild;
+                return x.IsReady;
             }) ? ScatterGraphBuilderState.Ready : ScatterGraphBuilderState.Error;
             OnPropertyChanged(nameof(Details));
         }
@@ -80,7 +119,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 foreach (string file in ofd.FileNames)
                 {
-                    _builders.Add(new ScatterGraphFileBuilder(file, Colors.White, true));
+                    ScatterGraphFileBuilder scatterGraphFileBuilder = new ScatterGraphFileBuilder(file, Colors.White, true)
+                    {
+                        Part = Part,
+                        PartsListSource = PartsListSource
+                    };
+                    _builders.Add(scatterGraphFileBuilder);
                 }
             }
         }

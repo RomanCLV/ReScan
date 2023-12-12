@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.ViewModels.AddPartModelViews;
 using ReScanVisualizer.Views.AddPartViews;
@@ -14,11 +15,11 @@ namespace ReScanVisualizer.Commands
 {
     public class AddPartCommand : CommandBase
     {
-        private readonly MainViewModel _mainViewModel;
+        private readonly IPartSource _partSource;
 
-        public AddPartCommand(MainViewModel mainViewModel) 
+        public AddPartCommand(IPartSource partSource) 
         {
-            _mainViewModel = mainViewModel;
+            _partSource = partSource;
         }
 
         public override void Execute(object? parameter)
@@ -27,7 +28,7 @@ namespace ReScanVisualizer.Commands
             {
                 Owner = Application.Current.MainWindow,
             };
-            AddPartViewModel addPartViewModel = new AddPartViewModel(view, _mainViewModel);
+            AddPartViewModel addPartViewModel = new AddPartViewModel(view, _partSource);
             view.DataContext = addPartViewModel;
             view.ShowDialog();
             addPartViewModel.Dispose();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -131,6 +132,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             EditScatterGraphViewModel editScatterGraphViewModel = new EditScatterGraphViewModel(view, builder);
             view.DataContext = editScatterGraphViewModel;
             view.ShowDialog();
+            editScatterGraphViewModel.Dispose();
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -151,6 +153,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 {
                     Edit(item.Key);
                 }
+            }
+        }
+
+        private void RemovePartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.Part = null;
             }
         }
 
@@ -215,6 +225,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                         viewModel.Items.Remove(item);
                     }
                 }
+            }
+        }
+
+        private void ApplyCommonPartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonPart();
             }
         }
 

@@ -10,16 +10,50 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+        <converters:EnumerableNonEmptyConverter x:Key="EnumerableNonEmptyConverter" />
+        <converters:IsNullConverter x:Key="IsNullConverter" />
+        <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
     </UserControl.Resources>
+    <UserControl.InputBindings>
+        <KeyBinding x:Name="AddPartCommandKey"
+            Command="{Binding Path=AddPartCommand.Command}"
+            Key="{Binding Path=AddPartCommand.Key}" 
+            Modifiers="{Binding Path=AddPartCommand.Modifiers}"/>
+        
+    </UserControl.InputBindings>
     <StackPanel>
-        <Button HorizontalAlignment="Left" Command="{Binding SelectFilesCommand}" Style="{StaticResource myButton}" ToolTip="Select files">
-            <Button.Content>
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="{StaticResource browse}" Width="25" Height="25" />
-                    <TextBlock Text="Select files" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
+        <DockPanel>
+            <Button HorizontalAlignment="Left" Command="{Binding SelectFilesCommand}" Style="{StaticResource myButton}" ToolTip="Select files">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource browse}" Width="25" Height="25" />
+                        <TextBlock Text="Select files" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <TextBlock Text="Create as a part" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                <ComboBox Margin="5" Width="100"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding PartsListSource.Parts}" 
+                    SelectedValue="{Binding Part}"
+                    DisplayMemberPath="Name"
+                    IsEnabled="{Binding PartsListSource.Parts, Converter={StaticResource EnumerableNonEmptyConverter}}"/>
+
+                <Button Style="{StaticResource myButtonIcon}" Width="25" Height="25"
+                        Command="{Binding ElementName=AddPartCommandKey, Path=Command}"
+                        ToolTip="{Binding AddPartCommand.Description}">
+                    <Button.Content>
+                        <Image Source="{StaticResource add}" />
+                    </Button.Content>
+                </Button>
+                <Button Style="{StaticResource myButtonIcon}" Width="25" Height="25" Click="RemovePartButton_Click" ToolTip="Disassociate part" IsEnabled="{Binding Part, Converter={StaticResource IsNotNullConverter}}">
+                    <Button.Content>
+                        <Image Source="{StaticResource delete}" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </DockPanel>
         <ListView 
             ItemsSource="{Binding Builders}" 
             Background="{StaticResource backgroundListColor}" 
@@ -64,7 +98,7 @@
                                                Width="16" Height="16" 
                                                ToolTip="{Binding Color}"
                                                ToolTipService.Placement="Top"/>
-                                    
+
                                     <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
                                         <uc:ColorSelector 
                                             Background="{StaticResource backgroundColor}"

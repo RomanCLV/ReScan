@@ -223,7 +223,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             ScaleFactor = scatterGraphViewModel.ScaleFactor;
             _barycenter.Radius = scatterGraphViewModel.Barycenter.Radius;
             OriginBase.AxisScaleFactor = scatterGraphViewModel.Base3D.AxisScaleFactor;
-            RenderQuality = scatterGraphViewModel.RenderQuality;
+            _renderQuality = scatterGraphViewModel.RenderQuality;
         }
 
         private void ResetFromEmpty()
@@ -231,7 +231,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             ScaleFactor = 1.0;
             _barycenter.Radius = 0.25;
             OriginBase.AxisScaleFactor = 1.0;
-            RenderQuality = RenderQuality.High;
+            _renderQuality = RenderQuality.High;
         }
 
         private void ScatterGraphViewModel_IsHiddenChanged(object sender, bool e)

@@ -99,7 +99,6 @@ namespace ReScanVisualizer.ViewModels
 
         #endregion
 
-
         public ScatterGraphViewModel this[int index]
         {
             get => _items[index];

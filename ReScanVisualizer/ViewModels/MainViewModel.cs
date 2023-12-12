@@ -87,7 +87,7 @@ namespace ReScanVisualizer.ViewModels
 
         public ObservableCollection<PartViewModelBase> Parts { get; private set; }
 
-        IEnumerable<PartViewModelBase> IPartSource.Parts => Parts;
+        IList<PartViewModelBase> IPartSource.Parts => Parts;
 
         public Model3DGroup Models { get; private set; }
 

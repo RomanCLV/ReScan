@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReScanVisualizer.Commands;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.AddPartModelViews.Builders;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.Views.AddPartViews;
@@ -16,7 +17,7 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
 {
     public class AddPartViewModel : ViewModelBase
     {
-        private readonly MainViewModel _mainViewModel;
+        private readonly IPartSource _partSource;
 
         private int _selectedIndex;
         public int SelectedIndex
@@ -55,9 +56,9 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
         public CommandKey ValidateCommand { get; }
         public CommandKey CancelCommand { get; }
 
-        public AddPartViewModel(AddPartWindow addPartView, MainViewModel mainViewModel)
+        public AddPartViewModel(AddPartWindow addPartView, IPartSource partSource)
         {
-            _mainViewModel = mainViewModel;
+            _partSource = partSource;
             _selectedIndex = 0;
             _builder = new PartPointBuilder();
             ValidateCommand = new CommandKey(new ValidateAddingPartCommand(addPartView, this), Key.Enter, ModifierKeys.None, "Add part");
@@ -98,7 +99,7 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
             {
                 PartViewModelBase partViewModelBase = _builder.Build();
                 partViewModelBase.Name = _builder.Name;
-                _mainViewModel.Parts.Add(partViewModelBase);
+                _partSource.Parts.Add(partViewModelBase);
             }
         }
     }

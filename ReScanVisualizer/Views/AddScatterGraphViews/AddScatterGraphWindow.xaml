@@ -28,33 +28,41 @@
         <converters:StringConcaterMultiConverter x:Key="StringConcaterMultiConverter"/>
         <converters:ReduceItemButtonEnabledMultiConverter x:Key="ReduceItemButtonEnabledMultiConverter" />
         <converters:LoadItemButtonEnabledMultiConverter x:Key="LoadItemButtonEnabledMultiConverter"/>
+        <converters:EnumerableNonEmptyConverter x:Key="EnumerableNonEmptyConverter"/>
+        <converters:IsNullConverter x:Key="IsNullConverter"/>
+        <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
-                    Command="{Binding Path=AddScatterGraphBuilderCommand.Command}"  
-                    Key="{Binding Path=AddScatterGraphBuilderCommand.Key}" 
-                    Modifiers="{Binding Path=AddScatterGraphBuilderCommand.Modifiers}"
-                    />
+            Command="{Binding Path=AddScatterGraphBuilderCommand.Command}"  
+            Key="{Binding Path=AddScatterGraphBuilderCommand.Key}" 
+            Modifiers="{Binding Path=AddScatterGraphBuilderCommand.Modifiers}"/>
+        
+        <KeyBinding x:Name="AddPartCommandKey"
+            Command="{Binding Path=AddPartCommand.Command}"
+            Key="{Binding Path=AddPartCommand.Key}" 
+            Modifiers="{Binding Path=AddPartCommand.Modifiers}"/>
+        
         <KeyBinding x:Name="BuildCommandKey" 
             Command="{Binding Path=BuildCommand.Command}"  
             Key="{Binding Path=BuildCommand.Key}" 
-            Modifiers="{Binding Path=BuildCommand.Modifiers}"
-            />
+            Modifiers="{Binding Path=BuildCommand.Modifiers}"/>
+        
         <KeyBinding x:Name="LoadCommandKey" 
                     Command="{Binding Path=LoadCommand.Command}"  
                     Key="{Binding Path=LoadCommand.Key}" 
-                    Modifiers="{Binding Path=LoadCommand.Modifiers}"
-                    />
+                    Modifiers="{Binding Path=LoadCommand.Modifiers}"/>
+        
         <KeyBinding x:Name="LoadAndCloseCommandKey" 
             Command="{Binding Path=LoadAndCloseCommand.Command}"  
             Key="{Binding Path=LoadAndCloseCommand.Key}" 
-            Modifiers="{Binding Path=LoadAndCloseCommand.Modifiers}"
-            />
+            Modifiers="{Binding Path=LoadAndCloseCommand.Modifiers}"/>
+        
         <KeyBinding x:Name="CancelCommandKey" 
                     Command="{Binding Path=CancelCommand.Command}"  
                     Key="{Binding Path=CancelCommand.Key}" 
-                    Modifiers="{Binding Path=CancelCommand.Modifiers}"
-                    />
+                    Modifiers="{Binding Path=CancelCommand.Modifiers}"/>
+        
     </Window.InputBindings>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -78,7 +86,33 @@
                         </Button>
                         
                         <TextBlock DockPanel.Dock="Top" Text="Common parameters:" Style="{StaticResource myTextBlockLeft}"/>
-                        
+
+                        <StackPanel>
+                            <TextBlock Text="Part" Style="{StaticResource myTextBlock}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox Margin="5" MinWidth="120" VerticalAlignment="Center"
+                                    ItemsSource="{Binding PartsListSource.Parts}" 
+                                    SelectedValue="{Binding Part}"
+                                    DisplayMemberPath="Name"
+                                    IsEnabled="{Binding PartsListSource.Parts, Converter={StaticResource EnumerableNonEmptyConverter}}"/>
+                                <Button Style="{StaticResource myButtonIcon}" Width="25" Height="25"
+                                        Command="{Binding ElementName=AddPartCommandKey, Path=Command}"
+                                        ToolTip="{Binding AddPartCommand.Description}">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource add}" />
+                                    </Button.Content>
+                                </Button>
+                                <Button Style="{StaticResource myButtonIcon}" Width="25" Height="25" Click="RemovePartButton_Click" ToolTip="Disassociate part">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource delete}" />
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
+                                ToolTip="Apply the common part for every added builder."
+                                Click="ApplyCommonPartButton_Click"/>
+                        </StackPanel>
+
                         <Button DockPanel.Dock="Left" Content="Randomize colors" Style="{StaticResource myButton}" VerticalAlignment="Top" Click="RandomizeColorButton_Click"/>
 
                         <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
@@ -322,6 +356,25 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
+                                <GridViewColumn Header="Part" Width="150">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <ComboBox Margin="5" Width="100"
+                                                    ItemsSource="{Binding Key.PartsListSource.Parts}" 
+                                                    SelectedValue="{Binding Key.Part}"
+                                                    DisplayMemberPath="Name"
+                                                    IsEnabled="{Binding Key.PartsListSource.Parts, Converter={StaticResource EnumerableNonEmptyConverter}}"/>
+                                                <Button Style="{StaticResource myButtonIcon}" Margin="0" Click="RemovePartButton_Click" ToolTip="Disassociate part" IsEnabled="{Binding Key.Part, Converter={StaticResource IsNotNullConverter}}">
+                                                    <Button.Content>
+                                                        <Image Source="{StaticResource delete}" />
+                                                    </Button.Content>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                
                                 <!-- Colonne Count -->
                                 <GridViewColumn Header="Count" Width="50">
                                     <GridViewColumn.CellTemplate>
