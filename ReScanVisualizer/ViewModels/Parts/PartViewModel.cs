@@ -20,6 +20,8 @@ namespace ReScanVisualizer.ViewModels.Parts
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
+        public event EventHandler? OriginChanged;
+
         private string _name;
         public string Name
         {
@@ -46,7 +48,7 @@ namespace ReScanVisualizer.ViewModels.Parts
                     {
                         scatterGraphViewModel.IsHidden = _isHidden;
                     }
-                    IsHiddenChanged?.Invoke(this, _isHidden);
+                    OnIsHiddenChanged();
                 }
             }
         }
@@ -138,9 +140,12 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public static uint InstanceCreated { get; private set; }
 
+        private bool _isRecomputeAllOnScatterGraphsChangedEnalbed;
+
         public PartViewModelBase(Base3D originBase, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
             InstanceCreated++;
+            _isRecomputeAllOnScatterGraphsChangedEnalbed = true;
             _name = "Part " + InstanceCreated;
             _isHidden = false;
             _scaleFactor = scaleFactor;
@@ -156,6 +161,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             _modelGroup.Children.Add(OriginBase.Model);
 
             _scatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
+            OriginBase.PropertyChanged += OriginBase_PropertyChanged;
         }
 
         ~PartViewModelBase()
@@ -167,12 +173,34 @@ namespace ReScanVisualizer.ViewModels.Parts
         {
             if (!IsDisposed)
             {
+                OriginBase.PropertyChanged -= OriginBase_PropertyChanged;
                 _scatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 Clear();
                 _modelGroup.Children.Clear();
                 _barycenter.Dispose();
                 OriginBase.Dispose();
                 base.Dispose();
+            }
+        }
+
+        private void OnIsHiddenChanged()
+        {
+            IsHiddenChanged?.Invoke(this, _isHidden);
+        }
+
+        private void OnOriginChanged()
+        {
+            OriginChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OriginBase_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Base3DViewModel.Origin) ||
+                e.PropertyName == nameof(Base3DViewModel.X) ||
+                e.PropertyName == nameof(Base3DViewModel.Y) ||
+                e.PropertyName == nameof(Base3DViewModel.Z))
+            {
+                OnOriginChanged();
             }
         }
 
@@ -214,7 +242,10 @@ namespace ReScanVisualizer.ViewModels.Parts
                     }
                     break;
             }
-            ComputeAll();
+            if (_isRecomputeAllOnScatterGraphsChangedEnalbed)
+            {
+                ComputeAll();
+            }
         }
 
         private void SetFromFirstItem()
@@ -232,6 +263,16 @@ namespace ReScanVisualizer.ViewModels.Parts
             _barycenter.Radius = 0.25;
             OriginBase.AxisScaleFactor = 1.0;
             _renderQuality = RenderQuality.High;
+        }
+
+        public void EnableRecomputeAllAfterScatterGraphsChanged()
+        {
+            _isRecomputeAllOnScatterGraphsChangedEnalbed = true;
+        }
+
+        public void DisableRecomputeAllAfterScatterGraphsChanged()
+        {
+            _isRecomputeAllOnScatterGraphsChangedEnalbed = false;
         }
 
         private void ScatterGraphViewModel_IsHiddenChanged(object sender, bool e)
@@ -308,7 +349,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         /// Here, only the barycenter is computed.
         /// </summary>
         /// <param name="setOriginToBarycenter">Set the origin of the part to the new barycenter.</param>
-        protected virtual void ComputeAll(bool setOriginToBarycenter = false)
+        public virtual void ComputeAll(bool setOriginToBarycenter = false)
         {
             _barycenter.UpdatePoint(ComputeBarycenter());
             if (setOriginToBarycenter)

@@ -460,7 +460,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                     scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Value.AxisScaleFactor, item.Key.PointRadius, item.Key.RenderQuality, !item.Key.DisplayBarycenter, !item.Key.DisplayAveragePlan, !item.Key.DisplayBase)
                     {
                         Name = item.Key.Name.Replace(" builder", ""),
-                        Part = item.Key.Part,
+                        Part = item.Key.Part
                     };
                     if (item.Key is ScatterGraphFileBuilder fileBuilder)
                     {
@@ -482,26 +482,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         public void LoadAll(bool closeWindow = false)
         {
-            KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item;
-            // TODO: load all
-            /*
+            List<PartViewModelBase> parts = new List<PartViewModelBase>();
+            foreach (var kvo in Items)
+            {
+                if (kvo.Key != null && kvo.Key.Part != null && !parts.Contains(kvo.Key.Part))
+                {
+                    parts.Add(kvo.Key.Part);
+                    kvo.Key.Part.DisableRecomputeAllAfterScatterGraphsChanged();
+                }
+            }
             
-            - ajouter des controles lors de la création de base d'une Part (importer le reorient d'une base)
-            - créer un miniviewport dans la fenetre afin de voir comment la base est orientée ?
-
-            - dans la classe Part, ajouter l'event OriginChanged qui devra faire recalculer les orientations des bases
-
-            - créer l'option MoveOriginToBarycenter
-            - a faire si l'option MoveOriginToBarycenter est activé
-
-            - trier les items en fonction de la piece associée
-            Pour chaque piece :
-            - compute barycenter
-            - move part.origin to barycenter
-
-             */
-
-            // desactiver le computeall auto car bcp d'item à ajouter
+            KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item;
 
             for (int i = 0; i < Items.Count; i++)
             {
@@ -513,8 +504,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                 }
             }
 
-            // réactiver le computeall auto
-            // faire un computeall
+            foreach (PartViewModelBase part in parts)
+            {
+                part.EnableRecomputeAllAfterScatterGraphsChanged();
+                part.ComputeAll(true);
+            }
 
             if (closeWindow && Items.Count == 0)
             {

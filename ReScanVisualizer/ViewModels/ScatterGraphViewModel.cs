@@ -230,17 +230,21 @@ namespace ReScanVisualizer.ViewModels
             set
             {
                 PartViewModelBase? partRemoveLater = _part;
+                if (_part != null)
+                {
+                    _part.OriginChanged -= Part_OriginChanged;
+                }
                 if (SetValue(ref _part, value))
                 {
                     partRemoveLater?.Remove(this);
                     if (_part != null)
                     {
+                        _part.OriginChanged += Part_OriginChanged;
                         _part.Add(this);
                         ScaleFactor = _part.ScaleFactor;
                     }
-                    RecomputeAll();
+                    //RecomputeAll();
                 }
-
             }
         }
 
@@ -256,7 +260,6 @@ namespace ReScanVisualizer.ViewModels
         /// ScatterGraphViewModel constuctor.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-
         public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double axisScaleFactor = 1.0, double pointRadius = 0.25, RenderQuality renderQuality = RenderQuality.High, bool hideBarycenter = false, bool hideAveragePlan = false, bool hideBase = false)
         {
             if (scaleFactor <= 0.0)
@@ -294,6 +297,7 @@ namespace ReScanVisualizer.ViewModels
 
             UpdateArePointsHidden();
 
+            /* Equivalent à RecomputeAll() */
             Point3D barycenter = ComputeBarycenter();
             Plan averagePlan = ComputeAveragePlan();
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
@@ -313,6 +317,7 @@ namespace ReScanVisualizer.ViewModels
                 ScatterGraph = this,
                 CanEdit = false
             };
+            /* Fin - Equivalent à RecomputeAll() */
 
             _barycenter.IsHidden = hideBarycenter;
             _averagePlan.IsHidden = hideAveragePlan;
@@ -414,11 +419,6 @@ namespace ReScanVisualizer.ViewModels
                 sampleViewModel.Dispose();
             }
             Samples.Clear();
-        }
-
-        private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RecomputeAll();
         }
 
         public void Add(SampleViewModel sampleViewModel)
@@ -545,6 +545,16 @@ namespace ReScanVisualizer.ViewModels
             ArePointsHidden = Samples.Count != 0;
         }
 
+        private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RecomputeAll();
+        }
+
+        private void Part_OriginChanged(object sender, EventArgs e)
+        {
+            RecomputeAll();
+        }
+
         private void RecomputeAll()
         {
             _scatterGraph.Clear();
@@ -560,7 +570,7 @@ namespace ReScanVisualizer.ViewModels
 
             _barycenter.UpdatePoint(barycenter);
             _base3D.UpdateBase(base3D);
-            _averagePlan.UpdatePlan(barycenter, averagePlan, base3D.X, averagePlanLength); // a faire apres l'update de la base
+            _averagePlan.UpdatePlan(barycenter, averagePlan, base3D.X, averagePlanLength);
         }
 
         private Point3D ComputeBarycenter()
