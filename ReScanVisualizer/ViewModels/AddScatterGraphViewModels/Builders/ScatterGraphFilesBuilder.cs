@@ -23,31 +23,39 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private readonly ObservableCollection<ScatterGraphFileBuilder> _builders;
 
-        public override IPartSource? PartsListSource 
-        { 
-            get => base.PartsListSource; 
+        public override IPartSource? PartsListSource
+        {
+            get => base.PartsListSource;
             set
             {
+                if (base.PartsListSource != null && base.PartsListSource.Parts is INotifyCollectionChanged collectionChanged)
+                {
+                    collectionChanged.CollectionChanged -= Parts_CollectionChanged;
+                }
                 base.PartsListSource = value;
+                if (base.PartsListSource != null && base.PartsListSource.Parts is INotifyCollectionChanged collectionChanged2)
+                {
+                    collectionChanged2.CollectionChanged += Parts_CollectionChanged;
+                }
                 UpdateAddPartCommand();
             }
         }
 
-        public override PartViewModelBase? Part 
-        { 
+        public override PartViewModelBase? Part
+        {
             get => base.Part;
-            set 
+            set
             {
                 base.Part = value;
                 foreach (var builder in _builders)
                 {
                     builder.Part = value;
                 }
-            } 
+            }
         }
 
         public CommandKey? AddPartCommand { get; private set; }
-        
+
         public ICommand SelectFilesCommand { get; private set; }
 
         public override string Name => "Files builder";
@@ -86,6 +94,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             AddPartCommand = PartsListSource is null ?
                 new CommandKey(new ActionCommand(() => { }), Key.None, ModifierKeys.None, "No parts source") :
                 new CommandKey(new AddPartCommand(PartsListSource), Key.P, ModifierKeys.Control | ModifierKeys.Shift, "Add a new part");
+        }
+
+        private void Parts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                Part = (PartViewModelBase)e.NewItems[e.NewItems.Count - 1];
+            }
         }
 
         private void Builders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

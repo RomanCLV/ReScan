@@ -175,6 +175,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
         private void Parts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(PartsListSource));
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                Part = (PartViewModelBase)e.NewItems[e.NewItems.Count - 1];
+            }
         }
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

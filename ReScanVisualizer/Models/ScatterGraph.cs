@@ -533,12 +533,12 @@ namespace ReScanVisualizer.Models
             return new Plan(z.X, z.Y, z.Z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
         }
 
-        public static Base3D ComputeRepere3D(ScatterGraph scatterGraph)
-        {
-            Point3D barycenter = scatterGraph.ComputeBarycenter();
-            Plan averagePlan = scatterGraph.ComputeAveragePlan();
-            return ComputeRepere3D(barycenter, averagePlan, true);
-        }
+        //public static Base3D ComputeRepere3D(ScatterGraph scatterGraph)
+        //{
+        //    Point3D barycenter = scatterGraph.ComputeBarycenter();
+        //    Plan averagePlan = scatterGraph.ComputeAveragePlan();
+        //    return ComputeRepere3D(barycenter, averagePlan, true);
+        //}
 
         public static Base3D ComputeRepere3D(Point3D origin, Plan averagePlan, bool putXOnXY)
         {

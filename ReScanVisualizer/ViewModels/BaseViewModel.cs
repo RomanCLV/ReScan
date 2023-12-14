@@ -158,6 +158,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _rotationAxis, value))
                 {
+                    EndRotateBase();
                     if (_rotationAxis is RotationAxis.X)
                     {
                         RotationX = _base.X.X;
@@ -176,8 +177,8 @@ namespace ReScanVisualizer.ViewModels
                         RotationY = _base.Z.Y;
                         RotationZ = _base.Z.Z;
                     }
-                    RotationAngle = 0.0;
-                    EndRotateBase();
+                    _rotationAngle = 0.0;
+                    OnPropertyChanged(nameof(RotationAngle));
                     RotateXYZEnabled = _rotationAxis is RotationAxis.Personalized;
                 }
             }
@@ -240,7 +241,7 @@ namespace ReScanVisualizer.ViewModels
             _reorientZ = _base.X.Z;
             double r = Math.Sqrt(_reorientX * _reorientX + _reorientY * _reorientY + _reorientZ * _reorientZ);
             _reorientTheta = Tools.RadianToDegree(Math.Acos(_reorientZ / r));
-            _reorientPhi = Tools.RadianToDegree(Math.Atan(_reorientY / _reorientX));
+            _reorientPhi = Tools.RadianToDegree(Math.Atan(_reorientY / _reorientX)); // TODO : ajouter verif pour div par 0
 
             // rotate
             AllRotationAxis = Tools.GetRotationAxesList();
@@ -332,7 +333,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 _isUpdatingAngles = true;
                 double r = Math.Sqrt(_reorientX * _reorientX + _reorientY * _reorientY + _reorientZ * _reorientZ);
-                ReorientTheta = Tools.RadianToDegree(Math.Acos(_reorientZ / r));
+                ReorientTheta = Tools.RadianToDegree(Math.Acos(_reorientZ / r));  // TODO : ajouter verif pour div par 0
                 ReorientPhi = _reorientX == 0 ? 0.0 : Tools.RadianToDegree(Math.Atan(_reorientY / _reorientX));
                 _isUpdatingAngles = false;
             }

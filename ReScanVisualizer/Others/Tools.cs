@@ -109,6 +109,78 @@ namespace ReScanVisualizer
             return s;
         }
 
+        /// <summary>
+        /// Retourne l'angle dont le cosinus est le nombre spécifié.
+        /// </summary>
+        /// <param name="d">Nombre représentant un cosinus, où d doit être supérieur ou égal à -1, mais inférieur ou égal à 1.</param>
+        /// <returns>Angle θ mesuré en radians, tel que 0 ≤ θ ≤ π ou <see cref="System.Double.NaN"/> si d < -1 ou d > 1 ou d est égal à  <see cref="System.Double.NaN"/>.</returns>
+
+        public static double Acos(double d)
+        {
+            double a = Math.Acos(d);
+            if (!double.IsNaN(a))
+            {
+                if (a <= Const.ZERO_CLAMP)
+                {
+                    a = 0.0;
+                }
+                else if (a >= Math.PI - Const.ZERO_CLAMP)
+                {
+                    a = Math.PI;
+                }
+            }
+            return a;
+        }
+
+        /// <summary>
+        /// Retourne l'angle dont la sinus est le nombre spécifié.
+        /// </summary>
+        /// <param name="d">Nombre représentant un sinus, où d doit être supérieur ou égal à -1, mais inférieur ou égal à 1.</param>
+        /// <returns>Angle θ mesuré en radians, tel que -π/2 ≤ θ ≤ π/2 ou <see cref="System.Double.NaN"/> si d < -1 ou d > 1 ou d est égal à  <see cref="System.Double.NaN"/>.</returns>
+        public static double Asin(double d)
+        {
+            double a = Math.Asin(d);
+            if (!double.IsNaN(a))
+            {
+                double pi2 = Math.PI / 2.0;
+                if (a <= -pi2 + Const.ZERO_CLAMP)
+                {
+                    a = pi2;
+                }
+                else if (a >= pi2 - Const.ZERO_CLAMP)
+                {
+                    a = pi2;
+                }
+            }
+            return a;
+        }
+
+        /// <summary>
+        /// Retourne l'angle dont la tangente est le nombre spécifié.
+        /// </summary>
+        /// <param name="d">Nombre représentant une tangente.</param>
+        /// <returns>Angle θ mesuré en radians, tel que -π/2 ≤ θ ≤ π/2. ou <see cref="System.Double.NaN"/> si d est égal
+        /// à <see cref="System.Double.NaN"/>, -π/2 arrondi à la double précision (-1,5707963267949),
+        /// si d est égal à <see cref="System.Double.NegativeInfinity"/>, ou π/2 arrondi à la double précision
+        /// (1,5707963267949) si d est égal à <see cref="System.Double.PositiveInfinity"/>.</returns>
+        public static double Atan(double d)
+        {
+            double a = Math.Atan(d);
+            if (!double.IsNaN(a))
+            {
+                double pi2 = Math.PI / 2.0;
+                if (a <= -pi2 + Const.ZERO_CLAMP)
+                {
+                    a = pi2;
+                }
+                else if (a >= pi2 - Const.ZERO_CLAMP)
+                {
+                    a = pi2;
+                }
+            }
+            return a;
+        }
+
         /// <param name="axis">Rotation axis</param>
         /// <param name="angle">Angle in radian</param>
         public static Matrix3D CreateRotationMatrix(Axis axis, double angle)

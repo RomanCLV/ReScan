@@ -405,6 +405,8 @@ namespace ReScanVisualizer.ViewModels.Parts
             OriginBase.UpdateOrigin(_barycenter.Point.Point);
         }
 
+        public abstract Base3D FindNeareatBase(Point3D point);
+
         public virtual bool IsBelongingToModel(GeometryModel3D geometryModel3D)
         {
             return _barycenter.IsBelongingToModel(geometryModel3D);

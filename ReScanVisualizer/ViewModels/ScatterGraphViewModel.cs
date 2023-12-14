@@ -243,7 +243,6 @@ namespace ReScanVisualizer.ViewModels
                         _part.Add(this);
                         ScaleFactor = _part.ScaleFactor;
                     }
-                    //RecomputeAll();
                 }
             }
         }
@@ -566,6 +565,7 @@ namespace ReScanVisualizer.ViewModels
             Point3D barycenter = _scatterGraph.ComputeBarycenter();
             Plan averagePlan = ComputeAveragePlan();
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
+            CorrectBaseWithPart(base3D);
             double averagePlanLength = ComputeAveragePlanLength(base3D);
 
             _barycenter.UpdatePoint(barycenter);
@@ -643,11 +643,54 @@ namespace ReScanVisualizer.ViewModels
                 }
                 else
                 {
-                    base3D = ScatterGraph.ComputeRepere3D(barycenter, averagePlan, true);
-
+                    base3D = ScatterGraph.ComputeRepere3D(barycenter, averagePlan, false);
                 }
             }
             return base3D;
+        }
+
+        private void CorrectBaseWithPart(Base3D base3D)
+        {
+            if (_part != null)
+            {
+                Base3D nearestBase = _part.FindNeareatBase(base3D.Origin);
+                double angleBetween = Vector3D.AngleBetween(base3D.Z, nearestBase.Z);
+                if (angleBetween > 90)
+                {
+                    base3D.Rotate(base3D.Y, 180.0);
+                }
+
+                // TODO: approfondir si on peut avoir des div par 0
+
+                double pi2 = Math.PI / 2;
+
+                double lengthXO = nearestBase.X.Length.Clamp(1);
+                double thetaXO = Tools.Acos(nearestBase.X.Z / lengthXO);
+                double phiXO;
+                if (nearestBase.X.X == 0)
+                {
+                    phiXO = nearestBase.X.Y > 0.0 ? pi2 : -pi2;
+                }
+                else
+                {
+                    phiXO = Tools.Acos(nearestBase.X.Y / nearestBase.X.X);
+                }
+
+                double lengthX = base3D.X.Length.Clamp(1);
+                double thetaX = Tools.Acos(base3D.X.Z / lengthX);
+                double phiX = Tools.Atan(base3D.X.Y / base3D.X.X);
+
+                double angle;
+                if (Math.Abs(phiXO - phiX) > pi2)
+                {
+                    angle = thetaXO - thetaX;
+                }
+                else
+                {
+                    angle = thetaXO + thetaX;
+                }
+                base3D.Rotate(base3D.Z, angle);
+            }
         }
 
         public void UpdateModelGeometry()
