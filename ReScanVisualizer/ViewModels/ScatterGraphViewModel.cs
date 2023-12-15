@@ -14,6 +14,7 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -598,7 +599,7 @@ namespace ReScanVisualizer.ViewModels
             Point3D currentPoint;
             double maxDistance = 0.0;
             double currentDistance;
-            Matrix3D matrix = base3D.GetRotationMatrix();
+            Matrix3D matrix = base3D.GetTransformMatrix();
             matrix.Invert();
 
             for (int i = 0; i < size; i++)
@@ -657,40 +658,37 @@ namespace ReScanVisualizer.ViewModels
                 double angleBetween = Vector3D.AngleBetween(base3D.Z, nearestBase.Z);
                 if (angleBetween > 90)
                 {
+                    // Mettre le Z dans la bonne direction
                     base3D.Rotate(base3D.Y, 180.0);
                 }
 
-                // TODO: approfondir si on peut avoir des div par 0
+                double angle = GetAnglesBetweenBasesAxis(nearestBase, base3D);
+                base3D.Rotate(base3D.Z, -angle);
+                angle = GetAnglesBetweenBasesAxis(nearestBase, base3D);
 
-                double pi2 = Math.PI / 2;
-
-                double lengthXO = nearestBase.X.Length.Clamp(1);
-                double thetaXO = Tools.Acos(nearestBase.X.Z / lengthXO);
-                double phiXO;
-                if (nearestBase.X.X == 0)
-                {
-                    phiXO = nearestBase.X.Y > 0.0 ? pi2 : -pi2;
-                }
-                else
-                {
-                    phiXO = Tools.Acos(nearestBase.X.Y / nearestBase.X.X);
-                }
-
-                double lengthX = base3D.X.Length.Clamp(1);
-                double thetaX = Tools.Acos(base3D.X.Z / lengthX);
-                double phiX = Tools.Atan(base3D.X.Y / base3D.X.X);
-
-                double angle;
-                if (Math.Abs(phiXO - phiX) > pi2)
-                {
-                    angle = thetaXO - thetaX;
-                }
-                else
-                {
-                    angle = thetaXO + thetaX;
-                }
-                base3D.Rotate(base3D.Z, angle);
+                Trace.WriteLine(_name + ": " + Math.Round(angle, 1));
             }
+        }
+
+        private double GetAnglesBetweenBasesAxis(Base3D nearestBase, Base3D base3D)
+        {
+            Matrix3D tp0 = nearestBase.ToMatrix3D();        // matrice de la base piece dans R0
+            Matrix3D tg0 = base3D.ToMatrix3D();             // matrice de la base graph dans R0
+
+            // rapporter les bases à l'origine de R0
+            tp0.OffsetX = 0.0;
+            tp0.OffsetY = 0.0;
+            tp0.OffsetZ = 0.0;
+            tg0.OffsetX = 0.0;
+            tg0.OffsetY = 0.0;
+            tg0.OffsetZ = 0.0;
+
+            Matrix3D t0p = tp0.Inverse();                   // matrice de passage de R0 vers la piece
+
+            Matrix3D tgp = Matrix3D.Multiply(t0p, tg0);     // matrice de passage de la base graph dans la base piece
+
+            Base3D bGP = new Base3D(tgp);
+            return Tools.RadianToDegree(Math.Atan2(bGP.X.Y, bGP.X.X));
         }
 
         public void UpdateModelGeometry()

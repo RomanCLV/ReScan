@@ -61,7 +61,7 @@ namespace ReScanVisualizer
         /// Retourne le cosinus de l'angle spécifié.
         /// </summary>
         /// <param name="d">Angle, mesuré en radians.</param>
-        /// <returns>Cosinus de d. Si d est égal à <see cref="System.Double.NaN"/>, à <see cref="System.Double.NegativeInfinity"/> ou à <see cref="System.Double.PositiveInfinity"/>, cette méthode retourne <see cref="System.Double.NaN"/>.</returns>
+        /// <returns>Cosinus de d. Si d est égal à <see cref="double.NaN"/>, à <see cref="double.NegativeInfinity"/> ou à <see cref="double.PositiveInfinity"/>, cette méthode retourne <see cref="double.NaN"/>.</returns>
         public static double Cos(double d)
         {
             double c = Math.Cos(d);
@@ -87,7 +87,7 @@ namespace ReScanVisualizer
         /// Retourne le sinus de l'angle spécifié.
         /// </summary>
         /// <param name="d">Angle, mesuré en radians.</param>
-        /// <returns>Sinus de d. Si d est égal à <see cref="System.Double.NaN"/>, à <see cref="System.Double.NegativeInfinity"/> ou à <see cref="System.Double.PositiveInfinity"/>, cette méthode retourne <see cref="System.Double.NaN"/>.</returns>
+        /// <returns>Sinus de d. Si d est égal à <see cref="double.NaN"/>, à <see cref="double.NegativeInfinity"/> ou à <see cref="double.PositiveInfinity"/>, cette méthode retourne <see cref="double.NaN"/>.</returns>
         public static double Sin(double d)
         {
             double s = Math.Sin(d);
@@ -113,8 +113,7 @@ namespace ReScanVisualizer
         /// Retourne l'angle dont le cosinus est le nombre spécifié.
         /// </summary>
         /// <param name="d">Nombre représentant un cosinus, où d doit être supérieur ou égal à -1, mais inférieur ou égal à 1.</param>
-        /// <returns>Angle θ mesuré en radians, tel que 0 ≤ θ ≤ π ou <see cref="System.Double.NaN"/> si d < -1 ou d > 1 ou d est égal à  <see cref="System.Double.NaN"/>.</returns>
-
+        /// <returns>Angle θ mesuré en radians, tel que 0 ≤ θ ≤ π ou <see cref="double.NaN"/> si d < -1 ou d > 1 ou d est égal à  <see cref="double.NaN"/>.</returns>
         public static double Acos(double d)
         {
             double a = Math.Acos(d);
@@ -133,10 +132,10 @@ namespace ReScanVisualizer
         }
 
         /// <summary>
-        /// Retourne l'angle dont la sinus est le nombre spécifié.
+        /// Retourne l'angle dont le sinus est le nombre spécifié.
         /// </summary>
         /// <param name="d">Nombre représentant un sinus, où d doit être supérieur ou égal à -1, mais inférieur ou égal à 1.</param>
-        /// <returns>Angle θ mesuré en radians, tel que -π/2 ≤ θ ≤ π/2 ou <see cref="System.Double.NaN"/> si d < -1 ou d > 1 ou d est égal à  <see cref="System.Double.NaN"/>.</returns>
+        /// <returns>Angle θ mesuré en radians, tel que -π/2 ≤ θ ≤ π/2 ou <see cref="double.NaN"/> si d < -1 ou d > 1 ou d est égal à  <see cref="double.NaN"/>.</returns>
         public static double Asin(double d)
         {
             double a = Math.Asin(d);
@@ -159,10 +158,10 @@ namespace ReScanVisualizer
         /// Retourne l'angle dont la tangente est le nombre spécifié.
         /// </summary>
         /// <param name="d">Nombre représentant une tangente.</param>
-        /// <returns>Angle θ mesuré en radians, tel que -π/2 ≤ θ ≤ π/2. ou <see cref="System.Double.NaN"/> si d est égal
-        /// à <see cref="System.Double.NaN"/>, -π/2 arrondi à la double précision (-1,5707963267949),
-        /// si d est égal à <see cref="System.Double.NegativeInfinity"/>, ou π/2 arrondi à la double précision
-        /// (1,5707963267949) si d est égal à <see cref="System.Double.PositiveInfinity"/>.</returns>
+        /// <returns>Angle θ mesuré en radians, tel que -π/2 ≤ θ ≤ π/2,
+        /// ou <see cref="double.NaN"/> si d est égal à <see cref="double.NaN"/>,
+        /// ou -π/2 arrondi à la double précision (-1,5707963267949) si d est égal à <see cref="double.NegativeInfinity"/>,
+        /// ou π/2 arrondi à la double précision (1,5707963267949) si d est égal à <see cref="double.PositiveInfinity"/>.</returns>
         public static double Atan(double d)
         {
             double a = Math.Atan(d);
@@ -179,6 +178,59 @@ namespace ReScanVisualizer
                 }
             }
             return a;
+        }
+
+        /// <summary>
+        /// Retourne le cosinus de l'angle spécifié en degré.
+        /// </summary>
+        /// <param name="d">Angle, mesuré en radians.</param>
+        /// <returns>Cosinus de d en degrés. Si d est égal à <see cref="double.NaN"/>, à <see cref="double.NegativeInfinity"/> ou à <see cref="double.PositiveInfinity"/>, cette méthode retourne <see cref="double.NaN"/>.</returns>
+        public static double CosD(double d)
+        {
+            return 180.0 * Cos(d) / Math.PI;
+        }
+
+        /// <summary>
+        /// Retourne le sinus de l'angle spécifié en degrés.
+        /// </summary>
+        /// <param name="d">Angle, mesuré en radians.</param>
+        /// <returns>Sinus de d en degrés. Si d est égal à <see cref="double.NaN"/>, à <see cref="double.NegativeInfinity"/> ou à <see cref="double.PositiveInfinity"/>, cette méthode retourne <see cref="double.NaN"/>.</returns>
+        public static double SinD(double d)
+        {
+            return 180.0 * Sin(d) / Math.PI;
+        }
+
+        /// <summary>
+        /// Retourne l'angle en degrés dont le cosinus est le nombre spécifié.
+        /// </summary>
+        /// <param name="d">Nombre représentant un cosinus, où d doit être supérieur ou égal à -1, mais inférieur ou égal à 1.</param>
+        /// <returns>Angle θ mesuré en degrés, tel que 0 ≤ θ ≤ 90 ou <see cref="double.NaN"/> si d < -1 ou d > 1 ou d est égal à  <see cref="double.NaN"/>.</returns>
+        public static double AcosD(double d)
+        {
+            return 180.0 * Acos(d) / Math.PI;
+        }
+
+        /// <summary>
+        /// Retourne l'angle en degrés dont le sinus est le nombre spécifié.
+        /// </summary>
+        /// <param name="d">Nombre représentant un sinus, où d doit être supérieur ou égal à -1, mais inférieur ou égal à 1.</param>
+        /// <returns>Angle θ mesuré en degrés, tel que -90 ≤ θ ≤ 90 ou <see cref="double.NaN"/> si d < -1 ou d > 1 ou d est égal à  <see cref="double.NaN"/>.</returns>
+        public static double AsinD(double d)
+        {
+            return 180.0 * Asin(d) / Math.PI;
+        }
+
+        /// <summary>
+        /// Retourne l'angle en degrés dont la tangente est le nombre spécifié.
+        /// </summary>
+        /// <param name="d">Nombre représentant une tangente.</param>
+        /// <returns>Angle θ mesuré en degrés, tel que -90 ≤ θ ≤ 90,
+        /// ou <see cref="double.NaN"/> si d est égal à <see cref="double.NaN"/>,
+        /// ou -90 si d est égal à <see cref="double.NegativeInfinity"/>,
+        /// ou 90 si d est égal à <see cref="double.PositiveInfinity"/>.</returns>
+        public static double AtanD(double d)
+        {
+            return 180.0 * Atan(d) / Math.PI;
         }
 
         /// <param name="axis">Rotation axis</param>

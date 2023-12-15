@@ -268,12 +268,31 @@ namespace ReScanVisualizer.Models
             _z = z;
         }
 
+        public Base3D(Matrix3D matrix3D)
+        {
+            /*
+             | M11  M12  M13  OffsetX |
+             | M21  M22  M23  OffsetY |
+             | M31  M32  M33  OffsetZ |
+             |  0    0    0     1     |
+             */
+            _origin = new Point3D(matrix3D.OffsetX, matrix3D.OffsetY, matrix3D.OffsetZ);
+            _x = new Vector3D(matrix3D.M11, matrix3D.M21, matrix3D.M31);
+            _y = new Vector3D(matrix3D.M12, matrix3D.M22, matrix3D.M32);
+            _z = new Vector3D(matrix3D.M31, matrix3D.M32, matrix3D.M33);
+        }
+
         public Base3D(Base3D base3D)
         {
             _origin = base3D._origin;
             _x = base3D._x;
             _y = base3D._y;
             _z = base3D._z;
+        }
+
+        public static explicit operator Matrix3D(Base3D base3D)
+        {
+            return base3D.ToMatrix3D();
         }
 
         public void Translate(double x = 0.0, double y = 0.0, double z = 0.0)
@@ -338,7 +357,22 @@ namespace ReScanVisualizer.Models
             _z.Normalize();
         }
 
-        public Matrix3D GetRotationMatrix()
+        public Matrix3D ToMatrix3D()
+        {
+            /*
+             |    M11     M12    M13   0 |
+             |    M21     M22    M23   0 |
+             |    M31     M32    M33   0 |
+             | OffsetX OffsetY OffsetZ 1 |
+             */
+            return new Matrix3D(
+                _x.X, _y.X, _z.X, 0,
+                _x.Y, _y.Y, _z.Y, 0,
+                _x.Z, _y.Z, _z.Z, 0,
+                _origin.X, _origin.Y, _origin.Z, 1);
+        }
+
+        public Matrix3D GetTransformMatrix()
         {
             Vector3D xAxis = new Vector3D(1, 0, 0);
             Vector3D rotationAxis = Vector3D.CrossProduct(xAxis, _x);

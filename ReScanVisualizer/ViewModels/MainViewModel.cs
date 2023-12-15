@@ -13,6 +13,7 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
+using HelixToolkit.Wpf;
 
 #nullable enable
 
@@ -171,6 +172,66 @@ namespace ReScanVisualizer.ViewModels
 
                 base.Dispose();
             }
+        }
+
+        public void Test()
+        {
+            Base3D base3D;
+            Base3DViewModel base3DViewModel;
+
+            base3D = new Base3D(
+                new Point3D(5, 0, 0),
+                new Vector3D(-0.354, -0.854, -0.383),
+                new Vector3D(-0.146, -0.354,  0.924),
+                new Vector3D(-0.924,  0.383,  0)
+                );
+            base3DViewModel = new Base3DViewModel( base3D );
+            base3DViewModel.Name = "Ref";
+            Bases.Add(base3DViewModel);
+
+            base3D = new Base3D(
+                new Point3D(5, 0, 0),
+                new Vector3D(0.492,  0.413,  0.766),
+                new Vector3D(0.587,  0.492, -0.643),
+                new Vector3D(-0.643, 0.766,  0)
+                );
+            base3DViewModel = new Base3DViewModel(base3D);
+            base3DViewModel.Name = "Fix";
+            base3DViewModel.Opacity = 75;
+            Bases.Add(base3DViewModel);
+        }
+
+        public void Fix()
+        {
+            Base3D nearestBase = Bases[0].Base3D;
+            Base3D base3D = Bases[1].Base3D;
+
+            double angleBetween = Vector3D.AngleBetween(base3D.Z, nearestBase.Z);
+            if (angleBetween > 90)
+            {
+                base3D.Rotate(base3D.Y, 180.0);
+            }
+
+            // TODO: approfondir si on peut avoir des div par 0
+
+            Matrix3D tp0 = nearestBase.ToMatrix3D();        // matrice de la base piece dans R0
+            Matrix3D tg0 = base3D.ToMatrix3D();             // matrice de la base graph dans R0
+
+            // rapporter les bases à l'origine de R0
+            tp0.OffsetX = 0.0;
+            tp0.OffsetY = 0.0;
+            tp0.OffsetZ = 0.0;
+            tg0.OffsetX = 0.0;
+            tg0.OffsetY = 0.0;
+            tg0.OffsetZ = 0.0;
+
+            Matrix3D t0p = tp0.Inverse();                   // matrice de passage de R0 vers la piece
+
+            Matrix3D tgp = Matrix3D.Multiply(t0p, tg0);     // matrice de passage de la base graph dans la base piece
+
+            Base3D bGP = new Base3D(tgp);
+            double angle = Tools.RadianToDegree(Math.Atan2(bGP.X.Y, bGP.X.X));
+            base3D.Rotate(base3D.Z, -angle);
         }
 
         private void AddBase()

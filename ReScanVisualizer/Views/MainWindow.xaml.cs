@@ -640,5 +640,15 @@ namespace ReScanVisualizer.Views
         }
 
         #endregion
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ((MainViewModel)DataContext).Test();
+        }
+
+        private void MenuItem2_Click(object sender, RoutedEventArgs e)
+        {
+            ((MainViewModel)DataContext).Fix();
+        }
     }
 }
