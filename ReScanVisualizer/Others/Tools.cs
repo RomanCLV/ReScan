@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
 using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer
@@ -402,6 +403,26 @@ namespace ReScanVisualizer
                    type == typeof(ushort) || type == typeof(int) || type == typeof(uint) ||
                    type == typeof(long) || type == typeof(ulong) || type == typeof(float) ||
                    type == typeof(double) || type == typeof(decimal);
+        }
+
+        public static Base3D GetBase1IntoBase2(Base3D base1, Base3D base2)
+        {
+            Matrix3D tb10 = base1.ToMatrix3D();        // matrice de la base 1 dans R0
+            Matrix3D tb20 = base2.ToMatrix3D();        // matrice de la base 2 dans R0
+
+            // rapporter les bases à l'origine de R0
+            tb20.OffsetX = 0.0;
+            tb20.OffsetY = 0.0;
+            tb20.OffsetZ = 0.0;
+            tb10.OffsetX = 0.0;
+            tb10.OffsetY = 0.0;
+            tb10.OffsetZ = 0.0;
+
+            Matrix3D tb02 = tb20.Inverse();                // matrice de passage de base2 vers R0
+
+            Matrix3D tb12 = Matrix3D.Multiply(tb02, tb10); // base 1 dans la base 2
+
+            return new Base3D(tb12);
         }
     }
 }

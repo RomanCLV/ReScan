@@ -15,6 +15,7 @@ using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 #nullable enable
 
@@ -662,33 +663,28 @@ namespace ReScanVisualizer.ViewModels
                     base3D.Rotate(base3D.Y, 180.0);
                 }
 
-                double angle = GetAnglesBetweenBasesAxis(nearestBase, base3D);
+                double angle = GetAnglesBetweenBasesXAxis(nearestBase, base3D);
                 base3D.Rotate(base3D.Z, -angle);
-                angle = GetAnglesBetweenBasesAxis(nearestBase, base3D);
+                angle = GetAnglesBetweenBasesXAxis(nearestBase, base3D);
+
+                Base3D b = new Base3D(_part.OriginBase.Base3D);
+                b.Origin = base3D.Origin;
+                Base3DViewModel baseViewModel = new Base3DViewModel(b, _scaleFactor, 1.0, _renderQuality)
+                {
+                    Name = _name,
+                    Opacity = 150
+                };
+
+                ((MainViewModel)Application.Current.MainWindow.DataContext).Bases.Add(baseViewModel);
 
                 Trace.WriteLine(_name + ": " + Math.Round(angle, 1));
             }
         }
 
-        private double GetAnglesBetweenBasesAxis(Base3D nearestBase, Base3D base3D)
+        private double GetAnglesBetweenBasesXAxis(Base3D base1, Base3D base2)
         {
-            Matrix3D tp0 = nearestBase.ToMatrix3D();        // matrice de la base piece dans R0
-            Matrix3D tg0 = base3D.ToMatrix3D();             // matrice de la base graph dans R0
-
-            // rapporter les bases à l'origine de R0
-            tp0.OffsetX = 0.0;
-            tp0.OffsetY = 0.0;
-            tp0.OffsetZ = 0.0;
-            tg0.OffsetX = 0.0;
-            tg0.OffsetY = 0.0;
-            tg0.OffsetZ = 0.0;
-
-            Matrix3D t0p = tp0.Inverse();                   // matrice de passage de R0 vers la piece
-
-            Matrix3D tgp = Matrix3D.Multiply(t0p, tg0);     // matrice de passage de la base graph dans la base piece
-
-            Base3D bGP = new Base3D(tgp);
-            return Tools.RadianToDegree(Math.Atan2(bGP.X.Y, bGP.X.X));
+            Base3D base2in1 = Tools.GetBase1IntoBase2(base2, base1);
+            return Tools.RadianToDegree(Math.Atan2(base2in1.X.Y, base2in1.X.X));
         }
 
         public void UpdateModelGeometry()

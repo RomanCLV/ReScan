@@ -141,9 +141,6 @@
                         <MenuItem Header="Hide all added bases" Click="HideAllAddedBasesMenuItem_Click"/>
                     </MenuItem>
                 </MenuItem>
-
-                <MenuItem Header="Test" Click="MenuItem_Click" Style="{StaticResource menuItemTitle}"/>
-                <MenuItem Header="Fix" Click="MenuItem2_Click" Style="{StaticResource menuItemTitle}"/>
             </Menu>
         </StackPanel>
 
