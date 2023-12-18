@@ -16,6 +16,7 @@ using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Security.Permissions;
 
 #nullable enable
 
@@ -663,35 +664,64 @@ namespace ReScanVisualizer.ViewModels
                     base3D.Rotate(base3D.Y, 180.0);
                 }
 
-                //double angle = GetAnglesBetweenBasesXAxis(nearestBase, base3D);
-                //base3D.Rotate(base3D.Z, -angle);
-            }
-        }
-
-        public void Fix()
-        {
-            if (_part != null)
-            {
-                Base3D base3D = _base3D.Base3D;
-                Base3D nearestBase = _part.FindNeareatBase(base3D.Origin);
-
-                Base3D base2in1 = Tools.GetBase1IntoBase2(base3D, nearestBase);
-                Base3DViewModel bvm = new Base3DViewModel(base2in1, _scaleFactor, _base3D.AxisScaleFactor, _renderQuality)
-                {
-                    Name = "fix " + _name,
-                    Opacity = 120
-                };
-                ((MainViewModel)Application.Current.MainWindow.DataContext).Bases.Add(bvm);
-
-                //double angle = GetAnglesBetweenBasesXAxis(nearestBase, base3D);
-                //base3D.Rotate(base3D.Z, -angle);
+                double angle = GetAnglesBetweenBasesXAxis(base3D, nearestBase);
+                base3D.Rotate(base3D.Z, angle);
             }
         }
 
         private double GetAnglesBetweenBasesXAxis(Base3D base1, Base3D base2)
         {
-            Base3D base2in1 = Tools.GetBase1IntoBase2(base2, base1);
-            return Tools.RadianToDegree(Math.Atan2(base2in1.X.Y, base2in1.X.X));
+            Base3D base3DInPartBase = Tools.GetBase1IntoBase2(base1, base2);
+
+            double xx = base3DInPartBase.X.X;
+            double xy = base3DInPartBase.X.Y;
+            double xz = base3DInPartBase.X.Z;
+
+            double ux = base3DInPartBase.Z.X;
+            double uy = base3DInPartBase.Z.Y;
+            double uz = base3DInPartBase.Z.Z;
+
+            double uy2 = uy * uy;
+
+            double k0 = xx * ux * uy + xy * uy2 + xz * uy * uz;
+            double k1 = xy - xx * ux * uy - xy * uy2 - xz * uy * uz;
+            double k2 = xx * uz - xz * ux;
+
+            double epsilon = 0.01;
+
+            double a = 0.0;
+            double newXY = k0 + k1;
+            double step = Math.PI / 360.0;
+
+            if (newXY > 0.0)
+            {
+                // algo version angle positif
+                while (newXY > epsilon)
+                {
+                    a -= step;
+                    newXY = k0 + Math.Cos(a) * k1 + Math.Sin(a) * k2;
+                    if (newXY < 0.0)
+                    {
+                        a += step;      // go back to last pos
+                        step /= 10.0;   // reduce step
+                    }
+                }
+            }
+            else
+            {
+                // algo version angle negatif
+                while (newXY < epsilon)
+                {
+                    a += step;
+                    newXY = k0 + Math.Cos(a) * k1 + Math.Sin(a) * k2;
+                    if (newXY > 0.0)
+                    {
+                        a -= step;      // go back to last pos
+                        step /= 10.0;   // reduce step
+                    }
+                }
+            }
+            return Tools.RadianToDegree(a);
         }
 
         public void UpdateModelGeometry()
