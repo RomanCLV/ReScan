@@ -640,5 +640,14 @@ namespace ReScanVisualizer.Views
         }
 
         #endregion
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MainViewModel mainViewModel = ((MainViewModel)DataContext);
+            foreach (ScatterGraphViewModel scatterGraphViewModel in mainViewModel.ScatterGraphs)
+            {
+                scatterGraphViewModel.Fix();
+            }
+        }
     }
 }

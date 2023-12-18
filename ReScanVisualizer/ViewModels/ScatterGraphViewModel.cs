@@ -663,21 +663,28 @@ namespace ReScanVisualizer.ViewModels
                     base3D.Rotate(base3D.Y, 180.0);
                 }
 
-                double angle = GetAnglesBetweenBasesXAxis(nearestBase, base3D);
-                base3D.Rotate(base3D.Z, -angle);
-                angle = GetAnglesBetweenBasesXAxis(nearestBase, base3D);
+                //double angle = GetAnglesBetweenBasesXAxis(nearestBase, base3D);
+                //base3D.Rotate(base3D.Z, -angle);
+            }
+        }
 
-                Base3D b = new Base3D(_part.OriginBase.Base3D);
-                b.Origin = base3D.Origin;
-                Base3DViewModel baseViewModel = new Base3DViewModel(b, _scaleFactor, 1.0, _renderQuality)
+        public void Fix()
+        {
+            if (_part != null)
+            {
+                Base3D base3D = _base3D.Base3D;
+                Base3D nearestBase = _part.FindNeareatBase(base3D.Origin);
+
+                Base3D base2in1 = Tools.GetBase1IntoBase2(base3D, nearestBase);
+                Base3DViewModel bvm = new Base3DViewModel(base2in1, _scaleFactor, _base3D.AxisScaleFactor, _renderQuality)
                 {
-                    Name = _name,
-                    Opacity = 150
+                    Name = "fix " + _name,
+                    Opacity = 120
                 };
+                ((MainViewModel)Application.Current.MainWindow.DataContext).Bases.Add(bvm);
 
-                ((MainViewModel)Application.Current.MainWindow.DataContext).Bases.Add(baseViewModel);
-
-                Trace.WriteLine(_name + ": " + Math.Round(angle, 1));
+                //double angle = GetAnglesBetweenBasesXAxis(nearestBase, base3D);
+                //base3D.Rotate(base3D.Z, -angle);
             }
         }
 
