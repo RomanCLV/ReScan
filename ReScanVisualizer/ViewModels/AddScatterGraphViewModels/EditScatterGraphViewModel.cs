@@ -38,6 +38,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             if (!IsDisposed)
             {
                 ValidateCommand.Dispose();
+                // ne pas disposer le builder
                 base.Dispose();
             }
         }

@@ -128,6 +128,16 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             }
         }
 
+        public void DisposeWithoutBuilder()
+        {
+            if (!IsDisposed)
+            {
+                ValidateCommand.Dispose();
+                CancelCommand.Dispose();
+                base.Dispose();
+            }
+        }
+
         private void UnselectAll()
         {
             if (!_isUnselectingAll)

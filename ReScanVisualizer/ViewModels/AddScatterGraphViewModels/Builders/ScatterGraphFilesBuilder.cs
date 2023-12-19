@@ -19,6 +19,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     public class ScatterGraphFilesBuilder : ScatterGraphBuilderBase, ISelectFilesService, IScatterGraphBuilderGroup
     {
+        private bool _isDisposing;
+
         public IEnumerable<ScatterGraphBuilderBase> Builders { get; }
 
         private readonly ObservableCollection<ScatterGraphFileBuilder> _builders;
@@ -37,7 +39,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 {
                     collectionChanged2.CollectionChanged += Parts_CollectionChanged;
                 }
-                UpdateAddPartCommand();
+                if (!_isDisposing)
+                {
+                    UpdateAddPartCommand();
+                }
             }
         }
 
@@ -64,6 +69,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         public ScatterGraphFilesBuilder()
         {
+            _isDisposing = false;
             State = ScatterGraphBuilderState.Error;
             UpdateAddPartCommand();
             SelectFilesCommand = new SelectFilesCommand(this);
@@ -81,10 +87,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         {
             if (!IsDisposed)
             {
+                _isDisposing = true;
                 AddPartCommand?.Dispose();
                 _builders.CollectionChanged -= Builders_CollectionChanged;
                 _builders.Clear();
                 base.Dispose();
+                _isDisposing = false;
             }
         }
 

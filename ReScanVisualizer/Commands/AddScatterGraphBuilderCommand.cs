@@ -17,7 +17,7 @@ namespace ReScanVisualizer.Commands
 
         public AddScatterGraphBuilderCommand(AddScatterGraphWindow addScatterGraphView, AddScatterGraphViewModel addScatterGraphViewModel)
         {
-            _addScatterGraphView =  addScatterGraphView;
+            _addScatterGraphView = addScatterGraphView;
             _addScatterGraphViewModel = addScatterGraphViewModel;
         }
 
@@ -30,7 +30,15 @@ namespace ReScanVisualizer.Commands
             AddScatterGraphBuilderViewModel addScatterGraphBuilderViewModel = new AddScatterGraphBuilderViewModel(view, _addScatterGraphViewModel);
             view.DataContext = addScatterGraphBuilderViewModel;
             view.ShowDialog();
-            addScatterGraphBuilderViewModel.Dispose();
+            if (addScatterGraphBuilderViewModel.Builder != null &&
+                _addScatterGraphViewModel.ContainsBuilder(addScatterGraphBuilderViewModel.Builder))
+            {
+                addScatterGraphBuilderViewModel.DisposeWithoutBuilder();
+            }
+            else
+            {
+                addScatterGraphBuilderViewModel.Dispose();
+            }
         }
     }
 }

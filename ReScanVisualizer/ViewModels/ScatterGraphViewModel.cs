@@ -204,7 +204,13 @@ namespace ReScanVisualizer.ViewModels
         public bool IsMouseOver
         {
             get => _isMouseOver;
-            set => SetValue(ref _isMouseOver, value);
+            set 
+            {
+                if (SetValue(ref _isMouseOver, value) && _part != null)
+                {
+                    _part.IsMouseOver = _isMouseOver;
+                }
+            }
         }
 
         public int ItemsCount
@@ -709,6 +715,7 @@ namespace ReScanVisualizer.ViewModels
             }
             else
             {
+                epsilon = -epsilon;
                 // algo version angle negatif
                 while (newXY < epsilon)
                 {

@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="ReScanVisualizer.Views.PartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ReScanVisualizer.Views"
+             xmlns:forms="clr-namespace:ReScanVisualizer.Views.Forms"
+             xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="400"
+             Foreground="{StaticResource foregroundColor}">
+    <UserControl.Resources>
+        <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter"/>
+        <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
+        <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
+    </UserControl.Resources>
+    
+    <Grid>
+        
+    </Grid>
+</UserControl>

@@ -163,11 +163,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                 LoadCommand.Dispose();
                 LoadAndCloseCommand.Dispose();
                 CancelCommand.Dispose();
-                foreach (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item in Items)
-                {
-                    item.Value!.PropertyChanged -= Value_PropertyChanged;
-                }
-                Items.Clear();
+                ClearItems();
                 base.Dispose();
             }
         }
@@ -224,15 +220,27 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                case NotifyCollectionChangedAction.Reset:
                     foreach (object? item in e.OldItems)
                     {
                         KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> oldItem = ((KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>)item);
                         oldItem.Value!.PropertyChanged -= Value_PropertyChanged;
+                        oldItem.Key.Dispose();
+                        oldItem.Value.Dispose();
                     }
                     break;
             }
             ComputeItemsToAddCount();
+        }
+
+        public void ClearItems()
+        {
+            foreach (KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item in Items)
+            {
+                item.Value!.PropertyChanged -= Value_PropertyChanged;
+                item.Key.Dispose();
+                item.Value.Dispose();
+            }
+            Items.Clear();
         }
 
         private void Value_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -378,14 +386,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         public void AddBuilder(ScatterGraphBuilderBase builder)
         {
-            foreach (var item in Items)
+            if (!ContainsBuilder(builder))
             {
-                if (item.Key.Equals(builder))
-                {
-                    return;
-                }
+                Items.Add(new KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>(builder, new ScatterGraphBuildResult()));
             }
-            Items.Add(new KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>(builder, new ScatterGraphBuildResult()));
         }
 
         public void RemoveBuilder(ScatterGraphBuilderBase selectedBuilder)
@@ -397,6 +401,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                     Items.RemoveAt(i);
                 }
             }
+        }
+
+        public bool ContainsBuilder(ScatterGraphBuilderBase builder)
+        {
+            return Items.Any(x => x.Key.Equals(builder));
         }
 
         public void BuildAll()
@@ -495,7 +504,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                     kvo.Key.Part.DisableRecomputeAllAfterScatterGraphsChanged();
                 }
             }
-            
+
             KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item;
 
             for (int i = 0; i < Items.Count; i++)

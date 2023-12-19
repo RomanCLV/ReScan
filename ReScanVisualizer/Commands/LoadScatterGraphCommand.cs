@@ -56,7 +56,6 @@ namespace ReScanVisualizer.Commands
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                case NotifyCollectionChangedAction.Reset:
                     foreach (var oldItem in e.OldItems)
                     {
                         if (oldItem is KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)

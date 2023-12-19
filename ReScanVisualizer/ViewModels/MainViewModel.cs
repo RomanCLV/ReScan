@@ -650,6 +650,15 @@ namespace ReScanVisualizer.ViewModels
                     return;
                 }
             }
+
+            foreach (PartViewModelBase partViewModelBase in Parts)
+            {
+                if (partViewModelBase.IsBelongingToModel(geometryModel3DMouseOver))
+                {
+                    _viewModelMouseOver = partViewModelBase;
+                    _viewModelMouseOver.IsMouseOver = true;
+                }
+            }
         }
     }
 }

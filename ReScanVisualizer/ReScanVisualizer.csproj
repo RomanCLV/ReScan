@@ -177,6 +177,9 @@
     <Compile Include="Views\ItemTreeViews\PartScatterGraphTreeViewItemHeader.xaml.cs">
       <DependentUpon>PartScatterGraphTreeViewItemHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PartView.xaml.cs">
+      <DependentUpon>PartView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ReduceScatterGraphWindow.xaml.cs">
       <DependentUpon>ReduceScatterGraphWindow.xaml</DependentUpon>
     </Compile>
@@ -288,6 +291,10 @@
     <Page Include="Views\ItemTreeViews\PartScatterGraphTreeViewItemHeader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ReduceScatterGraphWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
