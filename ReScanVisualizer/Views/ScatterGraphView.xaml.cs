@@ -45,6 +45,14 @@ namespace ReScanVisualizer.Views
             }
         }
 
+        private void SelectPartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
+            {
+                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = scatterGraphViewModel.Part;
+            }
+        }
+
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is ScatterGraphViewModel scatterGraphViewModel)

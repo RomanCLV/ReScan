@@ -159,9 +159,30 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _part, value))
                 {
+                    List<PartViewModelBase> list = new List<PartViewModelBase>();
+                    if (_part != null)
+                    {
+                        list.Add(_part);
+                        _part.DisableRecomputeAllAfterScatterGraphsChanged();
+                    }
                     foreach (var item in _items)
                     {
-                        item.Part = value;
+                        if (item.Part != null && !list.Contains(item.Part))
+                        {
+                            list.Add(item.Part);
+                            item.Part.DisableRecomputeAllAfterScatterGraphsChanged();
+                        }
+                    }
+                    _inhibitUpdate = true;
+                    foreach (var item in _items)
+                    {
+                        item.Part = _part;
+                    }
+                    _inhibitUpdate = false;
+                    foreach (PartViewModelBase part in list)
+                    {
+                        part.EnableRecomputeAllAfterScatterGraphsChanged();
+                        part.ComputeAll();
                     }
                 }
             }

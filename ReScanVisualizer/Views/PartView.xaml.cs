@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels.Parts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,14 @@ namespace ReScanVisualizer.Views
         public PartView()
         {
             InitializeComponent();
+        }
+
+        private void VisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartViewModelBase partViewModelBase) 
+            {
+                partViewModelBase.InverseIsHidden();
+            }
         }
     }
 }

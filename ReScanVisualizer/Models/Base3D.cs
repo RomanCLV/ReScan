@@ -338,16 +338,19 @@ namespace ReScanVisualizer.Models
         public void NormalizeX()
         {
             _x.Normalize();
+            OnXChanged();
         }
 
         public void NormalizeY()
         {
             _y.Normalize();
+            OnYChanged();
         }
 
         public void NormalizeZ()
         {
             _z.Normalize();
+            OnZChanged();
         }
 
         public void Normalize()
@@ -355,6 +358,9 @@ namespace ReScanVisualizer.Models
             _x.Normalize();
             _y.Normalize();
             _z.Normalize();
+            OnXChanged();
+            OnYChanged();
+            OnZChanged();
         }
 
         public Matrix3D ToMatrix3D()

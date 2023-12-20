@@ -17,6 +17,50 @@
     </UserControl.Resources>
     
     <Grid>
-        
+        <TabControl Background="Transparent">
+            <TabItem Header="General">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Name" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBox   Style="{StaticResource myTextBox}" Width="200">
+                                <TextBox.Text>
+                                    <Binding Path="Name" UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validators:NotEmptyValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                            <TextBox   Style="{StaticResource myTextBox}" Width="100">
+                                <TextBox.Text>
+                                    <Binding Path="ScaleFactor" StringFormat="N3">
+                                        <Binding.ValidationRules>
+                                            <validators:PositiveNumberValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Render quality" Width="85" Style="{StaticResource myTextBlockLeft}" />
+                            <ComboBox Margin="6" ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding RenderQuality}" MinWidth="100" />
+                        </StackPanel>
+                        <TextBlock Text="Visibility:" Style="{StaticResource myTextBlockLeft}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

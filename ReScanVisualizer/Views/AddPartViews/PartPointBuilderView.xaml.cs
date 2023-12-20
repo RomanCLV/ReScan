@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReScanVisualizer.ViewModels.AddPartModelViews.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,38 @@ namespace ReScanVisualizer.Views.AddPartViews
         public PartPointBuilderView()
         {
             InitializeComponent();
+        }
+
+        private void NormalizeBaseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartBuilderBase builder)
+            {
+                builder.OriginBase.Normalize();
+            }
+        }
+
+        private void NormalizeXButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartBuilderBase builder)
+            {
+                builder.OriginBase.NormalizeX();
+            }
+        }
+
+        private void NormalizeYButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartBuilderBase builder)
+            {
+                builder.OriginBase.NormalizeY();
+            }
+        }
+
+        private void NormalizeZButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartBuilderBase builder)
+            {
+                builder.OriginBase.NormalizeZ();
+            }
         }
     }
 }

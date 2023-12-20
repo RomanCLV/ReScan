@@ -97,9 +97,10 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
         {
             if (_builder != null)
             {
-                PartViewModelBase partViewModelBase = _builder.Build();
-                partViewModelBase.Name = _builder.Name;
-                _partSource.Parts.Add(partViewModelBase);
+                //PartViewModelBase partViewModelBase = _builder.Build();
+                //partViewModelBase.Name = _builder.Name;
+                //_partSource.Parts.Add(partViewModelBase);
+                _partSource.Parts.Add(_builder.Build());
             }
         }
     }

@@ -520,7 +520,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             foreach (PartViewModelBase part in parts)
             {
                 part.EnableRecomputeAllAfterScatterGraphsChanged();
-                part.ComputeAll(true);
+                part.ComputeAll();
             }
 
             if (closeWindow && Items.Count == 0)

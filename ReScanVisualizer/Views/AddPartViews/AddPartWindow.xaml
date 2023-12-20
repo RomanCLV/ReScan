@@ -57,8 +57,8 @@
                             </StackPanel.Resources>
                             <ContentControl Content="{Binding Builder}" />
                         </StackPanel>
-                        
-                        <!--<TextBlock Text="{Binding Builder.Message}" Style="{StaticResource myTextBlockLeftError}"  />-->
+
+                        <TextBlock Text="{Binding Builder.Message}" Style="{StaticResource myTextBlockLeftError}"  />
                     </StackPanel>
                 </DockPanel>
             </DockPanel>

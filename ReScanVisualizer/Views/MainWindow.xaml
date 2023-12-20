@@ -7,6 +7,7 @@
         xmlns:itw="clr-namespace:ReScanVisualizer.Views.ItemTreeViews"
         xmlns:viewModels="clr-namespace:ReScanVisualizer.ViewModels"
         xmlns:viewModelsSamples="clr-namespace:ReScanVisualizer.ViewModels.Samples"
+        xmlns:partsViewModels="clr-namespace:ReScanVisualizer.ViewModels.Parts"
         xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
         xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         mc:Ignorable="d"
@@ -157,7 +158,8 @@
                     <RowDefinition Height="Auto" MinHeight="250"/>
                 </Grid.RowDefinitions>
 
-                <TabControl Grid.Row="0" Background="Transparent" Margin="0 0 5 5" KeyUp="TabControl_KeyUp">
+                <TabControl Grid.Row="0" Background="Transparent" Margin="0 0 5 5" >
+                    <!-- KeyUp="TabControl_KeyUp" -->
                     <TabItem Header="Scatter graphs">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -165,7 +167,6 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <DockPanel Grid.Row="0">
-                                <!-- Visibility="{Binding ElementName=GraphsTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" -->
                                 <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear graphs" Click="GraphClearButton_Click">
                                     <Button.Content>
                                         <Image Source="{StaticResource delete}" />
@@ -191,8 +192,7 @@
                                     Background="Transparent" 
                                     BorderThickness="0" 
                                     ItemsSource="{Binding ScatterGraphs, UpdateSourceTrigger=PropertyChanged}"
-                                    x:Name="GraphsTreeView"
-                                    >
+                                    x:Name="GraphsTreeView">
                                     <TreeView.ItemContainerStyle>
                                         <Style TargetType="{x:Type TreeViewItem}">
                                             <EventSetter Event="KeyUp" Handler="ScatterGraphTreeViewItem_KeyUp"/>
@@ -285,15 +285,32 @@
                                     >
                                     <TreeView.ItemContainerStyle>
                                         <Style TargetType="{x:Type TreeViewItem}">
-                                            <Style.Setters>
-                                                <EventSetter Event="KeyUp"             Handler="PartTreeViewItem_KeyUp"/>
-                                                <EventSetter Event="MouseLeftButtonUp" Handler="PartTreeViewItem_MouseDown" />
-                                            </Style.Setters>
+                                            <EventSetter Event="KeyUp" Handler="PartTreeViewHeader_KeyUp" />
                                         </Style>
                                     </TreeView.ItemContainerStyle>
                                     <TreeView.ItemTemplate>
                                         <DataTemplate>
-                                            <itw:PartTreeViewItem />
+                                            <TreeViewItem 
+                                                IsExpanded="True" Margin="-20 0 0 10"
+                                                FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}"
+                                                ItemsSource="{Binding ScatterGraphs}">
+                                                <TreeViewItem.Header>
+                                                    <itw:PartTreeViewHeader
+                                                        FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
+                                                        MouseDown="PartTreeViewItem_MouseDown" />
+                                                </TreeViewItem.Header>
+                                                <TreeViewItem.ItemContainerStyle>
+                                                    <Style TargetType="{x:Type TreeViewItem}">
+                                                        <EventSetter Event="KeyUp" Handler="PartTreeViewItem_KeyUp"/>
+                                                    </Style>
+                                                </TreeViewItem.ItemContainerStyle>
+                                                <TreeViewItem.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <itw:PartScatterGraphTreeViewItemHeader 
+                                                            MouseDown="PartScatterGraphTreeViewItemHeader_MouseDown"/>
+                                                    </DataTemplate>
+                                                </TreeViewItem.ItemTemplate>
+                                            </TreeViewItem>
                                         </DataTemplate>
                                     </TreeView.ItemTemplate>
                                 </TreeView>
@@ -308,7 +325,6 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <DockPanel Grid.Row="0">
-                                <!-- Visibility="{Binding ElementName=BasesTreeView, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" -->
                                 <Button Style="{StaticResource myButtonIcon}" DockPanel.Dock="Right" ToolTip="Clear bases" Click="BaseClearButton_Click">
                                     <Button.Content>
                                         <Image Source="{StaticResource delete}" />
@@ -339,13 +355,12 @@
                                         <Style TargetType="{x:Type TreeViewItem}">
                                             <Style.Setters>
                                                 <EventSetter Event="KeyUp"             Handler="BaseTreeViewItem_KeyUp"/>
-                                                <EventSetter Event="MouseLeftButtonUp" Handler="BaseTreeViewItem_MouseDown" />
                                             </Style.Setters>
                                         </Style>
                                     </TreeView.ItemContainerStyle>
                                     <TreeView.ItemTemplate>
                                         <DataTemplate>
-                                            <itw:BaseTreeViewItem />
+                                            <itw:BaseTreeViewItem MouseUp="BaseTreeViewItem_MouseDown"/>
                                         </DataTemplate>
                                     </TreeView.ItemTemplate>
                                 </TreeView>
@@ -374,6 +389,9 @@
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:ScatterGraphGroupViewModel}">
                             <local:ScatterGraphGroupView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type partsViewModels:PartViewModelBase}">
+                            <local:PartView />
                         </DataTemplate>
                     </Grid.Resources>
                     <ContentControl Content="{Binding SelectedViewModel}" Height="{Binding ElementName=contentContainer, Path=ActualHeight}"/>

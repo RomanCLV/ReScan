@@ -87,7 +87,7 @@ namespace ReScanVisualizer.Views
 
         private void BaseTreeViewItem_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is TreeViewItem tb && tb.DataContext is Base3DViewModel viewModel)
+            if (sender is BaseTreeViewItem tb && tb.DataContext is Base3DViewModel viewModel)
             {
                 ((MainViewModel)DataContext).SelectedViewModel = new BaseViewModel(viewModel);
             }
@@ -316,20 +316,46 @@ namespace ReScanVisualizer.Views
 
         #region Parts tree view
 
+        private void PartTreeViewHeader_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Escape:
+                    ((MainViewModel)DataContext).SelectedViewModel = null;
+                    break;
+            }
+        }
+
+        private void PartTreeViewItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is PartTreeViewHeader tb && tb.DataContext is PartViewModelBase viewModel)
+            {
+                ((MainViewModel)DataContext).SelectedViewModel = viewModel;
+            }
+        }
+
         private void PartTreeViewItem_KeyUp(object sender, KeyEventArgs e)
         {
-            if (sender is TreeViewItem tb && tb.DataContext is PartViewModelBase viewModel)
+            if (sender is TreeViewItem tb && tb.DataContext is ScatterGraphViewModel viewModel)
             {
                 switch (e.Key)
                 {
                     case Key.Delete:
                     case Key.Back:
-                        ((MainViewModel)DataContext).Parts.Remove(viewModel);
+                        viewModel.Part!.Remove(viewModel);
                         break;
                     case Key.Escape:
                         ((MainViewModel)DataContext).SelectedViewModel = null;
                         break;
                 }
+            }
+        }
+
+        private void PartScatterGraphTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is PartScatterGraphTreeViewItemHeader vi && vi.DataContext is ScatterGraphViewModel graph)
+            {
+                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = graph;
             }
         }
 
@@ -341,14 +367,6 @@ namespace ReScanVisualizer.Views
         private void PartsClearButton_Click(object sender, RoutedEventArgs e)
         {
             ((MainViewModel)DataContext).ClearParts();
-        }
-
-        private void PartTreeViewItem_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is TreeViewItem tb && tb.DataContext is PartViewModelBase viewModel)
-            {
-                ((MainViewModel)DataContext).SelectedViewModel = viewModel;
-            }
         }
 
         #endregion
@@ -638,6 +656,7 @@ namespace ReScanVisualizer.Views
                 _geometryModel3DMouseOver = null;
             }
         }
+
 
         #endregion
     }

@@ -13,6 +13,8 @@
              >
     <UserControl.Resources>
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+        <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
+        <converters:BoolToFontStyleConverter x:Key="BoolToFontStyleConverter" />
         <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -27,10 +29,10 @@
                 </Button.Content>
             </Button>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5 0">
-                <TextBlock Text="{Binding Name, Mode=OneWay}" />
-                <TextBlock Text=" (" />
-                <TextBlock Text="{Binding ItemsCount}" />
-                <TextBlock Text=")" />
+                <TextBlock Text="{Binding Name, Mode=OneWay}" FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}" FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}" />
+                <TextBlock Text=" ("                          FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}" FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}" />
+                <TextBlock Text="{Binding ItemsCount}"        FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}" FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}" />
+                <TextBlock Text=")"                           FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}" FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}" />
             </StackPanel>
         </StackPanel>
 

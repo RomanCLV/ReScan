@@ -28,7 +28,7 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Name" Width="85" Style="{StaticResource myTextBlockLeft}" />
-                            <TextBox   Style="{StaticResource myTextBox}" Width="100">
+                            <TextBox   Style="{StaticResource myTextBox}" Width="200">
                                 <TextBox.Text>
                                     <Binding Path="Name" UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
@@ -50,6 +50,7 @@
                                     <Image Source="{StaticResource delete}" />
                                 </Button.Content>
                             </Button>
+                            <Button Content="Select" Style="{StaticResource myButton}" Margin="5 0" Click="SelectPartButton_Click" IsEnabled="{Binding Part, Converter={StaticResource IsNotNullConverter}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}" />

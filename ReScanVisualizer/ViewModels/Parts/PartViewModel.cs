@@ -29,12 +29,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             set => SetValue(ref _name, value);
         }
 
-        private BarycenterViewModel _barycenter;
-        public BarycenterViewModel Barycenter
-        {
-            get => _barycenter;
-            private set => SetValue(ref _barycenter, value);
-        }
+        private bool _isHiddenChanging;
 
         private bool _isHidden;
         public bool IsHidden
@@ -44,11 +39,13 @@ namespace ReScanVisualizer.ViewModels.Parts
             {
                 if (SetValue(ref _isHidden, value))
                 {
+                    _isHiddenChanging = true;
                     foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
                     {
                         scatterGraphViewModel.IsHidden = _isHidden;
                     }
                     OnIsHiddenChanged();
+                    _isHiddenChanging = false;
                 }
             }
         }
@@ -62,30 +59,46 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public Base3DViewModel OriginBase { get; private set; }
 
+
+        private BarycenterViewModel _barycenter;
+        public BarycenterViewModel Barycenter
+        {
+            get => _barycenter;
+            private set => SetValue(ref _barycenter, value);
+        }
+
+        private bool _originAttachedToBarycenter;
+        public bool OriginAttachedToBarycenter
+        {
+            get => _originAttachedToBarycenter;
+            set => SetValue(ref _originAttachedToBarycenter, value);
+        }
+
         private bool _isSelected;
         public bool IsSelected
         {
             get => _isSelected;
-            private set
-            {
-                if (SetValue(ref _isSelected, value))
-                {
-                    if (_isSelected)
-                    {
-                        foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
-                        {
-                            scatterGraphViewModel.Select();
-                        }
-                    }
-                    else
-                    {
-                        foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
-                        {
-                            scatterGraphViewModel.Unselect();
-                        }
-                    }
-                }
-            }
+            private set => SetValue(ref _isSelected, value);
+            //private set
+            //{
+            //    if (SetValue(ref _isSelected, value))
+            //    {
+            //        if (_isSelected)
+            //        {
+            //            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            //            {
+            //                scatterGraphViewModel.Select();
+            //            }
+            //        }
+            //        else
+            //        {
+            //            foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+            //            {
+            //                scatterGraphViewModel.Unselect();
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private double _scaleFactor;
@@ -137,6 +150,7 @@ namespace ReScanVisualizer.ViewModels.Parts
                 }
             }
         }
+        public List<RenderQuality> RenderQualities { get; }
 
         public static uint InstanceCreated { get; private set; }
 
@@ -148,8 +162,10 @@ namespace ReScanVisualizer.ViewModels.Parts
             _isRecomputeAllOnScatterGraphsChangedEnalbed = true;
             _name = "Part " + InstanceCreated;
             _isHidden = false;
+            _originAttachedToBarycenter = true;
             _scaleFactor = scaleFactor;
             _renderQuality = renderQuality;
+            RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
             _isMouseOver = false;
             _isSelected = false;
             _modelGroup = new Model3DGroup();
@@ -277,11 +293,14 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         private void ScatterGraphViewModel_IsHiddenChanged(object sender, bool e)
         {
-            if ((_isHidden && _scatterGraphs.Any(x => !x.IsHidden)) ||
-                (!_isHidden && _scatterGraphs.All(x => x.IsHidden)))
+            if (!_isHiddenChanging)
             {
-                _isHidden = !_isHidden;
-                OnPropertyChanged(nameof(IsHidden));
+                if ((_isHidden && _scatterGraphs.Any(x => !x.IsHidden)) ||
+                    (!_isHidden && _scatterGraphs.All(x => x.IsHidden)))
+                {
+                    _isHidden = !_isHidden;
+                    OnPropertyChanged(nameof(IsHidden));
+                }
             }
         }
 
@@ -349,10 +368,10 @@ namespace ReScanVisualizer.ViewModels.Parts
         /// Here, only the barycenter is computed.
         /// </summary>
         /// <param name="setOriginToBarycenter">Set the origin of the part to the new barycenter.</param>
-        public virtual void ComputeAll(bool setOriginToBarycenter = false)
+        public virtual void ComputeAll()
         {
             _barycenter.UpdatePoint(ComputeBarycenter());
-            if (setOriginToBarycenter)
+            if (_originAttachedToBarycenter)
             {
                 SetOriginToBarycenter();
             }
