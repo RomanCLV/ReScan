@@ -50,6 +50,27 @@ namespace ReScanVisualizer.ViewModels.Parts
             }
         }
 
+        // TODO : complete visible and fix binding errors
+
+        private bool _areScatterGraphesVisible;
+        public bool AreScatterGraphesVisible
+        {
+            get => _areScatterGraphesVisible;
+            set
+            {
+                if (SetValue(ref _areScatterGraphesVisible, value))
+                {
+                    _isHiddenChanging = true;
+                    foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+                    {
+                        scatterGraphViewModel.IsHidden = _isHidden;
+                    }
+                    OnIsHiddenChanged();
+                    _isHiddenChanging = false;
+                }
+            }
+        }
+
         private ObservableCollection<ScatterGraphViewModel> _scatterGraphs;
         public ObservableCollection<ScatterGraphViewModel> ScatterGraphs
         {
@@ -155,6 +176,11 @@ namespace ReScanVisualizer.ViewModels.Parts
         public static uint InstanceCreated { get; private set; }
 
         private bool _isRecomputeAllOnScatterGraphsChangedEnalbed;
+
+        public int ItemsCount
+        {
+            get => _scatterGraphs.Count + 4; // scatterGraphs count + barycenter (1) + origin base (x, y, z) (3)
+        }
 
         public PartViewModelBase(Base3D originBase, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
@@ -333,6 +359,8 @@ namespace ReScanVisualizer.ViewModels.Parts
                 {
                     item.Barycenter.PropertyChanged -= ItemBarycenter_PropertyChanged;
                     item.IsHiddenChanged -= ScatterGraphViewModel_IsHiddenChanged;
+                    //item.Part = null; 
+                    // TODO: check this functions ... maybe improve clean part gesture
                 }
                 _scatterGraphs.Clear();
             }

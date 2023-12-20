@@ -32,13 +32,13 @@
                     Key="{Binding Path=AddScatterGraphCommand.Key}" 
                     Modifiers="{Binding Path=AddScatterGraphCommand.Modifiers}"
                     />
-        
+
         <KeyBinding x:Name="AddPartCommandKey"
                     Command="{Binding Path=AddPartCommand.Command}"
                     Key="{Binding Path=AddPartCommand.Key}"
                     Modifiers="{Binding Path=AddPartCommand.Modifiers}"
                     />
-        
+
         <KeyBinding x:Name="AddBaseCommandKey" 
                     Command="{Binding Path=AddBaseCommand.Command}"  
                     Key="{Binding Path=AddBaseCommand.Key}" 
@@ -290,26 +290,47 @@
                                     </TreeView.ItemContainerStyle>
                                     <TreeView.ItemTemplate>
                                         <DataTemplate>
-                                            <TreeViewItem 
-                                                IsExpanded="True" Margin="-20 0 0 10"
-                                                FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}"
-                                                ItemsSource="{Binding ScatterGraphs}">
+                                            <TreeViewItem Margin="-20 0 0 10">
                                                 <TreeViewItem.Header>
                                                     <itw:PartTreeViewHeader
                                                         FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
                                                         MouseDown="PartTreeViewItem_MouseDown" />
                                                 </TreeViewItem.Header>
-                                                <TreeViewItem.ItemContainerStyle>
-                                                    <Style TargetType="{x:Type TreeViewItem}">
-                                                        <EventSetter Event="KeyUp" Handler="PartTreeViewItem_KeyUp"/>
-                                                    </Style>
-                                                </TreeViewItem.ItemContainerStyle>
-                                                <TreeViewItem.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <itw:PartScatterGraphTreeViewItemHeader 
+
+                                                <TreeViewItem>
+                                                    <TreeViewItem.Header>
+                                                        <itw:BarycenterTreeViewItemHeader 
+                                                            DataContext="{Binding Barycenter, UpdateSourceTrigger=PropertyChanged}" 
+                                                            FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"
+                                                            MouseDown="BarycenterTreeViewItemHeader_MouseDown" />
+                                                    </TreeViewItem.Header>
+                                                </TreeViewItem>
+
+                                                <TreeViewItem>
+                                                    <TreeViewItem.Header>
+                                                        <itw:BaseTreeViewItem MouseUp="BaseTreeViewItem_MouseDown"/>
+                                                    </TreeViewItem.Header>
+                                                </TreeViewItem>
+
+                                                <TreeViewItem 
+                                                    IsExpanded="True"
+                                                    FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}"
+                                                    ItemsSource="{Binding ScatterGraphs}">
+                                                    <TreeViewItem.Header>
+                                                        <itw:PartScatterGraphesTreeViewItemHeader />
+                                                    </TreeViewItem.Header>
+                                                    <TreeViewItem.ItemContainerStyle>
+                                                        <Style TargetType="{x:Type TreeViewItem}">
+                                                            <EventSetter Event="KeyUp" Handler="PartTreeViewItem_KeyUp"/>
+                                                        </Style>
+                                                    </TreeViewItem.ItemContainerStyle>
+                                                    <TreeViewItem.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <itw:PartScatterGraphTreeViewItemHeader 
                                                             MouseDown="PartScatterGraphTreeViewItemHeader_MouseDown"/>
-                                                    </DataTemplate>
-                                                </TreeViewItem.ItemTemplate>
+                                                        </DataTemplate>
+                                                    </TreeViewItem.ItemTemplate>
+                                                </TreeViewItem>
                                             </TreeViewItem>
                                         </DataTemplate>
                                     </TreeView.ItemTemplate>
@@ -317,7 +338,7 @@
                             </ScrollViewer>
                         </Grid>
                     </TabItem>
-                    
+
                     <TabItem Header="Bases">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -397,7 +418,7 @@
                     <ContentControl Content="{Binding SelectedViewModel}" Height="{Binding ElementName=contentContainer, Path=ActualHeight}"/>
                 </Grid>
             </Grid>
-            
+
             <GridSplitter Grid.Column="0" Width="5" Background="{StaticResource backgroundListColor}" />
 
             <HelixToolkit:HelixViewport3D 
