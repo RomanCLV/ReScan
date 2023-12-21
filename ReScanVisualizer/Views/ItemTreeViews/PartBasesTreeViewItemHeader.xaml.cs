@@ -17,11 +17,11 @@ using ReScanVisualizer.ViewModels.Parts;
 namespace ReScanVisualizer.Views.ItemTreeViews
 {
     /// <summary>
-    /// Logique d'interaction pour PartScatterGraphesTreeViewItemHeader.xaml
+    /// Logique d'interaction pour PartBasesTreeViewItemHeader.xaml
     /// </summary>
-    public partial class PartScatterGraphesTreeViewItemHeader : UserControl
+    public partial class PartBasesTreeViewItemHeader : UserControl
     {
-        public PartScatterGraphesTreeViewItemHeader()
+        public PartBasesTreeViewItemHeader()
         {
             InitializeComponent();
         }
@@ -30,15 +30,7 @@ namespace ReScanVisualizer.Views.ItemTreeViews
         {
             if (DataContext is PartViewModelBase viewModel)
             {
-                viewModel.AreScatterGraphesHidden = !viewModel.AreScatterGraphesHidden;
-            }
-        }
-
-        private void ClearButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is PartViewModelBase viewModel)
-            {
-                viewModel.Clear();
+                viewModel.AreBasesHidden = !viewModel.AreBasesHidden;
             }
         }
     }

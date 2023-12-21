@@ -353,7 +353,7 @@ namespace ReScanVisualizer.Views
 
         private void PartScatterGraphTreeViewItemHeader_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is PartScatterGraphTreeViewItemHeader vi && vi.DataContext is ScatterGraphViewModel graph)
+            if (sender is PartScatterGraphTreeViewItem vi && vi.DataContext is ScatterGraphViewModel graph)
             {
                 ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = graph;
             }

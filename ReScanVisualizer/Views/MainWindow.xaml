@@ -306,16 +306,23 @@
                                                     </TreeViewItem.Header>
                                                 </TreeViewItem>
 
-                                                <TreeViewItem>
+                                                <TreeViewItem
+                                                    IsExpanded="False"
+                                                    ItemsSource="{Binding Bases}">
                                                     <TreeViewItem.Header>
-                                                        <itw:BaseTreeViewItem MouseUp="BaseTreeViewItem_MouseDown"/>
+                                                        <itw:PartBasesTreeViewItemHeader />
                                                     </TreeViewItem.Header>
+                                                    <TreeViewItem.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <itw:BaseTreeViewItem MouseUp="BaseTreeViewItem_MouseDown"/>
+                                                        </DataTemplate>
+                                                    </TreeViewItem.ItemTemplate>
                                                 </TreeViewItem>
 
                                                 <TreeViewItem 
-                                                    IsExpanded="True"
-                                                    FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}"
-                                                    ItemsSource="{Binding ScatterGraphs}">
+                                                        IsExpanded="False"
+                                                        FontStyle="{Binding IsMouseOver, Converter={StaticResource BoolToFontStyleConverter}}"
+                                                        ItemsSource="{Binding ScatterGraphs}">
                                                     <TreeViewItem.Header>
                                                         <itw:PartScatterGraphesTreeViewItemHeader />
                                                     </TreeViewItem.Header>
@@ -326,8 +333,8 @@
                                                     </TreeViewItem.ItemContainerStyle>
                                                     <TreeViewItem.ItemTemplate>
                                                         <DataTemplate>
-                                                            <itw:PartScatterGraphTreeViewItemHeader 
-                                                            MouseDown="PartScatterGraphTreeViewItemHeader_MouseDown"/>
+                                                            <itw:PartScatterGraphTreeViewItem 
+                                                                MouseDown="PartScatterGraphTreeViewItemHeader_MouseDown"/>
                                                         </DataTemplate>
                                                     </TreeViewItem.ItemTemplate>
                                                 </TreeViewItem>

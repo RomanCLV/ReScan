@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ReScanVisualizer.Views.ItemTreeViews.SamplesTreeViewItemHeader"
+﻿<UserControl x:Class="ReScanVisualizer.Views.ItemTreeViews.PartBasesTreeViewItemHeader"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -16,35 +16,17 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Horizontal" Opacity="{Binding ArePointsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
+    <StackPanel Orientation="Horizontal" Opacity="{Binding AreBasesHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
         <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
             <Button.Content>
-                <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                <Image Source="{Binding AreBasesHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
             </Button.Content>
         </Button>
 
         <StackPanel Orientation="Horizontal" Margin="5 0">
-            <TextBlock Text="Points (" />
-            <TextBlock Text="{Binding Samples.Count}" />
+            <TextBlock Text="Bases (" />
+            <TextBlock Text="{Binding Bases.Count}" />
             <TextBlock Text=")" />
         </StackPanel>
-
-        <Button Style="{StaticResource myButtonIconNoPadding}" Click="AddButton_Click" Height="19" Width="19" ToolTip="Add">
-            <Button.Content>
-                <Image Source="{StaticResource add}" Height="19" Width="19" />
-            </Button.Content>
-        </Button>
-
-        <Button Style="{StaticResource myButtonIconNoPadding}" Click="ReduceButton_Click" Height="19" Width="19" ToolTip="Reduce">
-            <Button.Content>
-                <Image Source="{StaticResource working}" Height="19" Width="19" />
-            </Button.Content>
-        </Button>
-        
-        <Button Style="{StaticResource myButtonIconNoPadding}" Click="ClearButton_Click" Height="19" Width="19" ToolTip="Clear">
-            <Button.Content>
-                <Image Source="{StaticResource delete}" Height="19" Width="19" />
-            </Button.Content>
-        </Button>
     </StackPanel>
 </UserControl>

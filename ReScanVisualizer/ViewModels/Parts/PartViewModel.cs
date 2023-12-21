@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -29,7 +30,8 @@ namespace ReScanVisualizer.ViewModels.Parts
             set => SetValue(ref _name, value);
         }
 
-        private bool _isHiddenChanging;
+        private bool _isScatterGraphesHiddenChanging;
+        private bool _isBasesHiddenChanging;
 
         private bool _isHidden;
         public bool IsHidden
@@ -39,37 +41,53 @@ namespace ReScanVisualizer.ViewModels.Parts
             {
                 if (SetValue(ref _isHidden, value))
                 {
-                    _isHiddenChanging = true;
-                    foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
-                    {
-                        scatterGraphViewModel.IsHidden = _isHidden;
-                    }
+                    AreScatterGraphesHidden = _isHidden;
+                    AreBasesHidden = _isHidden;
                     OnIsHiddenChanged();
-                    _isHiddenChanging = false;
                 }
             }
         }
 
         // TODO : complete visible and fix binding errors
 
-        private bool _areScatterGraphesVisible;
-        public bool AreScatterGraphesVisible
+        private bool _areScatterGraphesHidden;
+        public bool AreScatterGraphesHidden
         {
-            get => _areScatterGraphesVisible;
+            get => _areScatterGraphesHidden;
             set
             {
-                if (SetValue(ref _areScatterGraphesVisible, value))
+                if (SetValue(ref _areScatterGraphesHidden, value))
                 {
-                    _isHiddenChanging = true;
-                    foreach (ScatterGraphViewModel scatterGraphViewModel in ScatterGraphs)
+                    _isScatterGraphesHiddenChanging = true;
+                    foreach (ScatterGraphViewModel scatterGraphViewModel in _scatterGraphs)
                     {
-                        scatterGraphViewModel.IsHidden = _isHidden;
+                        scatterGraphViewModel.IsHidden = _areScatterGraphesHidden;
                     }
-                    OnIsHiddenChanged();
-                    _isHiddenChanging = false;
+                    _isScatterGraphesHiddenChanging = false;
                 }
             }
         }
+
+        private bool _areBasesHidden;
+        public bool AreBasesHidden
+        {
+            get => _areBasesHidden;
+            set
+            {
+                if (SetValue(ref _areBasesHidden, value))
+                {
+                    _isBasesHiddenChanging = true;
+                    foreach (Base3DViewModel base3D in _bases)
+                    {
+                        base3D.IsHidden = _areBasesHidden;
+                    }
+                    _isBasesHiddenChanging = false;
+                }
+            }
+        }
+
+        private readonly List<Base3DViewModel> _bases;
+        public ReadOnlyCollection<Base3DViewModel> Bases { get; }
 
         private ObservableCollection<ScatterGraphViewModel> _scatterGraphs;
         public ObservableCollection<ScatterGraphViewModel> ScatterGraphs
@@ -79,7 +97,6 @@ namespace ReScanVisualizer.ViewModels.Parts
         }
 
         public Base3DViewModel OriginBase { get; private set; }
-
 
         private BarycenterViewModel _barycenter;
         public BarycenterViewModel Barycenter
@@ -179,7 +196,7 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public int ItemsCount
         {
-            get => _scatterGraphs.Count + 4; // scatterGraphs count + barycenter (1) + origin base (x, y, z) (3)
+            get => _scatterGraphs.Count + _bases.Count + 1; // scatterGraphs count + barycenter (1) + bases count
         }
 
         public PartViewModelBase(Base3D originBase, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
@@ -188,12 +205,14 @@ namespace ReScanVisualizer.ViewModels.Parts
             _isRecomputeAllOnScatterGraphsChangedEnalbed = true;
             _name = "Part " + InstanceCreated;
             _isHidden = false;
+            _areBasesHidden = _isHidden;
             _originAttachedToBarycenter = true;
             _scaleFactor = scaleFactor;
             _renderQuality = renderQuality;
             RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
             _isMouseOver = false;
             _isSelected = false;
+            _bases = new List<Base3DViewModel>(1);
             _modelGroup = new Model3DGroup();
             _scatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
             _barycenter = new BarycenterViewModel(originBase.Origin, Colors.Yellow, _scaleFactor, 0.25, renderQuality);
@@ -201,6 +220,9 @@ namespace ReScanVisualizer.ViewModels.Parts
 
             _modelGroup.Children.Add(_barycenter.Model);
             _modelGroup.Children.Add(OriginBase.Model);
+
+            AddBase(OriginBase);
+            Bases = new ReadOnlyCollection<Base3DViewModel>(_bases);
 
             _scatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
             OriginBase.PropertyChanged += OriginBase_PropertyChanged;
@@ -218,9 +240,10 @@ namespace ReScanVisualizer.ViewModels.Parts
                 OriginBase.PropertyChanged -= OriginBase_PropertyChanged;
                 _scatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 Clear();
+                ClearBases();
                 _modelGroup.Children.Clear();
                 _barycenter.Dispose();
-                OriginBase.Dispose();
+                //OriginBase.Dispose();
                 base.Dispose();
             }
         }
@@ -284,6 +307,7 @@ namespace ReScanVisualizer.ViewModels.Parts
                     }
                     break;
             }
+            OnPropertyChanged(nameof(ItemsCount));
             if (_isRecomputeAllOnScatterGraphsChangedEnalbed)
             {
                 ComputeAll();
@@ -319,13 +343,26 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         private void ScatterGraphViewModel_IsHiddenChanged(object sender, bool e)
         {
-            if (!_isHiddenChanging)
+            if (!_isScatterGraphesHiddenChanging)
             {
-                if ((_isHidden && _scatterGraphs.Any(x => !x.IsHidden)) ||
-                    (!_isHidden && _scatterGraphs.All(x => x.IsHidden)))
+                if ((_areScatterGraphesHidden && _scatterGraphs.Any(x => !x.IsHidden)) ||
+                    (!_areScatterGraphesHidden && _scatterGraphs.All(x => x.IsHidden)))
                 {
-                    _isHidden = !_isHidden;
-                    OnPropertyChanged(nameof(IsHidden));
+                    _areScatterGraphesHidden = !_areScatterGraphesHidden;
+                    OnPropertyChanged(nameof(AreScatterGraphesHidden));
+                }
+            }
+        }
+
+        private void Base3DViewModel_IsHiddenChanged(object sender, bool e)
+        {
+            if (!_isBasesHiddenChanging)
+            {
+                if ((_areBasesHidden && _bases.Any(x => !x.IsHidden)) ||
+                    (!_areBasesHidden && _bases.All(x => x.IsHidden)))
+                {
+                    _areBasesHidden = !_areBasesHidden;
+                    OnPropertyChanged(nameof(AreBasesHidden));
                 }
             }
         }
@@ -467,6 +504,26 @@ namespace ReScanVisualizer.ViewModels.Parts
         public virtual void UpdateModelMaterial()
         {
             throw new InvalidOperationException();
+        }
+
+        protected void AddBase(Base3DViewModel base3DViewModel)
+        {
+            // TODO: tester si le wrapper a bien fonctionné
+            _bases.Add(base3DViewModel);
+            base3DViewModel.IsHiddenChanged += Base3DViewModel_IsHiddenChanged;
+            OnPropertyChanged(nameof(ItemsCount));
+            OnPropertyChanged(nameof(Bases));
+        }
+
+        private void ClearBases()
+        {
+            foreach (Base3DViewModel base3DViewModel in _bases)
+            {
+                base3DViewModel.IsHiddenChanged -= Base3DViewModel_IsHiddenChanged;
+                base3DViewModel.Dispose();
+            }
+            OnPropertyChanged(nameof(ItemsCount));
+            OnPropertyChanged(nameof(Bases));
         }
     }
 }

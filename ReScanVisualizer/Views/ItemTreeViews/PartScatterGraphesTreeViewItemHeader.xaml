@@ -16,10 +16,10 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Horizontal" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
+    <StackPanel Orientation="Horizontal" Opacity="{Binding AreScatterGraphesHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}">
         <Button Style="{StaticResource myButtonIconNoPadding}" Click="VisibilityButton_Click" Height="12" Width="19" Visibility="{Binding ElementName=userControl, Path=IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}" >
             <Button.Content>
-                <Image Source="{Binding ArePointsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                <Image Source="{Binding AreScatterGraphesHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
             </Button.Content>
         </Button>
 

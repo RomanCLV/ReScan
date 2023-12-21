@@ -22,7 +22,11 @@
                 <Image Source="{Binding IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
             </Button.Content>
         </Button>
-        <TextBlock  Margin="5 0" Text="Base (3)" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}"/>
+        <!--<TextBlock Margin="5 0" Text="Base (3)" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}"/>-->
+        <StackPanel Orientation="Horizontal" Margin="5 0">
+            <TextBlock Text="{Binding Name}" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}"/>
+            <TextBlock Text=" (3)" Opacity="{Binding IsHidden, Mode=OneWay, Converter={StaticResource IsHiddenToOpacityConverter}}"/>
+        </StackPanel>
     </StackPanel>
 
 </UserControl>

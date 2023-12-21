@@ -168,11 +168,14 @@
     <Compile Include="Views\Forms\Base3DForm.xaml.cs">
       <DependentUpon>Base3DForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ItemTreeViews\PartBasesTreeViewItemHeader.xaml.cs">
+      <DependentUpon>PartBasesTreeViewItemHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ItemTreeViews\PartTreeViewHeader.xaml.cs">
       <DependentUpon>PartTreeViewHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ItemTreeViews\PartScatterGraphTreeViewItemHeader.xaml.cs">
-      <DependentUpon>PartScatterGraphTreeViewItemHeader.xaml</DependentUpon>
+    <Compile Include="Views\ItemTreeViews\PartScatterGraphTreeViewItem.xaml.cs">
+      <DependentUpon>PartScatterGraphTreeViewItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemTreeViews\PartScatterGraphesTreeViewItemHeader.xaml.cs">
       <DependentUpon>PartScatterGraphesTreeViewItemHeader.xaml</DependentUpon>
@@ -280,11 +283,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ItemTreeViews\PartBasesTreeViewItemHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ItemTreeViews\PartTreeViewHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ItemTreeViews\PartScatterGraphTreeViewItemHeader.xaml">
+    <Page Include="Views\ItemTreeViews\PartScatterGraphTreeViewItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

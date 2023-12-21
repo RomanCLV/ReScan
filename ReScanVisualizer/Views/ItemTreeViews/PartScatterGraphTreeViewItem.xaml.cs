@@ -20,13 +20,13 @@ using ReScanVisualizer.ViewModels;
 namespace ReScanVisualizer.Views.ItemTreeViews
 {
     /// <summary>
-    /// Logique d'interaction pour ScatterGraphItemTreeView.xaml
+    /// Logique d'interaction pour PartScatterGraphTreeViewItem.xaml
     /// </summary>
-    public partial class PartScatterGraphTreeViewItemHeader : UserControl
+    public partial class PartScatterGraphTreeViewItem : UserControl
     {
         private Popup? _openedPopup;
 
-        public PartScatterGraphTreeViewItemHeader()
+        public PartScatterGraphTreeViewItem()
         {
             InitializeComponent();
         }
