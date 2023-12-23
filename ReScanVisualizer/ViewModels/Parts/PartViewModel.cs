@@ -216,8 +216,10 @@ namespace ReScanVisualizer.ViewModels.Parts
             _modelGroup = new Model3DGroup();
             _scatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
             _barycenter = new BarycenterViewModel(originBase.Origin, Colors.Yellow, _scaleFactor, 0.25, renderQuality);
-            OriginBase = new Base3DViewModel(originBase, _scaleFactor, 1.0, renderQuality);
-
+            OriginBase = new Base3DViewModel(originBase, _scaleFactor, 1.0, renderQuality)
+            {
+                Name = "Origin base"
+            };
             _modelGroup.Children.Add(_barycenter.Model);
             _modelGroup.Children.Add(OriginBase.Model);
 

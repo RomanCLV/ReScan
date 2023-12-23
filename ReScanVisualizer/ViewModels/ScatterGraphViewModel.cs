@@ -17,6 +17,7 @@ using HelixToolkit.Wpf;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Security.Permissions;
+using System.Windows.Media.Animation;
 
 #nullable enable
 
@@ -671,13 +672,28 @@ namespace ReScanVisualizer.ViewModels
                 }
 
                 double angle = GetAnglesBetweenBasesXAxis(base3D, nearestBase);
-                base3D.Rotate(base3D.Z, angle);
+                if (!double.IsNaN(angle))
+                {
+                    base3D.Rotate(base3D.Z, angle);
+                }
             }
         }
 
+        /// <summary>
+        /// Find the angle to apply to match the X axis of the two given bases.
+        /// </summary>
+        /// <returns>Return the angle to apply in degree or <see cref="double.NaN"/> if the matrix is can't be inverted.</returns>
         private double GetAnglesBetweenBasesXAxis(Base3D base1, Base3D base2)
         {
-            Base3D base3DInPartBase = Tools.GetBase1IntoBase2(base1, base2);
+            Base3D base3DInPartBase;
+            try
+            {
+                base3DInPartBase = Tools.GetBase1IntoBase2(base1, base2);
+            }
+            catch (InvalidOperationException)
+            {
+                return double.NaN;
+            }
 
             double xx = base3DInPartBase.X.X;
             double xy = base3DInPartBase.X.Y;
@@ -699,6 +715,9 @@ namespace ReScanVisualizer.ViewModels
             double newXY = k0 + k1;
             double step = Math.PI / 360.0;
 
+            double minNewXY = newXY;
+            double minA = 0.0;
+
             if (newXY > 0.0)
             {
                 // algo version angle positif
@@ -710,6 +729,16 @@ namespace ReScanVisualizer.ViewModels
                     {
                         a += step;      // go back to last pos
                         step /= 10.0;   // reduce step
+                    }
+                    if (newXY < minNewXY)
+                    {
+                        minNewXY = newXY;
+                        minA = a;
+                    }
+                    if (a <= -360.0)
+                    {
+                        a = minA;
+                        break;
                     }
                 }
             }
@@ -725,6 +754,16 @@ namespace ReScanVisualizer.ViewModels
                     {
                         a -= step;      // go back to last pos
                         step /= 10.0;   // reduce step
+                    }
+                    if (newXY < minNewXY)
+                    {
+                        minNewXY = newXY;
+                        minA = a;
+                    }
+                    if (a >= 360.0)
+                    {
+                        a = minA;
+                        break;
                     }
                 }
             }

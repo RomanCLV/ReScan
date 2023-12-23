@@ -13,7 +13,6 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
-using HelixToolkit.Wpf;
 
 #nullable enable
 
@@ -52,6 +51,7 @@ namespace ReScanVisualizer.ViewModels
                     }
                     if (_selectedViewModel is BaseViewModel baseViewModel)
                     {
+                        baseViewModel.EndRotateBase();
                         baseViewModel.Base.Unselect();
                         baseViewModel.Dispose();
                     }
@@ -63,11 +63,6 @@ namespace ReScanVisualizer.ViewModels
 
                 if (SetValue(ref _selectedViewModel, value))
                 {
-                    /*if (_selectedViewModel is IScatterGraphElement scatterGraphElement)
-                    {
-                        scatterGraphElement.Select(true);
-                    }
-                    else */
                     if (_selectedViewModel is ISelectable element)
                     {
                         element.Select();
@@ -77,6 +72,7 @@ namespace ReScanVisualizer.ViewModels
                         baseViewModel.Base.Select(true);
                         baseViewModel.UpdateReorientCartesianFromBase();
                         baseViewModel.UpdateRotationXYZFromBase();
+                        baseViewModel.UpdateAnglesFromCartesian();
                     }
                 }
             }

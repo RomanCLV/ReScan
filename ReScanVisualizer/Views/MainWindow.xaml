@@ -290,7 +290,7 @@
                                     </TreeView.ItemContainerStyle>
                                     <TreeView.ItemTemplate>
                                         <DataTemplate>
-                                            <TreeViewItem Margin="-20 0 0 10">
+                                            <TreeViewItem Margin="-20 0 0 10" IsExpanded="True">
                                                 <TreeViewItem.Header>
                                                     <itw:PartTreeViewHeader
                                                         FontWeight="{Binding IsSelected, Converter={StaticResource BoolToFontWeightConverter}}"

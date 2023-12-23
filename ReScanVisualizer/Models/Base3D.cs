@@ -447,6 +447,7 @@ namespace ReScanVisualizer.Models
             }
             Matrix3D rot = Matrix3D.Identity;
             rot.Rotate(new Quaternion(rotationAxis, rotationAngle));
+            rot.Clamp();
 
             X = Vector3D.Multiply(_beginRotateX, rot);
             Y = Vector3D.Multiply(_beginRotateY, rot);

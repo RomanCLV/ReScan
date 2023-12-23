@@ -333,8 +333,9 @@ namespace ReScanVisualizer.ViewModels
             {
                 _isUpdatingAngles = true;
                 double r = Math.Sqrt(_reorientX * _reorientX + _reorientY * _reorientY + _reorientZ * _reorientZ);
-                ReorientTheta = Tools.RadianToDegree(Math.Acos(_reorientZ / r));  // TODO : ajouter verif pour div par 0
-                ReorientPhi = _reorientX == 0 ? 0.0 : Tools.RadianToDegree(Math.Atan(_reorientY / _reorientX));
+                ReorientTheta = Tools.RadianToDegree(Math.Acos(_reorientZ / r));
+                //ReorientPhi = _reorientX == 0 ? 0.0 : Tools.RadianToDegree(Math.Atan(_reorientY / _reorientX));
+                ReorientPhi = Tools.RadianToDegree(Math.Atan(_reorientY / _reorientX));
                 _isUpdatingAngles = false;
             }
         }
@@ -399,6 +400,8 @@ namespace ReScanVisualizer.ViewModels
         public void Flip()
         {
             Base.Flip();
+            UpdateReorientCartesianFromBase();
+            UpdateAnglesFromCartesian();
         }
 
         public void RotateNDegree(double degree)

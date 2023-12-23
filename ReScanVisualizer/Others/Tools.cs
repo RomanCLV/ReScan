@@ -405,6 +405,11 @@ namespace ReScanVisualizer
                    type == typeof(double) || type == typeof(decimal);
         }
 
+        /// <summary>
+        /// Express the coordinates of the base1 in the base2.
+        /// </summary>
+        /// <returns>The base1 according the base2.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static Base3D GetBase1IntoBase2(Base3D base1, Base3D base2)
         {
             Matrix3D tb10 = base1.ToMatrix3D();        // matrice de la base 1 dans R0
@@ -417,6 +422,11 @@ namespace ReScanVisualizer
             tb10.OffsetX = 0.0;
             tb10.OffsetY = 0.0;
             tb10.OffsetZ = 0.0;
+
+            if (!tb20.HasInverse)
+            {
+                throw new InvalidOperationException("The matrix can't be inverted.");
+            }
 
             Matrix3D tb02 = tb20.Inverse();                // matrice de passage de base2 vers R0
 
