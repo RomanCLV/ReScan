@@ -48,8 +48,6 @@ namespace ReScanVisualizer.ViewModels.Parts
             }
         }
 
-        // TODO : complete visible and fix binding errors
-
         private bool _areScatterGraphesHidden;
         public bool AreScatterGraphesHidden
         {
@@ -181,6 +179,11 @@ namespace ReScanVisualizer.ViewModels.Parts
             {
                 if (SetValue(ref _renderQuality, value))
                 {
+                    _barycenter.RenderQuality = _renderQuality;
+                    foreach (var base3D in _bases)
+                    {
+                        base3D.RenderQuality = _renderQuality;
+                    }
                     foreach (var item in ScatterGraphs)
                     {
                         item.RenderQuality = _renderQuality;
@@ -510,7 +513,7 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         protected void AddBase(Base3DViewModel base3DViewModel)
         {
-            // TODO: tester si le wrapper a bien fonctionné
+            // TODO: tester (entre _bases et Bases) si le wrapper a bien fonctionné
             _bases.Add(base3DViewModel);
             base3DViewModel.IsHiddenChanged += Base3DViewModel_IsHiddenChanged;
             OnPropertyChanged(nameof(ItemsCount));

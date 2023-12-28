@@ -7,7 +7,6 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using ReScanVisualizer.Models;
 using HelixToolkit.Wpf;
-using System.Windows;
 
 #nullable enable
 
@@ -300,12 +299,11 @@ namespace ReScanVisualizer.ViewModels
 
         public bool IsRotating => !(_base3D is null) && _base3D.IsRotating;
 
-        public bool IsXNormalized => _base3D != null && _base3D.X.Length.Clamp(1) == 1.0;
+        public bool IsXNormalized => _base3D != null && _base3D.X.Length.Clamp(1.0) == 1.0;
 
-        public bool IsYNormalized => _base3D != null && _base3D.Y.Length.Clamp(1) == 1.0;
+        public bool IsYNormalized => _base3D != null && _base3D.Y.Length.Clamp(1.0) == 1.0;
 
-        public bool IsZNormalized => _base3D != null && _base3D.Z.Length.Clamp(1) == 1.0;
-
+        public bool IsZNormalized => _base3D != null && _base3D.Z.Length.Clamp(1.0) == 1.0;
 
         private static uint _instanceCreated = 0;
 
@@ -405,6 +403,23 @@ namespace ReScanVisualizer.ViewModels
             IsHiddenChanged?.Invoke(this, _isHidden);
         }
 
+        public bool IsDirect()
+        {
+            Vector3D z = Vector3D.CrossProduct(_base3D.X, _base3D.Y);
+            return
+                Math.Abs(_base3D.Z.X - z.X) < Const.ZERO_CLAMP &&
+                Math.Abs(_base3D.Z.Y - z.Y) < Const.ZERO_CLAMP &&
+                Math.Abs(_base3D.Z.Z - z.Z) < Const.ZERO_CLAMP;
+        }
+
+        public bool IsOrthogonal()
+        {
+            double xy = Vector3D.AngleBetween(_base3D.X, _base3D.Y);
+            double xz = Vector3D.AngleBetween(_base3D.X, _base3D.Z);
+            double yz = Vector3D.AngleBetween(_base3D.Y, _base3D.Z);
+            return xy.Clamp(90.0, 10.0) == 90.0 && xz.Clamp(90.0, 10.0) == 90.0 && yz.Clamp(90.0, 10.0) == 90.0;
+        }
+
         private Base3D GetBaseScalled()
         {
             return new Base3D(
@@ -424,8 +439,6 @@ namespace ReScanVisualizer.ViewModels
             if (x != 0.0 || y != 0.0 || z != 0.0)
             {
                 _base3D.Translate(x, y, z);
-                OnPropertyChanged(nameof(Origin));
-                UpdateModelGeometry();
             }
         }
 

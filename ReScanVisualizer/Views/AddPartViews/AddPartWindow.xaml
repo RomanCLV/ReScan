@@ -49,14 +49,15 @@
                         </ComboBox>
                         <Separator Margin="10" />
 
-                        <StackPanel>
-                            <StackPanel.Resources>
+                        <DockPanel>
+                            <DockPanel.Resources>
                                 <DataTemplate DataType="{x:Type builders:PartPointBuilder}">
                                     <local:PartPointBuilderView />
                                 </DataTemplate>
-                            </StackPanel.Resources>
-                            <ContentControl Content="{Binding Builder}" />
-                        </StackPanel>
+                            </DockPanel.Resources>
+                            <local:PartVisualizerView DockPanel.Dock="Right" DataContext="{Binding PartVisualizerViewModel}" HorizontalAlignment="Right" Width="300" Height="300"/>
+                            <ContentControl Content="{Binding Builder}" HorizontalAlignment="Stretch"/>
+                        </DockPanel>
 
                         <TextBlock Text="{Binding Builder.Message}" Style="{StaticResource myTextBlockLeftError}"  />
                     </StackPanel>

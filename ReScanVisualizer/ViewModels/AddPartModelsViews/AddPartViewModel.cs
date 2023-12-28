@@ -8,7 +8,6 @@ using System.Windows.Input;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.AddPartModelViews.Builders;
-using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.Views.AddPartViews;
 
 #nullable enable
@@ -38,16 +37,12 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
             get => _builder;
             set
             {
-                if (_builder == null)
+                if (_builder == null || !_builder.Equals(value))
                 {
-                    SetValue(ref _builder, value);
-                }
-                else
-                {
-                    if (!_builder.Equals(value))
+                    _builder?.Dispose();
+                    if (SetValue(ref _builder, value))
                     {
-                        _builder.Dispose();
-                        SetValue(ref _builder, value);
+                        PartVisualizerViewModel.Builder = _builder;
                     }
                 }
             }
@@ -56,11 +51,17 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
         public CommandKey ValidateCommand { get; }
         public CommandKey CancelCommand { get; }
 
+        public PartVisualizerViewModel PartVisualizerViewModel { get; private set; }
+
         public AddPartViewModel(AddPartWindow addPartView, IPartSource partSource)
         {
             _partSource = partSource;
             _selectedIndex = 0;
             _builder = new PartPointBuilder();
+            PartVisualizerViewModel = new PartVisualizerViewModel
+            {
+                Builder = _builder
+            };
             ValidateCommand = new CommandKey(new ValidateAddingPartCommand(addPartView, this), Key.Enter, ModifierKeys.None, "Add part");
             CancelCommand = new CommandKey(new ActionCommand(addPartView.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
@@ -77,6 +78,7 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
                 ValidateCommand.Dispose();
                 CancelCommand.Dispose();
                 _builder?.Dispose();
+                PartVisualizerViewModel.Dispose();
                 base.Dispose();
             }
         }
@@ -97,9 +99,6 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
         {
             if (_builder != null)
             {
-                //PartViewModelBase partViewModelBase = _builder.Build();
-                //partViewModelBase.Name = _builder.Name;
-                //_partSource.Parts.Add(partViewModelBase);
                 _partSource.Parts.Add(_builder.Build());
             }
         }

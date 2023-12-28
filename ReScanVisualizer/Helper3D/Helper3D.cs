@@ -60,11 +60,11 @@ namespace ReScanVisualizer.Helper3D
             MeshBuilder builder = new MeshBuilder(false, false);
             int thetaDiv = renderQuality switch
             {
-                RenderQuality.VeryLow => 5,
-                RenderQuality.Low => 10,
-                RenderQuality.Medium => 14,
-                RenderQuality.High => 18,
-                RenderQuality.VeryHigh => 30,
+                RenderQuality.VeryLow => 3,
+                RenderQuality.Low => 8,
+                RenderQuality.Medium => 16,
+                RenderQuality.High => 22,
+                RenderQuality.VeryHigh => 36,
                 _ => throw new NotImplementedException(),
             };
             builder.AddSphere(center, radius, thetaDiv, thetaDiv);
@@ -96,10 +96,10 @@ namespace ReScanVisualizer.Helper3D
             int thetaDiv = renderQuality switch
             {
                 RenderQuality.VeryLow => 5,
-                RenderQuality.Low => 10,
-                RenderQuality.Medium => 14,
-                RenderQuality.High => 18,
-                RenderQuality.VeryHigh => 30,
+                RenderQuality.Low => 8,
+                RenderQuality.Medium => 16,
+                RenderQuality.High => 22,
+                RenderQuality.VeryHigh => 36,
                 _ => throw new NotImplementedException(),
             };
             builder.AddArrow(point1, point2, diameter, 3, thetaDiv);

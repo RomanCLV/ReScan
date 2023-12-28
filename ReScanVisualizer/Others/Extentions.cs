@@ -37,15 +37,39 @@ namespace ReScanVisualizer
             return int.TryParse(numString, out _);
         }
 
+        /// <summary>
+        /// Round the value to <c>0</c> if <paramref name="d"/> is in ] -<see cref="Const.ZERO_CLAMP"/> ; <see cref="Const.ZERO_CLAMP"/> [
+        /// </summary>
+        /// <param name="d">The value to clamp.</param>
+        /// <returns>0 or <paramref name="d"/>.</returns>
         internal static double Clamp(this double d)
         {
             return (-Const.ZERO_CLAMP < d) && (d < Const.ZERO_CLAMP) ? 0.0: d;
         }
 
+        /// <summary>
+        /// Round the value to <c><paramref name="value"/></c> if <paramref name="d"/> is in ] <paramref name="value"/> - <see cref="Const.ZERO_CLAMP"/> ; <paramref name="value"/> + <see cref="Const.ZERO_CLAMP"/> [
+        /// </summary>
+        /// <param name="d">The value to clamp.</param>
+        /// <param name="value">The clamp reference.</param>
+        /// <returns><paramref name="value"/> or <paramref name="d"/>.</returns>
         internal static double Clamp(this double d, double value)
         {
             return ((value - Const.ZERO_CLAMP) < d) && (d < (value + Const.ZERO_CLAMP)) ? value : d;
         }
+
+        /// <summary>
+        /// Round the value to <c><paramref name="value"/></c> if <paramref name="d"/> is in ] <paramref name="value"/> - <paramref name="clampFactor"/> * <see cref="Const.ZERO_CLAMP"/> ; <paramref name="value"/> + <paramref name="clampFactor"/> * <see cref="Const.ZERO_CLAMP"/> [
+        /// </summary>
+        /// <param name="d">The value to clamp.</param>
+        /// <param name="value">The clamp reference.</param>
+        /// <param name="clampFactor">A factor applied to <see cref="Const.ZERO_CLAMP"/></param>
+        /// <returns><paramref name="value"/> or <paramref name="d"/>.</returns>
+        internal static double Clamp(this double d, double value, double clampFactor)
+        {
+            return ((value - clampFactor * Const.ZERO_CLAMP) < d) && (d < (value + clampFactor * Const.ZERO_CLAMP)) ? value : d;
+        }
+
 
         internal static void Clamp(this ref Matrix3D matrix)
         {

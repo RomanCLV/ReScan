@@ -88,7 +88,9 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
             return
                 OriginBase.IsXNormalized &&
                 OriginBase.IsYNormalized &&
-                OriginBase.IsZNormalized;
+                OriginBase.IsZNormalized &&
+                OriginBase.IsOrthogonal() &&
+                OriginBase.IsDirect();
         }
 
         protected virtual void UpdateMessage()
@@ -110,6 +112,14 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
                 else if (!OriginBase.IsZNormalized)
                 {
                     Message = "Z is not normalized.";
+                }
+                else if (!OriginBase.IsOrthogonal())
+                {
+                    Message = "Base is not orthogonal.";
+                }
+                else if (!OriginBase.IsDirect())
+                {
+                    Message = "Base is not direct.";
                 }
             }
         }

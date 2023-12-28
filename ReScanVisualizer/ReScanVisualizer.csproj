@@ -146,6 +146,7 @@
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateRectangle2DBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\AddScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\EditScatterGraphViewModel.cs" />
+    <Compile Include="ViewModels\PartVisualizerViewModel.cs" />
     <Compile Include="ViewModels\Samples\BarycenterViewModel.cs" />
     <Compile Include="ViewModels\Base3DViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
@@ -164,6 +165,9 @@
     </Compile>
     <Compile Include="Views\AddPartViews\PartPointBuilderView.xaml.cs">
       <DependentUpon>PartPointBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddPartViews\PartVisualizerView.xaml.cs">
+      <DependentUpon>PartVisualizerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Forms\Base3DForm.xaml.cs">
       <DependentUpon>Base3DForm.xaml</DependentUpon>
@@ -276,6 +280,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddPartViews\PartPointBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddPartViews\PartVisualizerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
