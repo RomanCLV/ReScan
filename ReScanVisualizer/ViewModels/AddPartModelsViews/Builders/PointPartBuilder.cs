@@ -7,15 +7,15 @@ using ReScanVisualizer.ViewModels.Parts;
 
 namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
 {
-    public class PartPointBuilder : PartBuilderBase
+    public class PointPartBuilder : PartBuilderBase
     {
-        public PartPointBuilder() : base()
+        public PointPartBuilder() : base()
         {
         }
 
         public override PartViewModelBase Build()
         {
-            PartPointViewModel partPointViewModel = new PartPointViewModel(OriginBase.Base3D);
+            PointPartViewModel partPointViewModel = new PointPartViewModel(OriginBase.Base3D);
             SetCommonParameters(partPointViewModel);
             return partPointViewModel;
         }

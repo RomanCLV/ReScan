@@ -51,8 +51,8 @@
 
                         <DockPanel>
                             <DockPanel.Resources>
-                                <DataTemplate DataType="{x:Type builders:PartPointBuilder}">
-                                    <local:PartPointBuilderView />
+                                <DataTemplate DataType="{x:Type builders:PointPartBuilder}">
+                                    <local:PointPartBuilderView />
                                 </DataTemplate>
                             </DockPanel.Resources>
                             <local:PartVisualizerView DockPanel.Dock="Right" DataContext="{Binding PartVisualizerViewModel}" HorizontalAlignment="Right" Width="300" Height="300"/>

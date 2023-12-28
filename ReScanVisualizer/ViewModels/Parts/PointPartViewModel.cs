@@ -8,9 +8,9 @@ using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer.ViewModels.Parts
 {
-    public class PartPointViewModel : PartViewModelBase
+    public class PointPartViewModel : PartViewModelBase
     {
-        public PartPointViewModel(Base3D origin) : base(origin)
+        public PointPartViewModel(Base3D origin) : base(origin)
         {
         }
 

@@ -57,7 +57,7 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
         {
             _partSource = partSource;
             _selectedIndex = 0;
-            _builder = new PartPointBuilder();
+            _builder = new PointPartBuilder();
             PartVisualizerViewModel = new PartVisualizerViewModel
             {
                 Builder = _builder
@@ -87,7 +87,7 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
         {
             if (_selectedIndex == 0)
             {
-                Builder = new PartPointBuilder();
+                Builder = new PointPartBuilder();
             }
             else
             {

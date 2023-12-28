@@ -17,11 +17,11 @@ using System.Windows.Shapes;
 namespace ReScanVisualizer.Views.AddPartViews
 {
     /// <summary>
-    /// Logique d'interaction pour PartPointBuilderView.xaml
+    /// Logique d'interaction pour PointPartBuilderView.xaml
     /// </summary>
-    public partial class PartPointBuilderView : UserControl
+    public partial class PointPartBuilderView : UserControl
     {
-        public PartPointBuilderView()
+        public PointPartBuilderView()
         {
             InitializeComponent();
         }

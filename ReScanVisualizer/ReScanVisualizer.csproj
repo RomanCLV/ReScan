@@ -131,7 +131,7 @@
     <Compile Include="Validators\PositiveNumberValidationRule.cs" />
     <Compile Include="ViewModels\AddPartModelsViews\AddPartViewModel.cs" />
     <Compile Include="ViewModels\AddPartModelsViews\Builders\PartBuilderBase.cs" />
-    <Compile Include="ViewModels\AddPartModelsViews\Builders\PartPointBuilder.cs" />
+    <Compile Include="ViewModels\AddPartModelsViews\Builders\PointPartBuilder.cs" />
     <Compile Include="ViewModels\AddPointViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\IScatterGraphBuilderGroup.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphBuildResult.cs" />
@@ -146,6 +146,7 @@
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateRectangle2DBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\AddScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\EditScatterGraphViewModel.cs" />
+    <Compile Include="ViewModels\Parts\RectanglePartViewModel.cs" />
     <Compile Include="ViewModels\PartVisualizerViewModel.cs" />
     <Compile Include="ViewModels\Samples\BarycenterViewModel.cs" />
     <Compile Include="ViewModels\Base3DViewModel.cs" />
@@ -155,7 +156,7 @@
     <Compile Include="ViewModels\KeyValueObservable.cs" />
     <Compile Include="ViewModels\ColorViewModel.cs" />
     <Compile Include="ViewModels\CommandKey.cs" />
-    <Compile Include="ViewModels\Parts\PartPointViewModel.cs" />
+    <Compile Include="ViewModels\Parts\PointPartViewModel.cs" />
     <Compile Include="ViewModels\Parts\PartViewModel.cs" />
     <Compile Include="ViewModels\Point3DViewModel.cs" />
     <Compile Include="ViewModels\ReduceScatterGraphViewModel.cs" />
@@ -163,8 +164,8 @@
     <Compile Include="Views\AddPartViews\AddPartWindow.xaml.cs">
       <DependentUpon>AddPartWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddPartViews\PartPointBuilderView.xaml.cs">
-      <DependentUpon>PartPointBuilderView.xaml</DependentUpon>
+    <Compile Include="Views\AddPartViews\PointPartBuilderView.xaml.cs">
+      <DependentUpon>PointPartBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddPartViews\PartVisualizerView.xaml.cs">
       <DependentUpon>PartVisualizerView.xaml</DependentUpon>
@@ -279,7 +280,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AddPartViews\PartPointBuilderView.xaml">
+    <Page Include="Views\AddPartViews\PointPartBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
