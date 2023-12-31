@@ -14,10 +14,6 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Security.Permissions;
-using System.Windows.Media.Animation;
 
 #nullable enable
 
@@ -306,7 +302,6 @@ namespace ReScanVisualizer.ViewModels
 
             UpdateArePointsHidden();
 
-            /* Equivalent à RecomputeAll() */
             Point3D barycenter = ComputeBarycenter();
             Plan averagePlan = ComputeAveragePlan();
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
@@ -319,6 +314,9 @@ namespace ReScanVisualizer.ViewModels
             _base3D = new Base3DViewModel(base3D, _scaleFactor, axisScaleFactor, _renderQuality)
             {
                 Name = "Plan base",
+                CanEditName = false,
+                CanTranslate = false,
+                CanReorient = false,
                 ScatterGraph = this
             };
             _averagePlan = new PlanViewModel(averagePlan, barycenter, _base3D.X, Colors.LightBlue.ChangeAlpha(191), averagePlanLength, _scaleFactor, _renderQuality)
@@ -326,7 +324,6 @@ namespace ReScanVisualizer.ViewModels
                 ScatterGraph = this,
                 CanEdit = false
             };
-            /* Fin - Equivalent à RecomputeAll() */
 
             _barycenter.IsHidden = hideBarycenter;
             _averagePlan.IsHidden = hideAveragePlan;

@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReScanVisualizer.Views"
-             xmlns:forms="clr-namespace:ReScanVisualizer.Views.Forms"
+             xmlns:dimensions="clr-namespace:ReScanVisualizer.Views.DimensionsSelectedPart"
+             xmlns:parts="clr-namespace:ReScanVisualizer.ViewModels.Parts"
              xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              mc:Ignorable="d" 
@@ -71,6 +72,16 @@
                             <TextBlock Text="Visible" Style="{StaticResource myTextBlock}" />
                         </StackPanel>
                     </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Dimensions" IsEnabled="{Binding HaveDimensions}">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Resources>
+                        <DataTemplate DataType="{x:Type parts:RectanglePartViewModel}">
+                            <dimensions:RectanglePartDimensionsView />
+                        </DataTemplate>
+                    </ScrollViewer.Resources>
+                    <ContentControl Content="{Binding DataContext}" />
                 </ScrollViewer>
             </TabItem>
         </TabControl>

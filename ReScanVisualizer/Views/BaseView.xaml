@@ -13,6 +13,7 @@
     <UserControl.Resources>
         <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter" />
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
+        <converters:BoolValuesORMultiConverter x:Key="BoolValuesORMultiConverter"/>
     </UserControl.Resources>
 
     <Grid Background="{StaticResource gray24}">
@@ -35,7 +36,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Name" Style="{StaticResource myTextBlockLeft}" />
-                            <TextBox   Style="{StaticResource myTextBox}" Width="150" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
+                            <TextBox Style="{StaticResource myTextBox}" Width="150" IsEnabled="{Binding CanEditName}">
                                 <TextBox.Text>
                                     <Binding Path="Base.Name" UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
@@ -51,7 +52,7 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Translate" Tag="Translate" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
+            <TabItem Header="Translate" Tag="Translate" IsEnabled="{Binding CanTranslate}">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <Grid Margin="0 15 0 0">
                         <Grid.ColumnDefinitions>
@@ -80,7 +81,7 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Axis rotation" Tag="AxisRotation">
+            <TabItem Header="Axis rotation" Tag="AxisRotation" IsEnabled="{Binding CanRotate}">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <Grid Margin="0 15 0 0">
                         <Grid.ColumnDefinitions>
@@ -94,9 +95,9 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Style="{StaticResource myTextBlockLeft}"/>
-                        <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" ItemsSource="{Binding AllRotationAxis}" SelectedValue="{Binding RotationAxis}" HorizontalContentAlignment="Center" HorizontalAlignment="Left" IsEnabled="{Binding Base.BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                        <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" Height="20" ItemsSource="{Binding AllRotationAxis}" SelectedValue="{Binding RotationAxis}" HorizontalContentAlignment="Center" HorizontalAlignment="Left" />
 
-                        <TextBlock Grid.Row="1" Text="Direction:" Style="{StaticResource myTextBlockLeft}"/>
+                        <TextBlock Grid.Row="1" Text="Direction:" Width="65" Style="{StaticResource myTextBlockLeft}"/>
 
                         <Grid Grid.Row="2" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
@@ -158,6 +159,12 @@
             </TabItem>
 
             <TabItem Header="Reorient" Tag="Reorient">
+                <TabItem.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BoolValuesORMultiConverter}">
+                        <Binding Path="CanReorient"/>
+                        <Binding Path="CanFlip"/>
+                    </MultiBinding>
+                </TabItem.IsEnabled>
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <Grid Margin="0 15 0 0">
                         <Grid.ColumnDefinitions>
@@ -169,15 +176,15 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
 
-                        <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Content="Flip base" Width="75" ToolTip="Flip base" Style="{StaticResource myButton}" Click="FlipButton_Click" />
+                        <Button Grid.Row="0" Grid.Column="1" IsEnabled="{Binding CanFlip}" HorizontalAlignment="Right" Content="Flip base" Width="75" ToolTip="Flip base" Style="{StaticResource myButton}" Click="FlipButton_Click"/>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Style="{StaticResource myTextBlockLeft}"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Width="65" Style="{StaticResource myTextBlockLeft}"/>
                         <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" Height="20"
-                               ItemsSource="{Binding AllReorientAxis}" SelectedValue="{Binding ReorientAxis}" 
-                               IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}"
-                               HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
+                                   ItemsSource="{Binding AllReorientAxis}" SelectedValue="{Binding ReorientAxis}" 
+                                   IsEnabled="{Binding CanReorient}"
+                                   HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 
-                        <Grid Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding BelongsToAGraph, Converter={StaticResource BoolToInverseBoolConverter}}">
+                        <Grid Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding CanReorient}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />

@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using ReScanVisualizer.Models;
 using HelixToolkit.Wpf;
+using ReScanVisualizer.ViewModels.Parts;
 
 #nullable enable
 
@@ -57,7 +58,13 @@ namespace ReScanVisualizer.ViewModels
         public string Name
         {
             get => _name;
-            set => SetValue(ref _name, value);
+            set
+            {
+                if (_canEditName)
+                {
+                    SetValue(ref _name, value);
+                }
+            }
         }
 
         #region Origin access properties
@@ -182,11 +189,33 @@ namespace ReScanVisualizer.ViewModels
                 if (SetValue(ref _scatterGraph, value))
                 {
                     OnPropertyChanged(nameof(BelongsToAGraph));
+                    if (_part != null)
+                    {
+                        Part = null;
+                    }
+                }
+            }
+        }
+
+        private PartViewModelBase? _part;
+        public PartViewModelBase? Part
+        {
+            get => _part;
+            set
+            {
+                if (SetValue(ref _part, value))
+                {
+                    OnPropertyChanged(nameof(Part));
+                    if (_scatterGraph != null)
+                    {
+                        ScatterGraph = null;
+                    }
                 }
             }
         }
 
         public bool BelongsToAGraph => _scatterGraph != null;
+        public bool BelongsToAPart => _part != null;
 
         private readonly Model3DGroup _model;
         public Model3D Model => _model;
@@ -307,6 +336,47 @@ namespace ReScanVisualizer.ViewModels
 
         public double DistFromOrigin => _base3D is null ? double.NaN : Math.Sqrt(_base3D.OX * _base3D.OX + _base3D.OY * _base3D.OY + _base3D.OZ * _base3D.OZ);
 
+        private bool _canEditName;
+        public bool CanEditName
+        {
+            get => _canEditName;
+            set => SetValue(ref _canEditName, value);
+        }
+
+        private bool _canTranslate;
+        public bool CanTranslate
+        {
+            get => _canTranslate;
+            set => SetValue(ref _canTranslate, value);
+        }
+
+        private bool _canRotate;
+        public bool CanRotate
+        {
+            get => _canRotate;
+            set
+            {
+                if (SetValue(ref _canRotate, value))
+                {
+                    EndRotate();
+                }
+            }
+        }
+
+        private bool _canReorient;
+        public bool CanReorient
+        {
+            get => _canReorient;
+            set => SetValue(ref _canReorient, value);
+        }
+
+        private bool _canFlip;
+        public bool CanFlip
+        {
+            get => _canFlip;
+            set => SetValue(ref _canFlip, value);
+        }
+
         private static uint _instanceCreated = 0;
 
         public Base3DViewModel(Base3D base3D, double scaleFactor = 1.0, double axisScaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
@@ -321,9 +391,14 @@ namespace ReScanVisualizer.ViewModels
             _renderQuality = renderQuality;
             _isSelected = false;
             _isMouseOver = false;
+            _canEditName = true;
+            _canTranslate = true;
+            _canRotate = true;
+            _canReorient = true;
+            _canFlip = true;
             _model = Helper3D.BuildBaseModel(GetBaseScalled(), Brushes.Red, Brushes.Green, Brushes.Blue, 0.1 * _axisScaleFactor, _renderQuality);
 
-            _base3D.OriginChanged += Base3D_OriginChanged; ;
+            _base3D.OriginChanged += Base3D_OriginChanged;
             _base3D.XChanged += Base3D_XChanged;
             _base3D.YChanged += Base3D_YChanged;
             _base3D.ZChanged += Base3D_ZChanged;
@@ -428,12 +503,15 @@ namespace ReScanVisualizer.ViewModels
 
         public void Translate(Vector3D translation)
         {
-            Translate(translation.X, translation.Y, translation.Z);
+            if (_canTranslate)
+            {
+                Translate(translation.X, translation.Y, translation.Z);
+            }
         }
 
         public void Translate(double x = 0.0, double y = 0.0, double z = 0.0)
         {
-            if (x != 0.0 || y != 0.0 || z != 0.0)
+            if (_canTranslate && (x != 0.0 || y != 0.0 || z != 0.0))
             {
                 _base3D.Translate(x, y, z);
             }
@@ -479,7 +557,10 @@ namespace ReScanVisualizer.ViewModels
         /// </summary>
         public void BeginRotate()
         {
-            _base3D.BeginRotate();
+            if (_canRotate)
+            {
+                _base3D.BeginRotate();
+            }
         }
 
         /// <summary>
@@ -501,11 +582,14 @@ namespace ReScanVisualizer.ViewModels
         /// </param>
         public void Rotate(Vector3D rotationAxis, double rotationAngle, bool autoCallEndRotate = true)
         {
-            _base3D.Rotate(rotationAxis, rotationAngle, autoCallEndRotate);
-            OnPropertyChanged(nameof(X));
-            OnPropertyChanged(nameof(Y));
-            OnPropertyChanged(nameof(Z));
-            UpdateModelGeometry();
+            if (_canRotate)
+            {
+                _base3D.Rotate(rotationAxis, rotationAngle, autoCallEndRotate);
+                OnPropertyChanged(nameof(X));
+                OnPropertyChanged(nameof(Y));
+                OnPropertyChanged(nameof(Z));
+                UpdateModelGeometry();
+            }
         }
 
         public void UpdateBase(Base3D base3D, bool updateOrigin = true)
@@ -526,7 +610,10 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateOrigin(Point3D origin)
         {
-            Origin = origin;
+            if (_canTranslate)
+            {
+                Origin = origin;
+            }
         }
 
         public void UpdateModelGeometry()
@@ -567,7 +654,10 @@ namespace ReScanVisualizer.ViewModels
 
         public void Flip()
         {
-            Rotate(_base3D.Y, 180);
+            if (_canFlip)
+            {
+                Rotate(_base3D.Y, 180);
+            }
         }
 
         public void NormalizeX()

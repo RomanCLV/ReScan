@@ -30,6 +30,13 @@ namespace ReScanVisualizer.ViewModels.Parts
             set => SetValue(ref _name, value);
         }
 
+        private bool _haveDimensions;
+        public bool HaveDimensions
+        {
+            get => _haveDimensions;
+            protected set => SetValue(ref _haveDimensions, value);
+        }
+
         private bool _isScatterGraphesHiddenChanging;
         private bool _isBasesHiddenChanging;
 
@@ -210,6 +217,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         {
             _isRecomputeAllOnScatterGraphsChangedEnalbed = true;
             _name = "Part " + InstanceCreated;
+            _haveDimensions = false;
             _isHidden = false;
             _areBasesHidden = _isHidden;
             _originAttachedToBarycenter = true;
@@ -224,11 +232,15 @@ namespace ReScanVisualizer.ViewModels.Parts
             _barycenter = new BarycenterViewModel(originBase.Origin, Colors.Yellow, _scaleFactor, 0.25, renderQuality);
             OriginBase = new Base3DViewModel(originBase, _scaleFactor, 1.0, renderQuality)
             {
-                Name = "Origin base"
+                Name = "Origin base",
+                CanEditName = false,
+                Part = this
             };
             _modelGroup.Children.Add(_barycenter.Model);
 
             AddBase(OriginBase);
+            OriginBase.CanTranslate = true;
+
             Bases = new ReadOnlyCollection<Base3DViewModel>(_bases);
 
             _scatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
@@ -276,15 +288,18 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         private void OriginBase_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Base3DViewModel.Origin) ||
-                e.PropertyName == nameof(Base3DViewModel.X) ||
+            if (e.PropertyName == nameof(Base3DViewModel.Origin))
+            {
+                OnOriginChanged();
+                UpdateModelGeometry();
+            }
+            else if (e.PropertyName == nameof(Base3DViewModel.X) ||
                 e.PropertyName == nameof(Base3DViewModel.Y) ||
                 e.PropertyName == nameof(Base3DViewModel.Z))
             {
                 OnOriginChanged();
             }
         }
-
 
         private void Base3D_OriginChanged(object sender, PositionEventArgs e)
         {
@@ -295,7 +310,9 @@ namespace ReScanVisualizer.ViewModels.Parts
                 {
                     continue;
                 }
+                item.CanTranslate = true;
                 item.Translate(translation);
+                item.CanTranslate = false;
             }
         }
 
@@ -551,8 +568,13 @@ namespace ReScanVisualizer.ViewModels.Parts
         {
             if (!_bases.Contains(base3DViewModel))
             {
+                base3DViewModel.CanEditName = false;
+                base3DViewModel.CanFlip = false;
+                base3DViewModel.CanReorient = false;
+                base3DViewModel.CanTranslate = false;
                 _bases.Add(base3DViewModel);
                 base3DViewModel.IsHiddenChanged += Base3DViewModel_IsHiddenChanged;
+
                 _modelGroup.Children.Add(base3DViewModel.Model);
                 OnPropertyChanged(nameof(ItemsCount));
                 OnPropertyChanged(nameof(Bases));

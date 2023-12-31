@@ -97,7 +97,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             {
                 throw new ArgumentException(nameof(height), "height must be positive.");
             }
-
+            HaveDimensions = true;
             _width  = width ; // on X
             _length = length; // on Y
             _height = height; // on Z
@@ -144,6 +144,13 @@ namespace ReScanVisualizer.ViewModels.Parts
             RightBase.Name = "Right base";
             UpBase.Name = "Up base";
             DownBase.Name = "Down base";
+
+            FrontBase.Part = this;
+            BackBase.Part = this;
+            LeftBase.Part = this;
+            RightBase.Part = this;
+            UpBase.Part = this;
+            DownBase.Part = this;
 
             double minDim = Math.Min(Math.Min(_width, _length), _height);
             double scale = Math.Min(1.0, minDim / 3.0);

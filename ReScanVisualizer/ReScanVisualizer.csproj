@@ -96,6 +96,7 @@
     <Compile Include="Commands\ValidateExportBasesCommand.cs" />
     <Compile Include="Converters\BoolToFontStyleConverter.cs" />
     <Compile Include="Converters\BoolToFontWeightConverter.cs" />
+    <Compile Include="Converters\BoolValuesORMultiConverter.cs" />
     <Compile Include="Converters\IsHiddenToOpacityConverter.cs" />
     <Compile Include="Converters\IsHiddenToImageConverter.cs" />
     <Compile Include="Converters\EnumerableNonEmptyConverter.cs" />
@@ -174,6 +175,9 @@
     </Compile>
     <Compile Include="Views\AddPartViews\RectanglePartBuilderView.xaml.cs">
       <DependentUpon>RectanglePartBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DimensionsSelectedPart\RectanglePartDimensionsView.xaml.cs">
+      <DependentUpon>RectanglePartDimensionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Forms\Base3DForm.xaml.cs">
       <DependentUpon>Base3DForm.xaml</DependentUpon>
@@ -294,6 +298,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddPartViews\RectanglePartBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DimensionsSelectedPart\RectanglePartDimensionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

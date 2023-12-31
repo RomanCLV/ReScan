@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -220,11 +221,21 @@ namespace ReScanVisualizer.ViewModels
 
         #endregion
 
-        public bool BelongsToAGraph => !(Base is null) && Base.BelongsToAGraph;
+        public bool CanEditName => Base != null && Base.CanEditName;
+
+        public bool CanTranslate => Base != null && Base.CanTranslate;
+
+        public bool CanRotate => Base != null && Base.CanRotate;
+
+        public bool CanReorient => Base != null && Base.CanReorient;
+
+        public bool CanFlip => Base != null && Base.CanFlip;
 
         public BaseViewModel(Base3DViewModel base3DViewModel)
         {
             _base = base3DViewModel;
+            _base.PropertyChanged += Base_PropertyChanged;
+
             _isUpdatingAngles = false;
             _isUpdatingCartesian = false;
 
@@ -245,17 +256,9 @@ namespace ReScanVisualizer.ViewModels
 
             // rotate
             AllRotationAxis = Tools.GetRotationAxesList();
-            if (_base.BelongsToAGraph)
+            if (_base.BelongsToAGraph || _base.BelongsToAPart)
             {
-                _rotationAxis = RotationAxis.Z;
-                _rotationX = 0.0;
-                _rotationZ = 1.0;
-            }
-            else
-            {
-                _rotationAxis = RotationAxis.X;
-                _rotationX = 1.0;
-                _rotationZ = 0.0;
+                EnableAxisRotationOnlyOn(Axis.Z);
             }
             _rotateXYZEnabled = _rotationAxis is RotationAxis.Personalized;
             _rotationY = 0.0;
@@ -270,9 +273,65 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
+                _base.PropertyChanged -= Base_PropertyChanged;
                 EndRotateBase();
                 base.Dispose();
             }
+        }
+
+        private void Base_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Base3DViewModel.CanEditName))
+            {
+                OnPropertyChanged(nameof(CanEditName));
+            }
+            else if (e.PropertyName == nameof(Base3DViewModel.CanTranslate))
+            {
+                OnPropertyChanged(nameof(CanTranslate));
+            }
+            else if (e.PropertyName == nameof(Base3DViewModel.CanRotate))
+            {
+                OnPropertyChanged(nameof(CanRotate));
+            }
+            else if (e.PropertyName == nameof(Base3DViewModel.CanReorient))
+            {
+                OnPropertyChanged(nameof(CanReorient));
+            }
+            else if (e.PropertyName == nameof(Base3DViewModel.CanFlip))
+            {
+                OnPropertyChanged(nameof(CanFlip));
+            }
+        }
+
+        public void EnableAxisRotationOnlyOn(Axis axis)
+        {
+            AllRotationAxis.Clear();
+            switch (axis)
+            {
+                case Axis.X:
+                    AllRotationAxis.Add(RotationAxis.X);
+                    break;
+                case Axis.Y:
+                    AllRotationAxis.Add(RotationAxis.Y);
+                    break;
+                case Axis.Z:
+                    AllRotationAxis.Add(RotationAxis.Z);
+                    break;
+            }
+            if (!AllRotationAxis.Contains(_rotationAxis))
+            {
+                RotationAxis = AllRotationAxis[0];
+            }
+            OnPropertyChanged(nameof(AllRotationAxis));
+            RotateXYZEnabled = _rotationAxis is RotationAxis.Personalized;
+            _base.CanRotate = true;
+        }
+
+        public void EnableAllAxisRotation()
+        {
+            AllRotationAxis = Tools.GetRotationAxesList();
+            OnPropertyChanged(nameof(AllRotationAxis));
+            _base.CanRotate = true;
         }
 
         public void UpdateRotationXYZFromBase()
@@ -362,23 +421,32 @@ namespace ReScanVisualizer.ViewModels
 
         public void ApplyTranslation()
         {
-            Base.Translate(_translateX, _translateY, _translateZ);
-            TranslateX = 0.0;
-            TranslateY = 0.0;
-            TranslateZ = 0.0;
+            if (CanTranslate)
+            {
+                Base.Translate(_translateX, _translateY, _translateZ);
+                TranslateX = 0.0;
+                TranslateY = 0.0;
+                TranslateZ = 0.0;
+            }
         }
 
         public void ApplyMoveTo()
         {
-            _translateX -= Base.Origin.X;
-            _translateY -= Base.Origin.Y;
-            _translateZ -= Base.Origin.Z;
-            ApplyTranslation();
+            if (CanTranslate)
+            {
+                _translateX -= Base.Origin.X;
+                _translateY -= Base.Origin.Y;
+                _translateZ -= Base.Origin.Z;
+                ApplyTranslation();
+            }
         }
 
         private void RotateBase()
         {
-            Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), _rotationAngle, false);
+            if (CanRotate)
+            {
+                Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), _rotationAngle, false);
+            }
         }
 
         public void EndRotateBase()
@@ -390,7 +458,7 @@ namespace ReScanVisualizer.ViewModels
 
         private void ReorientBase()
         {
-            if (!_isUpdatingAngles && !_isUpdatingCartesian)
+            if (!_isUpdatingAngles && !_isUpdatingCartesian && CanReorient)
             {
                 Base3D orientedBase = Tools.ComputeOrientedBase(new Vector3D(_reorientX, _reorientY, _reorientZ), _reorientAxis);
                 Base.UpdateBase(orientedBase, false);
@@ -399,14 +467,20 @@ namespace ReScanVisualizer.ViewModels
 
         public void Flip()
         {
-            Base.Flip();
-            UpdateReorientCartesianFromBase();
-            UpdateAnglesFromCartesian();
+            if (CanFlip)
+            {
+                Base.Flip();
+                UpdateReorientCartesianFromBase();
+                UpdateAnglesFromCartesian();
+            }
         }
 
         public void RotateNDegree(double degree)
         {
-            Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), degree);
+            if (CanRotate)
+            {
+                Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), degree);
+            }
         }
     }
 }
