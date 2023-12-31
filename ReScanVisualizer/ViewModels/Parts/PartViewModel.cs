@@ -150,8 +150,12 @@ namespace ReScanVisualizer.ViewModels.Parts
                 if (SetValue(ref _scaleFactor, value))
                 {
                     _barycenter.ScaleFactor = _scaleFactor;
-                    OriginBase.ScaleFactor = _scaleFactor;
-                    foreach (var item in ScatterGraphs)
+                    foreach (Base3DViewModel item in _bases)
+                    {
+                        item.ScaleFactor = _scaleFactor;
+                    }
+                    UpdateModelGeometry();
+                    foreach (ScatterGraphViewModel item in ScatterGraphs)
                     {
                         item.ScaleFactor = _scaleFactor;
                     }
@@ -204,7 +208,6 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public PartViewModelBase(Base3D originBase, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
         {
-            InstanceCreated++;
             _isRecomputeAllOnScatterGraphsChangedEnalbed = true;
             _name = "Part " + InstanceCreated;
             _isHidden = false;
@@ -224,13 +227,13 @@ namespace ReScanVisualizer.ViewModels.Parts
                 Name = "Origin base"
             };
             _modelGroup.Children.Add(_barycenter.Model);
-            _modelGroup.Children.Add(OriginBase.Model);
 
             AddBase(OriginBase);
             Bases = new ReadOnlyCollection<Base3DViewModel>(_bases);
 
             _scatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
             OriginBase.PropertyChanged += OriginBase_PropertyChanged;
+            OriginBase.Base3D.OriginChanged += Base3D_OriginChanged;
         }
 
         ~PartViewModelBase()
@@ -243,13 +246,21 @@ namespace ReScanVisualizer.ViewModels.Parts
             if (!IsDisposed)
             {
                 OriginBase.PropertyChanged -= OriginBase_PropertyChanged;
+                OriginBase.Base3D.OriginChanged -= Base3D_OriginChanged;
                 _scatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 Clear();
                 ClearBases();
                 _modelGroup.Children.Clear();
                 _barycenter.Dispose();
-                //OriginBase.Dispose();
                 base.Dispose();
+            }
+        }
+
+        public static void DecreaseInstanceCreated()
+        {
+            if (InstanceCreated < 0)
+            {
+                InstanceCreated--;
             }
         }
 
@@ -271,6 +282,20 @@ namespace ReScanVisualizer.ViewModels.Parts
                 e.PropertyName == nameof(Base3DViewModel.Z))
             {
                 OnOriginChanged();
+            }
+        }
+
+
+        private void Base3D_OriginChanged(object sender, PositionEventArgs e)
+        {
+            Vector3D translation = e.NewPosition - e.OldPosition;
+            foreach (Base3DViewModel item in _bases)
+            {
+                if (item.Equals(OriginBase))
+                {
+                    continue;
+                }
+                item.Translate(translation);
             }
         }
 
@@ -323,17 +348,28 @@ namespace ReScanVisualizer.ViewModels.Parts
         {
             ScatterGraphViewModel scatterGraphViewModel = _scatterGraphs[0];
             ScaleFactor = scatterGraphViewModel.ScaleFactor;
-            _barycenter.Radius = scatterGraphViewModel.Barycenter.Radius;
-            OriginBase.AxisScaleFactor = scatterGraphViewModel.Base3D.AxisScaleFactor;
             _renderQuality = scatterGraphViewModel.RenderQuality;
+            _barycenter.RenderQuality = _renderQuality;
+            _barycenter.Radius = scatterGraphViewModel.Barycenter.Radius;
+            foreach (Base3DViewModel base3D in _bases)
+            {
+                base3D.RenderQuality = _renderQuality;
+                base3D.AxisScaleFactor = scatterGraphViewModel.Base3D.AxisScaleFactor;
+            }
+            OnPropertyChanged(nameof(RenderQuality));
         }
 
         private void ResetFromEmpty()
         {
             ScaleFactor = 1.0;
             _barycenter.Radius = 0.25;
-            OriginBase.AxisScaleFactor = 1.0;
             _renderQuality = RenderQuality.High;
+            foreach (Base3DViewModel base3D in _bases)
+            {
+                base3D.RenderQuality = _renderQuality;
+                base3D.AxisScaleFactor = 1.0;
+            }
+            OnPropertyChanged(nameof(RenderQuality));
         }
 
         public void EnableRecomputeAllAfterScatterGraphsChanged()
@@ -498,26 +534,29 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public virtual bool IsBelongingToModel(GeometryModel3D geometryModel3D)
         {
-            return _barycenter.IsBelongingToModel(geometryModel3D);
+            return 
+                _barycenter.IsBelongingToModel(geometryModel3D) ||
+                _bases.Any(x => x.IsBelongingToModel(geometryModel3D));
         }
 
         public virtual void UpdateModelGeometry()
         {
-            throw new InvalidOperationException();
         }
 
         public virtual void UpdateModelMaterial()
         {
-            throw new InvalidOperationException();
         }
 
         protected void AddBase(Base3DViewModel base3DViewModel)
         {
-            // TODO: tester (entre _bases et Bases) si le wrapper a bien fonctionné
-            _bases.Add(base3DViewModel);
-            base3DViewModel.IsHiddenChanged += Base3DViewModel_IsHiddenChanged;
-            OnPropertyChanged(nameof(ItemsCount));
-            OnPropertyChanged(nameof(Bases));
+            if (!_bases.Contains(base3DViewModel))
+            {
+                _bases.Add(base3DViewModel);
+                base3DViewModel.IsHiddenChanged += Base3DViewModel_IsHiddenChanged;
+                _modelGroup.Children.Add(base3DViewModel.Model);
+                OnPropertyChanged(nameof(ItemsCount));
+                OnPropertyChanged(nameof(Bases));
+            }
         }
 
         private void ClearBases()
@@ -525,8 +564,10 @@ namespace ReScanVisualizer.ViewModels.Parts
             foreach (Base3DViewModel base3DViewModel in _bases)
             {
                 base3DViewModel.IsHiddenChanged -= Base3DViewModel_IsHiddenChanged;
+                _modelGroup.Children.Remove(base3DViewModel.Model);
                 base3DViewModel.Dispose();
             }
+            _bases.Clear();
             OnPropertyChanged(nameof(ItemsCount));
             OnPropertyChanged(nameof(Bases));
         }

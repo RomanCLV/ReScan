@@ -26,11 +26,19 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (_builder != null)
                 {
-                    _builder.OriginBase.PropertyChanged -= BuilderOriginBase_PropertyChanged;
+                    _builder.PropertyChanged -= Builder_PropertyChanged;
+                    foreach (var base3D in _builder.Bases)
+                    {
+                        base3D.PropertyChanged -= BuilderBase_PropertyChanged;
+                    }
                 }
                 if (SetValue(ref _builder, value) && _builder != null)
                 {
-                    _builder.OriginBase.PropertyChanged += BuilderOriginBase_PropertyChanged;
+                    _builder.PropertyChanged += Builder_PropertyChanged;
+                    foreach (var base3D in _builder.Bases)
+                    {
+                        base3D.PropertyChanged += BuilderBase_PropertyChanged;
+                    }
                     BuildPartModel();
                 }
             }
@@ -40,18 +48,48 @@ namespace ReScanVisualizer.ViewModels
         {
             _builder = null;
             PartModel = null;
-            OriginModel = Helper3D.Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), 
-                new SolidColorBrush(Color.FromArgb(100, 255, 0, 0)),
-                new SolidColorBrush(Color.FromArgb(100, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(100, 0, 0, 255)));
+            OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), 
+                new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)),
+                new SolidColorBrush(Color.FromArgb(50, 0, 255, 0)),
+                new SolidColorBrush(Color.FromArgb(50, 0, 0, 255)));
         }
 
-        private void BuilderOriginBase_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        ~PartVisualizerViewModel()
+        {
+            Dispose();
+        }
+
+        public override void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                if (_builder != null)
+                {
+                    _builder.PropertyChanged -= Builder_PropertyChanged;
+                    foreach (var base3D in _builder.Bases)
+                    {
+                        base3D.PropertyChanged -= BuilderBase_PropertyChanged;
+                    }
+                }
+                base.Dispose();
+            }
+        }
+
+        private void Builder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PartBuilderBase.ScaleFactor))
+            {
+                BuildPartModel();
+            }
+        }
+
+        private void BuilderBase_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Base3DViewModel.Origin) ||
                 e.PropertyName == nameof(Base3DViewModel.X) ||
                 e.PropertyName == nameof(Base3DViewModel.Y) ||
-                e.PropertyName == nameof(Base3DViewModel.Z))
+                e.PropertyName == nameof(Base3DViewModel.Z) ||
+                e.PropertyName == nameof(Base3DViewModel.ScaleFactor))
             {
                 BuildPartModel();
             }
@@ -63,6 +101,7 @@ namespace ReScanVisualizer.ViewModels
             partViewModelBase.Barycenter.Hide();
             PartModel = partViewModelBase.Model.Clone();
             partViewModelBase.Dispose();
+            PartViewModelBase.DecreaseInstanceCreated();
             OnPropertyChanged(nameof(PartModel));
         }
     }

@@ -12,7 +12,7 @@ namespace ReScanVisualizer.Models
 {
     public class Base3D
     {
-        public event EventHandler<Point3D>? OriginChanged;
+        public event EventHandler<PositionEventArgs>? OriginChanged;
         public event EventHandler<Vector3D>? XChanged;
         public event EventHandler<Vector3D>? YChanged;
         public event EventHandler<Vector3D>? ZChanged;
@@ -27,8 +27,10 @@ namespace ReScanVisualizer.Models
             {
                 if (_origin != value)
                 {
+                    Point3D oldPosition = _origin;
                     _origin = value;
-                    OnOriginChanged();
+                    Point3D newPosition = _origin;
+                    OnOriginChanged(ref oldPosition, ref newPosition);
                 }
             }
         }
@@ -40,8 +42,10 @@ namespace ReScanVisualizer.Models
             {
                 if (_origin.X != value)
                 {
+                    Point3D oldPosition = _origin;
                     _origin.X = value;
-                    OnOriginChanged();
+                    Point3D newPosition = _origin;
+                    OnOriginChanged(ref oldPosition, ref newPosition);
                 }
             }
         }
@@ -53,8 +57,10 @@ namespace ReScanVisualizer.Models
             {
                 if (_origin.Y != value)
                 {
+                    Point3D oldPosition = _origin;
                     _origin.Y = value;
-                    OnOriginChanged();
+                    Point3D newPosition = _origin;
+                    OnOriginChanged(ref oldPosition, ref newPosition);
                 }
             }
         }
@@ -66,8 +72,10 @@ namespace ReScanVisualizer.Models
             {
                 if (_origin.Z != value)
                 {
+                    Point3D oldPosition = _origin;
                     _origin.Z = value;
-                    OnOriginChanged();
+                    Point3D newPosition = _origin;
+                    OnOriginChanged(ref oldPosition, ref newPosition);
                 }
             }
         }
@@ -297,6 +305,7 @@ namespace ReScanVisualizer.Models
 
         public void Translate(double x = 0.0, double y = 0.0, double z = 0.0)
         {
+            Point3D oldPosition = _origin;
             if (x != 0.0)
             {
                 _origin.X += x;
@@ -309,15 +318,16 @@ namespace ReScanVisualizer.Models
             {
                 _origin.Z += z;
             }
+            Point3D newPosition = _origin;
             if (x != 0.0 || y != 0.0 || z != 0.0)
             {
-                OnOriginChanged();
+                OnOriginChanged(ref oldPosition, ref newPosition);
             }
         }
 
-        private void OnOriginChanged()
+        private void OnOriginChanged(ref Point3D oldPosition, ref Point3D newPosition)
         {
-            OriginChanged?.Invoke(this, _origin);
+            OriginChanged?.Invoke(this, new PositionEventArgs(oldPosition, newPosition));
         }
 
         private void OnXChanged()

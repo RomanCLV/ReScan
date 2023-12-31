@@ -181,7 +181,7 @@ namespace ReScanVisualizer.ViewModels.Samples
                 CorrectZ = CorrectZ
             };
 
-            _model = Helper3D.Helper3D.BuildSphereModel(PointScalled, RadiusScalled, Color.Color, _renderQuality);
+            _model = Helper3D.BuildSphereModel(PointScalled, RadiusScalled, Color.Color, _renderQuality);
 
             Color.PropertyChanged += Color_PropertyChanged;
             Point.PropertyChanged += Point_PropertyChanged;
@@ -270,7 +270,7 @@ namespace ReScanVisualizer.ViewModels.Samples
 
         public void UpdateModelGeometry()
         {
-            _model.Geometry = Helper3D.Helper3D.BuildSphereGeometry(PointScalled, RadiusScalled, _renderQuality);
+            _model.Geometry = Helper3D.BuildSphereGeometry(PointScalled, RadiusScalled, _renderQuality);
         }
 
         public void UpdateModelMaterial()

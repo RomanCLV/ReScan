@@ -114,6 +114,7 @@
     <Compile Include="Converters\ScatterGraphBuilderResultReductionEnabledConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
+    <Compile Include="EventArgs\PositionEventArgs.cs" />
     <Compile Include="Models\IHideable.cs" />
     <Compile Include="Models\IModelisable.cs" />
     <Compile Include="Models\IPartSource.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="ViewModels\AddPartModelsViews\AddPartViewModel.cs" />
     <Compile Include="ViewModels\AddPartModelsViews\Builders\PartBuilderBase.cs" />
     <Compile Include="ViewModels\AddPartModelsViews\Builders\PointPartBuilder.cs" />
+    <Compile Include="ViewModels\AddPartModelsViews\Builders\RectanglePartBuilder.cs" />
     <Compile Include="ViewModels\AddPointViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\IScatterGraphBuilderGroup.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphBuildResult.cs" />
@@ -169,6 +171,9 @@
     </Compile>
     <Compile Include="Views\AddPartViews\PartVisualizerView.xaml.cs">
       <DependentUpon>PartVisualizerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddPartViews\RectanglePartBuilderView.xaml.cs">
+      <DependentUpon>RectanglePartBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Forms\Base3DForm.xaml.cs">
       <DependentUpon>Base3DForm.xaml</DependentUpon>
@@ -285,6 +290,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddPartViews\PartVisualizerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddPartViews\RectanglePartBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -419,7 +428,7 @@
     <Compile Include="Commands\AsyncCommandBase.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Converters\BoolToInverseBoolConverter.cs" />
-    <Compile Include="Helper3D\Helper3D.cs" />
+    <Compile Include="Others\Helper3D.cs" />
     <Compile Include="Models\I3DElement.cs" />
     <Compile Include="Models\ItemIndexed.cs" />
     <Compile Include="Models\Plan.cs" />

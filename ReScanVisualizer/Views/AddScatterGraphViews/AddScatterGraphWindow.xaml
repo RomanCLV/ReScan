@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
-        xmlns:vm="clr-namespace:ReScanVisualizer.ViewModels.AddScatterGraphViewModels"
         xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
         xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
         xmlns:uc="clr-namespace:ReScanVisualizer.UserControls"

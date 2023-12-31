@@ -46,6 +46,7 @@
                         <TextBlock Text="Choose the type of the new part" />
                         <ComboBox Margin="10" Width="150" HorizontalAlignment="Left" SelectedIndex="{Binding SelectedIndex}">
                             <ComboBoxItem Content="Point part" />
+                            <ComboBoxItem Content="Rectangle part" />
                         </ComboBox>
                         <Separator Margin="10" />
 
@@ -53,6 +54,9 @@
                             <DockPanel.Resources>
                                 <DataTemplate DataType="{x:Type builders:PointPartBuilder}">
                                     <local:PointPartBuilderView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type builders:RectanglePartBuilder}">
+                                    <local:RectanglePartBuilderView />
                                 </DataTemplate>
                             </DockPanel.Resources>
                             <local:PartVisualizerView DockPanel.Dock="Right" DataContext="{Binding PartVisualizerViewModel}" HorizontalAlignment="Right" Width="300" Height="300"/>

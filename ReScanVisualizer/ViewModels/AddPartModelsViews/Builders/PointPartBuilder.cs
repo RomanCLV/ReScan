@@ -15,7 +15,7 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews.Builders
 
         public override PartViewModelBase Build()
         {
-            PointPartViewModel partPointViewModel = new PointPartViewModel(OriginBase.Base3D);
+            PointPartViewModel partPointViewModel = new PointPartViewModel(OriginBase.Base3D, ScaleFactor);
             SetCommonParameters(partPointViewModel);
             return partPointViewModel;
         }

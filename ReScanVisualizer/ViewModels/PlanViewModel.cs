@@ -235,7 +235,7 @@ namespace ReScanVisualizer.ViewModels
             _renderQuality = renderQuality;
             _isSelected = false;
             _isMouseOver = false;
-            _model = Helper3D.Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0, Color.Color);
+            _model = Helper3D.BuildPlanModel(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0, Color.Color);
 
             Color.PropertyChanged += Color_PropertyChanged;
         }
@@ -307,7 +307,7 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            _model.Geometry = Helper3D.Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0);
+            _model.Geometry = Helper3D.BuildPlanGeometry(CenterScalled, _plan.GetNormal(), _up, LengthScalled, LengthScalled, 0);
         }
 
         public void UpdateModelMaterial()

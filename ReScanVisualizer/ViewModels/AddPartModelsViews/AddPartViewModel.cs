@@ -89,6 +89,10 @@ namespace ReScanVisualizer.ViewModels.AddPartModelViews
             {
                 Builder = new PointPartBuilder();
             }
+            else if (_selectedIndex == 1)
+            {
+                Builder = new RectanglePartBuilder(2.0, 2.0, 2.0);
+            }
             else
             {
                 Builder = null;

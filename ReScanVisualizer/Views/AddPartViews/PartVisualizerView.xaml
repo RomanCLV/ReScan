@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              >
     <Grid>
-        <HelixToolkit:HelixViewport3D>
+        <HelixToolkit:HelixViewport3D ShowCameraInfo="False">
             <HelixToolkit:HelixViewport3D.Background>
                 <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
                     <GradientStop Color="#FF0061FF" Offset="0"/>
@@ -18,7 +18,7 @@
             </HelixToolkit:HelixViewport3D.Background>
             <HelixToolkit:HelixViewport3D.Camera>
                 <PerspectiveCamera 
-                    LookDirection="-1 -1 -1"
+                    LookDirection="-3 -3 -3"
                     Position="3 3 3"
                     UpDirection="0 0 1"
                     />
@@ -27,8 +27,8 @@
             <HelixToolkit:SunLight/>
             <HelixToolkit:GridLinesVisual3D Width="10" Length="10" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
 
-            <ModelVisual3D Content="{Binding OriginModel}" />
             <ModelVisual3D Content="{Binding PartModel}" />
+            <ModelVisual3D Content="{Binding OriginModel}" />
 
         </HelixToolkit:HelixViewport3D>
     </Grid>
