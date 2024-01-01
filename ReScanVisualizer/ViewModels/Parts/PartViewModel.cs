@@ -48,9 +48,32 @@ namespace ReScanVisualizer.ViewModels.Parts
             {
                 if (SetValue(ref _isHidden, value))
                 {
-                    AreScatterGraphesHidden = _isHidden;
+                    IsPartVisualHidden = _isHidden;
                     AreBasesHidden = _isHidden;
+                    AreScatterGraphesHidden = _isHidden;
+                    Barycenter.IsHidden = _isHidden;
                     OnIsHiddenChanged();
+                }
+            }
+        }
+
+        private bool _isPartVisualHidden;
+        public bool IsPartVisualHidden
+        {
+            get => _isPartVisualHidden;
+            set
+            {
+                if (SetValue(ref _isPartVisualHidden, value))
+                {
+                    if (_partVisualModel != null)
+                    {
+                        SaveOrApplyPartMaterial();
+                    }
+                    if (!_isPartVisualHidden && _isHidden)
+                    {
+                        _isHidden = false;
+                        OnPropertyChanged(nameof(IsHidden));
+                    }
                 }
             }
         }
@@ -87,6 +110,11 @@ namespace ReScanVisualizer.ViewModels.Parts
                         base3D.IsHidden = _areBasesHidden;
                     }
                     _isBasesHiddenChanging = false;
+                    if (!_areBasesHidden && _isHidden)
+                    {
+                        _isHidden = false;
+                        OnPropertyChanged(nameof(IsHidden));
+                    }
                 }
             }
         }
@@ -182,6 +210,32 @@ namespace ReScanVisualizer.ViewModels.Parts
         protected readonly Model3DGroup _modelGroup;
         public Model3D Model => _modelGroup;
 
+        private GeometryModel3D? _partVisualModel;
+        protected GeometryModel3D? PartVisualModel
+        {
+            get => _partVisualModel;
+            set
+            {
+                if (_partVisualModel != null && !_partVisualModel.Equals(value))
+                {
+                    _modelGroup.Children.Remove(_partVisualModel);
+                }
+                if (SetValue(ref _partVisualModel, value))
+                {
+                    if (_partVisualModel != null)
+                    {
+                        AddPartVisualModel();
+                        if (_isPartVisualHidden)
+                        {
+                            SaveOrApplyPartMaterial();
+                        }
+                    }
+                }
+            }
+        }
+
+        private Material? _oldMaterial;
+
         private RenderQuality _renderQuality;
         public RenderQuality RenderQuality
         {
@@ -219,6 +273,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             _name = "Part " + InstanceCreated;
             _haveDimensions = false;
             _isHidden = false;
+            _isPartVisualHidden = _isHidden;
             _areBasesHidden = _isHidden;
             _originAttachedToBarycenter = true;
             _scaleFactor = scaleFactor;
@@ -228,8 +283,10 @@ namespace ReScanVisualizer.ViewModels.Parts
             _isSelected = false;
             _bases = new List<Base3DViewModel>(1);
             _modelGroup = new Model3DGroup();
+            _partVisualModel = null;
+            _oldMaterial = null;
             _scatterGraphs = new ObservableCollection<ScatterGraphViewModel>();
-            _barycenter = new BarycenterViewModel(originBase.Origin, Colors.Yellow, _scaleFactor, 0.25, renderQuality);
+            _barycenter = new BarycenterViewModel(new Point3D(), Colors.Yellow, _scaleFactor, 0.25, renderQuality);
             OriginBase = new Base3DViewModel(originBase, _scaleFactor, 1.0, renderQuality)
             {
                 Name = "Origin base",
@@ -273,6 +330,33 @@ namespace ReScanVisualizer.ViewModels.Parts
             if (InstanceCreated < 0)
             {
                 InstanceCreated--;
+            }
+        }
+
+        protected void AddPartVisualModel()
+        {
+            if (!_modelGroup.Children.Contains(_partVisualModel))
+            {
+                _modelGroup.Children.Add(_partVisualModel);
+            }
+        }
+
+        private void SaveOrApplyPartMaterial()
+        {
+            if (_partVisualModel != null)
+            {
+                if (_isPartVisualHidden)
+                {
+                    _oldMaterial = _partVisualModel.Material;
+                    _partVisualModel.Material = null;
+                    _partVisualModel.BackMaterial = null;
+                }
+                else
+                {
+                    _partVisualModel.Material = _oldMaterial;
+                    _partVisualModel.BackMaterial = _partVisualModel.Material;
+                    _oldMaterial = null;
+                }
             }
         }
 
@@ -476,6 +560,21 @@ namespace ReScanVisualizer.ViewModels.Parts
             IsHidden = !_isHidden;
         }
 
+        public void InverseIsPartVisualHidden()
+        {
+            IsPartVisualHidden = !_isPartVisualHidden;
+        }
+
+        public void InverseAreBasesHidden()
+        {
+            AreBasesHidden = !_areBasesHidden;
+        }
+
+        public void InverseAreScatterGraphesHidden()
+        {
+            AreScatterGraphesHidden = !_areScatterGraphesHidden;
+        }
+
         public void Select()
         {
             IsSelected = true;
@@ -551,7 +650,7 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public virtual bool IsBelongingToModel(GeometryModel3D geometryModel3D)
         {
-            return 
+            return
                 _barycenter.IsBelongingToModel(geometryModel3D) ||
                 _bases.Any(x => x.IsBelongingToModel(geometryModel3D));
         }

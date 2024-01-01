@@ -8,6 +8,8 @@
              xmlns:parts="clr-namespace:ReScanVisualizer.ViewModels.Parts"
              xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
              xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
+             xmlns:views="clr-namespace:ReScanVisualizer.Views"
+             xmlns:forms="clr-namespace:ReScanVisualizer.Views.Forms"
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="400"
              Foreground="{StaticResource foregroundColor}">
@@ -71,6 +73,30 @@
                             </Button>
                             <TextBlock Text="Visible" Style="{StaticResource myTextBlock}" />
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="PartVisualVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding IsPartVisualHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Part visual visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="BasesVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding AreBasesHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Base(s) visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource myButtonIconNoPadding}" Click="GraphVisibilityButton_Click" Margin="5">
+                                <Button.Content>
+                                    <Image Source="{Binding AreScatterGraphesHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                </Button.Content>
+                            </Button>
+                            <TextBlock Text="Scatter graph(s) visible" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -83,6 +109,35 @@
                         </DataTemplate>
                     </ScrollViewer.Resources>
                     <ContentControl Content="{Binding ElementName=tabControl, Path=DataContext}"/>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Barycenter / Origin">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <CheckBox IsChecked="{Binding OriginAttachedToBarycenter}" Content="Is origin attached to the barycenter" Margin="5" Foreground="{StaticResource foregroundColor}" />
+
+                        <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                            <StackPanel>
+                                <TextBlock Text="Origin" Style="{StaticResource myTextBlockLeft}"/>
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20">
+                                    <Button Style="{StaticResource myButtonIconNoPadding}" Click="OriginBaseVisibilityButton_Click" Margin="5">
+                                        <Button.Content>
+                                            <Image Source="{Binding OriginBase.IsHidden, Converter={StaticResource IsHiddenToImageConverter}}" Height="12" Width="19" />
+                                        </Button.Content>
+                                    </Button>
+                                    <TextBlock Text="Base visible" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                                <forms:PointForm Width="150" DataContext="{Binding OriginBase.Origin}" IsEnabled="False" />
+                            </StackPanel>
+                            <StackPanel Width="20">
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Barycenter" Style="{StaticResource myTextBlockLeft}"/>
+                                <views:SampleView DataContext="{Binding Barycenter}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
                 </ScrollViewer>
             </TabItem>
         </TabControl>

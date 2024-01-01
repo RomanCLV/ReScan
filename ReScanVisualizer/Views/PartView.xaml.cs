@@ -1,5 +1,4 @@
-﻿using ReScanVisualizer.ViewModels.Parts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReScanVisualizer.ViewModels.Parts;
 
 namespace ReScanVisualizer.Views
 {
@@ -31,6 +31,38 @@ namespace ReScanVisualizer.Views
             if (DataContext is PartViewModelBase partViewModelBase) 
             {
                 partViewModelBase.InverseIsHidden();
+            }
+        }
+
+        private void BasesVisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartViewModelBase partViewModelBase)
+            {
+                partViewModelBase.InverseAreBasesHidden();
+            }
+        }
+
+        private void PartVisualVisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartViewModelBase partViewModelBase)
+            {
+                partViewModelBase.InverseIsPartVisualHidden();
+            }
+        }
+
+        private void GraphVisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartViewModelBase partViewModelBase)
+            {
+                partViewModelBase.InverseAreScatterGraphesHidden();
+            }
+        }
+
+        private void OriginBaseVisibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is PartViewModelBase partViewModelBase)
+            {
+                partViewModelBase.OriginBase.InverseIsHidden();
             }
         }
     }

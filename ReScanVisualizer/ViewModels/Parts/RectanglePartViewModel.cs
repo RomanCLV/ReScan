@@ -8,6 +8,8 @@ using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 using ReScanVisualizer.Models;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels.Parts
 {
     public class RectanglePartViewModel : PartViewModelBase
@@ -83,9 +85,7 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public Base3DViewModel DownBase { get; }
 
-        private readonly GeometryModel3D _rectangleModel;
-
-        public RectanglePartViewModel(Base3D origin, double width = 1.0, double length = 1.0, double height = 1.0, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High) 
+        public RectanglePartViewModel(Base3D origin, double width = 1.0, double length = 1.0, double height = 1.0, double scaleFactor = 1.0, RenderQuality renderQuality = RenderQuality.High)
             : base(origin, scaleFactor, renderQuality)
         {
             if (width <= 0.0)
@@ -101,7 +101,7 @@ namespace ReScanVisualizer.ViewModels.Parts
                 throw new ArgumentException(nameof(height), "height must be positive.");
             }
             HaveDimensions = true;
-            _width  = width ; // on X
+            _width = width; // on X
             _length = length; // on Y
             _height = height; // on Z
 
@@ -172,8 +172,8 @@ namespace ReScanVisualizer.ViewModels.Parts
             AddBase(UpBase);
             AddBase(DownBase);
 
-            _rectangleModel = Helper3D.BuildRectangleModel(OriginScalled, _width * ScaleFactor, _length * ScaleFactor, _height * ScaleFactor, Colors.LightBlue.ChangeAlpha(150));
-            ((Model3DGroup)Model).Children.Add(_rectangleModel);
+            PartVisualModel = Helper3D.BuildRectangleModel(OriginScalled, _width * ScaleFactor, _length * ScaleFactor, _height * ScaleFactor, Colors.LightBlue.ChangeAlpha(150));
+            AddPartVisualModel();
         }
 
         private void UpdateFrontAndBackBase(double deltaWidth)
@@ -225,7 +225,10 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         public override void UpdateModelGeometry()
         {
-            _rectangleModel.Geometry = Helper3D.BuildRectangleGeometry(OriginScalled, _width * ScaleFactor, _length * ScaleFactor, _height * ScaleFactor);
+            if (PartVisualModel != null)
+            {
+                PartVisualModel.Geometry = Helper3D.BuildRectangleGeometry(OriginScalled, _width * ScaleFactor, _length * ScaleFactor, _height * ScaleFactor);
+            }
         }
     }
 }
