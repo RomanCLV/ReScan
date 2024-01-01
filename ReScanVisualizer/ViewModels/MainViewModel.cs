@@ -257,14 +257,18 @@ namespace ReScanVisualizer.ViewModels
 
                 case NotifyCollectionChangedAction.Reset:
                     Models.Children.Clear();
-                    if (_selectedViewModel is BaseViewModel baseViewModel)
+                    if (_selectedViewModel is ScatterGraphViewModel)
+                    {
+                        SelectedViewModel = null;
+                    }
+                    else if (_selectedViewModel is BaseViewModel baseViewModel)
                     {
                         if (Bases.All(b => !b.Equals(baseViewModel.Base)))
                         {
                             SelectedViewModel = null;
                         }
                     }
-                    else
+                    else if (_selectedViewModel is IScatterGraphElement scatterGraphElement)
                     {
                         SelectedViewModel = null;
                     }
@@ -389,6 +393,10 @@ namespace ReScanVisualizer.ViewModels
                         scatterGraphViewModel.Part = null;
                     }
                     PartsModels.Children.Clear();
+                    if (_selectedViewModel is PartViewModelBase)
+                    {
+                        SelectedViewModel = null;
+                    }
                     break;
             }
         }

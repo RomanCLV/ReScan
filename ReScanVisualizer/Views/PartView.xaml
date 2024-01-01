@@ -16,9 +16,9 @@
         <converters:IsHiddenToImageConverter x:Key="IsHiddenToImageConverter" />
         <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
     </UserControl.Resources>
-    
+
     <Grid>
-        <TabControl Background="Transparent">
+        <TabControl Background="Transparent" x:Name="tabControl">
             <TabItem Header="General">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -74,6 +74,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+
             <TabItem Header="Dimensions" IsEnabled="{Binding HaveDimensions}">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ScrollViewer.Resources>
@@ -81,7 +82,7 @@
                             <dimensions:RectanglePartDimensionsView />
                         </DataTemplate>
                     </ScrollViewer.Resources>
-                    <ContentControl Content="{Binding DataContext}" />
+                    <ContentControl Content="{Binding ElementName=tabControl, Path=DataContext}"/>
                 </ScrollViewer>
             </TabItem>
         </TabControl>

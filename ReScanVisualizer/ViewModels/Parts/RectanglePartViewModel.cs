@@ -24,10 +24,11 @@ namespace ReScanVisualizer.ViewModels.Parts
                 {
                     value = 1.0;
                 }
-                double delta = value - _width;
+                double delta = (value - _width) / 2.0;
                 if (SetValue(ref _width, value))
                 {
                     UpdateFrontAndBackBase(delta);
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -42,10 +43,11 @@ namespace ReScanVisualizer.ViewModels.Parts
                 {
                     value = 1.0;
                 }
-                double delta = value - _length;
+                double delta = (value - _length) / 2.0;
                 if (SetValue(ref _length, value))
                 {
                     UpdateLeftAndRightBase(delta);
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -60,10 +62,11 @@ namespace ReScanVisualizer.ViewModels.Parts
                 {
                     value = 1.0;
                 }
-                double delta = value - _height;
+                double delta = (value - _height) / 2.0;
                 if (SetValue(ref _height, value))
                 {
                     UpdateUpAndDownBase(delta);
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -175,20 +178,32 @@ namespace ReScanVisualizer.ViewModels.Parts
 
         private void UpdateFrontAndBackBase(double deltaWidth)
         {
+            FrontBase.CanTranslate = true;
+            BackBase.CanTranslate = true;
             FrontBase.Translate(deltaWidth, 0, 0);
             BackBase.Translate(-deltaWidth, 0, 0);
+            FrontBase.CanTranslate = false;
+            BackBase.CanTranslate = false;
         }
 
         private void UpdateLeftAndRightBase(double deltaLength)
         {
+            LeftBase.CanTranslate = true;
+            RightBase.CanTranslate = true;
             LeftBase.Translate(0, deltaLength, 0);
             RightBase.Translate(0, -deltaLength, 0);
+            LeftBase.CanTranslate = false;
+            RightBase.CanTranslate = false;
         }
 
         private void UpdateUpAndDownBase(double deltaHeight)
         {
+            UpBase.CanTranslate = true;
+            DownBase.CanTranslate = true;
             UpBase.Translate(0, 0, deltaHeight);
             DownBase.Translate(0, 0, -deltaHeight);
+            UpBase.CanTranslate = false;
+            DownBase.CanTranslate = false;
         }
 
         public override Base3D FindNeareatBase(Point3D point)
