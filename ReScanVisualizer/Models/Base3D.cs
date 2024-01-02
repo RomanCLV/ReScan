@@ -475,6 +475,47 @@ namespace ReScanVisualizer.Models
             Z *= -1.0;
         }
 
+        public void ResetAxis(Axis axis)
+        {
+            switch (axis)
+            {
+                case Axis.X:
+                    _x.X = 1.0;
+                    _x.Y = 0.0;
+                    _x.Z = 0.0;
+                    OnXChanged();
+                    break;
+                case Axis.Y:
+                    _y.X = 0.0;
+                    _y.Y = 1.0;
+                    _y.Z = 0.0;
+                    OnYChanged();
+                    break;
+                case Axis.Z:
+                    _z.X = 0.0;
+                    _z.Y = 0.0;
+                    _z.Z = 1.0;
+                    OnZChanged();
+                    break;
+            }
+        }
+
+        public void ResetAllAxis()
+        {
+            _x.X = 1.0;
+            _x.Y = 0.0;
+            _x.Z = 0.0;
+            _y.X = 0.0;
+            _y.Y = 1.0;
+            _y.Z = 0.0;
+            _z.X = 0.0;
+            _z.Y = 0.0;
+            _z.Z = 1.0;
+            OnXChanged();
+            OnYChanged();
+            OnZChanged();
+        }
+
         public override string ToString()
         {
             return $"{X.X};{X.Y};{X.Z};{Y.X};{Y.Y};{Y.Z};{Z.X};{Z.Y};{Z.Z}";

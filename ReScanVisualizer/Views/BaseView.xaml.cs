@@ -72,6 +72,15 @@ namespace ReScanVisualizer.Views
             }
         }
 
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is BaseViewModel viewModel)
+            {
+                viewModel.ResetAllAxis();
+            }
+        }
+
         private void RotateNDegreeButton_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;

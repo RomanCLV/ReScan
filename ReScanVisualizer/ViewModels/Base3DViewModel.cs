@@ -679,5 +679,21 @@ namespace ReScanVisualizer.ViewModels
         {
             _base3D.Normalize();
         }
+
+        public void ResetAxis(Axis axis)
+        {
+            if (_canReorient)
+            {
+                _base3D.ResetAxis(axis);
+            }
+        }
+
+        public void ResetAllAxis()
+        {
+            if (_canReorient)
+            {
+                _base3D.ResetAllAxis();
+            }
+        }
     }
 }

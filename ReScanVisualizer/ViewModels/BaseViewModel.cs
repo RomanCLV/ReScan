@@ -423,7 +423,7 @@ namespace ReScanVisualizer.ViewModels
         {
             if (CanTranslate)
             {
-                Base.Translate(_translateX, _translateY, _translateZ);
+                _base.Translate(_translateX, _translateY, _translateZ);
                 TranslateX = 0.0;
                 TranslateY = 0.0;
                 TranslateZ = 0.0;
@@ -445,13 +445,13 @@ namespace ReScanVisualizer.ViewModels
         {
             if (CanRotate)
             {
-                Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), _rotationAngle, false);
+                _base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), _rotationAngle, false);
             }
         }
 
         public void EndRotateBase()
         {
-            Base.EndRotate();
+            _base.EndRotate();
             _rotationAngle = 0.0;
             OnPropertyChanged(nameof(RotationAngle));
         }
@@ -461,7 +461,7 @@ namespace ReScanVisualizer.ViewModels
             if (!_isUpdatingAngles && !_isUpdatingCartesian && CanReorient)
             {
                 Base3D orientedBase = Tools.ComputeOrientedBase(new Vector3D(_reorientX, _reorientY, _reorientZ), _reorientAxis);
-                Base.UpdateBase(orientedBase, false);
+                _base.UpdateBase(orientedBase, false);
             }
         }
 
@@ -469,7 +469,27 @@ namespace ReScanVisualizer.ViewModels
         {
             if (CanFlip)
             {
-                Base.Flip();
+                _base.Flip();
+                UpdateReorientCartesianFromBase();
+                UpdateAnglesFromCartesian();
+            }
+        }
+
+        public void ResetAxis(Axis axis)
+        {
+            if (CanReorient)
+            {
+                _base.ResetAxis(axis);
+                UpdateReorientCartesianFromBase();
+                UpdateAnglesFromCartesian();
+            }
+        }
+
+        public void ResetAllAxis()
+        {
+            if (CanReorient)
+            {
+                _base.ResetAllAxis();
                 UpdateReorientCartesianFromBase();
                 UpdateAnglesFromCartesian();
             }
@@ -479,7 +499,7 @@ namespace ReScanVisualizer.ViewModels
         {
             if (CanRotate)
             {
-                Base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), degree);
+                _base.Rotate(new Vector3D(_rotationX, _rotationY, _rotationZ), degree);
             }
         }
     }

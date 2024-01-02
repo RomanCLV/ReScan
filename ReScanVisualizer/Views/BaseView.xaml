@@ -176,7 +176,11 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
 
-                        <Button Grid.Row="0" Grid.Column="1" IsEnabled="{Binding CanFlip}" HorizontalAlignment="Right" Content="Flip base" Width="75" ToolTip="Flip base" Style="{StaticResource myButton}" Click="FlipButton_Click"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" >
+                            <Button IsEnabled="{Binding CanReorient}" Content="Reset axis" Width="75" ToolTip="Reset axis" Style="{StaticResource myButton}" Click="ResetButton_Click"/>
+                            <Button IsEnabled="{Binding CanFlip}"  Content="Flip base"  Width="75" ToolTip="Flip base"  Style="{StaticResource myButton}" Click="FlipButton_Click"/>
+                        </StackPanel>
+                        
 
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis" Width="65" Style="{StaticResource myTextBlockLeft}"/>
                         <ComboBox  Grid.Row="0" Grid.Column="1" Width="100" Height="20"
