@@ -10,8 +10,10 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels;
 
 namespace ReScanVisualizer.Views.ItemTreeViews
@@ -24,6 +26,14 @@ namespace ReScanVisualizer.Views.ItemTreeViews
         public BaseTreeViewItemHeader()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is ICameraFocusable cameraFocusable)
+            {
+                ((MainWindow)Application.Current.MainWindow).SetCamera(cameraFocusable.GetCameraConfigurationToFocus(), 1.0);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

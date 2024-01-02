@@ -657,6 +657,10 @@ namespace ReScanVisualizer.Views
             }
         }
 
+        public void SetCamera(CameraConfiguration cameraConfiguration, double animationTime = 0.3)
+        {
+            _viewPort.Camera.LookAt(cameraConfiguration.Target, cameraConfiguration.Direction, animationTime);
+        }
 
         #endregion
     }

@@ -13,7 +13,7 @@ using ReScanVisualizer.ViewModels.Parts;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class Base3DViewModel : ViewModelBase, I3DElement, IScatterGraphElement
+    public class Base3DViewModel : ViewModelBase, I3DElement, IScatterGraphElement, ICameraFocusable
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
@@ -694,6 +694,31 @@ namespace ReScanVisualizer.ViewModels
             {
                 _base3D.ResetAllAxis();
             }
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus()
+        {
+            return GetCameraConfigurationToFocus(new Vector3D(-1.0, -1.0, -1.0));
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction)
+        {
+            return GetCameraConfigurationToFocus(direction, 0.0);
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double minDistance)
+        {
+            Point3D target = _base3D.Origin;
+
+            //direction.Normalize();
+            direction *= 1.1;
+            if (direction.Length < minDistance)
+            {
+                direction *= (minDistance / direction.Length);
+            }
+            Point3D position = _base3D.Origin - direction;
+
+            return new CameraConfiguration(position, target);
         }
     }
 }

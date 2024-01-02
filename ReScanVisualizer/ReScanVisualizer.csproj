@@ -116,6 +116,8 @@
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
     <Compile Include="EventArgs\PositionEventArgs.cs" />
+    <Compile Include="Models\CameraConfiguration.cs" />
+    <Compile Include="Models\ICameraFocusable.cs" />
     <Compile Include="Models\IHideable.cs" />
     <Compile Include="Models\IModelisable.cs" />
     <Compile Include="Models\IPartSource.cs" />
