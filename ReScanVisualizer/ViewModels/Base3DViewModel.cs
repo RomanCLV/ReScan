@@ -731,18 +731,19 @@ namespace ReScanVisualizer.ViewModels
             }
 
             direction.Normalize();
+            Base3D base3D = GetBaseScalled();
 
             // Points clés = origin et les points X, Y, Z associés aux vecteurs OX, OY, OZ
 
             Point3D[] keyPointsInWorld0 = new Point3D[4]
             {
-                _base3D.Origin,
-                _base3D.Origin + _base3D.X,
-                _base3D.Origin + _base3D.Y,
-                _base3D.Origin + _base3D.Z,
+                base3D.Origin,
+                base3D.Origin + base3D.X,
+                base3D.Origin + base3D.Y,
+                base3D.Origin + base3D.Z,
             };
 
-            Matrix3D t0B = _base3D.ToMatrix3D();
+            Matrix3D t0B = base3D.ToMatrix3D();
             Matrix3D tB0 = t0B.Inverse();
 
             // projection des points sur le plan donné par la direction de la camera
