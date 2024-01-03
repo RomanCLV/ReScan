@@ -33,18 +33,52 @@ namespace ReScanVisualizer.Views
         private int shiftStartIndex;
         private int shiftEndIndex;
 
+        private static HelixViewport3D? _static_viewport;
+
         public MainWindow()
         {
             InitializeComponent();
             _geometryModel3DMouseOver = null;
             shiftStartIndex = 0;
             shiftEndIndex = 0;
+
+            _static_viewport = _viewPort;
+        }
+
+        ~MainWindow()
+        {
+            if (_static_viewport != null && _static_viewport.Equals(_viewPort))
+            {
+                _static_viewport = null;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ((MainViewModel)DataContext).Dispose();
         }
+
+        #region static
+
+        public static HelixViewport3D? GetViewPort()
+        {
+            return _static_viewport;
+        }
+
+        public static PerspectiveCamera? GetCamera()
+        {
+            return _static_viewport?.Camera is PerspectiveCamera camera ? camera : null;
+        }
+
+        public static void SetCamera(CameraConfiguration cameraConfiguration, double animationTime = 0.3)
+        {
+            if (_static_viewport != null)
+            {
+                _static_viewport.Camera.LookAt(cameraConfiguration.Target, cameraConfiguration.Direction, new Vector3D(0, 0, 1), animationTime);
+            }
+        }
+
+        #endregion
 
         private void TabControl_KeyUp(object sender, KeyEventArgs e)
         {
@@ -655,11 +689,6 @@ namespace ReScanVisualizer.Views
                 ((MainViewModel)DataContext).UnselectMouseOverGeometry();
                 _geometryModel3DMouseOver = null;
             }
-        }
-
-        public void SetCamera(CameraConfiguration cameraConfiguration, double animationTime = 0.3)
-        {
-            _viewPort.Camera.LookAt(cameraConfiguration.Target, cameraConfiguration.Direction, animationTime);
         }
 
         #endregion

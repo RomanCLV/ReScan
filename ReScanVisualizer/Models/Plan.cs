@@ -82,6 +82,10 @@ namespace ReScanVisualizer.Models
 	        <=> t = - (a*Xa + b*Ya + c*Za) / (a^2 + b^2 + c^2)
 
 	        Maintenant qu'on a t, on peut trouver les coordonnees du point A' en le mettant dans S1.
+
+            Autre doc :
+            // https://fr.wikipedia.org/wiki/Projection_orthogonale#Projet%C3%A9_orthogonal_sur_un_plan,_distance
+
 	        */
 
             double t = -(A * point.X + B * point.Y + C * point.Z + D) / (A * A + B * B + C * C);
@@ -92,7 +96,7 @@ namespace ReScanVisualizer.Models
             );
         }
 
-        static double GetDistanceFrom(Plan plan, Point3D point)
+        public static double GetDistanceFrom(Plan plan, Point3D point)
         {
             /*
 			         | a*Xm + b*Ym + c*Zm + d  |

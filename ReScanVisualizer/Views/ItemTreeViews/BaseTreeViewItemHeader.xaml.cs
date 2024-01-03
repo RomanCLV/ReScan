@@ -32,7 +32,7 @@ namespace ReScanVisualizer.Views.ItemTreeViews
         {
             if (DataContext is ICameraFocusable cameraFocusable)
             {
-                ((MainWindow)Application.Current.MainWindow).SetCamera(cameraFocusable.GetCameraConfigurationToFocus(), 1.0);
+                MainWindow.SetCamera(cameraFocusable.GetCameraConfigurationToFocus(MainWindow.GetCamera().FieldOfView), 1.0);
             }
         }
 

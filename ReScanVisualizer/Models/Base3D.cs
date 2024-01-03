@@ -388,7 +388,7 @@ namespace ReScanVisualizer.Models
                 _origin.X, _origin.Y, _origin.Z, 1);
         }
 
-        public Matrix3D GetTransformMatrix()
+        public Matrix3D GetTransformMatrixMatchXAxis()
         {
             Vector3D xAxis = new Vector3D(1, 0, 0);
             Vector3D rotationAxis = Vector3D.CrossProduct(xAxis, _x);

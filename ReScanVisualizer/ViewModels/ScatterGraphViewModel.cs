@@ -605,7 +605,8 @@ namespace ReScanVisualizer.ViewModels
             Point3D currentPoint;
             double maxDistance = 0.0;
             double currentDistance;
-            Matrix3D matrix = base3D.GetTransformMatrix();
+            //Matrix3D matrix = base3D.ToMatrix3D();
+            Matrix3D matrix = base3D.GetTransformMatrixMatchXAxis();
             matrix.Invert();
 
             for (int i = 0; i < size; i++)
