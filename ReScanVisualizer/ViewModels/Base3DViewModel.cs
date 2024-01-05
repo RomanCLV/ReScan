@@ -747,7 +747,7 @@ namespace ReScanVisualizer.ViewModels
             Matrix3D tB0 = t0B.Inverse();
 
             // projection des points sur le plan donné par la direction de la camera
-            // et determination de la distance max
+            // M : et determination de la distance max
             Plan plan = new Plan(direction);
             double maxDistance = 0.0;
             double distance;
@@ -763,8 +763,8 @@ namespace ReScanVisualizer.ViewModels
             }
 
             // M : multiplier la distance par le ratio de l'ecran si > 1
-            HelixViewport3D vp = MainWindow.GetViewPort()!;
-            maxDistance *= Math.Max(1.0, vp.ActualWidth / vp.ActualHeight);
+            //HelixViewport3D vp = MainWindow.GetViewPort()!;
+            //maxDistance *= Math.Max(1.0, vp.ActualWidth / vp.ActualHeight);
 
             // L : determination de la distance target - camera
             distance = maxDistance / Math.Tan(Tools.DegreeToRadian(fov / 2.0));
