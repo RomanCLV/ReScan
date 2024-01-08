@@ -102,7 +102,9 @@ namespace ReScanVisualizer.ViewModels
 
         public CommandKey ExportBaseCommand { get; }
 
-        public MainViewModel()
+        private static readonly Lazy<MainViewModel> instance = new Lazy<MainViewModel>(() => new MainViewModel());
+
+        private MainViewModel()
         {
             IsDisposed = false;
             OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
@@ -134,6 +136,11 @@ namespace ReScanVisualizer.ViewModels
         ~MainViewModel()
         {
             Dispose();
+        }
+
+        public static MainViewModel GetInstance()
+        {
+            return instance.Value;
         }
 
         public override void Dispose()

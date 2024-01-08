@@ -87,10 +87,9 @@ namespace ReScanVisualizer.Views.ItemTreeViews
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ScatterGraphViewModel scatterGraphViewModel && sender is Button button)
+            if (DataContext is ScatterGraphViewModel scatterGraphViewModel && sender is Button)
             {
-                MainViewModel mainViewModel = (MainViewModel)Application.Current.MainWindow.DataContext;
-                mainViewModel.ScatterGraphs.Remove(scatterGraphViewModel);
+                MainViewModel.GetInstance().ScatterGraphs.Remove(scatterGraphViewModel);
             }
         }
     }

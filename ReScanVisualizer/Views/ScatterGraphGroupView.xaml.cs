@@ -44,7 +44,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is ScatterGraphGroupViewModel viewModel)
             {
-                MainViewModel mainViewModel = (MainViewModel)Application.Current.MainWindow.DataContext;
+                MainViewModel mainViewModel = MainViewModel.GetInstance();
                 foreach (ScatterGraphViewModel item in viewModel)
                 {
                     mainViewModel.ScatterGraphs.Remove(item);

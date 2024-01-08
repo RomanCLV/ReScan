@@ -26,10 +26,16 @@ namespace ReScanVisualizer
         {
             MainWindow = new MainWindow()
             {
-                DataContext = new MainViewModel()
+                DataContext = MainViewModel.GetInstance()
             };
             MainWindow.Show();
             base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            MainViewModel.GetInstance().Dispose();
+            base.OnExit(e);
         }
     }
 }

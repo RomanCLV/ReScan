@@ -49,7 +49,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
             {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = scatterGraphViewModel.Part;
+                MainViewModel.GetInstance().SelectedViewModel = scatterGraphViewModel.Part;
             }
         }
 
@@ -57,7 +57,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is ScatterGraphViewModel scatterGraphViewModel)
             {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).ScatterGraphs.Remove(scatterGraphViewModel);
+                MainViewModel.GetInstance().ScatterGraphs.Remove(scatterGraphViewModel);
             }
         }
 
@@ -209,7 +209,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is ScatterGraphViewModel scatterGraphView)
             {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = scatterGraphView.Barycenter;
+                MainViewModel.GetInstance().SelectedViewModel = scatterGraphView.Barycenter;
                 scatterGraphView.Select();
             }
         }
@@ -218,7 +218,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is ScatterGraphViewModel scatterGraphView)
             {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = scatterGraphView.AveragePlan;
+                MainViewModel.GetInstance().SelectedViewModel = scatterGraphView.AveragePlan;
                 scatterGraphView.Select();
             }
         }
@@ -227,7 +227,7 @@ namespace ReScanVisualizer.Views
         {
             if (DataContext is ScatterGraphViewModel scatterGraphView)
             {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = new BaseViewModel(scatterGraphView.Base3D);
+                MainViewModel.GetInstance().SelectedViewModel = new BaseViewModel(scatterGraphView.Base3D);
                 scatterGraphView.Select();
             }
         }

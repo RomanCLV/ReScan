@@ -92,7 +92,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                 }
                 if (_builder != null)
                 {
-                    _builder.PartsListSource = (MainViewModel)Application.Current.MainWindow.DataContext;
+                    _builder.PartsListSource = MainViewModel.GetInstance();
                 }
             }
         }

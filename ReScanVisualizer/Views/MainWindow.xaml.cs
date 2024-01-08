@@ -389,7 +389,7 @@ namespace ReScanVisualizer.Views
         {
             if (sender is PartScatterGraphTreeViewItem vi && vi.DataContext is ScatterGraphViewModel graph)
             {
-                ((MainViewModel)Application.Current.MainWindow.DataContext).SelectedViewModel = graph;
+                MainViewModel.GetInstance().SelectedViewModel = graph;
             }
         }
 

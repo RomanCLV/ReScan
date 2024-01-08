@@ -38,7 +38,7 @@ namespace ReScanVisualizer.Views.ItemTreeViews
         {
             if (DataContext is PartViewModelBase partViewModel)
             {
-                ((MainViewModel) Application.Current.MainWindow.DataContext).Parts.Remove(partViewModel);
+                MainViewModel.GetInstance().Parts.Remove(partViewModel);
             }
         }
     }
