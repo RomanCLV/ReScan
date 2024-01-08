@@ -388,23 +388,6 @@ namespace ReScanVisualizer.Models
                 _origin.X, _origin.Y, _origin.Z, 1);
         }
 
-        public Matrix3D GetTransformMatrixMatchXAxis()
-        {
-            Vector3D xAxis = new Vector3D(1, 0, 0);
-            Vector3D rotationAxis = Vector3D.CrossProduct(xAxis, _x);
-            double angle = Vector3D.AngleBetween(xAxis, _x);
-            Matrix3D rot;
-            if (angle == 0)
-            {
-                rot = Matrix3D.Identity;
-                return rot;
-            }
-            rot = new Matrix3D();
-            rot.Rotate(new Quaternion(rotationAxis, -angle));
-            rot.Clamp();
-            return rot;
-        }
-
         public Plan GetPlan(Plan2D plan2D)
         {
             Vector3D normal = plan2D switch

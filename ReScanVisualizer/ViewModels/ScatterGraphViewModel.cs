@@ -306,7 +306,7 @@ namespace ReScanVisualizer.ViewModels
             Point3D barycenter = ComputeBarycenter();
             Plan averagePlan = ComputeAveragePlan();
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
-            double averagePlanLength = 5; ComputeAveragePlanLength(base3D);
+            double averagePlanLength = ComputeAveragePlanLength(base3D);
 
             _barycenter = new BarycenterViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality)
             {
@@ -605,28 +605,21 @@ namespace ReScanVisualizer.ViewModels
             int size = _scatterGraph.Count;
             Point3D currentPoint;
             double maxDistance = 0.0;
-            double currentDistance;
-            //Matrix3D matrix = base3D.ToMatrix3D();
-            Matrix3D matrix = base3D.GetTransformMatrixMatchXAxis();
+            double distance;
+            Matrix3D matrix = base3D.ToMatrix3D();
             matrix.Invert();
 
             for (int i = 0; i < size; i++)
             {
                 currentPoint = _scatterGraph[i];
 
-                // cancel translation of origin
-                currentPoint.Offset(-base3D.Origin.X, -base3D.Origin.Y, -base3D.Origin.Z);
-
                 // rotate by the invert matrix
                 currentPoint = matrix.Transform(currentPoint);
 
-                // projection over the plan
-                // currentPoint.Z = 0.0;
-
-                currentDistance = Math.Max(Math.Abs(currentPoint.X), Math.Abs(currentPoint.Y));
-                if (currentDistance > maxDistance)
+                distance = Math.Max(Math.Abs(currentPoint.X), Math.Abs(currentPoint.Y));
+                if (distance > maxDistance)
                 {
-                    maxDistance = currentDistance;
+                    maxDistance = distance;
                 }
             }
             return 2.0 * maxDistance;
