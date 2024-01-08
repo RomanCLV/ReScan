@@ -698,14 +698,12 @@ namespace ReScanVisualizer.ViewModels
 
         public CameraConfiguration GetCameraConfigurationToFocus(double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
         {
-            return GetCameraConfigurationToFocus(new Vector3D(-1.0, -1.0, -1.0), fov, distanceScaling, minDistance);
+            return GetCameraConfigurationToFocus(-(_base3D.X + _base3D.Y + _base3D.Z), fov, distanceScaling, minDistance);
         }
 
         public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
         {
-            Rect3D bounds = _model.Bounds;
-            Point3D target = _base3D.Origin.Multiply(_scaleFactor);
-            return CameraHelper.GetCameraConfigurationToFocus(bounds, target, direction, fov, distanceScaling, minDistance);
+            return CameraHelper.GetCameraConfigurationToFocus(_model.Bounds, _base3D.Origin.Multiply(_scaleFactor), direction, fov, distanceScaling, minDistance);
         }
     }
 }

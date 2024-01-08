@@ -26,6 +26,14 @@ namespace ReScanVisualizer.Views.ItemTreeViews
             InitializeComponent();
         }
 
+        private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is PartViewModelBase partViewModel)
+            {
+                MainWindow.SetCamera(partViewModel.GetCameraConfigurationToFocus(MainWindow.GetCamera()!.FieldOfView));
+            }
+        }
+
         private void VisibilityButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is PartViewModelBase partViewModel)

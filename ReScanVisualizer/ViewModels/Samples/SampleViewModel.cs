@@ -15,7 +15,7 @@ using HelixToolkit.Wpf;
 
 namespace ReScanVisualizer.ViewModels.Samples
 {
-    public class SampleViewModel : ViewModelBase, I3DElement, IScatterGraphElement
+    public class SampleViewModel : ViewModelBase, I3DElement, IScatterGraphElement, ICameraFocusable
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
@@ -326,6 +326,16 @@ namespace ReScanVisualizer.ViewModels.Samples
                 z = ScatterGraphBuilderBase.MAX_Z;
             }
             return z;
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
+        {
+            return GetCameraConfigurationToFocus(new Vector3D(-1.0, -1.0, -1.0), fov, distanceScaling, minDistance);
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
+        {
+            return CameraHelper.GetCameraConfigurationToFocus(_model.Bounds, PointScalled, direction, fov, distanceScaling, minDistance);
         }
 
         public override string ToString()

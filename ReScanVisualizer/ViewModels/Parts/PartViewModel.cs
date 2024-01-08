@@ -5,11 +5,14 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Samples;
 
@@ -17,7 +20,7 @@ using ReScanVisualizer.ViewModels.Samples;
 
 namespace ReScanVisualizer.ViewModels.Parts
 {
-    public abstract class PartViewModelBase : ViewModelBase, I3DElement
+    public abstract class PartViewModelBase : ViewModelBase, I3DElement, ICameraFocusable
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
@@ -691,6 +694,73 @@ namespace ReScanVisualizer.ViewModels.Parts
             _bases.Clear();
             OnPropertyChanged(nameof(ItemsCount));
             OnPropertyChanged(nameof(Bases));
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
+        {
+            return GetCameraConfigurationToFocus(-(OriginBase.X + OriginBase.Y + OriginBase.Z), fov, distanceScaling, minDistance);
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
+        {
+            double minX = double.MaxValue;
+            double minY = double.MaxValue;
+            double minZ = double.MaxValue;
+            double maxX = double.MinValue;
+            double maxY = double.MinValue;
+            double maxZ = double.MinValue;
+
+            Rect3D currentBound;
+            double currentX1;
+            double currentX2;
+            double currentY1;
+            double currentY2;
+            double currentZ1;
+            double currentZ2;
+
+            foreach (ScatterGraphViewModel graph in _scatterGraphs)
+            {
+                currentBound = graph.Model.Bounds;
+                currentX1 = currentBound.X;
+                currentX2 = currentBound.X + currentBound.SizeX;
+                currentY1 = currentBound.Y;
+                currentY2 = currentBound.Y + currentBound.SizeY;
+                currentZ1 = currentBound.Z;
+                currentZ2 = currentBound.Z + currentBound.SizeZ;
+
+                if (currentX1 < minX)
+                {
+                    minX = currentX1;
+                }
+                if (currentX2 > maxX)
+                {
+                    maxX = currentX2;
+                }
+
+                if (currentY1 < minY)
+                {
+                    minY = currentY1;
+                }
+                if (currentY2 > maxY)
+                {
+                    maxY = currentY2;
+                }
+
+                if (currentZ1 < minZ)
+                {
+                    minZ = currentZ1;
+                }
+                if (currentZ2 > maxZ)
+                {
+                    maxZ = currentZ2;
+                }
+            }
+
+            Rect3D bounds = new Rect3D(
+                new Point3D(minX, minY, minZ),
+                new Size3D(maxX - minX, maxY - minY, maxZ - minZ));
+
+            return CameraHelper.GetCameraConfigurationToFocus(bounds, OriginBase.Origin.Multiply(OriginBase.ScaleFactor), direction, fov, distanceScaling, minDistance);
         }
     }
 }

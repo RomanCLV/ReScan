@@ -33,7 +33,7 @@ namespace ReScanVisualizer.Views
         private int shiftStartIndex;
         private int shiftEndIndex;
 
-        private static HelixViewport3D? _static_viewport;
+        private static HelixViewport3D? s_viewport;
 
         public MainWindow()
         {
@@ -42,14 +42,14 @@ namespace ReScanVisualizer.Views
             shiftStartIndex = 0;
             shiftEndIndex = 0;
 
-            _static_viewport = _viewPort;
+            s_viewport = _viewPort;
         }
 
         ~MainWindow()
         {
-            if (_static_viewport != null && _static_viewport.Equals(_viewPort))
+            if (s_viewport != null && s_viewport.Equals(_viewPort))
             {
-                _static_viewport = null;
+                s_viewport = null;
             }
         }
 
@@ -62,19 +62,28 @@ namespace ReScanVisualizer.Views
 
         public static HelixViewport3D? GetViewPort()
         {
-            return _static_viewport;
+            return s_viewport;
+        }
+
+        /// <summary>
+        /// Get the viewport view ration calculated as ActualWidth / ActualHeight.
+        /// </summary>
+        /// <returns>Returns -1 if the viewport is null, else the ration ActualWidth / ActualHeight.</returns>
+        public static double GetViewPortRatio()
+        {
+            return s_viewport is null ? -1.0 : s_viewport.ActualWidth / s_viewport.ActualHeight;
         }
 
         public static PerspectiveCamera? GetCamera()
         {
-            return _static_viewport?.Camera is PerspectiveCamera camera ? camera : null;
+            return s_viewport?.Camera is PerspectiveCamera camera ? camera : null;
         }
 
         public static void SetCamera(CameraConfiguration cameraConfiguration, double animationTime = 0.3)
         {
-            if (_static_viewport != null)
+            if (s_viewport != null)
             {
-                _static_viewport.Camera.LookAt(cameraConfiguration.Target, cameraConfiguration.Direction, new Vector3D(0, 0, 1), animationTime);
+                s_viewport.Camera.LookAt(cameraConfiguration.Target, cameraConfiguration.Direction, new Vector3D(0, 0, 1), animationTime);
             }
         }
 

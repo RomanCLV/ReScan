@@ -31,6 +31,15 @@ namespace ReScanVisualizer.Views.ItemTreeViews
             InitializeComponent();
         }
 
+        private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel graph)
+            {
+                double ratio = Math.Max(1.0, MainWindow.GetViewPortRatio());
+                MainWindow.SetCamera(graph.GetCameraConfigurationToFocus(MainWindow.GetCamera()!.FieldOfView, ratio));
+            }
+        }
+
         private void ColorSelector_ColorChanged(object sender, Color e)
         {
             if (DataContext is ScatterGraphViewModel scatterGraphViewModel)

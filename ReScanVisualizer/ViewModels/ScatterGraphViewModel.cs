@@ -14,12 +14,13 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
+using System.Windows.Documents;
 
 #nullable enable
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class ScatterGraphViewModel : ViewModelBase, I3DElement
+    public class ScatterGraphViewModel : ViewModelBase, I3DElement, ICameraFocusable
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
@@ -305,7 +306,7 @@ namespace ReScanVisualizer.ViewModels
             Point3D barycenter = ComputeBarycenter();
             Plan averagePlan = ComputeAveragePlan();
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
-            double averagePlanLength = ComputeAveragePlanLength(base3D);
+            double averagePlanLength = 5; ComputeAveragePlanLength(base3D);
 
             _barycenter = new BarycenterViewModel(barycenter, Colors.Red, _scaleFactor, _pointsRadius, _renderQuality)
             {
@@ -840,5 +841,16 @@ namespace ReScanVisualizer.ViewModels
         {
             SetFrom(_scatterGraph.GetReducedPercent(reductionFactor));
         }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
+        {
+            return GetCameraConfigurationToFocus(-_base3D.Z, fov, distanceScaling, minDistance);
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
+        {
+            return CameraHelper.GetCameraConfigurationToFocus(_model.Bounds, _base3D.Origin.Multiply(_base3D.ScaleFactor), direction, fov, distanceScaling, minDistance);
+        }
+
     }
 }

@@ -13,7 +13,7 @@ using HelixToolkit.Wpf;
 
 namespace ReScanVisualizer.ViewModels
 {
-    public class PlanViewModel : ViewModelBase, I3DElement, IScatterGraphElement
+    public class PlanViewModel : ViewModelBase, I3DElement, IScatterGraphElement, ICameraFocusable
     {
         public event EventHandler<bool>? IsHiddenChanged;
 
@@ -350,6 +350,16 @@ namespace ReScanVisualizer.ViewModels
             _center = center;
             OnPropertyChanged(nameof(Center));
             UpdatePlan(plan, up, length);
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
+        {
+            return GetCameraConfigurationToFocus(-_plan.GetNormal(), fov, distanceScaling, minDistance);
+        }
+
+        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
+        {
+            return CameraHelper.GetCameraConfigurationToFocus(_model.Bounds, CenterScalled, direction, fov, distanceScaling, minDistance);
         }
 
         public override string ToString()

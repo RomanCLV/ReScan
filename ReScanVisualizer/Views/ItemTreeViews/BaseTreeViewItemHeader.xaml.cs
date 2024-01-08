@@ -30,9 +30,10 @@ namespace ReScanVisualizer.Views.ItemTreeViews
 
         private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DataContext is ICameraFocusable cameraFocusable)
+            if (DataContext is Base3DViewModel base3D)
             {
-                MainWindow.SetCamera(cameraFocusable.GetCameraConfigurationToFocus(MainWindow.GetCamera().FieldOfView));
+                double ratio = Math.Max(1.0, MainWindow.GetViewPortRatio());
+                MainWindow.SetCamera(base3D.GetCameraConfigurationToFocus(MainWindow.GetCamera()!.FieldOfView, ratio));
             }
         }
 
