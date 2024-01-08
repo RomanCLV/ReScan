@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Samples;
 
 namespace ReScanVisualizer.Views.ItemTreeViews
@@ -24,6 +25,14 @@ namespace ReScanVisualizer.Views.ItemTreeViews
         public SampleTreeViewItemHeader()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is ICameraFocusable cameraFocusable)
+            {
+                MainWindow.SetCamera(cameraFocusable.GetCameraConfigurationToFocus(MainWindow.GetCamera().FieldOfView));
+            }
         }
 
         private void VisibilityButton_Click(object sender, RoutedEventArgs e)
@@ -40,6 +49,11 @@ namespace ReScanVisualizer.Views.ItemTreeViews
             {
                 viewModel.ScatterGraph?.Samples.Remove(viewModel);
             }
+        }
+
+        private void userControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

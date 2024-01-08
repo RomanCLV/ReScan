@@ -123,6 +123,7 @@
     <Compile Include="Models\IPartSource.cs" />
     <Compile Include="Models\IScatterGraphElement.cs" />
     <Compile Include="Models\ISelectable.cs" />
+    <Compile Include="Others\CameraHelper.cs" />
     <Compile Include="Others\Const.cs" />
     <Compile Include="Others\Extentions.cs" />
     <Compile Include="Models\Base3D.cs" />

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Samples;
 
 namespace ReScanVisualizer.Views.ItemTreeViews
@@ -23,6 +24,14 @@ namespace ReScanVisualizer.Views.ItemTreeViews
         public BarycenterTreeViewItemHeader()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is ICameraFocusable cameraFocusable)
+            {
+                MainWindow.SetCamera(cameraFocusable.GetCameraConfigurationToFocus(MainWindow.GetCamera().FieldOfView));
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

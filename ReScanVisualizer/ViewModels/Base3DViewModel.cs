@@ -8,7 +8,6 @@ using System.Windows.Media.Media3D;
 using ReScanVisualizer.Models;
 using HelixToolkit.Wpf;
 using ReScanVisualizer.ViewModels.Parts;
-using ReScanVisualizer.Views;
 
 #nullable enable
 
@@ -697,94 +696,16 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public CameraConfiguration GetCameraConfigurationToFocus(double fov = 45)
+        public CameraConfiguration GetCameraConfigurationToFocus(double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
         {
-            return GetCameraConfigurationToFocus(new Vector3D(-1.0, -1.0, -1.0), fov);
+            return GetCameraConfigurationToFocus(new Vector3D(-1.0, -1.0, -1.0), fov, distanceScaling, minDistance);
         }
 
-        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double fov = 45)
+        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
         {
-            return GetCameraConfigurationToFocus(direction, 0.0, fov);
-        }
-
-        public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double minDistance, double fov = 45)
-        {
-            /*
-             * Raisonnement générique accessible dans le fichier ICameraFocusable
-             * 
-             * Dans cette algorithme, le point cible est l'origine de la base.
-             * 
-             * Je récupère les points clés du modèle 3D et je fais un changement de base pour qu'ils soient exprimés dans la base courrante.
-             * Je fais la projection de chaque sur le plan dont la normale est la direction donnée.
-             * Avec chaque point projeté, je détermine enfin la distance. 
-             * Et donc la distance maximale M.
-             * Avec la distance maximale, on trouve la distance L.
-             * 
-             * Comme le point ciblé est l'origine de la base => ox = oy = oz = 0 (lorsqu'elle est exprimée dans son propre repère)
-             * t = L / ||direction||
-             * On trouve P(x(t),y(t),z(t))
-             */
-
-            if (fov <= 0 || fov >= 180)
-            {
-                throw new ArgumentException("fov must be in : 0 < fov < 180", nameof(fov));
-            }
-
-            direction.Normalize();
-            Base3D base3D = GetBaseScalled();
-
-            // Points clés = origin et les points X, Y, Z associés aux vecteurs OX, OY, OZ
-
-            Point3D[] keyPointsInWorld0 = new Point3D[4]
-            {
-                base3D.Origin,
-                base3D.Origin + base3D.X,
-                base3D.Origin + base3D.Y,
-                base3D.Origin + base3D.Z,
-            };
-
-            Matrix3D t0B = base3D.ToMatrix3D();
-            Matrix3D tB0 = t0B.Inverse();
-
-            // projection des points sur le plan donné par la direction de la camera
-            // M : et determination de la distance max
-            Plan plan = new Plan(direction);
-            double maxDistance = 0.0;
-            double distance;
-            for (int i = 0; i < keyPointsInWorld0.Length; i++)
-            {
-                Point3D keyPointInBase = tB0.Transform(keyPointsInWorld0[i]);
-                Point3D projectedPoint = plan.GetOrthogonalProjection(keyPointInBase);
-                distance = Math.Sqrt(projectedPoint.X * projectedPoint.X + projectedPoint.Y * projectedPoint.Y + projectedPoint.Z * projectedPoint.Z);
-                if (distance > maxDistance)
-                {
-                    maxDistance = distance;
-                }
-            }
-
-            // M : multiplier la distance par le ratio de l'ecran si > 1
-            //HelixViewport3D vp = MainWindow.GetViewPort()!;
-            //maxDistance *= Math.Max(1.0, vp.ActualWidth / vp.ActualHeight);
-
-            // L : determination de la distance target - camera
-            distance = maxDistance / Math.Tan(Tools.DegreeToRadian(fov / 2.0));
-            if (distance < minDistance)
-            {
-                distance = minDistance;
-            }
-
-            // t = L / ||u|| (car point visé est l'origine)
-            double t = distance / direction.Length;
-            double x = t * direction.X;
-            double y = t * direction.Y;
-            double z = t * direction.Z;
-            Vector3D c = new Vector3D(x, y, z); // position cam dans le base courrante
-
-            // determination de la cible et de la position de la camera dans le World0
-            Point3D target = _base3D.Origin;
-            Point3D position = target - c;
-
-            return new CameraConfiguration(position, target);
+            Rect3D bounds = _model.Bounds;
+            Point3D target = _base3D.Origin.Multiply(_scaleFactor);
+            return CameraHelper.GetCameraConfigurationToFocus(bounds, target, direction, fov, distanceScaling, minDistance);
         }
     }
 }
