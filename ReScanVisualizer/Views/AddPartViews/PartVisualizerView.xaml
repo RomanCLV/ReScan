@@ -27,8 +27,27 @@
             <HelixToolkit:SunLight/>
             <HelixToolkit:GridLinesVisual3D Width="10" Length="10" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
 
+            <HelixToolkit:LinesVisual3D Thickness="2.5" Color="Red">
+                <HelixToolkit:LinesVisual3D.Points>
+                    <Point3D X="0" Y="0" Z="0"/>
+                    <Point3D X="5" Y="0" Z="0"/>
+                </HelixToolkit:LinesVisual3D.Points>
+            </HelixToolkit:LinesVisual3D>
+            <HelixToolkit:LinesVisual3D Thickness="2.5" Color="Green">
+                <HelixToolkit:LinesVisual3D.Points>
+                    <Point3D X="0" Y="0" Z="0"/>
+                    <Point3D X="0" Y="5" Z="0"/>
+                </HelixToolkit:LinesVisual3D.Points>
+            </HelixToolkit:LinesVisual3D>
+            <HelixToolkit:LinesVisual3D Thickness="2.5" Color="Blue">
+                <HelixToolkit:LinesVisual3D.Points>
+                    <Point3D X="0" Y="0" Z="0"/>
+                    <Point3D X="0" Y="0" Z="5"/>
+                </HelixToolkit:LinesVisual3D.Points>
+            </HelixToolkit:LinesVisual3D>
+
             <ModelVisual3D Content="{Binding PartModel}" />
-            <ModelVisual3D Content="{Binding OriginModel}" />
+            <!--<ModelVisual3D Content="{Binding OriginModel}" />-->
 
         </HelixToolkit:HelixViewport3D>
     </Grid>

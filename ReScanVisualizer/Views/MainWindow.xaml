@@ -191,44 +191,44 @@
                                       Tag="{x:Static VerticalAlignment.Stretch}" />
                         </MenuItem>
                     </MenuItem>
-                        
+
                     <MenuItem Header="Cube position" Style="{StaticResource menuItemItem}">
                         <MenuItem Header="Horizontal alignment">
-                                <MenuItem Header="Left" 
+                            <MenuItem Header="Left" 
                                           IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Left}}" 
                                           Click="CubeHorizontalPositionMenuItem_Click" 
                                           Tag="{x:Static HorizontalAlignment.Left}" />
-                                <MenuItem Header="Center" 
+                            <MenuItem Header="Center" 
                                           IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Center}}" 
                                           Click="CubeHorizontalPositionMenuItem_Click" 
                                           Tag="{x:Static HorizontalAlignment.Center}" />
-                                <MenuItem Header="Right" 
+                            <MenuItem Header="Right" 
                                           IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Right}}" 
                                           Click="CubeHorizontalPositionMenuItem_Click" 
                                           Tag="{x:Static HorizontalAlignment.Right}" />
-                                <MenuItem Header="Stretch" 
+                            <MenuItem Header="Stretch" 
                                           IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Stretch}}" 
                                           Click="CubeHorizontalPositionMenuItem_Click" 
                                           Tag="{x:Static HorizontalAlignment.Stretch}" />
-                            </MenuItem>
+                        </MenuItem>
                         <MenuItem Header="Vertical alignment">
-                                <MenuItem Header="Top" 
+                            <MenuItem Header="Top" 
                                           IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Top}}" 
                                           Click="CubeVerticalPositionMenuItem_Click" 
                                           Tag="{x:Static VerticalAlignment.Top}" />
-                                <MenuItem Header="Center" 
+                            <MenuItem Header="Center" 
                                           IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Center}}" 
                                           Click="CubeVerticalPositionMenuItem_Click" 
                                           Tag="{x:Static VerticalAlignment.Center}" />
-                                <MenuItem Header="Bottom" 
+                            <MenuItem Header="Bottom" 
                                           IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Bottom}}" 
                                           Click="CubeVerticalPositionMenuItem_Click" 
                                           Tag="{x:Static VerticalAlignment.Bottom}" />
-                                <MenuItem Header="Stretch" 
+                            <MenuItem Header="Stretch" 
                                           IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Stretch}}" 
                                           Click="CubeVerticalPositionMenuItem_Click" 
                                           Tag="{x:Static VerticalAlignment.Stretch}" />
-                            </MenuItem>
+                        </MenuItem>
                     </MenuItem>
 
                     <Separator />
@@ -540,7 +540,25 @@
                 <HelixToolkit:SunLight/>
                 <HelixToolkit:GridLinesVisual3D Width="30" Length="30" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
 
-                <ModelVisual3D Content="{Binding OriginModel}" />
+                <HelixToolkit:LinesVisual3D Thickness="2.5" Color="Red">
+                    <HelixToolkit:LinesVisual3D.Points>
+                        <Point3D X="0" Y="0" Z="0"/>
+                        <Point3D X="15" Y="0" Z="0"/>
+                    </HelixToolkit:LinesVisual3D.Points>
+                </HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="2.5" Color="Green">
+                    <HelixToolkit:LinesVisual3D.Points>
+                        <Point3D X="0" Y="0" Z="0"/>
+                        <Point3D X="0" Y="15" Z="0"/>
+                    </HelixToolkit:LinesVisual3D.Points>
+                </HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="2.5" Color="Blue">
+                    <HelixToolkit:LinesVisual3D.Points>
+                        <Point3D X="0" Y="0" Z="0"/>
+                        <Point3D X="0" Y="0" Z="15"/>
+                    </HelixToolkit:LinesVisual3D.Points>
+                </HelixToolkit:LinesVisual3D>
+
                 <ModelVisual3D Content="{Binding BasesModels}"/>
                 <ModelVisual3D Content="{Binding PartsModels}"/>
                 <ModelVisual3D Content="{Binding Models}"/>

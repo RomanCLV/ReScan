@@ -14,7 +14,7 @@ namespace ReScanVisualizer.ViewModels
 {
     public class PartVisualizerViewModel : ViewModelBase
     {
-        public Model3DGroup OriginModel { get; private set; }
+        //public Model3DGroup OriginModel { get; private set; }
 
         public Model3D? PartModel { get; private set; }
 
@@ -48,10 +48,10 @@ namespace ReScanVisualizer.ViewModels
         {
             _builder = null;
             PartModel = null;
-            OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), 
-                new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)),
-                new SolidColorBrush(Color.FromArgb(50, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(50, 0, 0, 255)));
+            //OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), 
+            //    new SolidColorBrush(Color.FromArgb(50, 255, 0, 0)),
+            //    new SolidColorBrush(Color.FromArgb(50, 0, 255, 0)),
+            //    new SolidColorBrush(Color.FromArgb(50, 0, 0, 255)));
         }
 
         ~PartVisualizerViewModel()

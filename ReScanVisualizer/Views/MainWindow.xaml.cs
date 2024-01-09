@@ -621,6 +621,22 @@ namespace ReScanVisualizer.Views
             return !(gridLines == null) && gridLines.Model.Equals(hitgeo);
         }
 
+        private bool IsAxisLineModel(GeometryModel3D hitgeo)
+        {
+            IEnumerable<LinesVisual3D> enumerable = _viewPort.Children.OfType<LinesVisual3D>();
+            foreach (LinesVisual3D line in enumerable)
+            {
+                if (line is ModelVisual3D visual3D)
+                {
+                    if (visual3D.Content.Equals(hitgeo))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         private void HelixViewport3D_KeyUp(object sender, KeyEventArgs e)
         {
             MainViewModel mainViewModel = (MainViewModel)DataContext;
@@ -677,7 +693,7 @@ namespace ReScanVisualizer.Views
             if (rawresult is RayHitTestResult rayResult &&
                 rayResult is RayMeshGeometry3DHitTestResult rayMeshResult &&
                 rayMeshResult.ModelHit is GeometryModel3D hitgeo &&
-                !viewModel.IsBelongingToOriginModel(hitgeo) &&
+                !IsAxisLineModel(hitgeo) &&
                 !IsGridModel(hitgeo))
             {
                 if (Cursor != Cursors.Hand)

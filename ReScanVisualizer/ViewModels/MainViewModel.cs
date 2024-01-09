@@ -13,6 +13,7 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
+using HelixToolkit.Wpf;
 
 #nullable enable
 
@@ -29,7 +30,7 @@ namespace ReScanVisualizer.ViewModels
 {
     public class MainViewModel : ViewModelBase, IPartSource
     {
-        public Model3DGroup OriginModel { get; private set; }
+        //public Model3DGroup OriginModel { get; private set; }
 
         private ViewModelBase? _selectedViewModel;
         public ViewModelBase? SelectedViewModel
@@ -108,7 +109,7 @@ namespace ReScanVisualizer.ViewModels
         {
             IsDisposed = false;
 
-            OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
+            //OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
 
             Models = new Model3DGroup();
             BasesModels = new Model3DGroup();
@@ -569,10 +570,10 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public bool IsBelongingToOriginModel(GeometryModel3D hitgeo)
-        {
-            return OriginModel.Children.Any(x => x.Equals(hitgeo));
-        }
+        //public bool IsBelongingToOriginModel(GeometryModel3D hitgeo)
+        //{
+        //    return OriginModel.Children.Any(x => x.Equals(hitgeo));
+        //}
 
         public void SelectHitGeometry(GeometryModel3D hitgeo)
         {
