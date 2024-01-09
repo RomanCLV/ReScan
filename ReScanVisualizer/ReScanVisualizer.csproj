@@ -97,6 +97,7 @@
     <Compile Include="Converters\BoolToFontStyleConverter.cs" />
     <Compile Include="Converters\BoolToFontWeightConverter.cs" />
     <Compile Include="Converters\BoolValuesORMultiConverter.cs" />
+    <Compile Include="Converters\EnumEqualityToBoolConverter.cs" />
     <Compile Include="Converters\IsHiddenToOpacityConverter.cs" />
     <Compile Include="Converters\IsHiddenToImageConverter.cs" />
     <Compile Include="Converters\EnumerableNonEmptyConverter.cs" />

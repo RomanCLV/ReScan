@@ -83,7 +83,15 @@ namespace ReScanVisualizer.Views
         {
             if (s_viewport != null)
             {
-                s_viewport.Camera.LookAt(cameraConfiguration.Target, cameraConfiguration.Direction, new Vector3D(0, 0, 1), animationTime);
+                Vector3D up = new Vector3D(0.0, 0.0, 1.0);
+                if (Tools.AreVectorsColinear(cameraConfiguration.Direction, up))
+                {
+                    MessageBox.Show("Camera direction and camera up can't be colinear!\nGiven direction: " +  cameraConfiguration.Direction.ToString(), "Camera direction error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    s_viewport.Camera.LookAt(cameraConfiguration.Target, cameraConfiguration.Direction, up, animationTime);
+                }
             }
         }
 
@@ -558,6 +566,47 @@ namespace ReScanVisualizer.Views
             {
                 viewModel.HideAllAddedBases();
             }
+        }
+
+        private void CubeHorizontalPositionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem.Tag != null && Enum.TryParse(menuItem.Tag!.ToString(), out HorizontalAlignment result))
+            {
+                _viewPort.ViewCubeHorizontalPosition = result;
+            }
+        }
+
+        private void CubeVerticalPositionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem.Tag != null && Enum.TryParse(menuItem.Tag!.ToString(), out VerticalAlignment result))
+            {
+                _viewPort.ViewCubeVerticalPosition = result;
+            }
+        }
+
+        private void CoordinateSystemHorizontalPositionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem.Tag != null && Enum.TryParse(menuItem.Tag!.ToString(), out HorizontalAlignment result))
+            {
+                _viewPort.CoordinateSystemHorizontalPosition = result;
+            }
+        }
+
+        private void CoordinateSystemVerticalPositionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem.Tag != null && Enum.TryParse(menuItem.Tag!.ToString(), out VerticalAlignment result))
+            {
+                _viewPort.CoordinateSystemVerticalPosition = result;
+            }
+        }
+
+        private void CameraHomePositionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SetCamera(new CameraConfiguration(new Point3D(2.0, 16.0, 20.0), new Point3D()));
         }
 
         #endregion

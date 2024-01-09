@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReScanVisualizer.Models;
 using ReScanVisualizer.UserControls;
 using ReScanVisualizer.ViewModels;
 
@@ -267,6 +268,28 @@ namespace ReScanVisualizer.Views
             if (DataContext is ScatterGraphViewModel viewModel)
             {
                 viewModel.Clear();
+            }
+        }
+
+        private void CreateGraphButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ScatterGraphViewModel viewModel)
+            {
+                ScatterGraph scatterGraph = viewModel.ExpressedInItsOwnBase();
+                ScatterGraphViewModel graph = new ScatterGraphViewModel(
+                    scatterGraph,
+                    viewModel.Color.Color,
+                    viewModel.ScaleFactor,
+                    viewModel.Base3D.AxisScaleFactor,
+                    viewModel.PointsRadius,
+                    viewModel.RenderQuality,
+                    viewModel.IsBarycenterHidden,
+                    viewModel.IsAveragePlanHidden,
+                    viewModel.IsBarycenterHidden)
+                {
+                    Name = viewModel.Name + " (in base)"
+                };
+                MainViewModel.GetInstance().ScatterGraphs.Add(graph);
             }
         }
     }

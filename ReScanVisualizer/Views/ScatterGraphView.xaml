@@ -145,6 +145,11 @@
                                 </Button.Content>
                             </Button>
                         </StackPanel>
+                        <Separator Margin="10"/>
+                        <StackPanel>
+                            <Button Content="Transform in its own base" Style="{StaticResource myButton}" HorizontalAlignment="Left" Click="CreateGraphButton_Click" 
+                                    ToolTip="Create a copy that all points are expressed in the base of this graph."/>
+                        </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

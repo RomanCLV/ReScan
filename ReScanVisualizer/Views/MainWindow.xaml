@@ -23,6 +23,7 @@
         <converters:IsHiddenToOpacityConverter x:Key="IsHiddenToOpacityConverter" />
         <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter" />
         <converters:BoolToFontStyleConverter x:Key="BoolToFontStyleConverter" />
+        <converters:EnumEqualityToBoolConverter x:Key="EnumEqualityToBoolConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
 
@@ -141,6 +142,100 @@
                         <MenuItem Header="Show all added bases" Click="ShowAllAddedBasesMenuItem_Click"/>
                         <MenuItem Header="Hide all added bases" Click="HideAllAddedBasesMenuItem_Click"/>
                     </MenuItem>
+                </MenuItem>
+
+                <MenuItem Header="_Viewport" ToolTip="Viewport" Style="{StaticResource menuItemTitle}">
+                    <MenuItem Header="Show camera info"         IsCheckable="True" IsChecked="{Binding ElementName=_viewPort, Path=ShowCameraInfo}"        Style="{StaticResource menuItemItem}" />
+                    <MenuItem Header="Show camera target"       IsCheckable="True" IsChecked="{Binding ElementName=_viewPort, Path=ShowCameraTarget}"      Style="{StaticResource menuItemItem}" />
+                    <MenuItem Header="Show coordinate system"   IsCheckable="True" IsChecked="{Binding ElementName=_viewPort, Path=ShowCoordinateSystem}"  Style="{StaticResource menuItemItem}" />
+                    <MenuItem Header="Show field of view"       IsCheckable="True" IsChecked="{Binding ElementName=_viewPort, Path=ShowFieldOfView}"       Style="{StaticResource menuItemItem}" />
+                    <MenuItem Header="Show frame rate"          IsCheckable="True" IsChecked="{Binding ElementName=_viewPort, Path=ShowFrameRate}"         Style="{StaticResource menuItemItem}" />
+                    <MenuItem Header="Show triangle count info" IsCheckable="True" IsChecked="{Binding ElementName=_viewPort, Path=ShowTriangleCountInfo}" Style="{StaticResource menuItemItem}" />
+                    <MenuItem Header="Show view cube"           IsCheckable="True" IsChecked="{Binding ElementName=_viewPort, Path=ShowViewCube}"          Style="{StaticResource menuItemItem}" />
+                    <Separator />
+                    <MenuItem Header="Coordinate system position" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Horizontal alignment">
+                            <MenuItem Header="Left" 
+                                      IsChecked="{Binding ElementName=_viewPort, Path=CoordinateSystemHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Left}}" 
+                                      Click="CoordinateSystemHorizontalPositionMenuItem_Click" 
+                                      Tag="{x:Static HorizontalAlignment.Left}" />
+                            <MenuItem Header="Center" 
+                                      IsChecked="{Binding ElementName=_viewPort, Path=CoordinateSystemHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Center}}" 
+                                      Click="CoordinateSystemHorizontalPositionMenuItem_Click" 
+                                      Tag="{x:Static HorizontalAlignment.Center}" />
+                            <MenuItem Header="Right" 
+                                      IsChecked="{Binding ElementName=_viewPort, Path=CoordinateSystemHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Right}}" 
+                                      Click="CoordinateSystemHorizontalPositionMenuItem_Click" 
+                                      Tag="{x:Static HorizontalAlignment.Right}" />
+                            <MenuItem Header="Stretch" 
+                                      IsChecked="{Binding ElementName=_viewPort, Path=CoordinateSystemHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Stretch}}" 
+                                      Click="CoordinateSystemHorizontalPositionMenuItem_Click" 
+                                      Tag="{x:Static HorizontalAlignment.Stretch}" />
+                        </MenuItem>
+                        <MenuItem Header="Vertical alignment">
+                            <MenuItem Header="Top" 
+                                      IsChecked="{Binding ElementName=_viewPort, Path=CoordinateSystemVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Top}}" 
+                                      Click="CoordinateSystemVerticalPositionMenuItem_Click" 
+                                      Tag="{x:Static VerticalAlignment.Top}" />
+                            <MenuItem Header="Center" 
+                                      IsChecked="{Binding ElementName=_viewPort, Path=CoordinateSystemVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Center}}" 
+                                      Click="CoordinateSystemVerticalPositionMenuItem_Click" 
+                                      Tag="{x:Static VerticalAlignment.Center}" />
+                            <MenuItem Header="Bottom" 
+                                      IsChecked="{Binding ElementName=_viewPort, Path=CoordinateSystemVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Bottom}}" 
+                                      Click="CoordinateSystemVerticalPositionMenuItem_Click" 
+                                      Tag="{x:Static VerticalAlignment.Bottom}" />
+                            <MenuItem Header="Stretch" 
+                                      IsChecked="{Binding ElementName=_viewPort, Path=CoordinateSystemVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Stretch}}" 
+                                      Click="CoordinateSystemVerticalPositionMenuItem_Click" 
+                                      Tag="{x:Static VerticalAlignment.Stretch}" />
+                        </MenuItem>
+                    </MenuItem>
+                        
+                    <MenuItem Header="Cube position" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Horizontal alignment">
+                                <MenuItem Header="Left" 
+                                          IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Left}}" 
+                                          Click="CubeHorizontalPositionMenuItem_Click" 
+                                          Tag="{x:Static HorizontalAlignment.Left}" />
+                                <MenuItem Header="Center" 
+                                          IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Center}}" 
+                                          Click="CubeHorizontalPositionMenuItem_Click" 
+                                          Tag="{x:Static HorizontalAlignment.Center}" />
+                                <MenuItem Header="Right" 
+                                          IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Right}}" 
+                                          Click="CubeHorizontalPositionMenuItem_Click" 
+                                          Tag="{x:Static HorizontalAlignment.Right}" />
+                                <MenuItem Header="Stretch" 
+                                          IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeHorizontalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static HorizontalAlignment.Stretch}}" 
+                                          Click="CubeHorizontalPositionMenuItem_Click" 
+                                          Tag="{x:Static HorizontalAlignment.Stretch}" />
+                            </MenuItem>
+                        <MenuItem Header="Vertical alignment">
+                                <MenuItem Header="Top" 
+                                          IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Top}}" 
+                                          Click="CubeVerticalPositionMenuItem_Click" 
+                                          Tag="{x:Static VerticalAlignment.Top}" />
+                                <MenuItem Header="Center" 
+                                          IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Center}}" 
+                                          Click="CubeVerticalPositionMenuItem_Click" 
+                                          Tag="{x:Static VerticalAlignment.Center}" />
+                                <MenuItem Header="Bottom" 
+                                          IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Bottom}}" 
+                                          Click="CubeVerticalPositionMenuItem_Click" 
+                                          Tag="{x:Static VerticalAlignment.Bottom}" />
+                                <MenuItem Header="Stretch" 
+                                          IsChecked="{Binding ElementName=_viewPort, Path=ViewCubeVerticalPosition, Converter={StaticResource EnumEqualityToBoolConverter}, ConverterParameter={x:Static VerticalAlignment.Stretch}}" 
+                                          Click="CubeVerticalPositionMenuItem_Click" 
+                                          Tag="{x:Static VerticalAlignment.Stretch}" />
+                            </MenuItem>
+                    </MenuItem>
+
+                    <Separator />
+                    <MenuItem Header="Camera" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Home position" Click="CameraHomePositionMenuItem_Click" />
+                    </MenuItem>
+
                 </MenuItem>
             </Menu>
         </StackPanel>
@@ -429,8 +524,8 @@
             <GridSplitter Grid.Column="0" Width="5" Background="{StaticResource backgroundListColor}" />
 
             <HelixToolkit:HelixViewport3D 
-                x:Name="_viewPort" Grid.Column="1" 
-                ShowCameraInfo="False" 
+                x:Name="_viewPort" Grid.Column="1"
+                CoordinateSystemVerticalPosition="Top"
                 MouseMove="HelixViewport3D_MouseMove" 
                 MouseDown="HelixViewport3D_MouseDown" 
                 MouseLeave="ViewPort_MouseLeave"

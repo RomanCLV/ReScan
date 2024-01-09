@@ -26,9 +26,9 @@ namespace ReScanVisualizer.Models
             _points = new List<Point3D>(scatterGraph._points);
         }
 
-        public ScatterGraph(int size)
+        public ScatterGraph(int capacity)
         {
-            _points = new List<Point3D>(size);
+            _points = new List<Point3D>(capacity);
         }
 
         public ScatterGraph(List<Point3D> pointsList)

@@ -107,6 +107,7 @@ namespace ReScanVisualizer.ViewModels
         private MainViewModel()
         {
             IsDisposed = false;
+
             OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
 
             Models = new Model3DGroup();

@@ -173,6 +173,10 @@ namespace ReScanVisualizer
              * Enfin, avec t on en déduit C(x,y,z)
              */
 
+            if (rect3D.IsEmpty)
+            {
+                throw new ArgumentException("invalid rectangle. Rectangle can't be empty.", nameof(rect3D));
+            }
             if (rect3D.SizeX == 0.0 && rect3D.SizeY == 0.0 && rect3D.SizeZ == 0.0)
             {
                 throw new ArgumentException("invalid rectangle. Rectangle must have at least one dimension greater than 0.", nameof(rect3D));

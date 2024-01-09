@@ -223,7 +223,7 @@
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=BuildCommandKey, Path=Command}"
-                                ToolTip="{Binding BuildCommand.Description}"
+                                ToolTip="Build all the added builders.&#10;[Ctrl+B]"
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -234,7 +234,8 @@
                         </Button>
                         <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=LoadCommandKey, Path=Command}"
-                                ToolTip="{Binding LoadCommand.Description}"
+                                ToolTip="Load all builded builders that are ready to be load.&#10;The windows is not closed at the end (even if all the builders have been loaded successfuly).&#10;[Ctrl+L]"
+                                ToolTipService.ShowDuration="10000"
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -245,7 +246,8 @@
                         </Button>
                         <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=LoadAndCloseCommandKey, Path=Command}"
-                                ToolTip="{Binding LoadAndCloseCommand.Description}"
+                                ToolTip="Load all builded builders that are ready to be load.&#10;The windows is closed at the end (except if some builders have failed).&#10;[Ctrl+Alt+L]"
+                                ToolTipService.ShowDuration="10000"
                                 >
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">

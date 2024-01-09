@@ -606,15 +606,15 @@ namespace ReScanVisualizer.ViewModels
             Point3D currentPoint;
             double maxDistance = 0.0;
             double distance;
-            Matrix3D matrix = base3D.ToMatrix3D();
-            matrix.Invert();
+            Matrix3D t0B= base3D.ToMatrix3D();
+            Matrix3D tB0 = t0B.Inverse();
 
             for (int i = 0; i < size; i++)
             {
                 currentPoint = _scatterGraph[i];
 
                 // rotate by the invert matrix
-                currentPoint = matrix.Transform(currentPoint);
+                currentPoint = tB0.Transform(currentPoint);
 
                 distance = Math.Max(Math.Abs(currentPoint.X), Math.Abs(currentPoint.Y));
                 if (distance > maxDistance)
@@ -837,13 +837,26 @@ namespace ReScanVisualizer.ViewModels
 
         public CameraConfiguration GetCameraConfigurationToFocus(double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
         {
-            return GetCameraConfigurationToFocus(-_base3D.Z, fov, distanceScaling, minDistance);
+            Vector3D direction = Tools.AreVectorsColinear(_base3D.Z, new Vector3D(0, 0, 1)) ? new Vector3D(-1.0, -1.0, -1.0) : -_base3D.Z;
+            return GetCameraConfigurationToFocus(direction, fov, distanceScaling, minDistance);
         }
 
         public CameraConfiguration GetCameraConfigurationToFocus(Vector3D direction, double fov = 45.0, double distanceScaling = 1.0, double minDistance = 0.0)
         {
-            return CameraHelper.GetCameraConfigurationToFocus(_model.Bounds, _base3D.Origin.Multiply(_base3D.ScaleFactor), direction, fov, distanceScaling, minDistance);
+            Rect3D bounds = Samples.Count == 0 ? Base3D.Model.Bounds : _model.Bounds;
+            return CameraHelper.GetCameraConfigurationToFocus(bounds, _base3D.Origin.Multiply(_base3D.ScaleFactor), direction, fov, distanceScaling, minDistance);
         }
 
+        public ScatterGraph ExpressedInItsOwnBase()
+        {
+            int size = _scatterGraph.Count;
+            ScatterGraph scatterGraph = new ScatterGraph(size);
+            Matrix3D tB0 = _base3D.Base3D.ToMatrix3D().Inverse();
+            for (int i = 0; i < size; i++)
+            {
+                scatterGraph.AddPoint(tB0.Transform(_scatterGraph[i]));
+            }
+            return scatterGraph;
+        }
     }
 }

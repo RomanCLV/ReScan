@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
@@ -433,6 +434,28 @@ namespace ReScanVisualizer
             Matrix3D tb12 = Matrix3D.Multiply(tb02, tb10); // base 1 dans la base 2
 
             return new Base3D(tb12);
+        }
+
+        public static List<VerticalAlignment> GetVerticalAlignmentList()
+        {
+            return new List<VerticalAlignment>()
+            {
+                VerticalAlignment.Top, 
+                VerticalAlignment.Center,
+                VerticalAlignment.Bottom, 
+                VerticalAlignment.Stretch
+            };
+        }
+
+        public static List<HorizontalAlignment> GetHorizontalAlignmentList()
+        {
+            return new List<HorizontalAlignment>()
+            {
+                HorizontalAlignment.Left,
+                HorizontalAlignment.Center,
+                HorizontalAlignment.Right,
+                HorizontalAlignment.Stretch
+            };
         }
     }
 }
