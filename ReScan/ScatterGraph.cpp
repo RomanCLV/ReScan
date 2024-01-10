@@ -9,59 +9,60 @@
 #include <cmath>      // for trigo functions
 #include <functional> // for findMin & findMax
 #include <algorithm>  // for findMin & findMax
+#include <limits>	  // for DBL_MAX
 
 using namespace std;
 
 #pragma region Constructor / Destructor
 
 ScatterGraph::ScatterGraph() :
-	points()
+	m_points()
 {
 }
 
 ScatterGraph::ScatterGraph(const ScatterGraph& scatterGraph) :
-	points(scatterGraph.points)
+	m_points(scatterGraph.m_points)
 {
 }
 
 ScatterGraph::ScatterGraph(const size_t size) :
-	points(size)
+	m_points(size)
 {
 }
 
 ScatterGraph::ScatterGraph(const vector<Point3D>* pointsList) :
-	points(pointsList->size())
+	m_points(pointsList->size())
 {
 	for (int i = 0; i < pointsList->size(); i++)
 	{
-		points[i] = &pointsList->at(i);
+		m_points[i] = &pointsList->at(i);
 	}
 }
 
 ScatterGraph::ScatterGraph(const vector<const Point3D*>* pointsList) :
-	points(pointsList->size())
+	m_points(pointsList->size())
 {
 	for (int i = 0; i < pointsList->size(); i++)
 	{
-		points[i] = pointsList->at(i);
+		m_points[i] = pointsList->at(i);
 	}
 }
 
 ScatterGraph::ScatterGraph(const Point3D pointsArray[], const size_t size) :
-	points(size)
+	m_points(size)
 {
 	for (int i = 0; i < size; i++)
 	{
-		points[i] = &pointsArray[i];
+		m_points[i] = &pointsArray[i];
 	}
 }
 
 ScatterGraph::ScatterGraph(const Point3D* pointsArray[], const size_t size) :
-	points(size)
+	m_points(size)
 {
 	for (int i = 0; i < size; i++)
 	{
-		points[i] = pointsArray[i];
+		m_points[i] = pointsArray[i];
 	}
 }
 
@@ -73,7 +74,7 @@ ScatterGraph::~ScatterGraph()
 
 void ScatterGraph::addPoint(const Point3D* point)
 {
-	points.push_back(point);
+	m_points.push_back(point);
 }
 
 Point3D* ScatterGraph::addPoint(const double x, const double y, const double z)
@@ -81,7 +82,7 @@ Point3D* ScatterGraph::addPoint(const double x, const double y, const double z)
 	Point3D* point = new Point3D(x, y, z);
 	if (point)
 	{
-		points.push_back(point);
+		m_points.push_back(point);
 		return point;
 	}
 	else
@@ -93,17 +94,17 @@ Point3D* ScatterGraph::addPoint(const double x, const double y, const double z)
 
 size_t ScatterGraph::size() const
 {
-	return points.size();
+	return m_points.size();
 }
 
 const Point3D* ScatterGraph::at(const size_t pos) const
 {
-	return points.at(pos);
+	return m_points.at(pos);
 }
 
 void ScatterGraph::clear()
 {
-	points.clear();
+	m_points.clear();
 }
 
 void ScatterGraph::reducePercent(const double percent)
@@ -112,11 +113,11 @@ void ScatterGraph::reducePercent(const double percent)
 	{
 		if (percent == 100.0)
 		{
-			points.clear();
+			m_points.clear();
 		}
 		else
 		{
-			int size = (int)points.size();
+			int size = (int)m_points.size();
 			int newSize = (int)(size * (1.0 - (percent / 100.0)));
 			double inc = (double)size / (double)newSize;
 			vector<const Point3D*> taken(newSize);
@@ -124,14 +125,14 @@ void ScatterGraph::reducePercent(const double percent)
 			double j = 0.0;
 			for (i = 0; i < newSize; i++)
 			{
-				taken.at(i) = points.at((int)j);
+				taken.at(i) = m_points.at((int)j);
 				j += inc;
 			}
-			points.clear();
-			points.assign(newSize, nullptr);
+			m_points.clear();
+			m_points.assign(newSize, nullptr);
 			for (i = 0; i < newSize; i++)
 			{
-				points.at(i) = taken.at(i);
+				m_points.at(i) = taken.at(i);
 			}
 		}
 	}
@@ -139,11 +140,11 @@ void ScatterGraph::reducePercent(const double percent)
 
 void ScatterGraph::reduce(const unsigned int skipped)
 {
-	int size = (int)points.size();
+	int size = (int)m_points.size();
 
 	if (skipped >= (unsigned int)size)
 	{
-		points.clear();
+		m_points.clear();
 	}
 	else
 	{
@@ -153,13 +154,13 @@ void ScatterGraph::reduce(const unsigned int skipped)
 		int j = 0;
 		for (i = 0; i < size; i += skipped)
 		{
-			taken.at(j++) = points.at(i);
+			taken.at(j++) = m_points.at(i);
 		}
-		points.clear();
-		points.assign(newSize, nullptr);
+		m_points.clear();
+		m_points.assign(newSize, nullptr);
 		for (i = 0; i < newSize; i++)
 		{
-			points.at(i) = taken.at(i);
+			m_points.at(i) = taken.at(i);
 		}
 	}
 }
@@ -429,7 +430,7 @@ bool ScatterGraph::saveCSV(const std::string& filename, const ScatterGraph& scat
 		outputFile << "x;y;z" << std::endl;
 	}
 
-	for (const Point3D* point : scatterGraph.points)
+	for (const Point3D* point : scatterGraph.m_points)
 	{
 		outputFile << point->getX() << ";" << point->getY() << ";" << point->getZ() << std::endl;
 	}
@@ -516,18 +517,18 @@ bool ScatterGraph::readCSV(const std::string& filename, ScatterGraph* scatterGra
 
 int ScatterGraph::findMax(const ScatterGraph& scatterGraph, double (Point3D::* getter)() const)
 {
-	auto maxValueElement = std::max_element(scatterGraph.points.begin(), scatterGraph.points.end(), [getter](const Point3D* p1, const Point3D* p2) {
+	auto maxValueElement = std::max_element(scatterGraph.m_points.begin(), scatterGraph.m_points.end(), [getter](const Point3D* p1, const Point3D* p2) {
 		return (p1->*getter)() < (p2->*getter)();
 		});
-	return (int)std::distance(scatterGraph.points.begin(), maxValueElement);
+	return (int)std::distance(scatterGraph.m_points.begin(), maxValueElement);
 }
 
 int ScatterGraph::findMin(const ScatterGraph& scatterGraph, double (Point3D::* getter)() const)
 {
-	auto maxValueElement = std::max_element(scatterGraph.points.begin(), scatterGraph.points.end(), [getter](const Point3D* p1, const Point3D* p2) {
+	auto maxValueElement = std::max_element(scatterGraph.m_points.begin(), scatterGraph.m_points.end(), [getter](const Point3D* p1, const Point3D* p2) {
 		return (p1->*getter)() > (p2->*getter)();
 		});
-	return (int)std::distance(scatterGraph.points.begin(), maxValueElement);
+	return (int)std::distance(scatterGraph.m_points.begin(), maxValueElement);
 }
 
 void ScatterGraph::findExtrema(const ScatterGraph& scatterGraph, const Plan2D& plan, double (Point3D::* getters[2])() const, Point3D* minPoint, Point3D* maxPoint)
@@ -548,8 +549,8 @@ void ScatterGraph::findExtrema(const ScatterGraph& scatterGraph, const Plan2D& p
 		minPoint->setX(scatterGraph.at(extremas[0])->getX());
 		minPoint->setY(scatterGraph.at(extremas[1])->getY());
 		minPoint->setZ(0.0);
-		maxPoint->setX(scatterGraph.points.at(extremas[2])->getX());
-		maxPoint->setY(scatterGraph.points.at(extremas[3])->getY());
+		maxPoint->setX(scatterGraph.m_points.at(extremas[2])->getX());
+		maxPoint->setY(scatterGraph.m_points.at(extremas[3])->getY());
 		maxPoint->setZ(0.0);
 		break;
 
@@ -586,7 +587,7 @@ const Point3D* ScatterGraph::getClosestPoint(const ScatterGraph* scatterGraph, c
 	double currentDistance;
 	for (int i = 0; i < size; i++)
 	{
-		currentPoint = scatterGraph->points[i];
+		currentPoint = scatterGraph->m_points[i];
 		currentDistance = Point3D::distanceBetween(point, currentPoint);
 		if (currentDistance < minDistance)
 		{
@@ -606,7 +607,7 @@ const Point3D* ScatterGraph::getFarthestPoint(const ScatterGraph* scatterGraph, 
 	double currentDistance;
 	for (int i = 0; i < size; i++)
 	{
-		currentPoint = scatterGraph->points[i];
+		currentPoint = scatterGraph->m_points[i];
 		currentDistance = Point3D::distanceBetween(point, currentPoint);
 		if (currentDistance > maxDistance)
 		{
@@ -620,36 +621,28 @@ const Point3D* ScatterGraph::getFarthestPoint(const ScatterGraph* scatterGraph, 
 
 void ScatterGraph::computeBarycenter(const ScatterGraph* scatterGraph, Point3D* barycenter)
 {
-	double x = 0.0f;
-	double y = 0.0f;
-	double z = 0.0f;
-	int size = static_cast<int>(scatterGraph->size());
-	double sized = (double)size;
+	double x = 0.0;
+	double y = 0.0;
+	double z = 0.0;
+	size_t size = scatterGraph->size();
+	size_t i = 0;
+	double dsize = (double)size;
 	const Point3D* point;
+
+	int result = SUCCESS_CODE;
 
 	// methode 1: sum all then divide
 
-	for (int i = 0; i < size; i++)
+	while (i < size)
 	{
 		point = scatterGraph->at(i);
+
 		x += point->getX();
 		y += point->getY();
 		z += point->getZ();
+		i++;
 	}
-	barycenter->setXYZ(x / sized, y / sized, z / sized);
-
-	// methode 2 :
-	// calcul des moyennes en "continu" pour éviter d'atteindre les valeurs hors mémoire
-	// si on fait d'abord la somme de tous les x, y et z
-
-	//for (int i = 0; i < size; i++)
-	//{
-	//	point = scatterGraph.at(i);
-	//	x = (i * x + point->getX()) / (i + 1);
-	//	y = (i * y + point->getY()) / (i + 1);
-	//	z = (i * z + point->getZ()) / (i + 1);
-	//}
-	//barycenter.setXYZ(x, y, z);
+	barycenter->setXYZ(x / dsize, y / dsize, z / dsize);
 }
 
 void ScatterGraph::computeAveragePlan(const ScatterGraph* scatterGraph, Plan* averagePlan)
@@ -727,7 +720,6 @@ void ScatterGraph::computeAveragePlan(const ScatterGraph* scatterGraph, Plan* av
 
 	averagePlan->setABCD(a, b, c, -(a * barycenter.getX() + b * barycenter.getY() + c * barycenter.getZ()));
 }
-
 
 void ScatterGraph::computeRepere3D(const ScatterGraph* scatterGraph, Repere3D* repere)
 {

@@ -5,13 +5,15 @@
 #include "Plan.h"
 #include "Plan2D.h"
 #include "Repere3D.h"
+#include "macros.h"
+
 #include <vector>
 #include <string>
 
 class ScatterGraph
 {
-public:
-	std::vector<const Point3D*> points;
+private:
+	std::vector<const Point3D*> m_points;
 
 public:
 	// constructor / destructor
@@ -92,7 +94,6 @@ public:
 
 	static void computeRepere3D(const ScatterGraph* scatterGraph, Repere3D* repere);
 	static void computeRepere3D(const ScatterGraph* scatterGraph, const Point3D* origin, const Plan* averagePlan, Repere3D* repere);
-
 };
 
 #endif // SCATTERGRAPH_H
