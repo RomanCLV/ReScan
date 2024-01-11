@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RESCAN_MACROS
+#define RESCAN_MACROS
 
 namespace ReScan
 {
@@ -6,3 +7,5 @@ namespace ReScan
 #define INVALID_FILE_CODE  1
 #define INVALID_PLAN_CODE  2
 }
+
+#endif // RESCAN_MACROS

@@ -1,22 +1,22 @@
 #ifndef PLAN_H
 #define PLAN_H
 
-#include "Vector3D.h"
 #include "Point3D.h"
 #include "Plan.h"
 
 #include <string>
 #include <iostream>
+#include <Eigen/Dense>
 
 namespace ReScan
 {
 	class Plan
 	{
 	private:
-		double a;
-		double b;
-		double c;
-		double d;
+		double m_a;
+		double m_b;
+		double m_c;
+		double m_d;
 
 	public:
 		Plan(double a = 0.0, double b = 0.0, double c = 0.0, double d = 0.0);
@@ -36,11 +36,11 @@ namespace ReScan
 
 		void setABCD(double a, double b, double c, double d);
 
-		void getNormal(Vector3D& vector3D) const;
+		void getNormal(Eigen::Vector3d& vector3d) const;
 
-		static void getOrthogonalProjection(const Plan* plan, const Point3D*, Point3D* projection);
+		static void getOrthogonalProjection(const Plan& plan, const Point3D&, Point3D* projection);
 
-		static double getDistanceFrom(const Plan* plan, const Point3D* point);
+		static double getDistanceFrom(const Plan& plan, const Point3D& point);
 
 		std::string toStr(const char* begin = "{ ", const char* end = " }", const char* sep = " ") const;
 

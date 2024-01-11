@@ -1,4 +1,6 @@
-#pragma once
+#ifndef RESCAN_H
+#define RESCAN_H
+
 #include "ObjFileIO.h"
 #include "ScatterGraph.h"
 #include "Plan2D.h"
@@ -45,3 +47,5 @@ namespace ReScan
 }
 
 std::string removeFileExtension(const std::string& fileName);
+
+#endif // RESCAN_H

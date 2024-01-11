@@ -10,8 +10,10 @@
 #include <functional> // for findMin & findMax
 #include <algorithm>  // for findMin & findMax
 #include <limits>	  // for DBL_MAX
+#include <Eigen/Dense>
 
 using namespace std;
+using namespace Eigen;
 
 namespace ReScan
 {
@@ -581,17 +583,17 @@ namespace ReScan
 		}
 	}
 
-	const Point3D* ScatterGraph::getClosestPoint(const ScatterGraph* scatterGraph, const Point3D* point)
+	const Point3D* ScatterGraph::getClosestPoint(const ScatterGraph& scatterGraph, const Point3D& point)
 	{
-		int size = (int)scatterGraph->size();
-		const Point3D* closestPoint = point;
+		int size = (int)scatterGraph.size();
+		const Point3D* closestPoint = &point;
 		const Point3D* currentPoint;
 		double minDistance = DBL_MAX;
 		double currentDistance;
 		for (int i = 0; i < size; i++)
 		{
-			currentPoint = scatterGraph->m_points[i];
-			currentDistance = Point3D::distanceBetween(point, currentPoint);
+			currentPoint = scatterGraph.m_points[i];
+			currentDistance = Point3D::distanceBetween(point, *currentPoint);
 			if (currentDistance < minDistance)
 			{
 				minDistance = currentDistance;
@@ -601,17 +603,17 @@ namespace ReScan
 		return closestPoint;
 	}
 
-	const Point3D* ScatterGraph::getFarthestPoint(const ScatterGraph* scatterGraph, const Point3D* point)
+	const Point3D* ScatterGraph::getFarthestPoint(const ScatterGraph& scatterGraph, const Point3D& point)
 	{
-		int size = (int)scatterGraph->size();
-		const Point3D* farthestPoint = point;
+		int size = (int)scatterGraph.size();
+		const Point3D* farthestPoint = &point;
 		const Point3D* currentPoint;
 		double maxDistance = DBL_MIN;
 		double currentDistance;
 		for (int i = 0; i < size; i++)
 		{
-			currentPoint = scatterGraph->m_points[i];
-			currentDistance = Point3D::distanceBetween(point, currentPoint);
+			currentPoint = scatterGraph.m_points[i];
+			currentDistance = Point3D::distanceBetween(point, *currentPoint);
 			if (currentDistance > maxDistance)
 			{
 				maxDistance = currentDistance;
@@ -622,23 +624,19 @@ namespace ReScan
 	}
 
 
-	void ScatterGraph::computeBarycenter(const ScatterGraph* scatterGraph, Point3D* barycenter)
+	void ScatterGraph::computeBarycenter(const ScatterGraph& scatterGraph, Point3D* barycenter)
 	{
 		double x = 0.0;
 		double y = 0.0;
 		double z = 0.0;
-		size_t size = scatterGraph->size();
+		size_t size = scatterGraph.size();
 		size_t i = 0;
 		double dsize = (double)size;
 		const Point3D* point;
 
-		int result = SUCCESS_CODE;
-
-		// methode 1: sum all then divide
-
 		while (i < size)
 		{
-			point = scatterGraph->at(i);
+			point = scatterGraph.at(i);
 
 			x += point->getX();
 			y += point->getY();
@@ -648,11 +646,11 @@ namespace ReScan
 		barycenter->setXYZ(x / dsize, y / dsize, z / dsize);
 	}
 
-	void ScatterGraph::computeAveragePlan(const ScatterGraph* scatterGraph, Plan* averagePlan)
+	void ScatterGraph::computeAveragePlan(const ScatterGraph& scatterGraph, Plan* averagePlan)
 	{
 		// based on: https://www.claudeparisel.com/monwiki/data/Karnak/K2/PLAN%20MOYEN.pdf
 
-		int size = (int)scatterGraph->size();
+		size_t size = scatterGraph.size();
 
 		if (size < 3)
 		{
@@ -689,9 +687,9 @@ namespace ReScan
 		double c;
 
 		// calcul des sommmes
-		for (int i = 0; i < size; i++)
+		for (size_t i = 0; i < size; i++)
 		{
-			point = scatterGraph->at(i);
+			point = scatterGraph.at(i);
 			pX = point->getX() / 1000.0;
 			pY = point->getY() / 1000.0;
 			pZ = point->getZ() / 1000.0;
@@ -724,35 +722,41 @@ namespace ReScan
 		averagePlan->setABCD(a, b, c, -(a * barycenter.getX() + b * barycenter.getY() + c * barycenter.getZ()));
 	}
 
-	void ScatterGraph::computeRepere3D(const ScatterGraph* scatterGraph, Repere3D* repere)
+	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, Repere3D* repere)
 	{
 		Point3D barycenter;
 		Plan averagePlan;
 		computeBarycenter(scatterGraph, &barycenter);
 		computeAveragePlan(scatterGraph, &averagePlan);
-		computeRepere3D(scatterGraph, &barycenter, &averagePlan, repere);
+		computeRepere3D(scatterGraph, barycenter, averagePlan, repere);
 	}
 
-	void ScatterGraph::computeRepere3D(const ScatterGraph* scatterGraph, const Point3D* origin, const Plan* averagePlan, Repere3D* repere)
+	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Repere3D* repere)
 	{
-		repere->origin.setFrom(origin);
+		repere->setOrigin(origin);
 
 		// on prend la normal donnee par le plan et on la normalise - On a le Z
-		averagePlan->getNormal(repere->z);
-		repere->z.normalize();
 
-		// on trouve le point le plus proche de l'origine du repere, on en fait son projet� orthogonal
+		Vector3d z;
+		averagePlan.getNormal(z);
+		z.normalize();
+		repere->setZ(z);
+
+		// on trouve le point le plus proche de l'origine du repere, on en fait son projeté orthogonal
 		const Point3D* closestPointFromOrigin = getClosestPoint(scatterGraph, origin);
 		Point3D projetedPoint;
-		Plan::getOrthogonalProjection(averagePlan, closestPointFromOrigin, &projetedPoint);
+		Plan::getOrthogonalProjection(averagePlan, *closestPointFromOrigin, &projetedPoint);
 
-		// On trouve le vecteur entre l'origne et le projet� et on le normalise - On a X
-		origin->getDiff(&projetedPoint, &repere->x);
-		repere->x.normalize();
+		// On trouve le vecteur entre l'origne et le projeté et on le normalise - On a X
+		Vector3d x;
+		origin.getDiff(projetedPoint, &x);
+		x.normalize();
+		repere->setX(x);
 
 		// On fait le produit vectoriel Z*X pour avoir Y, et on normalise
-		repere->z.cross(repere->x, repere->y);
-		repere->y.normalize();
+		Vector3d y = z.cross3(x);
+		y.normalize();
+		repere->setY(y);
 	}
 
 	#pragma endregion

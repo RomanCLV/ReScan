@@ -3,82 +3,84 @@
 namespace ReScan
 {
 	Point3D::Point3D(double x, double y, double z) :
-		x(x),
-		y(y),
-		z(z)
+		m_x(x),
+		m_y(y),
+		m_z(z)
 	{}
 
 	Point3D::Point3D(const Point3D& point3D) :
-		x(point3D.x),
-		y(point3D.y),
-		z(point3D.z)
+		m_x(point3D.m_x),
+		m_y(point3D.m_y),
+		m_z(point3D.m_z)
 	{}
 
 	double Point3D::getX() const
 	{
-		return x;
+		return m_x;
 	}
 
 	void Point3D::setX(const double x)
 	{
-		this->x = x;
+		m_x = x;
 	}
 
 	double Point3D::getY() const
 	{
-		return y;
+		return m_y;
 	}
 
 	void Point3D::setY(const double y)
 	{
-		this->y = y;
+		m_y = y;
 	}
 
 	double Point3D::getZ() const
 	{
-		return z;
+		return m_z;
 	}
 
 	void Point3D::setZ(const double z)
 	{
-		this->z = z;
+		m_z = z;
 	}
 
 	void Point3D::setXYZ(const double x, const double y, const double z)
 	{
-		setX(x);
-		setY(y);
-		setZ(z);
+		m_x = x;
+		m_y = y;
+		m_z = z;
 	}
 
-	void Point3D::setFrom(const Point3D* point)
+	void Point3D::setFrom(const Point3D& point)
 	{
-		setX(point->x);
-		setY(point->y);
-		setZ(point->z);
+		m_x = point.m_x;
+		m_y = point.m_y;
+		m_z = point.m_z;
 	}
 
-	void Point3D::getDiff(const Point3D* point, Vector3D* result) const
+	void Point3D::getDiff(const Point3D& point, Eigen::Vector3d* result) const
 	{
-		result->setXYZ(point->x - x, point->y - y, point->z - z);
+		(*result)[0] = point.m_x - m_x;
+		(*result)[1] = point.m_y - m_y;
+		(*result)[2] = point.m_z - m_z;
 	}
 
-	double Point3D::distanceBetween(const Point3D* p1, const Point3D* p2)
+	double Point3D::distanceBetween(const Point3D& p1, const Point3D& p2)
 	{
-		return sqrt((p1->x - p2->x) * (p1->x - p2->x) + (p1->y - p2->y) * (p1->y - p2->y) + (p1->z - p2->z) * (p1->z - p2->z));
+		return sqrt((p1.m_x - p2.m_x) * (p1.m_x - p2.m_x) + (p1.m_y - p2.m_y) * (p1.m_y - p2.m_y) + (p1.m_z - p2.m_z) * (p1.m_z - p2.m_z));
 	}
 
 	std::string Point3D::toStr(const char* begin, const char* end, const char* sep) const
 	{
 		std::ostringstream oss;
-		oss << begin << x << sep << y << sep << z << end;
+		oss << begin << m_x << sep << m_y << sep << m_z << end;
 		return oss.str();
 	}
 
-	Vector3D operator-(const Point3D& p1, const Point3D& p2)
+	Eigen::Vector3d operator-(const Point3D& p1, const Point3D& p2)
 	{
-		Vector3D vector;
-		p1.getDiff(&p2, &vector);
+		Eigen::Vector3d vector;
+		p1.getDiff(p2, &vector);
 		return vector;
 	}
 
