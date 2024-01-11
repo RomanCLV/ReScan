@@ -422,8 +422,8 @@ namespace ReScanVisualizer.Models
             Vector3D z;
             if (size < 2)
             {
-                z = new Vector3D(0, 0, 1);
-                return size == 1 ? new Plan(z, -z.Z * barycenter.Z) : new Plan(z);
+                z = new Vector3D(0.0, 0.0, 1.0);
+                return new Plan(z, -z.Z * barycenter.Z);
             }
             else if (ArePointsCoplanar())
             {
@@ -521,7 +521,7 @@ namespace ReScanVisualizer.Models
 
             z = new Vector3D(a, b, c);
 
-            if (z.Length == 0)
+            if (z.Length == 0.0)
             {
                 z.Z = 1.0;
             }
@@ -532,13 +532,6 @@ namespace ReScanVisualizer.Models
 
             return new Plan(z.X, z.Y, z.Z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
         }
-
-        //public static Base3D ComputeRepere3D(ScatterGraph scatterGraph)
-        //{
-        //    Point3D barycenter = scatterGraph.ComputeBarycenter();
-        //    Plan averagePlan = scatterGraph.ComputeAveragePlan();
-        //    return ComputeRepere3D(barycenter, averagePlan, true);
-        //}
 
         public static Base3D ComputeRepere3D(Point3D origin, Plan averagePlan, bool putXOnXY)
         {
