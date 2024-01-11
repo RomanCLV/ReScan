@@ -1,6 +1,7 @@
 #include "ReScan.h"
 #include "Plan2D.h"
 
+#include <Eigen/Dense>
 #include <iostream>
 #include <string>
 

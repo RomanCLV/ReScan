@@ -344,7 +344,7 @@ void ScatterGraph::populateDisk(ScatterGraph& scatterGraph, Plan2D plane, const 
 		return;
 	}
 
-	const double pi = std::numbers::pi; // Utilisation de std::numbers::pi
+	const double pi = std::numbers::pi;
 
 	switch (plane) {
 	case Plan2D::XY:
