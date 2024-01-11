@@ -138,6 +138,7 @@
     <ClCompile Include="Repere3D.cpp" />
     <ClCompile Include="ReScan.cpp" />
     <ClCompile Include="ScatterGraph.cpp" />
+    <ClCompile Include="Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="ReScan.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScatterGraph.h" />
+    <ClInclude Include="Tools.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ReScan.rc" />
