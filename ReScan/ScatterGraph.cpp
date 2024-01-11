@@ -1,4 +1,6 @@
 ﻿#include "ScatterGraph.h"
+#include "Tools.h"
+
 #include <iostream>   // for reading / writing files
 #include <fstream>    // for reading / writing files
 #include <sstream>    // for reading / writing files
@@ -651,75 +653,174 @@ namespace ReScan
 		// based on: https://www.claudeparisel.com/monwiki/data/Karnak/K2/PLAN%20MOYEN.pdf
 
 		size_t size = scatterGraph.size();
-
-		if (size < 3)
-		{
-			std::cerr << "Need at least 3 points to compute the average plan." << std::endl;
-			return;
-		}
-
-		double sX = 0.0;
-		double sXX = 0.0;
-		double sXY = 0.0;
-		double sXZ = 0.0;
-
-		double sY = 0.0;
-		//double sYX = 0.0; // meme chose que sXY
-		double sYY = 0.0;
-		double sYZ = 0.0;
-
-		double sZ = 0.0;
-		//double sZX = 0.0; // meme chose que sXZ
-		//double sZY = 0.0;   // meme chose que sYZ
-		double sZZ = 0.0;
-
-		double D;
-		double k = 1.0;
-
-		const Point3D* point;
-		double pX;
-		double pY;
-		double pZ;
-
 		Point3D barycenter;
-		double a;
-		double b;
-		double c;
-
-		// calcul des sommmes
-		for (size_t i = 0; i < size; i++)
-		{
-			point = scatterGraph.at(i);
-			pX = point->getX() / 1000.0;
-			pY = point->getY() / 1000.0;
-			pZ = point->getZ() / 1000.0;
-
-			sX += pX;
-			sXX += pX * pX;
-			sXY += pX * pY;
-			sXZ += pX * pZ;
-
-			sY += pY;
-			sYY += pY * pY;
-			sYZ += pY * pZ;
-
-			sZ += pZ;
-			sZZ += pZ * pZ;
-		}
-
-		D = (sXX * sYY * sZZ) - (sXX * sYZ * sYZ) - (sYY * sXZ * sXZ) + (2.0 * sXY * sXZ * sYZ);
-
-		a = (sX * (sYY * sZZ - sYZ * sYZ)) - (sY * (sXY * sZZ - sXZ * sYZ)) + (sZ * (sXY * sYZ - sYY * sXZ));
-		b = (sX * (sXY * sZZ - sXZ * sYZ)) - (sY * (sXX * sZZ - sXZ * sXZ)) + (sZ * (sYZ * sXX - sXY * sXZ));
-		c = (sX * (sXY * sYZ - sYY * sXZ)) - (sY * (sXX * sYZ - sXY * sXZ)) + (sZ * (sXX * sYY - sXY * sXY));
-
-		a *= (-k / D);
-		b *= (k / D);
-		c *= (-k / D);
-
 		computeBarycenter(scatterGraph, &barycenter);
 
-		averagePlan->setABCD(a, b, c, -(a * barycenter.getX() + b * barycenter.getY() + c * barycenter.getZ()));
+		if (size < 2)
+		{
+			averagePlan->setABCD(0.0, 0.0, 1.0, -barycenter.getZ());
+		}
+		else if (ScatterGraph::arePointsCoplanar(scatterGraph))
+		{
+			const Point3D* p0 = scatterGraph.at(0);
+			const Point3D* p1 = scatterGraph.at(1);
+			Vector3d x = *p1 - *p0;
+			Vector3d z;
+			if (ScatterGraph::arePointsColinear(scatterGraph))
+			{
+				//Base3D repere = Tools.ComputeOrientedBase(x, Axis.X);
+				//z = repere.Z;
+			}
+			else
+			{
+				Vector3d y(0.0, 1.0, 0.0);
+				for (size_t i = 2; i < size; i++)
+				{
+					y = *scatterGraph.at(i) - *p0;
+					if (!Tools::areVectorsColinear(x, y))
+					{
+						break;
+					}
+				}
+				z = x.cross3(y);
+			}
+			if (z.z() < 0)
+			{
+				z *= -1;
+			}
+			z.normalize();
+			averagePlan->setABCD(z.x(), z.y(), z.z(), -(z.x() * barycenter.getX() + z.y() * barycenter.getY() + z.z() * barycenter.getZ()));
+		}
+		else
+		{
+			double sX = 0.0;
+			double sXX = 0.0;
+			double sXY = 0.0;
+			double sXZ = 0.0;
+
+			double sY = 0.0;
+			//double sYX = 0.0; // meme chose que sXY
+			double sYY = 0.0;
+			double sYZ = 0.0;
+
+			double sZ = 0.0;
+			//double sZX = 0.0; // meme chose que sXZ
+			//double sZY = 0.0;   // meme chose que sYZ
+			double sZZ = 0.0;
+
+			double D;
+			double k = 1.0;
+
+			const Point3D* point;
+			double pX;
+			double pY;
+			double pZ;
+
+			double a = 0.0;
+			double b = 0.0;
+			double c = 0.0;
+
+			// calcul des sommmes
+			for (size_t i = 0; i < size; i++)
+			{
+				point = scatterGraph.at(i);
+				pX = point->getX() / 1000.0;
+				pY = point->getY() / 1000.0;
+				pZ = point->getZ() / 1000.0;
+
+				sX += pX;
+				sXX += pX * pX;
+				sXY += pX * pY;
+				sXZ += pX * pZ;
+
+				sY += pY;
+				sYY += pY * pY;
+				sYZ += pY * pZ;
+
+				sZ += pZ;
+				sZZ += pZ * pZ;
+			}
+
+			D = (sXX * sYY * sZZ) - (sXX * sYZ * sYZ) - (sYY * sXZ * sXZ) + (2.0 * sXY * sXZ * sYZ);
+
+			a = (sX * (sYY * sZZ - sYZ * sYZ)) - (sY * (sXY * sZZ - sXZ * sYZ)) + (sZ * (sXY * sYZ - sYY * sXZ));
+			b = (sX * (sXY * sZZ - sXZ * sYZ)) - (sY * (sXX * sZZ - sXZ * sXZ)) + (sZ * (sYZ * sXX - sXY * sXZ));
+			c = (sX * (sXY * sYZ - sYY * sXZ)) - (sY * (sXX * sYZ - sXY * sXZ)) + (sZ * (sXX * sYY - sXY * sXY));
+
+			a *= (-k / D);
+			b *= (k / D);
+			c *= (-k / D);
+
+			if (c < 0)
+			{
+				a *= -1;
+				b *= -1;
+				c *= -1;
+			}
+			Vector3d z(a, b, c);
+			if (z.norm() == 0.0)
+			{
+				z[2] = 1.0;
+			}
+			z.normalize();
+
+			averagePlan->setABCD(z.x(), z.y(), z.z(), -(z.x() * barycenter.getX() + z.y() * barycenter.getY() + z.z() * barycenter.getZ()));
+		}
+	}
+
+	bool ScatterGraph::arePointsCoplanar(const ScatterGraph& scatterGraph)
+	{
+		size_t size = scatterGraph.size();
+		if (size <= 3)
+		{
+			return true;
+		}
+		const Point3D* p0 = scatterGraph.at(0);
+		Vector3d vector1 = *scatterGraph.at(1) - *p0;
+		Vector3d vector2;
+		Vector3d vector3;
+		bool hasFoundVector2 = false;
+		bool isCoplanar = true;
+
+		for (size_t i = 2; i < size; i++)
+		{
+			if (!hasFoundVector2)
+			{
+				vector2 = *scatterGraph.at(i) - *p0;
+				hasFoundVector2 = !Tools::areVectorsColinear(vector1, vector2);
+			}
+			else
+			{
+				vector3 = *scatterGraph.at(i) - *p0;
+				isCoplanar = abs(Tools::mixtProduct(vector1, vector2, vector3) < 0.001);
+				if (!isCoplanar)
+				{
+					break;
+				}
+			}
+		}
+
+		return isCoplanar;
+	}
+
+	bool ScatterGraph::arePointsColinear(const ScatterGraph& scatterGraph)
+	{
+		size_t size = scatterGraph.size();
+		if (size < 2)
+		{
+			return true;
+		}
+
+		const Point3D* p0 = scatterGraph.at(0);
+		Vector3d vector1 = *scatterGraph.at(1) - *p0;
+		for (int i = 2; i < size; i++)
+		{
+			if (!Tools::areVectorsColinear(vector1, *scatterGraph.at(i) - *p0))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, Repere3D* repere)

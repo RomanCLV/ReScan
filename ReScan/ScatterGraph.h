@@ -94,6 +94,9 @@ namespace ReScan
 		static void computeBarycenter(const ScatterGraph& scatterGraph, Point3D* barycenter);
 		static void computeAveragePlan(const ScatterGraph& scatterGraph, Plan* averagePlan);
 
+		static bool arePointsCoplanar(const ScatterGraph& scatterGraph);
+		static bool arePointsColinear(const ScatterGraph& scatterGraph);
+
 		static void computeRepere3D(const ScatterGraph& scatterGraph, Repere3D* repere);
 		static void computeRepere3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Repere3D* repere);
 	};
