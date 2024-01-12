@@ -274,18 +274,22 @@ namespace ReScan
 			return INVALID_PLAN_CODE;
 		}
 
+		cout << "\nSelected plan: " << axis1Name << axis2Name << std::endl;
+
 		// Find extremas points (2 corners of the ROI)
 		ScatterGraph::findExtrema(graph, *m_plan2D, getters, &minPoint, &maxPoint);
 
+		cout << std::endl;
 		cout << "min point: " << minPoint << endl;
-		cout << "max point: " << maxPoint << endl << endl;
+		cout << "max point: " << maxPoint << endl;
 
 		// Compute dimensions of the ROI
 		getDistances(minPoint, maxPoint, getters, distance1, distance2);
 
 		// display infos about distances
+		cout << std::endl;
 		cout << "distance " << axis1Name << ": " << distance1 << " mm" << endl;
-		cout << "distance " << axis2Name << ": " << distance2 << " mm" << endl << endl;
+		cout << "distance " << axis2Name << ": " << distance2 << " mm" << endl;
 
 		// Select step of axis 1 if needed
 		if (!m_stepAxis1)
@@ -297,6 +301,10 @@ namespace ReScan
 		{
 			m_stepAxis2 = new unsigned int(selectStep(axis2Name, 50, int(distance2)));
 		}
+
+		cout << std::endl;
+		cout << axis1Name << " axis step selected: " << *m_stepAxis1 << " mm" << std::endl;
+		cout << axis2Name << " axis step selected: " << *m_stepAxis2 << " mm" << std::endl;
 
 		// compute number of subdivsions on both axis
 		subDivision1 = getSubDivision(distance1, *m_stepAxis1);

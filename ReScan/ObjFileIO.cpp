@@ -7,6 +7,7 @@
 
 void objio::VerticesParser(std::string buffer, std::vector<float>* vertices)
 {
+	std::cout << "In Vertices Parser\n";
 	size_t found, foundendline, foundPrec = 0;
 	std::string elementType("\nv ");
 	std::string line, word;
@@ -87,7 +88,7 @@ void objio::FacesParser(std::string buffer, std::vector<int>* triangles, std::ve
 			ss.clear();
 		}
 	} while (found != std::string::npos);
-	std::cout << "Face parser ended\n";
+	std::cout << "Faces parser ended\n";
 }
 
 
@@ -184,6 +185,8 @@ void objio::_internalReadObjFile(std::string& path,
 		return;
 	}
 
+	std::cout << "Reading...\n";
+
 	// copy the file into the buffer:
 	result = fread(buffer, 1, lSize, pFile);
 	if (result != lSize)
@@ -191,6 +194,8 @@ void objio::_internalReadObjFile(std::string& path,
 		fputs("Reading error", stderr);
 		return;
 	}
+
+	std::cout << "Read done\n";
 
 	/* the whole file is now loaded in the memory buffer. */
 
