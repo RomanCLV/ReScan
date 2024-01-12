@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -129,6 +130,10 @@ namespace ReScanVisualizer.Models
             if (skipped >= 2 && skipped <= size)
             {
                 int newSize = size / skipped;
+                if (newSize * skipped != size)
+                {
+                    newSize++;
+                }
                 List<Point3D> taken = new List<Point3D>(newSize);
                 int i;
                 for (i = 0; i < size; i += skipped)

@@ -152,36 +152,53 @@ namespace ReScan
 				}
 			}
 		}
+		else
+		{
+			cout << "reducePercent aborted: invalid percent value given: " << percent << ". Shoud be in ]0.0;100.0]" << endl;
+		}
 	}
 
 	void ScatterGraph::reduce(const size_t skipped)
 	{
-		if (skipped != 0)
-		{
-			size_t size = m_points.size();
+		size_t size = m_points.size();
 
-			if (skipped >= size)
+		if (skipped >= 2 && skipped <= size)
+		{
+			size_t newSize = size / skipped;
+			if (newSize * skipped != size)
 			{
-				m_points.clear();
+				newSize++;
 			}
-			else
+			vector<const Point3D*> taken = vector<const Point3D*>(newSize);
+
+			size_t i;
+			size_t ti = 0;
+			size_t j = skipped;
+			for (i = 0; i < size; i++)
 			{
-				size_t newSize = (size_t)((double)size / (double)skipped);
-				vector<const Point3D*> taken(newSize);
-				size_t i;
-				size_t j = 0;
-				for (i = 0; i < size; i += skipped)
+				if (j == skipped)
 				{
-					
-					taken.at(j++) = m_points.at(i);
+					taken[ti] = m_points[i];
+					ti++;
+					j = 1;
 				}
-				m_points.clear();
-				m_points.assign(newSize, nullptr);
-				for (i = 0; i < newSize; i++)
+				else
 				{
-					m_points.at(i) = taken.at(i);
+					delete m_points[i];
+					m_points[i] = nullptr;
+					j++;
 				}
 			}
+			m_points.clear();
+			m_points.assign(newSize, nullptr);
+			for (i = 0; i < ti; i++)
+			{
+				m_points[i] = taken[i];
+			}
+		}
+		else
+		{
+			cout << "reduce aborted: invalid skipped value given: " << skipped << ". Shoud be in [2;" << size << "]" << endl;
 		}
 	}
 
