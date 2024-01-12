@@ -1,13 +1,14 @@
-#ifndef PLAN2D_H
-#define PLAN2D_H
+#ifndef RESCAN_PLAN2D_H
+#define RESCAN_PLAN2D_H
 
 namespace ReScan
 {
-	enum class Plan2D {
+	enum class Plan2D 
+	{
 		XY,
 		XZ,
 		YZ
 	};
 }
 
-#endif // PLAN2D_H
+#endif // RESCAN_PLAN2D_H

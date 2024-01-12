@@ -1,5 +1,5 @@
-#ifndef POINT3D_H
-#define POINT3D_H
+#ifndef RESCAN_POINT3D_H
+#define RESCAN_POINT3D_H
 
 #include <iostream>
 #include <sstream>
@@ -45,4 +45,4 @@ namespace ReScan
 	};
 }
 
-#endif // POINT3D_H
+#endif // RESCAN_POINT3D_H

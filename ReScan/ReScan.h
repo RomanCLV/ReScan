@@ -1,5 +1,5 @@
-#ifndef RESCAN_H
-#define RESCAN_H
+#ifndef RESCAN_RESCAN_H
+#define RESCAN_RESCAN_H
 
 #include "ObjFileIO.h"
 #include "ScatterGraph.h"
@@ -48,4 +48,4 @@ namespace ReScan
 
 std::string removeFileExtension(const std::string& fileName);
 
-#endif // RESCAN_H
+#endif // RESCAN_RESCAN_H

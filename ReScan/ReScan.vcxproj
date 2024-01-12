@@ -135,22 +135,23 @@
     <ClCompile Include="Plan.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Repere3D.cpp" />
+    <ClCompile Include="Base3D.cpp" />
     <ClCompile Include="ReScan.cpp" />
     <ClCompile Include="ScatterGraph.cpp" />
-    <ClCompile Include="Tools.cpp" />
+    <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Axis.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="ObjFileIO.h" />
     <ClInclude Include="Plan.h" />
     <ClInclude Include="Plan2D.h" />
     <ClInclude Include="Point3D.h" />
-    <ClInclude Include="Repere3D.h" />
+    <ClInclude Include="Base3D.h" />
     <ClInclude Include="ReScan.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScatterGraph.h" />
-    <ClInclude Include="Tools.h" />
+    <ClInclude Include="tools.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ReScan.rc" />

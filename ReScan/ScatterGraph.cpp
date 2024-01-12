@@ -1,5 +1,5 @@
 ﻿#include "ScatterGraph.h"
-#include "Tools.h"
+#include "tools.h"
 
 #include <iostream>   // for reading / writing files
 #include <fstream>    // for reading / writing files
@@ -677,12 +677,12 @@ namespace ReScan
 				for (size_t i = 2; i < size; i++)
 				{
 					y = *scatterGraph.at(i) - *p0;
-					if (!Tools::areVectorsColinear(x, y))
+					if (!ReScan::Tools::areVectorsColinear(x, y))
 					{
 						break;
 					}
 				}
-				z = x.cross3(y);
+				z = x.cross(y);
 			}
 			if (z.z() < 0)
 			{
@@ -787,12 +787,12 @@ namespace ReScan
 			if (!hasFoundVector2)
 			{
 				vector2 = *scatterGraph.at(i) - *p0;
-				hasFoundVector2 = !Tools::areVectorsColinear(vector1, vector2);
+				hasFoundVector2 = !(ReScan::Tools::areVectorsColinear(vector1, vector2));
 			}
 			else
 			{
 				vector3 = *scatterGraph.at(i) - *p0;
-				isCoplanar = abs(Tools::mixtProduct(vector1, vector2, vector3) < 0.001);
+				isCoplanar = abs(ReScan::Tools::mixtProduct(vector1, vector2, vector3)) < 0.001;
 				if (!isCoplanar)
 				{
 					break;
@@ -815,7 +815,7 @@ namespace ReScan
 		Vector3d vector1 = *scatterGraph.at(1) - *p0;
 		for (int i = 2; i < size; i++)
 		{
-			if (!Tools::areVectorsColinear(vector1, *scatterGraph.at(i) - *p0))
+			if (!ReScan::Tools::areVectorsColinear(vector1, *scatterGraph.at(i) - *p0))
 			{
 				return false;
 			}
@@ -823,7 +823,7 @@ namespace ReScan
 		return true;
 	}
 
-	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, Repere3D* repere)
+	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, Base3D* repere)
 	{
 		Point3D barycenter;
 		Plan averagePlan;
@@ -832,7 +832,7 @@ namespace ReScan
 		computeRepere3D(scatterGraph, barycenter, averagePlan, repere);
 	}
 
-	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Repere3D* repere)
+	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* repere)
 	{
 		repere->setOrigin(origin);
 
@@ -855,7 +855,7 @@ namespace ReScan
 		repere->setX(x);
 
 		// On fait le produit vectoriel Z*X pour avoir Y, et on normalise
-		Vector3d y = z.cross3(x);
+		Vector3d y = z.cross(x);
 		y.normalize();
 		repere->setY(y);
 	}

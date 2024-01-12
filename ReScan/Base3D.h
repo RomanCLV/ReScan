@@ -1,12 +1,13 @@
-#ifndef REPERE3D_H
-#define REPERE3D_H
+#ifndef RESCAN_REPERE3D_H
+#define RESCAN_REPERE3D_H
 
 #include "Point3D.h"
+#include "Axis.h"
 #include <Eigen/Dense>
 
 namespace ReScan
 {
-	class Repere3D
+	class Base3D
 	{
 	private:
 		Point3D m_origin;
@@ -15,12 +16,12 @@ namespace ReScan
 		Eigen::Vector3d m_z;
 
 	public:
-		Repere3D();
-		Repere3D(const Repere3D& repere3D);
-		Repere3D(const Point3D& origin);
-		Repere3D(const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z);
-		Repere3D(const Point3D& origin, const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z);
-		~Repere3D();
+		Base3D();
+		Base3D(const Base3D& repere3D);
+		Base3D(const Point3D& origin);
+		Base3D(const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z);
+		Base3D(const Point3D& origin, const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z);
+		~Base3D();
 
 		const Point3D* getOrigin() const;
 		void setOrigin(const Point3D& origin);
@@ -38,7 +39,9 @@ namespace ReScan
 		void normalizeX();
 		void normalizeY();
 		void normalizeZ();
+
+		static Base3D computeOrientedBase(const Eigen::Vector3d& direction, Axis axis);
 	};
 }
 
-#endif // REPERE3D_H
+#endif // RESCAN_REPERE3D_H

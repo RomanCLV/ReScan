@@ -1,5 +1,5 @@
-#ifndef PLAN_H
-#define PLAN_H
+#ifndef RESCAN_PLAN_H
+#define RESCAN_PLAN_H
 
 #include "Point3D.h"
 #include "Plan.h"
@@ -48,4 +48,4 @@ namespace ReScan
 	};
 }
 
-#endif // PLAN_H
+#endif // RESCAN_PLAN_H

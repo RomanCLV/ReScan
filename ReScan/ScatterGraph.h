@@ -1,10 +1,10 @@
-#ifndef SCATTERGRAPH_H
-#define SCATTERGRAPH_H
+#ifndef RESCAN_SCATTERGRAPH_H
+#define RESCAN_SCATTERGRAPH_H
 
 #include "Point3D.h"
 #include "Plan.h"
 #include "Plan2D.h"
-#include "Repere3D.h"
+#include "Base3D.h"
 #include "macros.h"
 
 #include <vector>
@@ -97,9 +97,9 @@ namespace ReScan
 		static bool arePointsCoplanar(const ScatterGraph& scatterGraph);
 		static bool arePointsColinear(const ScatterGraph& scatterGraph);
 
-		static void computeRepere3D(const ScatterGraph& scatterGraph, Repere3D* repere);
-		static void computeRepere3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Repere3D* repere);
+		static void computeRepere3D(const ScatterGraph& scatterGraph, Base3D* repere);
+		static void computeRepere3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* repere);
 	};
 }
 
-#endif // SCATTERGRAPH_H
+#endif // RESCAN_SCATTERGRAPH_H

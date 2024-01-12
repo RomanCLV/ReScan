@@ -1,17 +1,16 @@
-#ifndef TOOLS_H
-#define TOOLS_H
+#ifndef RESCAN_TOOLS_H
+#define RESCAN_TOOLS_H
 
 #include <Eigen/Dense>
 
 namespace ReScan
 {
-	static class Tools
+	namespace Tools
 	{
-	public:
-		inline static double Clamp(double d);
-		inline static double mixtProduct(const Eigen::Vector3d& u, const Eigen::Vector3d& v, const Eigen::Vector3d& w);
-		inline static bool areVectorsColinear(const Eigen::Vector3d& u, const Eigen::Vector3d& v);
-	};
+		double clamp(double d);
+		double mixtProduct(const Eigen::Vector3d& u, const Eigen::Vector3d& v, const Eigen::Vector3d& w);
+		bool areVectorsColinear(const Eigen::Vector3d& u, const Eigen::Vector3d& v);
+	}
 }
 
-#endif
+#endif // RESCAN_TOOLS_H
