@@ -19,8 +19,7 @@ using namespace Eigen;
 
 namespace ReScan
 {
-
-	#pragma region Constructor / Destructor
+#pragma region Constructor / Destructor
 
 	ScatterGraph::ScatterGraph() :
 		m_points()
@@ -28,8 +27,9 @@ namespace ReScan
 	}
 
 	ScatterGraph::ScatterGraph(const ScatterGraph& scatterGraph) :
-		m_points(scatterGraph.m_points)
+		m_points()
 	{
+		copy(scatterGraph, *this);
 	}
 
 	ScatterGraph::ScatterGraph(const size_t size) :
@@ -40,7 +40,7 @@ namespace ReScan
 	ScatterGraph::ScatterGraph(const vector<Point3D>* pointsList) :
 		m_points(pointsList->size())
 	{
-		for (int i = 0; i < pointsList->size(); i++)
+		for (size_t i = 0; i < pointsList->size(); i++)
 		{
 			m_points[i] = &pointsList->at(i);
 		}
@@ -49,7 +49,7 @@ namespace ReScan
 	ScatterGraph::ScatterGraph(const vector<const Point3D*>* pointsList) :
 		m_points(pointsList->size())
 	{
-		for (int i = 0; i < pointsList->size(); i++)
+		for (size_t i = 0; i < pointsList->size(); i++)
 		{
 			m_points[i] = pointsList->at(i);
 		}
@@ -58,7 +58,7 @@ namespace ReScan
 	ScatterGraph::ScatterGraph(const Point3D pointsArray[], const size_t size) :
 		m_points(size)
 	{
-		for (int i = 0; i < size; i++)
+		for (size_t i = 0; i < size; i++)
 		{
 			m_points[i] = &pointsArray[i];
 		}
@@ -67,7 +67,7 @@ namespace ReScan
 	ScatterGraph::ScatterGraph(const Point3D* pointsArray[], const size_t size) :
 		m_points(size)
 	{
-		for (int i = 0; i < size; i++)
+		for (size_t i = 0; i < size; i++)
 		{
 			m_points[i] = pointsArray[i];
 		}
@@ -77,7 +77,7 @@ namespace ReScan
 	{
 	}
 
-	#pragma endregion
+#pragma endregion
 
 	void ScatterGraph::addPoint(const Point3D* point)
 	{
@@ -109,8 +109,17 @@ namespace ReScan
 		return m_points.at(pos);
 	}
 
-	void ScatterGraph::clear()
+	void ScatterGraph::clear(const bool freeMemory)
 	{
+		if (freeMemory)
+		{
+			size_t size = m_points.size();
+			for (size_t i = 0; i < size; i++)
+			{
+				delete m_points[i];
+				m_points[i] = nullptr;
+			}
+		}
 		m_points.clear();
 	}
 
@@ -145,29 +154,33 @@ namespace ReScan
 		}
 	}
 
-	void ScatterGraph::reduce(const unsigned int skipped)
+	void ScatterGraph::reduce(const size_t skipped)
 	{
-		int size = (int)m_points.size();
+		if (skipped != 0)
+		{
+			size_t size = m_points.size();
 
-		if (skipped >= (unsigned int)size)
-		{
-			m_points.clear();
-		}
-		else
-		{
-			int newSize = size / skipped;
-			vector<const Point3D*> taken(newSize);
-			int i;
-			int j = 0;
-			for (i = 0; i < size; i += skipped)
+			if (skipped >= size)
 			{
-				taken.at(j++) = m_points.at(i);
+				m_points.clear();
 			}
-			m_points.clear();
-			m_points.assign(newSize, nullptr);
-			for (i = 0; i < newSize; i++)
+			else
 			{
-				m_points.at(i) = taken.at(i);
+				size_t newSize = (size_t)((double)size / (double)skipped);
+				vector<const Point3D*> taken(newSize);
+				size_t i;
+				size_t j = 0;
+				for (i = 0; i < size; i += skipped)
+				{
+					
+					taken.at(j++) = m_points.at(i);
+				}
+				m_points.clear();
+				m_points.assign(newSize, nullptr);
+				for (i = 0; i < newSize; i++)
+				{
+					m_points.at(i) = taken.at(i);
+				}
 			}
 		}
 	}
@@ -196,9 +209,19 @@ namespace ReScan
 		return graph;
 	}
 
-	#pragma region Static functions
-	
-	#pragma region Populate
+#pragma region Static functions
+
+	void ScatterGraph::copy(const ScatterGraph& source, ScatterGraph& dest)
+	{
+		size_t size = source.size();
+		for (size_t i = 0; i < size; i++)
+		{
+			const Point3D* p = source.at(i);
+			dest.addPoint(p->getX(), p->getY(), p->getZ());
+		}
+	}
+
+#pragma region Populate
 
 	void ScatterGraph::populateFromVectorXYZ(const std::vector<float>* vect, ScatterGraph& scatterGraph)
 	{
@@ -402,9 +425,9 @@ namespace ReScan
 		}
 	}
 
-	#pragma endregion
-	
-	#pragma region Save & Read
+#pragma endregion
+
+#pragma region Save & Read
 
 	bool ScatterGraph::saveCSV(const std::string& filename, const ScatterGraph& scatterGraph, bool replaceIfFileExists, bool writeHeaders)
 	{
@@ -518,9 +541,11 @@ namespace ReScan
 		return true;
 	}
 
-	#pragma endregion
-	
-	#pragma region Compute
+#pragma endregion
+
+#pragma region Compute
+
+
 
 	int ScatterGraph::findMax(const ScatterGraph& scatterGraph, double (Point3D::* getter)() const)
 	{
@@ -863,7 +888,7 @@ namespace ReScan
 		repere->setY(y);
 	}
 
-	#pragma endregion
-	
-	#pragma endregion
+#pragma endregion
+
+#pragma endregion
 }

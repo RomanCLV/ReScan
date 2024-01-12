@@ -78,7 +78,7 @@ namespace ReScanVisualizer.Models
 
         /// <summary>
         /// Reduce the number of points by the given factor.<br />
-	    /// If percent isn't valid, the process is canceled, return false, else return true<br />
+	    /// If percent isn't valid, the process is canceled.<br />
         /// <br />
 	    /// Examples:<br />
 	    /// percent:  10 -> reduced by  10% - if you have 100 points, you will now have 90<br />

@@ -829,7 +829,7 @@ namespace ReScanVisualizer.ViewModels
         /// percent:   0 -> reduced by   0% - no changes<br />
         /// percent: 100 -> reduced by 100% - cleared<br />
         /// </summary>
-        /// <param name="percent">Percentage of reduction (between 0.0 and 100.0).</param>
+        /// <param name="reductionFactor">Percentage of reduction (between 0.0 and 100.0).</param>
         public void ReducePercent(double reductionFactor)
         {
             SetFrom(_scatterGraph.GetReducedPercent(reductionFactor));
