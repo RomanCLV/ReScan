@@ -60,9 +60,9 @@ namespace ReScan
 
 	void Point3D::getDiff(const Point3D& point, Eigen::Vector3d* result) const
 	{
-		(*result)[0] = point.m_x - m_x;
-		(*result)[1] = point.m_y - m_y;
-		(*result)[2] = point.m_z - m_z;
+		(*result)[0] = m_x - point.m_x;
+		(*result)[1] = m_y - point.m_y;
+		(*result)[2] = m_z - point.m_z;
 	}
 
 	double Point3D::distanceBetween(const Point3D& p1, const Point3D& p2)

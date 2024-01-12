@@ -125,10 +125,7 @@ namespace ReScan
 		Base3D base3D;
 		double angle = 0.0;
 
-		if (direction.norm() != 1.0)
-		{
-			direction.normalize();
-		}
+		direction.normalize();
 
 		switch (axis)
 		{
@@ -157,15 +154,17 @@ namespace ReScan
 			// Convert angle (that is in ]-180;180[ domain to radians
 			double angleRad = Tools::d2r(angle);
 
+			rotationAxis.normalize();
+
 			Eigen::Quaterniond quaternion;
-			quaternion = Eigen::AngleAxisd(angleRad, rotationAxis);
+			quaternion = Eigen::AngleAxisd(-angleRad, rotationAxis);
 
 			// Convert the quaternion into a rotation matrix
 			Eigen::Matrix3d rotationMatrix = quaternion.toRotationMatrix();
 
-			base3D.setX(rotationMatrix.col(0));
-			base3D.setY(rotationMatrix.col(1));
-			base3D.setZ(rotationMatrix.col(2));
+			base3D.setX(rotationMatrix.row(0));
+			base3D.setY(rotationMatrix.row(1));
+			base3D.setZ(rotationMatrix.row(2));
 		}
 
 		return base3D;

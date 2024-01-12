@@ -280,9 +280,9 @@ namespace ReScanVisualizer
             double uz_sina = u.Z * sina;
 
             return new Matrix3D(
-                uxx * _1_cosa + cosa,    uxy * _1_cosa - uz_sina, uxz * _1_cosa + uy_sina, 0,
-                uxy * _1_cosa + uz_sina, uyy * _1_cosa + cosa,    uyz * _1_cosa - ux_sina, 0,
-                uxz * _1_cosa - uy_sina, uyz * _1_cosa + ux_sina, uzz * _1_cosa + cosa,    0,
+                uxx * _1_cosa + cosa, uxy * _1_cosa - uz_sina, uxz * _1_cosa + uy_sina, 0,
+                uxy * _1_cosa + uz_sina, uyy * _1_cosa + cosa, uyz * _1_cosa - ux_sina, 0,
+                uxz * _1_cosa - uy_sina, uyz * _1_cosa + ux_sina, uzz * _1_cosa + cosa, 0,
                 0, 0, 0, 1);
         }
 
@@ -293,10 +293,7 @@ namespace ReScanVisualizer
             Base3D base3D = new Base3D();
             double angle;
 
-            if (direction.Length != 1.0)
-            {
-                direction.Normalize();
-            }
+            direction.Normalize();
 
             switch (axis)
             {
@@ -323,7 +320,10 @@ namespace ReScanVisualizer
 
             if (angle != 0.0)
             {
-                rot.Rotate(new Quaternion(rotationAxis, -angle));
+                rotationAxis.Normalize();
+
+                Quaternion q = new Quaternion(rotationAxis, -angle);
+                rot.Rotate(q);
 
                 rot.Clamp();
                 base3D.X = new Vector3D(rot.M11, rot.M21, rot.M31);
@@ -338,7 +338,7 @@ namespace ReScanVisualizer
             return new List<RenderQuality>()
             {
                 RenderQuality.VeryLow,
-                RenderQuality.Low, 
+                RenderQuality.Low,
                 RenderQuality.Medium,
                 RenderQuality.High,
                 RenderQuality.VeryHigh,
@@ -440,9 +440,9 @@ namespace ReScanVisualizer
         {
             return new List<VerticalAlignment>()
             {
-                VerticalAlignment.Top, 
+                VerticalAlignment.Top,
                 VerticalAlignment.Center,
-                VerticalAlignment.Bottom, 
+                VerticalAlignment.Bottom,
                 VerticalAlignment.Stretch
             };
         }

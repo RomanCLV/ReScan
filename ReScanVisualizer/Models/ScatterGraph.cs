@@ -364,7 +364,7 @@ namespace ReScanVisualizer.Models
         
         public bool ArePointsColinear()
         {
-            if (_points.Count < 2)
+            if (_points.Count <= 2)
             {
                 return true;
                 //throw new InvalidOperationException("Need at least 2 points to compute the linearity of a graph.");

@@ -734,12 +734,18 @@ namespace ReScan
 		if (size < 2)
 		{
 			averagePlan->setABCD(0.0, 0.0, 1.0, -barycenter.getZ());
+			if (averagePlan->getD() == -0.0)
+			{
+				averagePlan->setD(0.0);
+			}
 		}
 		else if (ScatterGraph::arePointsCoplanar(scatterGraph))
 		{
 			const Point3D* p0 = scatterGraph.at(0);
 			const Point3D* p1 = scatterGraph.at(1);
 			Vector3d x = *p1 - *p0;
+			Vector3d x2;
+			p1->getDiff(*p0, &x2);
 			Vector3d z;
 			if (ScatterGraph::arePointsColinear(scatterGraph))
 			{
@@ -768,6 +774,10 @@ namespace ReScan
 			}
 			z.normalize();
 			averagePlan->setABCD(z.x(), z.y(), z.z(), -(z.x() * barycenter.getX() + z.y() * barycenter.getY() + z.z() * barycenter.getZ()));
+			if (averagePlan->getD() == -0.0)
+			{
+				averagePlan->setD(0.0);
+			}
 		}
 		else
 		{
@@ -843,6 +853,10 @@ namespace ReScan
 			z.normalize();
 
 			averagePlan->setABCD(z.x(), z.y(), z.z(), -(z.x() * barycenter.getX() + z.y() * barycenter.getY() + z.z() * barycenter.getZ()));
+			if (averagePlan->getD() == -0.0)
+			{
+				averagePlan->setD(0.0);
+			}
 		}
 	}
 
@@ -884,7 +898,7 @@ namespace ReScan
 	bool ScatterGraph::arePointsColinear(const ScatterGraph& scatterGraph)
 	{
 		size_t size = scatterGraph.size();
-		if (size < 2)
+		if (size <= 2)
 		{
 			return true;
 		}
