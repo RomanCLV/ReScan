@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf;
 
 namespace ReScanVisualizer.Models
 {
@@ -363,7 +361,7 @@ namespace ReScanVisualizer.Models
 
             return new Point3D(centerX, centerY, centerZ);
         }
-
+        
         public bool ArePointsColinear()
         {
             if (_points.Count < 2)
@@ -670,7 +668,7 @@ namespace ReScanVisualizer.Models
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public static void SaveCSV(string filename, ScatterGraph scatterGraph, bool replaceIfFileExists, bool writeHeaders)
+        public static void SaveCSV(string filename, ScatterGraph scatterGraph, bool replaceIfFileExists, bool writeHeaders, bool decimalCharIsDot = true)
         {
             if (scatterGraph == null)
             {
@@ -710,7 +708,22 @@ namespace ReScanVisualizer.Models
                     foreach (Point3D point in scatterGraph._points)
                     {
                         // Écrire chaque point CSV
-                        writer.WriteLine($"{point.X};{point.Y};{point.Z}");
+                        string xStr = point.X.ToString();
+                        string yStr = point.Y.ToString();
+                        string zStr = point.Z.ToString();
+                        if (decimalCharIsDot)
+                        {
+                            xStr.Replace(',', '.');
+                            yStr.Replace(',', '.');
+                            zStr.Replace(',', '.');
+                        }
+                        else
+                        {
+                            xStr.Replace('.', ',');
+                            yStr.Replace('.', ',');
+                            zStr.Replace('.', ',');
+                        }
+                        writer.WriteLine($"{xStr};{yStr};{zStr}");
                     }
                 }
             }

@@ -142,7 +142,7 @@ namespace ReScan
 
 		// static functions to save / read
 
-		static bool saveCSV(const std::string& filename, const ScatterGraph& scatterGraph, bool replaceIfFileExists = false, bool writeHeaders = true);
+		static bool saveCSV(const std::string& filename, const ScatterGraph& scatterGraph, bool replaceIfFileExists = false, bool writeHeaders = true, bool decimalCharIsDot = true);
 		static bool readCSV(const std::string& filename, ScatterGraph* scatterGraph, bool containsHeader = true);
 
 		// static functions to compute things

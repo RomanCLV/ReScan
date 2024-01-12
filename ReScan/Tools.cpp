@@ -7,6 +7,17 @@ namespace ReScan
 {
 	namespace Tools
 	{
+		void strReplace(std::string& s, char oldChar, char newChar)
+		{
+			for (int i = 0; i < s.length(); i++)
+			{
+				if (s[i] == oldChar)
+				{
+					s[i] = newChar;
+				}
+			}
+		}
+
 		double d2r(double degree)
 		{
 			return EIGEN_PI * degree / 180.0;

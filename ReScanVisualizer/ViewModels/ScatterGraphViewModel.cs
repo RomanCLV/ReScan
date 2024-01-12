@@ -798,7 +798,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 try
                 {
-                    ScatterGraph.SaveCSV(saveFileDialog.FileName, _scatterGraph, true, false);
+                    ScatterGraph.SaveCSV(saveFileDialog.FileName, _scatterGraph, true, _writeHeaders, false); // TODO: ajouter l'option . / ,
                 }
                 catch (Exception ex)
                 {

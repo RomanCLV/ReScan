@@ -7,6 +7,8 @@ namespace ReScan
 {
 	namespace Tools
 	{
+		void strReplace(std::string& s, char oldChar, char newChar);
+
 		/// <summary>
 		/// Radians to degrees.
 		/// </summary>

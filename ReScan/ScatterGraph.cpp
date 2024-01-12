@@ -446,7 +446,7 @@ namespace ReScan
 
 #pragma region Save & Read
 
-	bool ScatterGraph::saveCSV(const std::string& filename, const ScatterGraph& scatterGraph, bool replaceIfFileExists, bool writeHeaders)
+	bool ScatterGraph::saveCSV(const std::string& filename, const ScatterGraph& scatterGraph, bool replaceIfFileExists, bool writeHeaders, bool decimalCharIsDot)
 	{
 		// Vérifier si le nom de fichier se termine par ".csv"
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
@@ -477,9 +477,30 @@ namespace ReScan
 			outputFile << "x;y;z" << std::endl;
 		}
 
+		std::string xStr;
+		std::string yStr;
+		std::string zStr;
+
 		for (const Point3D* point : scatterGraph.m_points)
 		{
-			outputFile << point->getX() << ";" << point->getY() << ";" << point->getZ() << std::endl;
+			xStr = std::to_string(point->getX());
+			yStr = std::to_string(point->getY());
+			zStr = std::to_string(point->getZ());
+
+			if (decimalCharIsDot)
+			{
+				Tools::strReplace(xStr, ',', '.');
+				Tools::strReplace(yStr, ',', '.');
+				Tools::strReplace(zStr, ',', '.');
+			}
+			else
+			{
+				Tools::strReplace(xStr, '.', ',');
+				Tools::strReplace(yStr, '.', ',');
+				Tools::strReplace(zStr, '.', ',');
+			}
+
+			outputFile << xStr << ";" << yStr << ";" << zStr << std::endl;
 		}
 
 		outputFile.close();
@@ -525,6 +546,7 @@ namespace ReScan
 			// on lit chaque cellule (qui sont séparés par des virugles) afin de récupérer x, y et z dans le tableau rowData
 			while (std::getline(lineStream, cell, ';'))
 			{
+				Tools::strReplace(cell, ',', '.');
 				try
 				{
 					// Convertir la cellule en double
@@ -561,8 +583,6 @@ namespace ReScan
 #pragma endregion
 
 #pragma region Compute
-
-
 
 	int ScatterGraph::findMax(const ScatterGraph& scatterGraph, double (Point3D::* getter)() const)
 	{
@@ -670,24 +690,37 @@ namespace ReScan
 
 	void ScatterGraph::computeBarycenter(const ScatterGraph& scatterGraph, Point3D* barycenter)
 	{
+		size_t size = scatterGraph.size();
 		double x = 0.0;
 		double y = 0.0;
 		double z = 0.0;
-		size_t size = scatterGraph.size();
-		size_t i = 0;
-		double dsize = (double)size;
-		const Point3D* point;
 
-		while (i < size)
+		double sumX = 0.0;
+		double sumY = 0.0;
+		double sumZ = 0.0;
+
+		if (size != 0)
 		{
-			point = scatterGraph.at(i);
 
-			x += point->getX();
-			y += point->getY();
-			z += point->getZ();
-			i++;
+			size_t i = 0;
+			double dsize = (double)size;
+			const Point3D* point;
+
+			while (i < size)
+			{
+				point = scatterGraph.at(i);
+
+				sumX += point->getX();
+				sumY += point->getY();
+				sumZ += point->getZ();
+				i++;
+			}
+
+			x = sumX / dsize;
+			y = sumY / dsize;
+			z = sumZ / dsize;
 		}
-		barycenter->setXYZ(x / dsize, y / dsize, z / dsize);
+		barycenter->setXYZ(x, y, z);
 	}
 
 	void ScatterGraph::computeAveragePlan(const ScatterGraph& scatterGraph, Plan* averagePlan)
