@@ -40,7 +40,7 @@ namespace ReScan
 		void normalizeY();
 		void normalizeZ();
 
-		static Base3D computeOrientedBase(const Eigen::Vector3d& direction, Axis axis);
+		static Base3D computeOrientedBase(Eigen::Vector3d direction, Axis axis);
 	};
 }
 

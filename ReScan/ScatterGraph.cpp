@@ -668,8 +668,11 @@ namespace ReScan
 			Vector3d z;
 			if (ScatterGraph::arePointsColinear(scatterGraph))
 			{
-				//Base3D repere = Tools.ComputeOrientedBase(x, Axis.X);
-				//z = repere.Z;
+				Base3D repere = Base3D::computeOrientedBase(x, Axis::X);
+				const Vector3d* rZ = repere.getZ();
+				z[0] = (*rZ)[0];
+				z[1] = (*rZ)[1];
+				z[2] = (*rZ)[2];
 			}
 			else
 			{
@@ -684,9 +687,9 @@ namespace ReScan
 				}
 				z = x.cross(y);
 			}
-			if (z.z() < 0)
+			if (z.z() < 0.0)
 			{
-				z *= -1;
+				z *= -1.0;
 			}
 			z.normalize();
 			averagePlan->setABCD(z.x(), z.y(), z.z(), -(z.x() * barycenter.getX() + z.y() * barycenter.getY() + z.z() * barycenter.getZ()));
@@ -792,7 +795,7 @@ namespace ReScan
 			else
 			{
 				vector3 = *scatterGraph.at(i) - *p0;
-				isCoplanar = abs(ReScan::Tools::mixtProduct(vector1, vector2, vector3)) < 0.001;
+				isCoplanar = abs(ReScan::Tools::mixteProduct(vector1, vector2, vector3)) < 0.001;
 				if (!isCoplanar)
 				{
 					break;
@@ -823,16 +826,16 @@ namespace ReScan
 		return true;
 	}
 
-	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, Base3D* repere)
+	void ScatterGraph::computeBase3D(const ScatterGraph& scatterGraph, Base3D* repere)
 	{
 		Point3D barycenter;
 		Plan averagePlan;
 		computeBarycenter(scatterGraph, &barycenter);
 		computeAveragePlan(scatterGraph, &averagePlan);
-		computeRepere3D(scatterGraph, barycenter, averagePlan, repere);
+		computeBase3D(scatterGraph, barycenter, averagePlan, repere);
 	}
 
-	void ScatterGraph::computeRepere3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* repere)
+	void ScatterGraph::computeBase3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* repere)
 	{
 		repere->setOrigin(origin);
 

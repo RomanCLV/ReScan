@@ -1,4 +1,9 @@
 #include "Base3D.h"
+#include "tools.h"
+
+#include <cmath> // for fmod
+
+using namespace Eigen;
 
 namespace ReScan
 {
@@ -51,7 +56,7 @@ namespace ReScan
 		return &m_origin;
 	}
 
-	void Base3D::setOrigin(const Point3D& origin) 
+	void Base3D::setOrigin(const Point3D& origin)
 	{
 		m_origin.setFrom(origin);
 	}
@@ -113,4 +118,57 @@ namespace ReScan
 	{
 		m_z.normalize();
 	}
+
+	Base3D Base3D::computeOrientedBase(Eigen::Vector3d direction, Axis axis)
+	{
+		Vector3d rotationAxis;
+		Base3D base3D;
+		double angle = 0.0;
+
+		if (direction.norm() != 1.0)
+		{
+			direction.normalize();
+		}
+
+		switch (axis)
+		{
+		case ReScan::Axis::X:
+			rotationAxis = base3D.getX()->cross(direction);
+			angle = Tools::angleBetween(*base3D.getX(), direction);
+			break;
+		case ReScan::Axis::Y:
+			rotationAxis = base3D.getY()->cross(direction);
+			angle = Tools::angleBetween(*base3D.getY(), direction);
+			break;
+		case ReScan::Axis::Z:
+			rotationAxis = base3D.getZ()->cross(direction);
+			angle = Tools::angleBetween(*base3D.getZ(), direction);
+			break;
+		default:
+			throw std::invalid_argument("Invalid axis given: " + std::to_string(int(axis)));
+			break;
+		}
+
+		// clamp to 0, or -/+ 180 and then, modulo it by 180
+		angle = fmod(Tools::clampv3(angle, 0.0, -180.0, 180.0), 180.0); // fmod : modulo for float/double
+
+		if (angle != 0.0)
+		{
+			// Convert angle (that is in ]-180;180[ domain to radians
+			double angleRad = Tools::d2r(angle);
+
+			Eigen::Quaterniond quaternion;
+			quaternion = Eigen::AngleAxisd(angleRad, rotationAxis);
+
+			// Convert the quaternion into a rotation matrix
+			Eigen::Matrix3d rotationMatrix = quaternion.toRotationMatrix();
+
+			base3D.setX(rotationMatrix.col(0));
+			base3D.setY(rotationMatrix.col(1));
+			base3D.setZ(rotationMatrix.col(2));
+		}
+
+		return base3D;
+	}
+
 }

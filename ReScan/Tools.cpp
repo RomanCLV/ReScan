@@ -7,12 +7,44 @@ namespace ReScan
 {
 	namespace Tools
 	{
-		double clamp(double d)
+		double d2r(double degree)
 		{
-			return -ZERO_CLAMP < d && d < ZERO_CLAMP ? 0.0 : d;
+			return EIGEN_PI * degree / 180.0;
 		}
 
-		double mixtProduct(const Eigen::Vector3d& u, const Eigen::Vector3d& v, const Eigen::Vector3d& w)
+		double r2d(double radian)
+		{
+			return 180.0 * radian / EIGEN_PI;
+		}
+
+		double clamp(double d)
+		{
+			return (-ZERO_CLAMP < d && d < ZERO_CLAMP) ? 0.0 : d;
+		}
+
+		double clampv(double d, double v)
+		{
+			return (v - ZERO_CLAMP < d && d < v + ZERO_CLAMP) ? v : d;
+		}
+
+		double clampv3(double d, double v1, double v2, double v3)
+		{
+			if (v1 - ZERO_CLAMP < d && d < v1 + ZERO_CLAMP)
+			{
+				return v1;
+			}
+			else if (v2 - ZERO_CLAMP < d && d < v2 + ZERO_CLAMP)
+			{
+				return v2;
+			}
+			else if (v3 - ZERO_CLAMP < d && d < v3 + ZERO_CLAMP)
+			{
+				return v3;
+			}
+			return d;
+		}
+
+		double mixteProduct(const Eigen::Vector3d& u, const Eigen::Vector3d& v, const Eigen::Vector3d& w)
 		{
 			return u.dot(v.cross(w));
 		}
@@ -37,19 +69,29 @@ namespace ReScan
 				k = u.z() / v.z();
 			}
 
-			double d = u.x() - k * v.x();
-			bool areColinear = clamp(d) == 0.0;
+			double d = clamp(u.x() - k * v.x());
+			bool areColinear = d == 0.0;
 			if (areColinear)
 			{
-				d = u.y() - k * v.y();
-				areColinear = clamp(d) == 0.0;
+				d = clamp(u.y() - k * v.y());
+				areColinear = d == 0.0;
 				if (areColinear)
 				{
-					d = u.z() - k * v.z();
-					areColinear = clamp(d) == 0.0;
+					d = clamp(u.z() - k * v.z());
+					areColinear = d == 0.0;
 				}
 			}
 			return areColinear;
+		}
+
+		double angleBetween(Eigen::Vector3d vector1, Eigen::Vector3d vector2)
+		{
+			vector1.normalize();
+			vector2.normalize();
+			double num = vector1.dot(vector2);
+
+			double radians = ((!(num < 0.0)) ? (2.0 * asin((vector1 - vector2).norm() / 2.0)) : (EIGEN_PI - 2.0 * asin((-vector1 - vector2).norm() / 2.0)));
+			return r2d(radians);
 		}
 	}
 }
