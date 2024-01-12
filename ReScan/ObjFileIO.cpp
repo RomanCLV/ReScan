@@ -117,11 +117,37 @@ void objio::UVsParser(std::string buffer, std::vector<float>* uvs)
 }
 
 
-void objio::readObjFile(std::string path,
+void objio::readObjFileVertices(std::string& path, std::vector<float>* vertices)
+{
+	objio::_internalReadObjFile(path, vertices, nullptr, nullptr, nullptr);
+}
+
+
+void objio::readObjFileFaces(std::string& path, std::vector<int>* triangles, std::vector<float>* uvs)
+{
+	objio::_internalReadObjFile(path, nullptr, triangles, uvs, nullptr);
+}
+
+
+void objio::readObjFileUVs(std::string& path, std::vector<int>* uvtriangles)
+{
+	objio::_internalReadObjFile(path, nullptr, nullptr, nullptr, uvtriangles);
+}
+
+void objio::readObjFile(std::string& path,
     std::vector<float>* vertices,   \
     std::vector<int>* triangles,    \
     std::vector<float>* uvs,        \
     std::vector<int>* uvtriangles)
+{
+	objio::_internalReadObjFile(path, vertices, triangles, uvs, uvtriangles);
+}
+
+void objio::_internalReadObjFile(std::string& path,
+	std::vector<float>* vertices, \
+	std::vector<int>* triangles, \
+	std::vector<float>* uvs, \
+	std::vector<int>* uvtriangles)
 {
 	//Initialising timers and data structures
 	auto _start = std::chrono::system_clock::now();
@@ -173,21 +199,72 @@ void objio::readObjFile(std::string path,
 	std::string bufferString = buffer;
 	free(buffer);
 
-	//Calling threads to fill vertices and triangles vectors
-	std::thread myThread1(objio::VerticesParser, bufferString, vertices);
-	std::thread myThread2(objio::FacesParser, bufferString, triangles, uvtriangles);
-	std::thread myThread3(objio::UVsParser, bufferString, uvs);
+	// By JC - before
 
-	myThread1.join();
-	myThread2.join();
-	myThread3.join();
+	//Calling threads to fill vertices and triangles vectors
+	//std::thread myThread1(objio::VerticesParser, bufferString, vertices);
+	//std::thread myThread2(objio::FacesParser, bufferString, triangles, uvtriangles);
+	//std::thread myThread3(objio::UVsParser, bufferString, uvs);
+
+	//myThread1.join();
+	//myThread2.join();
+	//myThread3.join();
+
+	// RC - 12/01/2024
+
+	std::vector<std::thread*> threads;
+
+	// vertices
+	if (vertices != nullptr)
+	{
+		std::thread* t = new std::thread(objio::VerticesParser, bufferString, vertices);
+		if (t == nullptr)
+		{
+			fputs("Memory error", stderr);
+			return;
+		}
+		threads.push_back(t);
+	}
+
+	// faces
+	if (triangles != nullptr && uvtriangles != nullptr)
+	{
+		std::thread* t = new std::thread(objio::FacesParser, bufferString, triangles, uvtriangles);
+		if (t == nullptr)
+		{
+			fputs("Memory error", stderr);
+			return;
+		}
+		threads.push_back(t);
+	}
+
+	// uvs
+	if (uvs != nullptr)
+	{
+		std::thread* t = new std::thread(objio::UVsParser, bufferString, uvs);
+		if (t == nullptr)
+		{
+			fputs("Memory error", stderr);
+			return;
+		}
+		threads.push_back(t);
+	}
+
+	for (int i = 0; i < threads.size(); i++)
+	{
+		threads[i]->join();
+	}
 
 	_end = std::chrono::system_clock::now();
 	elapsed_seconds = _end - _start;
 	std::cout << "File read in : " << elapsed_seconds.count() << " seconds\n";
+	for (int i = 0; i < threads.size(); i++)
+	{
+		delete threads[i];
+	}
 }
 
-void objio::writeObjFile(std::string path,							\
+void objio::writeObjFile(std::string& path,							\
 	const std::vector<float>* vertices,								\
 	const std::vector<int>* triangles)
 {

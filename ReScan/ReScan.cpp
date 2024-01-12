@@ -206,11 +206,7 @@ namespace ReScan
 	int ReScan::internalProcess(const bool exportFiles)
 	{
 		// declarations
-
 		vector<float> vertices;
-		vector<int>   triangles;
-		vector<float> uvs;
-		vector<int>   uvtriangles;
 
 		char axis1Name;
 		char axis2Name;
@@ -240,7 +236,8 @@ namespace ReScan
 		string filenameWithoutExtention = removeFileExtension(m_fileName);
 
 		// Read obj file
-		objio::readObjFile(m_fileName, &vertices, &triangles, &uvs, &uvtriangles);
+		//objio::readObjFile(m_fileName, &vertices, &triangles, &uvs, &uvtriangles);
+		objio::readObjFileVertices(m_fileName, &vertices);
 
 		// populate graph with vertex read in the file
 		ScatterGraph::populateFromVectorXYZ(&vertices, graph);
