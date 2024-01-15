@@ -12,7 +12,7 @@
 #include <cmath>      // for trigo functions
 #include <functional> // for findMin & findMax
 #include <algorithm>  // for findMin & findMax
-#include <limits>	  // for DBL_MAX
+#include <limits>	  // for DBL_MAX, NaN
 #include <Eigen/Dense>
 
 using namespace std;
@@ -20,7 +20,7 @@ using namespace Eigen;
 
 namespace ReScan
 {
-#pragma region Constructor / Destructor
+	#pragma region Constructor / Destructor
 
 	ScatterGraph::ScatterGraph() :
 		m_points()
@@ -78,7 +78,7 @@ namespace ReScan
 	{
 	}
 
-#pragma endregion
+	#pragma endregion
 
 	void ScatterGraph::addPoint(const Point3D* point)
 	{
@@ -227,7 +227,7 @@ namespace ReScan
 		return graph;
 	}
 
-#pragma region Static functions
+	#pragma region Static functions
 
 	void ScatterGraph::copy(const ScatterGraph& source, ScatterGraph& dest)
 	{
@@ -239,7 +239,7 @@ namespace ReScan
 		}
 	}
 
-#pragma region Populate
+	#pragma region Populate
 
 	void ScatterGraph::populateFromVectorXYZ(const std::vector<float>* vect, ScatterGraph& scatterGraph)
 	{
@@ -581,9 +581,9 @@ namespace ReScan
 		return true;
 	}
 
-#pragma endregion
+	#pragma endregion
 
-#pragma region Compute
+	#pragma region Compute
 
 	int ScatterGraph::findMax(const ScatterGraph& scatterGraph, double (Point3D::* getter)() const)
 	{
@@ -953,7 +953,109 @@ namespace ReScan
 		}
 	}
 
-#pragma endregion
+	void ScatterGraph::fixBase3D(const Base3D& baseReference, Base3D* base3D)
+	{
+		double angle = Tools::angleBetween(*base3D->getZ(), *baseReference.getZ());
+		if (angle > 90)
+		{
+			// Mettre le Z dans la bonne direction
+			base3D->rotate(*base3D->getY(), 180.0);
+		}
 
-#pragma endregion
+		angle = getAnglesBetweenBasesXAxis(*base3D, baseReference);
+		if (!std::isnan(angle))
+		{
+			base3D->rotate(*base3D->getZ(), angle);
+		}
+	}
+
+	double ScatterGraph::getAnglesBetweenBasesXAxis(const Base3D& base1, const Base3D& base2)
+	{
+		Base3D base3DInPartBase;
+		if (Tools::getBase1IntoBase2(base1, base2, &base3DInPartBase))
+		{
+			return std::numeric_limits<double>::quiet_NaN();
+		}
+
+		Eigen::Vector3d x = *base3DInPartBase.getX();
+		Eigen::Vector3d z = *base3DInPartBase.getZ();
+
+		double xx = x[0];
+		double xy = x[1];
+		double xz = x[2];
+
+		double ux = z[0];
+		double uy = z[1];
+		double uz = z[2];
+
+		double uy2 = uy * uy;
+
+		double k0 = xx * ux * uy + xy * uy2 + xz * uy * uz;
+		double k1 = xy - xx * ux * uy - xy * uy2 - xz * uy * uz;
+		double k2 = xx * uz - xz * ux;
+
+		double epsilon = 0.01;
+
+		double a = 0.0;
+		double newXY = k0 + k1;
+		double step = EIGEN_PI / 360.0;
+
+		double minNewXY = newXY;
+		double minA = 0.0;
+
+		if (newXY > 0.0)
+		{
+			// algo version angle positif
+			while (newXY > epsilon)
+			{
+				a -= step;
+				newXY = k0 + cos(a) * k1 + sin(a) * k2;
+				if (newXY < 0.0)
+				{
+					a += step;      // go back to last pos
+					step /= 10.0;   // reduce step
+				}
+				if (newXY < minNewXY)
+				{
+					minNewXY = newXY;
+					minA = a;
+				}
+				if (a <= -360.0)
+				{
+					a = minA;
+					break;
+				}
+			}
+		}
+		else
+		{
+			epsilon = -epsilon;
+			// algo version angle negatif
+			while (newXY < epsilon)
+			{
+				a += step;
+				newXY = k0 + cos(a) * k1 + sin(a) * k2;
+				if (newXY > 0.0)
+				{
+					a -= step;      // go back to last pos
+					step /= 10.0;   // reduce step
+				}
+				if (newXY < minNewXY)
+				{
+					minNewXY = newXY;
+					minA = a;
+				}
+				if (a >= 360.0)
+				{
+					a = minA;
+					break;
+				}
+			}
+		}
+		return Tools::r2d(a);
+	}
+
+	#pragma endregion
+
+	#pragma endregion
 }

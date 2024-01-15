@@ -1,6 +1,8 @@
 #ifndef RESCAN_TOOLS_H
 #define RESCAN_TOOLS_H
 
+#include "Base3D.h"
+
 #include <Eigen/Dense>
 
 namespace ReScan
@@ -45,6 +47,19 @@ namespace ReScan
 		double clampv3(double d, double v1, double v2, double v3);
 
 		/// <summary>
+		/// Try to clamp each values to 0, -1 or 1 if they are equal to one of them more or less 0.001
+		/// </summary>
+		/// <param name="matrix">The matrix to clamp</param>
+		void clampMatrix(Eigen::Matrix3d& matrix);
+
+		/// <summary>
+		/// Try to clamp each values to 0, -1 or 1 if they are equal to one of them more or less 0.001
+		/// </summary>
+		/// <param name="vector">The vector to clamp</param>
+		void clampVector(Eigen::Vector3d& vector);
+
+
+		/// <summary>
 		/// Return the mixte product u.dot(v.cross(w))
 		/// </summary>
 		/// <param name="u">First vector</param>
@@ -68,6 +83,8 @@ namespace ReScan
 		/// <param name="vector2">Second structure to evaluate.</param>
 		/// <returns>Angle in degrees required to rotate vector1 in vector2.</returns>
 		double angleBetween(Eigen::Vector3d vector1, Eigen::Vector3d vector2);
+
+		bool getBase1IntoBase2(const Base3D& base1, const Base3D& base2, Base3D* base1InBase2);
 	}
 }
 

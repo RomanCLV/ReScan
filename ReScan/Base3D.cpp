@@ -11,15 +11,23 @@ namespace ReScan
 		m_origin(0.0, 0.0, 0.0),
 		m_x(1.0, 0.0, 0.0),
 		m_y(0.0, 1.0, 0.0),
-		m_z(0.0, 0.0, 1.0)
+		m_z(0.0, 0.0, 1.0),
+		m_isRotating(false),
+		m_beginRotateX(0.0, 0.0, 0.0),
+		m_beginRotateY(0.0, 0.0, 0.0),
+		m_beginRotateZ(0.0, 0.0, 0.0)
 	{
 	}
 
-	Base3D::Base3D(const Base3D& repere3D) :
-		m_origin(repere3D.m_origin),
-		m_x(repere3D.m_x),
-		m_y(repere3D.m_y),
-		m_z(repere3D.m_z)
+	Base3D::Base3D(const Base3D& base3D) :
+		m_origin(base3D.m_origin),
+		m_x(base3D.m_x),
+		m_y(base3D.m_y),
+		m_z(base3D.m_z),
+		m_isRotating(false),
+		m_beginRotateX(0.0, 0.0, 0.0),
+		m_beginRotateY(0.0, 0.0, 0.0),
+		m_beginRotateZ(0.0, 0.0, 0.0)
 	{
 	}
 
@@ -27,7 +35,11 @@ namespace ReScan
 		m_origin(origin),
 		m_x(1.0, 0.0, 0.0),
 		m_y(0.0, 1.0, 0.0),
-		m_z(0.0, 0.0, 1.0)
+		m_z(0.0, 0.0, 1.0),
+		m_isRotating(false),
+		m_beginRotateX(0.0, 0.0, 0.0),
+		m_beginRotateY(0.0, 0.0, 0.0),
+		m_beginRotateZ(0.0, 0.0, 0.0)
 	{
 	}
 
@@ -35,7 +47,11 @@ namespace ReScan
 		m_origin(0.0, 0.0, 0.0),
 		m_x(x),
 		m_y(y),
-		m_z(z)
+		m_z(z),
+		m_isRotating(false),
+		m_beginRotateX(0.0, 0.0, 0.0),
+		m_beginRotateY(0.0, 0.0, 0.0),
+		m_beginRotateZ(0.0, 0.0, 0.0)
 	{
 	}
 
@@ -43,7 +59,11 @@ namespace ReScan
 		m_origin(origin),
 		m_x(x),
 		m_y(y),
-		m_z(z)
+		m_z(z),
+		m_isRotating(false),
+		m_beginRotateX(0.0, 0.0, 0.0),
+		m_beginRotateY(0.0, 0.0, 0.0),
+		m_beginRotateZ(0.0, 0.0, 0.0)
 	{
 	}
 
@@ -79,6 +99,26 @@ namespace ReScan
 		setZ(*base3D.getZ());
 	}
 
+	void Base3D::setFromMatrix3d(const Eigen::Matrix3d& matrix)
+	{
+		m_x = matrix.col(0);
+		m_y = matrix.col(1);
+		m_z = matrix.col(2);
+	}
+
+	void Base3D::setFromMatrix4d(const Eigen::Matrix4d& matrix, const bool setOrigin)
+	{
+		m_x = matrix.block<3, 1>(0, 0);
+		m_y = matrix.block<3, 1>(0, 1);
+		m_z = matrix.block<3, 1>(0, 2);
+
+		if (setOrigin)
+		{
+			auto translation = matrix.block<3, 1>(0, 3);
+			m_origin.setXYZ(translation[0], translation[1], translation[2]);
+		}
+	}
+
 	void Base3D::setXYZ(const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z)
 	{
 		m_x[0] = x[0];
@@ -92,6 +132,25 @@ namespace ReScan
 		m_z[0] = z[0];
 		m_z[1] = z[1];
 		m_z[2] = z[2];
+	}
+
+	Eigen::Matrix3d Base3D::toMatrix3d() const
+	{
+		Eigen::Matrix3d matrix;
+		matrix.col(0) = m_x;
+		matrix.col(1) = m_y;
+		matrix.col(2) = m_z;
+		return matrix;
+	}
+
+	Eigen::Matrix4d Base3D::toMatrix4d() const
+	{
+		Eigen::Matrix4d matrix;
+		matrix.block<3, 3>(0, 0) = toMatrix3d();
+		matrix.block<3, 1>(0, 3) = m_origin.toVector3d();
+		matrix.row(3).setZero();
+		matrix(3, 3) = 1.0;
+		return matrix;
 	}
 
 	const Point3D* Base3D::getOrigin() const
@@ -183,7 +242,63 @@ namespace ReScan
 		m_z.normalize();
 	}
 
-	Base3D Base3D::computeOrientedBase(Eigen::Vector3d direction, Axis axis)
+	bool Base3D::getIsRotating()
+	{
+		return m_isRotating;
+	}
+
+	void Base3D::beginRotate() 
+	{
+		m_isRotating = true;
+
+		m_beginRotateX[0] = m_x[0];
+		m_beginRotateX[1] = m_x[1];
+		m_beginRotateX[2] = m_x[2];
+
+		m_beginRotateY[0] = m_y[0];
+		m_beginRotateY[1] = m_y[1];
+		m_beginRotateY[2] = m_y[2];
+
+		m_beginRotateZ[0] = m_z[0];
+		m_beginRotateZ[1] = m_z[1];
+		m_beginRotateZ[2] = m_z[2];
+	}
+
+	void Base3D::endRotate()
+	{
+		m_isRotating = false;
+	}
+
+	void Base3D::rotate(const Eigen::Vector3d& rotationAxis, const double rotationAngle, const bool autoCallEndRotate)
+	{
+		if (!m_isRotating)
+		{
+			beginRotate();
+		}
+
+		Eigen::Quaterniond quaternion;
+		quaternion = Eigen::AngleAxisd(Tools::d2r(rotationAngle), rotationAxis);
+		Eigen::Matrix3d rotationMatrix = quaternion.toRotationMatrix();
+
+		Eigen::Vector3d x = rotationMatrix * m_beginRotateX;
+		Eigen::Vector3d y = rotationMatrix * m_beginRotateY;
+		Eigen::Vector3d z = rotationMatrix * m_beginRotateZ;
+
+		Tools::clampVector(x);
+		Tools::clampVector(y);
+		Tools::clampVector(z);
+
+		setX(x);
+		setY(y);
+		setZ(z);
+
+		if (autoCallEndRotate)
+		{
+			endRotate();
+		}
+	}
+
+	Base3D Base3D::computeOrientedBase(Eigen::Vector3d direction, const Axis axis)
 	{
 		Vector3d rotationAxis;
 		Base3D base3D;
@@ -225,6 +340,7 @@ namespace ReScan
 
 			// Convert the quaternion into a rotation matrix
 			Eigen::Matrix3d rotationMatrix = quaternion.toRotationMatrix();
+			Tools::clampMatrix(rotationMatrix);
 
 			// etrange d'utiliser row à la place de colonne mais ça marche
 			base3D.setX(rotationMatrix.row(0));

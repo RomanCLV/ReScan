@@ -345,9 +345,12 @@ namespace ReScan
 
 		vector<Base3D> bases(subDivisions.size());
 
+		Base3D reference = Base3D(Point3D(), Eigen::Vector3d(0.0, -1.0, 0.0), Eigen::Vector3d(0.0, 0.0, 1.0), Eigen::Vector3d(-1.0, 0.0, 0.0));
+
 		for (int i = 0; i < subDivisions.size(); i++)
 		{
 			ScatterGraph::computeBase3D(subDivisions[i], &bases[i]);
+			ScatterGraph::fixBase3D(reference, &bases[i]);
 		}
 
 		cout << "Exporting bases..." << endl;

@@ -160,8 +160,12 @@ namespace ReScan
 		static bool arePointsCoplanar(const ScatterGraph& scatterGraph);
 		static bool arePointsColinear(const ScatterGraph& scatterGraph);
 
-		static void computeBase3D(const ScatterGraph& scatterGraph, Base3D* repere);
-		static void computeBase3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* repere);
+		static void computeBase3D(const ScatterGraph& scatterGraph, Base3D* base3D);
+		static void computeBase3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* base3D);
+		static void fixBase3D(const Base3D& baseReference, Base3D* base3D);
+		
+	private:
+		static double getAnglesBetweenBasesXAxis(const Base3D& base1, const Base3D& base2);
 	};
 }
 

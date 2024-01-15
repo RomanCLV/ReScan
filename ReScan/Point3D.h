@@ -37,6 +37,7 @@ namespace ReScan
 
 		static double distanceBetween(const Point3D& p1, const Point3D& p2);
 
+		Eigen::Vector3d toVector3d() const;
 		std::string toStr(const char* begin = "{ ", const char* end = " }", const char* sep = " ") const;
 
 		friend Eigen::Vector3d operator-(const Point3D& p1, const Point3D& p2);

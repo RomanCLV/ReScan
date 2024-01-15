@@ -70,6 +70,11 @@ namespace ReScan
 		return sqrt((p1.m_x - p2.m_x) * (p1.m_x - p2.m_x) + (p1.m_y - p2.m_y) * (p1.m_y - p2.m_y) + (p1.m_z - p2.m_z) * (p1.m_z - p2.m_z));
 	}
 
+	Eigen::Vector3d Point3D::toVector3d() const
+	{
+		return Eigen::Vector3d(m_x, m_y, m_z);
+	}
+
 	std::string Point3D::toStr(const char* begin, const char* end, const char* sep) const
 	{
 		std::ostringstream oss;

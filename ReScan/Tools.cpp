@@ -55,6 +55,26 @@ namespace ReScan
 			return d;
 		}
 
+		void clampMatrix(Eigen::Matrix3d& matrix)
+		{
+			matrix(0, 0) = clampv3(matrix(0, 0), 0.0, -1.0, 1.0);
+			matrix(0, 1) = clampv3(matrix(0, 1), 0.0, -1.0, 1.0);
+			matrix(0, 2) = clampv3(matrix(0, 2), 0.0, -1.0, 1.0);
+			matrix(1, 0) = clampv3(matrix(1, 0), 0.0, -1.0, 1.0);
+			matrix(1, 1) = clampv3(matrix(1, 1), 0.0, -1.0, 1.0);
+			matrix(1, 2) = clampv3(matrix(1, 2), 0.0, -1.0, 1.0);
+			matrix(2, 0) = clampv3(matrix(2, 0), 0.0, -1.0, 1.0);
+			matrix(2, 1) = clampv3(matrix(2, 1), 0.0, -1.0, 1.0);
+			matrix(2, 2) = clampv3(matrix(2, 2), 0.0, -1.0, 1.0);
+		}
+
+		void clampVector(Eigen::Vector3d& vector)
+		{
+			vector[0] = clampv3(vector[0], 0, -1.0, 1.0);
+			vector[1] = clampv3(vector[1], 0, -1.0, 1.0);
+			vector[2] = clampv3(vector[2], 0, -1.0, 1.0);
+		}
+
 		double mixteProduct(const Eigen::Vector3d& u, const Eigen::Vector3d& v, const Eigen::Vector3d& w)
 		{
 			return u.dot(v.cross(w));
@@ -103,6 +123,26 @@ namespace ReScan
 
 			double radians = ((!(num < 0.0)) ? (2.0 * asin((vector1 - vector2).norm() / 2.0)) : (EIGEN_PI - 2.0 * asin((-vector1 - vector2).norm() / 2.0)));
 			return r2d(radians);
+		}
+
+		bool getBase1IntoBase2(const Base3D& base1, const Base3D& base2, Base3D* base1InBase2)
+		{
+			Eigen::Matrix3d tb10 = base1.toMatrix3d();  // matrice de la base 1 dans R0
+			Eigen::Matrix3d tb20 = base2.toMatrix3d();  // matrice de la base 2 dans R0
+
+			if (tb20.determinant() == 0.0)
+			{
+				// La matrice n'est pas inversible
+				return false;
+			}
+
+			Eigen::Matrix3d tb02 = tb20.inverse();            // matrice de passage de base2 vers R0
+			Eigen::Matrix3d tb12 = tb02 * tb10;               // base 1 dans la base 2
+
+			// Modifier la base1InBase2 avec la nouvelle base
+			base1InBase2->setFromMatrix3d(tb12);
+
+			return true;
 		}
 	}
 }
