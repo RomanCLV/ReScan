@@ -963,9 +963,14 @@ namespace ReScan
 		}
 
 		angle = getAnglesBetweenBasesXAxis(*base3D, baseReference);
-		if (!std::isnan(angle))
+		if (std::isnan(angle))
+		{
+			cout << "cannot fix base: matrix has no inverse" << endl;
+		}
+		else
 		{
 			base3D->rotate(*base3D->getZ(), angle);
+			cout << "base fixed" << endl;
 		}
 	}
 
