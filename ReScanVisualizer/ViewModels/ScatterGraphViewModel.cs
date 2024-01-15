@@ -627,28 +627,7 @@ namespace ReScanVisualizer.ViewModels
 
         private Base3D ComputeBase3D(Point3D barycenter, Plan averagePlan)
         {
-            Base3D base3D;
-            if (_scatterGraph.Count < 2)
-            {
-                base3D = new Base3D(barycenter);
-            }
-            else
-            {
-                if (_scatterGraph.ArePointsColinear())
-                {
-                    Vector3D x = _scatterGraph[1] - _scatterGraph[0];
-                    x.Normalize();
-                    Vector3D z = averagePlan.GetNormal();
-                    z.Normalize();
-                    Vector3D y = Vector3D.CrossProduct(z, x);
-                    base3D = new Base3D(barycenter, x, y, z);
-                }
-                else
-                {
-                    base3D = ScatterGraph.ComputeRepere3D(barycenter, averagePlan, false);
-                }
-            }
-            return base3D;
+            return _scatterGraph.ComputeBase3D(barycenter, averagePlan);
         }
 
         private void CorrectBaseWithPart(Base3D base3D)

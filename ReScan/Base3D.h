@@ -23,17 +23,24 @@ namespace ReScan
 		Base3D(const Point3D& origin, const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z);
 		~Base3D();
 
+		void reset();
+		void setFrom(const Base3D& base3D, const bool setOrigin = true);
+		void setXYZ(const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z);
+
 		const Point3D* getOrigin() const;
 		void setOrigin(const Point3D& origin);
 
 		const Eigen::Vector3d* getX() const;
 		void setX(const Eigen::Vector3d& x);
+		void setX(const double xx, const double xy, const double xz);
 
 		const Eigen::Vector3d* getY() const;
 		void setY(const Eigen::Vector3d& y);
+		void setY(const double yx, const double yy, const double yz);
 
 		const Eigen::Vector3d* getZ() const;
 		void setZ(const Eigen::Vector3d& z);
+		void setZ(const double zx, const double zy, const double zz);
 
 		void normalize();
 		void normalizeX();

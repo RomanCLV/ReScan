@@ -7,7 +7,8 @@
 #include "Point3D.h"
 #include "macros.h"
 
-#include<string>
+#include <string>
+#include <Eigen/Dense>
 
 namespace ReScan
 {
@@ -26,10 +27,11 @@ namespace ReScan
 		ReScan(const ReScan& reScan);
 		~ReScan();
 
-		int process(const bool exportFiles = false);
-		int process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportFiles = false);
+		int process(const bool exportSubDivisions = false);
+		int process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions = false);
 
 	private:
+		bool isFileValid() const;
 		Plan2D selectPlan2D() const;
 		double getDistance1D(const Point3D& point1, const Point3D& point2, double (Point3D::* getter)() const) const;
 		void getDistances(Point3D const& minPoint, Point3D const& maxPoint, double (Point3D::* getters[2])() const, double& distance1, double& distance2) const;
@@ -39,13 +41,13 @@ namespace ReScan
 			double (Point3D::* getters[2])() const,
 			const unsigned int step1, const unsigned int step2, const unsigned int subDivision1, const unsigned int subDivision2, const bool deleteIfEmpty = true) const;
 
-		bool isFileValid() const;
-		int internalProcess(const bool exportFiles);
-		void exportFilesCSV(const std::string& basePath, const std::vector<ScatterGraph>& subDivisions) const;
-
+		int internalProcess(const bool exportSubDivisions);
+		bool exportBasesToCSV(const std::string& basePath, const std::vector<Base3D>& bases, const bool writeHeaders = true, const bool decimalCharIsDot = true) const;
+		void exportSubDivisionsToCSV(const std::string& basePath, const std::vector<ScatterGraph>& subDivisions) const;
 	};
 }
 
+std::string getDate();
 std::string removeFileExtension(const std::string& fileName);
 
 #endif // RESCAN_RESCAN_H

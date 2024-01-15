@@ -51,6 +51,49 @@ namespace ReScan
 	{
 	}
 
+	void Base3D::reset()
+	{
+		m_origin.setXYZ(0.0, 0.0, 0.0);
+
+		m_x[0] = 1.0;
+		m_x[1] = 0.0;
+		m_x[2] = 0.0;
+
+		m_y[0] = 0.0;
+		m_y[1] = 1.0;
+		m_y[2] = 0.0;
+
+		m_z[0] = 0.0;
+		m_z[1] = 0.0;
+		m_z[2] = 1.0;
+	}
+
+	void Base3D::setFrom(const Base3D& base3D, const bool setOrigin)
+	{
+		if (setOrigin)
+		{
+			m_origin.setFrom(*base3D.getOrigin());
+		}
+		setX(*base3D.getX());
+		setY(*base3D.getY());
+		setZ(*base3D.getZ());
+	}
+
+	void Base3D::setXYZ(const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z)
+	{
+		m_x[0] = x[0];
+		m_x[1] = x[1];
+		m_x[2] = x[2];
+
+		m_y[0] = y[0];
+		m_y[1] = y[1];
+		m_y[2] = y[2];
+
+		m_z[0] = z[0];
+		m_z[1] = z[1];
+		m_z[2] = z[2];
+	}
+
 	const Point3D* Base3D::getOrigin() const
 	{
 		return &m_origin;
@@ -68,6 +111,13 @@ namespace ReScan
 		m_x[2] = x[2];
 	}
 
+	void Base3D::setX(const double xx, const double xy, const double xz)
+	{
+		m_x[0] = xx;
+		m_x[1] = xy;
+		m_x[2] = xz;
+	}
+
 	const Eigen::Vector3d* Base3D::getX() const
 	{
 		return &m_x;
@@ -80,6 +130,13 @@ namespace ReScan
 		m_y[2] = y[2];
 	}
 
+	void Base3D::setY(const double yx, const double yy, const double yz)
+	{
+		m_y[0] = yx;
+		m_y[1] = yy;
+		m_y[2] = yz;
+	}
+
 	const Eigen::Vector3d* Base3D::getY() const
 	{
 		return &m_y;
@@ -90,6 +147,13 @@ namespace ReScan
 		m_z[0] = z[0];
 		m_z[1] = z[1];
 		m_z[2] = z[2];
+	}
+
+	void Base3D::setZ(const double zx, const double zy, const double zz)
+	{
+		m_z[0] = zx;
+		m_z[1] = zy;
+		m_z[2] = zz;
 	}
 
 	const Eigen::Vector3d* Base3D::getZ() const
@@ -151,7 +215,7 @@ namespace ReScan
 
 		if (angle != 0.0)
 		{
-			// Convert angle (that is in ]-180;180[ domain to radians
+			// Convert angle (that is in ]-180;180[ domain) to radians
 			double angleRad = Tools::d2r(angle);
 
 			rotationAxis.normalize();
@@ -162,9 +226,12 @@ namespace ReScan
 			// Convert the quaternion into a rotation matrix
 			Eigen::Matrix3d rotationMatrix = quaternion.toRotationMatrix();
 
+			// etrange d'utiliser row à la place de colonne mais ça marche
 			base3D.setX(rotationMatrix.row(0));
 			base3D.setY(rotationMatrix.row(1));
 			base3D.setZ(rotationMatrix.row(2));
+
+			// normally, x y and z are already normalized
 		}
 
 		return base3D;

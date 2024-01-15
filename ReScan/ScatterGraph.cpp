@@ -1,5 +1,6 @@
 ﻿#include "ScatterGraph.h"
 #include "tools.h"
+#include "Axis.h"
 
 #include <iostream>   // for reading / writing files
 #include <fstream>    // for reading / writing files
@@ -442,11 +443,11 @@ namespace ReScan
 		}
 	}
 
-#pragma endregion
+	#pragma endregion
+	
+	#pragma region Save & Read
 
-#pragma region Save & Read
-
-	bool ScatterGraph::saveCSV(const std::string& filename, const ScatterGraph& scatterGraph, bool replaceIfFileExists, bool writeHeaders, bool decimalCharIsDot)
+	bool ScatterGraph::saveCSV(const std::string& filename, const ScatterGraph& scatterGraph, const bool replaceIfFileExists, const bool writeHeaders, const bool decimalCharIsDot)
 	{
 		// Vérifier si le nom de fichier se termine par ".csv"
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
@@ -687,7 +688,6 @@ namespace ReScan
 		return farthestPoint;
 	}
 
-
 	void ScatterGraph::computeBarycenter(const ScatterGraph& scatterGraph, Point3D* barycenter)
 	{
 		size_t size = scatterGraph.size();
@@ -850,7 +850,10 @@ namespace ReScan
 			{
 				z[2] = 1.0;
 			}
-			z.normalize();
+			else
+			{
+				z.normalize();
+			}
 
 			averagePlan->setABCD(z.x(), z.y(), z.z(), -(z.x() * barycenter.getX() + z.y() * barycenter.getY() + z.z() * barycenter.getZ()));
 			if (averagePlan->getD() == -0.0)
@@ -926,30 +929,28 @@ namespace ReScan
 
 	void ScatterGraph::computeBase3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* repere)
 	{
+		repere->reset();
 		repere->setOrigin(origin);
 
-		// on prend la normal donnee par le plan et on la normalise - On a le Z
+		if (scatterGraph.m_points.size() > 1)
+		{
+			Vector3d z;
+			averagePlan.getNormal(z);
 
-		Vector3d z;
-		averagePlan.getNormal(z);
-		z.normalize();
-		repere->setZ(z);
+			if (ScatterGraph::arePointsColinear(scatterGraph))
+			{
+				Vector3d x = *scatterGraph.m_points[1] - *scatterGraph.m_points[0];
+				x.normalize();
+				Vector3d y = z.cross(x);
+				y.normalize();
 
-		// on trouve le point le plus proche de l'origine du repere, on en fait son projeté orthogonal
-		const Point3D* closestPointFromOrigin = getClosestPoint(scatterGraph, origin);
-		Point3D projetedPoint;
-		Plan::getOrthogonalProjection(averagePlan, *closestPointFromOrigin, &projetedPoint);
-
-		// On trouve le vecteur entre l'origne et le projeté et on le normalise - On a X
-		Vector3d x;
-		origin.getDiff(projetedPoint, &x);
-		x.normalize();
-		repere->setX(x);
-
-		// On fait le produit vectoriel Z*X pour avoir Y, et on normalise
-		Vector3d y = z.cross(x);
-		y.normalize();
-		repere->setY(y);
+				repere->setXYZ(x, y, z);
+			}
+			else
+			{
+				repere->setFrom(Base3D::computeOrientedBase(z, Axis::Z), false);
+			}
+		}
 	}
 
 #pragma endregion

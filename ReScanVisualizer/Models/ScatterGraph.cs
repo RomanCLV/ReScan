@@ -536,27 +536,61 @@ namespace ReScanVisualizer.Models
             return new Plan(z.X, z.Y, z.Z, -(z.X * barycenter.X + z.Y * barycenter.Y + z.Z * barycenter.Z));
         }
 
-        public static Base3D ComputeRepere3D(Point3D origin, Plan averagePlan, bool putXOnXY)
+        //public static Base3D ComputeRepere3D(Point3D origin, Plan averagePlan/*, bool putXOnXY*/)
+        //{
+        //    Base3D repere = Tools.ComputeOrientedBase(averagePlan.GetNormal(), Axis.Z);
+        //    repere.Origin = origin;
+
+        //    //if (putXOnXY)
+        //    //{
+        //    //    Vector3D xProjected;
+        //    //    double angle;
+        //    //    double angleAfter;
+        //    //    do
+        //    //    {
+        //    //        xProjected = repere.X;
+        //    //        xProjected.Z = 0;
+        //    //        angle = Vector3D.AngleBetween(xProjected, repere.X);
+        //    //        repere.Rotate(repere.Z, angle);
+        //    //        angleAfter = Vector3D.AngleBetween(xProjected, repere.X);
+        //    //    } while (angleAfter > 0.1);
+        //    //}
+
+        //    return repere;
+        //}
+
+        public Base3D ComputeBase3D()
         {
-            Base3D repere = Tools.ComputeOrientedBase(averagePlan.GetNormal(), Axis.Z);
-            repere.Origin = origin;
+            Point3D barycenter = ComputeBarycenter();
+            Plan averagePlan = ComputeAveragePlan();
+            return ComputeBase3D(barycenter, averagePlan);
+        }
 
-            if (putXOnXY)
+        public Base3D ComputeBase3D(Point3D barycenter, Plan averagePlan)
+        {
+            Base3D base3D;
+            if (_points.Count < 2)
             {
-                Vector3D xProjected;
-                double angle;
-                double angleAfter;
-                do
-                {
-                    xProjected = repere.X;
-                    xProjected.Z = 0;
-                    angle = Vector3D.AngleBetween(xProjected, repere.X);
-                    repere.Rotate(repere.Z, angle);
-                    angleAfter = Vector3D.AngleBetween(xProjected, repere.X);
-                } while (angleAfter > 0.1);
+                base3D = new Base3D(barycenter);
             }
-
-            return repere;
+            else
+            {
+                if (ArePointsColinear())
+                {
+                    Vector3D x = _points[1] - _points[0];
+                    x.Normalize();
+                    Vector3D z = averagePlan.GetNormal();
+                    z.Normalize();
+                    Vector3D y = Vector3D.CrossProduct(z, x);
+                    base3D = new Base3D(barycenter, x, y, z);
+                }
+                else
+                {
+                    base3D = Tools.ComputeOrientedBase(averagePlan.GetNormal(), Axis.Z);
+                    base3D.Origin = barycenter;
+                }
+            }
+            return base3D;
         }
 
         #region static functions
