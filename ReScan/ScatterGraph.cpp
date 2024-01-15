@@ -918,19 +918,19 @@ namespace ReScan
 		return true;
 	}
 
-	void ScatterGraph::computeBase3D(const ScatterGraph& scatterGraph, Base3D* repere)
+	void ScatterGraph::computeBase3D(const ScatterGraph& scatterGraph, Base3D* base3D)
 	{
 		Point3D barycenter;
 		Plan averagePlan;
 		computeBarycenter(scatterGraph, &barycenter);
 		computeAveragePlan(scatterGraph, &averagePlan);
-		computeBase3D(scatterGraph, barycenter, averagePlan, repere);
+		computeBase3D(scatterGraph, barycenter, averagePlan, base3D);
 	}
 
-	void ScatterGraph::computeBase3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* repere)
+	void ScatterGraph::computeBase3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* base3D)
 	{
-		repere->reset();
-		repere->setOrigin(origin);
+		base3D->reset();
+		base3D->setOrigin(origin);
 
 		if (scatterGraph.m_points.size() > 1)
 		{
@@ -944,11 +944,11 @@ namespace ReScan
 				Vector3d y = z.cross(x);
 				y.normalize();
 
-				repere->setXYZ(x, y, z);
+				base3D->setXYZ(x, y, z);
 			}
 			else
 			{
-				repere->setFrom(Base3D::computeOrientedBase(z, Axis::Z), false);
+				base3D->setFrom(Base3D::computeOrientedBase(z, Axis::Z), false);
 			}
 		}
 	}
