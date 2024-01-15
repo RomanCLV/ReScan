@@ -46,6 +46,12 @@
                     Modifiers="{Binding Path=AddBaseCommand.Modifiers}"
                     />
 
+        <KeyBinding x:Name="ImportBaseCommandKey" 
+            Command="{Binding Path=ImportBaseCommand.Command}"  
+            Key="{Binding Path=ImportBaseCommand.Key}" 
+            Modifiers="{Binding Path=ImportBaseCommand.Modifiers}"
+            />
+        
         <KeyBinding x:Name="ExportBaseCommandKey" 
             Command="{Binding Path=ExportBaseCommand.Command}"  
             Key="{Binding Path=ExportBaseCommand.Key}" 
@@ -82,6 +88,16 @@
                               InputGestureText="{Binding ElementName=AddBaseCommandKey, Converter={StaticResource CommandKeyToInputGestureTextConverter}}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource add}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <Separator />
+
+                    <MenuItem Header="_Import bases" ToolTip="{Binding ImportBaseCommand.Description}" Style="{StaticResource menuItemItem}"
+                            Command="{Binding ElementName=ImportBaseCommandKey, Path=Command}"
+                            InputGestureText="{Binding ElementName=ImportBaseCommandKey, Converter={StaticResource CommandKeyToInputGestureTextConverter}}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource update}" />
                         </MenuItem.Icon>
                     </MenuItem>
 

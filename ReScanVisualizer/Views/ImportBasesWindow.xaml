@@ -1,0 +1,77 @@
+﻿<Window x:Class="ReScanVisualizer.Views.ImportBasesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReScanVisualizer.Views"
+        mc:Ignorable="d"
+        Title="Import bases" 
+        Height="720" Width="1380"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource backgroundColor}"
+        Foreground="{StaticResource foregroundColor}"
+        >
+    <Window.InputBindings>
+        <KeyBinding x:Name="ValidateCommandKey" 
+            Command="{Binding Path=ValidateCommand.Command}"  
+            Key="{Binding Path=ValidateCommand.Key}" 
+            Modifiers="{Binding Path=ValidateCommand.Modifiers}"
+            />
+
+        <KeyBinding x:Name="CancelCommandKey" 
+            Command="{Binding Path=CancelCommand.Command}"  
+            Key="{Binding Path=CancelCommand.Key}" 
+            Modifiers="{Binding Path=CancelCommand.Modifiers}"
+            />
+    </Window.InputBindings>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Export bases" Style="{StaticResource helpWindowTitle}"/>
+                <DockPanel Margin="50">
+
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource myButton}"
+                            Command="{Binding ElementName=ValidateCommandKey, Path=Command}"
+                            ToolTip="{Binding ValidateCommand.Description}">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource update}" Width="25" Height="25" />
+                                    <TextBlock Text="Import" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Content="Cancel" Style="{StaticResource myButton}"
+                        Command="{Binding ElementName=CancelCommandKey, Path=Command}"
+                        ToolTip="{Binding CancelCommand.Description}"/>
+                    </StackPanel>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+
+                        <Button HorizontalAlignment="Left" Click="SelectFileButton_Click" Style="{StaticResource myButton}" ToolTip="Select files">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal" >
+                                    <Image Source="{StaticResource browse}" Width="25" Height="25" />
+                                    <TextBlock Text="Select files" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding FilePath, Mode=OneWay}" Height="25" Style="{StaticResource myTextBox}" IsEnabled="False" />
+
+                        <CheckBox Grid.Row="1" Grid.Column="1" Content="Contains headers" IsChecked="{Binding ContainsHeader}" Margin="5" Foreground="{StaticResource foregroundColor}" VerticalContentAlignment="Center" />
+                    </Grid>
+
+                </DockPanel>
+            </DockPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

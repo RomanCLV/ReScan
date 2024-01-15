@@ -91,9 +91,11 @@
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Commands\BuildScatterGraphCommand.cs" />
     <Compile Include="Commands\ExportBasesCommand.cs" />
+    <Compile Include="Commands\ImportBasesCommand.cs" />
     <Compile Include="Commands\ValidateAddingPartCommand.cs" />
     <Compile Include="Commands\ValidateEditingScatterGraphBuilderCommand.cs" />
     <Compile Include="Commands\ValidateExportBasesCommand.cs" />
+    <Compile Include="Commands\ValidateImportBasesCommand.cs" />
     <Compile Include="Converters\BoolToFontStyleConverter.cs" />
     <Compile Include="Converters\BoolToFontWeightConverter.cs" />
     <Compile Include="Converters\BoolValuesORMultiConverter.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
     <Compile Include="EventArgs\PositionEventArgs.cs" />
+    <Compile Include="ViewModels\ImportBasesViewModel.cs" />
     <Compile Include="Models\CameraConfiguration.cs" />
     <Compile Include="Models\ICameraFocusable.cs" />
     <Compile Include="Models\IHideable.cs" />
@@ -185,6 +188,9 @@
     </Compile>
     <Compile Include="Views\Forms\Base3DForm.xaml.cs">
       <DependentUpon>Base3DForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ImportBasesWindow.xaml.cs">
+      <DependentUpon>ImportBasesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemTreeViews\PartBasesTreeViewItemHeader.xaml.cs">
       <DependentUpon>PartBasesTreeViewItemHeader.xaml</DependentUpon>
@@ -310,6 +316,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Forms\Base3DForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ImportBasesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

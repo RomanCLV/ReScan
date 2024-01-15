@@ -101,6 +101,8 @@ namespace ReScanVisualizer.ViewModels
 
         public CommandKey AddPartCommand { get; }
 
+        public CommandKey ImportBaseCommand { get; }
+
         public CommandKey ExportBaseCommand { get; }
 
         private static readonly Lazy<MainViewModel> instance = new Lazy<MainViewModel>(() => new MainViewModel());
@@ -128,6 +130,7 @@ namespace ReScanVisualizer.ViewModels
             AddScatterGraphCommand = new CommandKey(new AddScatterGraphCommand(this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new scatter graph");
             AddBaseCommand = new CommandKey(new ActionCommand(AddBase), Key.B, ModifierKeys.Control | ModifierKeys.Shift, "Add a new base");
             AddPartCommand = new CommandKey(new AddPartCommand(this), Key.P, ModifierKeys.Control | ModifierKeys.Shift, "Add a new part");
+            ImportBaseCommand = new CommandKey(new ImportBasesCommand(this), Key.R, ModifierKeys.Control | ModifierKeys.Shift, "Import bases");
             ExportBaseCommand = new CommandKey(new ExportBasesCommand(this), Key.E, ModifierKeys.Control | ModifierKeys.Shift, "Export bases");
 
             ScatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
