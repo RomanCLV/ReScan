@@ -3,14 +3,15 @@
 
 namespace ReScan
 {
-	#define ZERO_CLAMP         0.000001
+#define ZERO_CLAMP						0.000001
 
-	#define SUCCESS_CODE                 0
+#define SUCCESS_CODE					0
 
-	#define INVALID_FILE_CODE            1
-	#define INVALID_PLAN_CODE            2
+#define INVALID_FILE_ERROR_CODE			1
+#define INVALID_PLAN_ERROR_CODE			2
+#define MEMORY_ALLOCATION_ERROR_CODE	3
 
-	#define NO_MATRIX_INVERSE_ERROR_CODE 101
+#define NO_MATRIX_INVERSE_ERROR_CODE	101
 }
 
 #endif // RESCAN_MACROS

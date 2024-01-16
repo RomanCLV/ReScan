@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
     }
 
     ReScan::ReScan reScan(argv[1]);
-    //reScan.process(false, true, true);
-    reScan.process(ReScan::Plan2D::YZ, 100, 100, false, true, true);
+    //reScan.process(false, true, true, true, false, true);
+    reScan.process(ReScan::Plan2D::YZ, 100, 100, false, true, true, true, false, true);
 
     return 0;
 }

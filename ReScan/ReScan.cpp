@@ -209,7 +209,7 @@ namespace ReScan
 		return true;
 	}
 
-	int ReScan::internalProcess(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles)
+	int ReScan::internalProcess(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
 		// declarations
 		vector<float> vertices;
@@ -237,7 +237,7 @@ namespace ReScan
 
 		if (!isFileValid())
 		{
-			return INVALID_FILE_CODE;
+			return INVALID_FILE_ERROR_CODE;
 		}
 		string filenameWithoutExtention = removeFileExtension(m_fileName);
 
@@ -277,7 +277,7 @@ namespace ReScan
 			break;
 		default:
 			std::cerr << "Unexpected plan." << std::endl;
-			return INVALID_PLAN_CODE;
+			return INVALID_PLAN_ERROR_CODE;
 		}
 
 		cout << "\nSelected plan: " << axis1Name << axis2Name << std::endl;
@@ -323,7 +323,7 @@ namespace ReScan
 		cout << "Total of subdivisions: " << (subDivision1 * subDivision2) << endl << endl;
 
 		// fill all sub graphs
-		fillSubDivisions(minPoint, graph, &subDivisions, getters, *m_stepAxis1, *m_stepAxis2, subDivision1, subDivision2, true);
+		fillSubDivisions(minPoint, graph, &subDivisions, getters, *m_stepAxis1, *m_stepAxis2, subDivision1, subDivision2, false);
 
 		// display infos about points
 		cout << "Number of points in the main graph: " << graph.size() << endl << endl;
@@ -343,17 +343,26 @@ namespace ReScan
 
 		cout << endl << "Computing base..." << endl;
 
-		vector<Base3D> bases(subDivisions.size());
+		vector<Base3D*> bases(subDivisions.size(), nullptr);
 
 		Base3D reference = Base3D(Point3D(), Eigen::Vector3d(0.0, -1.0, 0.0), Eigen::Vector3d(0.0, 0.0, 1.0), Eigen::Vector3d(-1.0, 0.0, 0.0));
 		int fixResult;
 		for (int i = 0; i < subDivisions.size(); i++)
 		{
-			ScatterGraph::computeBase3D(subDivisions[i], &bases[i]);
-			fixResult = ScatterGraph::fixBase3D(reference, &bases[i]);
-			if (fixResult == NO_MATRIX_INVERSE_ERROR_CODE)
+			if (subDivisions[i].size() != 0)
 			{
-				cout << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
+				Base3D* base = new Base3D();
+				if (base == nullptr)
+				{
+					return MEMORY_ALLOCATION_ERROR_CODE;
+				}
+				ScatterGraph::computeBase3D(subDivisions[i], base);
+				fixResult = ScatterGraph::fixBase3D(reference, base);
+				if (fixResult == NO_MATRIX_INVERSE_ERROR_CODE)
+				{
+					cout << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
+				}
+				bases[i] = base;
 			}
 		}
 
@@ -362,18 +371,42 @@ namespace ReScan
 		if (exportBasesCartesian)
 		{
 			cout << endl << "Exporting bases in cartesian..." << endl;
-			exportBasesCartesianToCSV(basePath + "_cartesian.csv", bases, true, false);
+			string defaultNullText = "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0";
+			exportBasesCartesianToCSV(basePath + "_cartesian.csv", bases, defaultNullText, writeHeaders, decimalCharIsDot);
 		}
 		if (exportBasesEulerAngles)
 		{
 			cout << endl << "Exporting Euler angles..." << endl;
-			exportBasesEulerAnglesToCSV(basePath + "_euler-angles-ZYX.csv", bases, true, false);
+			string defaultNullText = "0.0;0.0;0.0;0.0;0.0;0.0";
+			exportBasesEulerAnglesToCSV(basePath + "_euler-angles-ZYX.csv", bases, defaultNullText, writeHeaders, decimalCharIsDot);
+		}
+		if (exportDetailsFile)
+		{
+			cout << endl << "Exporting trajectory file details..." << endl;
+			exportTrajectoryDetailsFile(basePath + "_details.csv", distance1, distance2, *m_stepAxis1, *m_stepAxis2, subDivision1, subDivision2, decimalCharIsDot);
+		}
+
+		for (int i = 0; i < bases.size(); i++)
+		{
+			if (bases[i] != nullptr)
+			{
+				delete bases[i];
+				bases[i] = nullptr;
+			}
 		}
 
 		return SUCCESS_CODE;
 	}
 
-	bool ReScan::exportBasesCartesianToCSV(const std::string& filename, const std::vector<Base3D>& bases, const bool writeHeaders, bool decimalCharIsDot) const
+	void ReScan::exportSubDivisionsToCSV(const std::string& basePath, const std::vector<ScatterGraph>& subDivisions) const
+	{
+		for (int i = 0; i < subDivisions.size(); i++)
+		{
+			ScatterGraph::saveCSV(basePath + to_string(i + 1) + ".csv", subDivisions[i], true, true);
+		}
+	}
+
+	bool ReScan::exportBasesCartesianToCSV(const std::string& filename, const std::vector<Base3D*>& bases, const std::string& nullText, const bool writeHeaders, const bool decimalCharIsDot) const
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
@@ -412,62 +445,69 @@ namespace ReScan
 		const Eigen::Vector3d* y;
 		const Eigen::Vector3d* z;
 
-		for (const Base3D base3D : bases)
+		for (const Base3D* base3D : bases)
 		{
-			origin = base3D.getOrigin();
-			x = base3D.getX();
-			y = base3D.getY();
-			z = base3D.getZ();
-
-			oxStr = std::to_string(origin->getX());
-			oyStr = std::to_string(origin->getY());
-			ozStr = std::to_string(origin->getZ());
-			xxStr = std::to_string((*x)[0]);
-			xyStr = std::to_string((*x)[1]);
-			xzStr = std::to_string((*x)[2]);
-			yxStr = std::to_string((*y)[0]);
-			yyStr = std::to_string((*y)[1]);
-			yzStr = std::to_string((*y)[2]);
-			zxStr = std::to_string((*z)[0]);
-			zyStr = std::to_string((*z)[1]);
-			zzStr = std::to_string((*z)[2]);
-
-			if (decimalCharIsDot)
+			if (base3D == nullptr)
 			{
-				Tools::strReplace(oxStr, ',', '.');
-				Tools::strReplace(oyStr, ',', '.');
-				Tools::strReplace(ozStr, ',', '.');
-				Tools::strReplace(xxStr, ',', '.');
-				Tools::strReplace(xyStr, ',', '.');
-				Tools::strReplace(xzStr, ',', '.');
-				Tools::strReplace(yxStr, ',', '.');
-				Tools::strReplace(yyStr, ',', '.');
-				Tools::strReplace(yzStr, ',', '.');
-				Tools::strReplace(zxStr, ',', '.');
-				Tools::strReplace(zyStr, ',', '.');
-				Tools::strReplace(zzStr, ',', '.');
+				outputFile << nullText << std::endl;
 			}
 			else
 			{
-				Tools::strReplace(oxStr, '.', ',');
-				Tools::strReplace(oyStr, '.', ',');
-				Tools::strReplace(ozStr, '.', ',');
-				Tools::strReplace(xxStr, '.', ',');
-				Tools::strReplace(xyStr, '.', ',');
-				Tools::strReplace(xzStr, '.', ',');
-				Tools::strReplace(yxStr, '.', ',');
-				Tools::strReplace(yyStr, '.', ',');
-				Tools::strReplace(yzStr, '.', ',');
-				Tools::strReplace(zxStr, '.', ',');
-				Tools::strReplace(zyStr, '.', ',');
-				Tools::strReplace(zzStr, '.', ',');
-			}
+				origin = base3D->getOrigin();
+				x = base3D->getX();
+				y = base3D->getY();
+				z = base3D->getZ();
 
-			outputFile \
-				<< oxStr << ";" << oyStr << ";" << ozStr << ";" \
-				<< xxStr << ";" << xyStr << ";" << xzStr << ";" \
-				<< yxStr << ";" << yyStr << ";" << yzStr << ";" \
-				<< zxStr << ";" << zyStr << ";" << zzStr << std::endl;
+				oxStr = std::to_string(origin->getX());
+				oyStr = std::to_string(origin->getY());
+				ozStr = std::to_string(origin->getZ());
+				xxStr = std::to_string((*x)[0]);
+				xyStr = std::to_string((*x)[1]);
+				xzStr = std::to_string((*x)[2]);
+				yxStr = std::to_string((*y)[0]);
+				yyStr = std::to_string((*y)[1]);
+				yzStr = std::to_string((*y)[2]);
+				zxStr = std::to_string((*z)[0]);
+				zyStr = std::to_string((*z)[1]);
+				zzStr = std::to_string((*z)[2]);
+
+				if (decimalCharIsDot)
+				{
+					Tools::strReplace(oxStr, ',', '.');
+					Tools::strReplace(oyStr, ',', '.');
+					Tools::strReplace(ozStr, ',', '.');
+					Tools::strReplace(xxStr, ',', '.');
+					Tools::strReplace(xyStr, ',', '.');
+					Tools::strReplace(xzStr, ',', '.');
+					Tools::strReplace(yxStr, ',', '.');
+					Tools::strReplace(yyStr, ',', '.');
+					Tools::strReplace(yzStr, ',', '.');
+					Tools::strReplace(zxStr, ',', '.');
+					Tools::strReplace(zyStr, ',', '.');
+					Tools::strReplace(zzStr, ',', '.');
+				}
+				else
+				{
+					Tools::strReplace(oxStr, '.', ',');
+					Tools::strReplace(oyStr, '.', ',');
+					Tools::strReplace(ozStr, '.', ',');
+					Tools::strReplace(xxStr, '.', ',');
+					Tools::strReplace(xyStr, '.', ',');
+					Tools::strReplace(xzStr, '.', ',');
+					Tools::strReplace(yxStr, '.', ',');
+					Tools::strReplace(yyStr, '.', ',');
+					Tools::strReplace(yzStr, '.', ',');
+					Tools::strReplace(zxStr, '.', ',');
+					Tools::strReplace(zyStr, '.', ',');
+					Tools::strReplace(zzStr, '.', ',');
+				}
+
+				outputFile \
+					<< oxStr << ";" << oyStr << ";" << ozStr << ";" \
+					<< xxStr << ";" << xyStr << ";" << xzStr << ";" \
+					<< yxStr << ";" << yyStr << ";" << yzStr << ";" \
+					<< zxStr << ";" << zyStr << ";" << zzStr << std::endl;
+			}
 		}
 
 		outputFile.close();
@@ -477,7 +517,7 @@ namespace ReScan
 		return true;
 	}
 
-	bool ReScan::exportBasesEulerAnglesToCSV(const std::string& filename, const std::vector<Base3D>& bases, const bool writeHeaders, bool decimalCharIsDot) const
+	bool ReScan::exportBasesEulerAnglesToCSV(const std::string& filename, const std::vector<Base3D*>& bases, const std::string& nullText, const bool writeHeaders, const bool decimalCharIsDot) const
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
@@ -511,40 +551,47 @@ namespace ReScan
 		double b;
 		double c;
 
-		for (const Base3D base3D : bases)
+		for (const Base3D* base3D : bases)
 		{
-			origin = base3D.getOrigin();
-			base3D.toEulerAnglesZYX(&a, &b, &c);
-
-			oxStr = std::to_string(origin->getX());
-			oyStr = std::to_string(origin->getY());
-			ozStr = std::to_string(origin->getZ());
-			rxStr = std::to_string(a);
-			ryStr = std::to_string(b);
-			rzStr = std::to_string(c);
-
-			if (decimalCharIsDot)
+			if (base3D == nullptr)
 			{
-				Tools::strReplace(oxStr, ',', '.');
-				Tools::strReplace(oyStr, ',', '.');
-				Tools::strReplace(ozStr, ',', '.');
-				Tools::strReplace(rxStr, ',', '.');
-				Tools::strReplace(ryStr, ',', '.');
-				Tools::strReplace(rzStr, ',', '.');
+				outputFile << nullText << std::endl;
 			}
 			else
 			{
-				Tools::strReplace(oxStr, '.', ',');
-				Tools::strReplace(oyStr, '.', ',');
-				Tools::strReplace(ozStr, '.', ',');
-				Tools::strReplace(rxStr, '.', ',');
-				Tools::strReplace(ryStr, '.', ',');
-				Tools::strReplace(rzStr, '.', ',');
-			}
+				origin = base3D->getOrigin();
+				base3D->toEulerAnglesZYX(&a, &b, &c);
 
-			outputFile \
-				<< oxStr << ";" << oyStr << ";" << ozStr << ";" \
-				<< rxStr << ";" << ryStr << ";" << rzStr << ";" << std::endl;
+				oxStr = std::to_string(origin->getX());
+				oyStr = std::to_string(origin->getY());
+				ozStr = std::to_string(origin->getZ());
+				rxStr = std::to_string(a);
+				ryStr = std::to_string(b);
+				rzStr = std::to_string(c);
+
+				if (decimalCharIsDot)
+				{
+					Tools::strReplace(oxStr, ',', '.');
+					Tools::strReplace(oyStr, ',', '.');
+					Tools::strReplace(ozStr, ',', '.');
+					Tools::strReplace(rxStr, ',', '.');
+					Tools::strReplace(ryStr, ',', '.');
+					Tools::strReplace(rzStr, ',', '.');
+				}
+				else
+				{
+					Tools::strReplace(oxStr, '.', ',');
+					Tools::strReplace(oyStr, '.', ',');
+					Tools::strReplace(ozStr, '.', ',');
+					Tools::strReplace(rxStr, '.', ',');
+					Tools::strReplace(ryStr, '.', ',');
+					Tools::strReplace(rzStr, '.', ',');
+				}
+
+				outputFile \
+					<< oxStr << ";" << oyStr << ";" << ozStr << ";" \
+					<< rxStr << ";" << ryStr << ";" << rzStr << ";" << std::endl;
+			}
 		}
 
 		outputFile.close();
@@ -554,19 +601,61 @@ namespace ReScan
 		return true;
 	}
 
-	void ReScan::exportSubDivisionsToCSV(const std::string& basePath, const std::vector<ScatterGraph>& subDivisions) const
+	bool ReScan::exportTrajectoryDetailsFile(const std::string& filename,
+		const double distance1,
+		const double distance2,
+		const unsigned int stepAxis1,
+		const unsigned int stepAxis2,
+		const unsigned int subDivision1,
+		const unsigned int subDivision2,
+		const bool decimalCharIsDot) const
 	{
-		for (int i = 0; i < subDivisions.size(); i++)
+		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			ScatterGraph::saveCSV(basePath + to_string(i + 1) + ".csv", subDivisions[i], true, true);
+			std::cerr << "File is not a .csv" << std::endl;
+			return false;
 		}
+
+		std::ofstream outputFile(filename);
+
+		if (!outputFile.is_open())
+		{
+			std::cerr << "Cannot open: " + filename << std::endl;
+			return false;
+		}
+
+		string distance1Str = to_string(distance1);
+		string distance2Str = to_string(distance2);
+		if (decimalCharIsDot)
+		{
+			Tools::strReplace(distance1Str, ',', '.');
+			Tools::strReplace(distance2Str, ',', '.');
+		}
+		else
+		{
+			Tools::strReplace(distance1Str, '.', ',');
+			Tools::strReplace(distance2Str, '.', ',');
+		}
+
+		outputFile << "X dimensions (mm);" << distance1Str << std::endl;
+		outputFile << "Y dimensions (mm);" << distance2Str << std::endl;
+		outputFile << "X step (mm);" << to_string(stepAxis1) << std::endl;
+		outputFile << "Y step (mm);" << to_string(stepAxis2) << std::endl;
+		outputFile << "X divisions;" << to_string(subDivision1) << std::endl;
+		outputFile << "Y divisions;" << to_string(subDivision2) << std::endl;
+		outputFile << "total divisions;" << to_string(subDivision1 * subDivision2) << std::endl;
+
+		outputFile.close();
+
+		return true;
 	}
+
 
 #pragma endregion
 
 #pragma region public functions
 
-	int ReScan::process(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles)
+	int ReScan::process(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
 		delete m_plan2D;
 		m_plan2D = nullptr;
@@ -577,10 +666,10 @@ namespace ReScan
 		delete m_stepAxis2;
 		m_stepAxis2 = nullptr;
 
-		return internalProcess(exportSubDivisions, exportBasesCartesian, exportBasesEulerAngles);
+		return internalProcess(exportSubDivisions, exportBasesCartesian, exportBasesEulerAngles, exportDetailsFile, writeHeaders, decimalCharIsDot);
 	}
 
-	int ReScan::process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles)
+	int ReScan::process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
 		if (!m_plan2D)
 		{
@@ -597,7 +686,7 @@ namespace ReScan
 		*m_plan2D = plan2D;
 		*m_stepAxis1 = stepAxis1;
 		*m_stepAxis2 = stepAxis2;
-		return internalProcess(exportSubDivisions, exportBasesCartesian, exportBasesEulerAngles);
+		return internalProcess(exportSubDivisions, exportBasesCartesian, exportBasesEulerAngles, exportDetailsFile, writeHeaders, decimalCharIsDot);
 	}
 
 #pragma endregion
