@@ -46,6 +46,19 @@ namespace ReScan
 		/// <returns>Return vi if d is in ]vi-0.001 ; vi+0.001[ else return d.</returns>
 		double clampv3(double d, double v1, double v2, double v3);
 
+		
+		/// <summary>
+		/// Try to clamp the value d to v1, or v2, or v3, or v4 or v5.
+		/// </summary>
+		/// <param name="d">The value to clamp.</param>
+		/// <param name="v1">First clamped value.</param>
+		/// <param name="v2">Second clamped value.</param>
+		/// <param name="v3">Third clamped value.</param>
+		/// <param name="v4">Fourth clamped value.</param>
+		/// <param name="v5">Fiveth clamped value.</param>
+		/// <returns>Return vi if d is in ]vi-0.001 ; vi+0.001[ else return d.</returns>
+		double clampv5(double d, double v1, double v2, double v3, double v4, double v5);
+
 		/// <summary>
 		/// Try to clamp each values to 0, -1 or 1 if they are equal to one of them more or less 0.001
 		/// </summary>
@@ -85,6 +98,8 @@ namespace ReScan
 		double angleBetween(Eigen::Vector3d vector1, Eigen::Vector3d vector2);
 
 		bool getBase1IntoBase2(const Base3D& base1, const Base3D& base2, Base3D* base1InBase2);
+
+		void computeABC(const Eigen::Matrix4d& matrix, Eigen::Vector3d* abc);
 	}
 }
 

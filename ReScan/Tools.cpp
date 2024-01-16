@@ -55,6 +55,31 @@ namespace ReScan
 			return d;
 		}
 
+		double clampv5(double d, double v1, double v2, double v3, double v4, double v5)
+		{
+			if (v1 - ZERO_CLAMP < d && d < v1 + ZERO_CLAMP)
+			{
+				return v1;
+			}
+			else if (v2 - ZERO_CLAMP < d && d < v2 + ZERO_CLAMP)
+			{
+				return v2;
+			}
+			else if (v3 - ZERO_CLAMP < d && d < v3 + ZERO_CLAMP)
+			{
+				return v3;
+			}
+			else if (v4 - ZERO_CLAMP < d && d < v4 + ZERO_CLAMP)
+			{
+				return v4;
+			}
+			else if (v5 - ZERO_CLAMP < d && d < v5 + ZERO_CLAMP)
+			{
+				return v5;
+			}
+			return d;
+		}
+
 		void clampMatrix(Eigen::Matrix3d& matrix)
 		{
 			matrix(0, 0) = clampv3(matrix(0, 0), 0.0, -1.0, 1.0);
@@ -145,6 +170,50 @@ namespace ReScan
 			base1InBase2->setFromMatrix3d(tb12);
 
 			return true;
+		}
+
+		// calcule les coordonnées opérationnelles ABC
+		void computeABC(const Eigen::Matrix4d& matrix, Eigen::Vector3d* abc)
+		{
+			double r11, r12, r13, r21, r22, r23, r31, r32, r33;
+			double x, y, z;
+
+			r11 = matrix(0, 0);
+			r12 = matrix(0, 1);
+			r13 = matrix(0, 2);
+			r21 = matrix(1, 0);
+			r22 = matrix(1, 1);
+			r23 = matrix(1, 2);
+			r31 = matrix(2, 0);
+			r32 = matrix(2, 1);
+			r33 = matrix(2, 2);
+
+			// Calcul des paramètres selon cours
+			y = 180.0 * (atan2(-r31, sqrt(r11 * r11 + r21 * r21))) / EIGEN_PI;
+
+			if (y == 90.0)          // singularité
+			{
+				x = 0.0;
+				z = 180.0 * (atan2(r12, r22)) / EIGEN_PI;
+			}
+			else if (y == -90.0)     // singularité
+			{
+				x = 0.0;
+				z = 180.0 * (-atan2(r12, r22)) / EIGEN_PI;
+			}
+			else
+			{
+				x = 180.0 * (atan2(r21, r11)) / EIGEN_PI;
+				z = 180.0 * (atan2(r32, r33)) / EIGEN_PI;
+			}
+
+			x = clampv5(x, 0.0, 180.0, 360.0, -180.0, -360.0);
+			y = clampv5(y, 0.0, 180.0, 360.0, -180.0, -360.0);
+			z = clampv5(z, 0.0, 180.0, 360.0, -180.0, -360.0);
+
+			(*abc)[0] = x;
+			(*abc)[1] = y;
+			(*abc)[2] = z;
 		}
 	}
 }
