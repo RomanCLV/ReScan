@@ -130,7 +130,9 @@ namespace ReScan
 			Eigen::Matrix3d tb10 = base1.toMatrix3d();  // matrice de la base 1 dans R0
 			Eigen::Matrix3d tb20 = base2.toMatrix3d();  // matrice de la base 2 dans R0
 
-			if (tb20.determinant() == 0.0)
+			double detTb20 = tb20.determinant();
+
+			if (detTb20 == 0.0)
 			{
 				// La matrice n'est pas inversible
 				return false;

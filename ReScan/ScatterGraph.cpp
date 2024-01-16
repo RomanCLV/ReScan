@@ -977,7 +977,7 @@ namespace ReScan
 	double ScatterGraph::getAnglesBetweenBasesXAxis(const Base3D& base1, const Base3D& base2)
 	{
 		Base3D base3DInPartBase;
-		if (Tools::getBase1IntoBase2(base1, base2, &base3DInPartBase))
+		if (!Tools::getBase1IntoBase2(base1, base2, &base3DInPartBase))
 		{
 			return std::numeric_limits<double>::quiet_NaN();
 		}
