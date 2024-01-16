@@ -99,7 +99,23 @@ namespace ReScan
 
 		bool getBase1IntoBase2(const Base3D& base1, const Base3D& base2, Base3D* base1InBase2);
 
-		void computeABC(const Eigen::Matrix4d& matrix, Eigen::Vector3d* abc);
+		/// <summary>
+		/// Calculates ABC operational coordinates according to the Euler ZYX convention, adapted for KUKA robots.
+		/// </summary>
+		/// <param name="matrix">Rotation matrix</param>
+		/// <param name="a">Result of angle A in degrees.</param>
+		/// <param name="b">Result of angle B in degrees.</param>
+		/// <param name="c">Result of angle C in degrees.</param>
+		void computeABC(const Eigen::Matrix3d& matrix, double* a, double* b, double* c);
+
+		/// <summary>
+		/// Calculates ABC operational coordinates according to the Euler ZYX convention, adapted for KUKA robots.
+		/// </summary>
+		/// <param name="matrix">Rotation matrix</param>
+		/// <param name="a">Result of angle A in degrees.</param>
+		/// <param name="b">Result of angle B in degrees.</param>
+		/// <param name="c">Result of angle C in degrees.</param>
+		void computeABC(const Eigen::Matrix4d& matrix, double* a, double* b, double* c);
 	}
 }
 

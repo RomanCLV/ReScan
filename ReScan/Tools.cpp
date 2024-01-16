@@ -172,8 +172,7 @@ namespace ReScan
 			return true;
 		}
 
-		// calcule les coordonnées opérationnelles ABC
-		void computeABC(const Eigen::Matrix4d& matrix, Eigen::Vector3d* abc)
+		void computeABC(const Eigen::Matrix3d& matrix, double* a, double* b, double* c)
 		{
 			double r11, r12, r13, r21, r22, r23, r31, r32, r33;
 			double x, y, z;
@@ -211,9 +210,52 @@ namespace ReScan
 			y = clampv5(y, 0.0, 180.0, 360.0, -180.0, -360.0);
 			z = clampv5(z, 0.0, 180.0, 360.0, -180.0, -360.0);
 
-			(*abc)[0] = x;
-			(*abc)[1] = y;
-			(*abc)[2] = z;
+			*a = x;
+			*b = y;
+			*c = z;
+		}
+
+		void computeABC(const Eigen::Matrix4d& matrix, double* a, double* b, double* c)
+		{
+			double r11, r12, r13, r21, r22, r23, r31, r32, r33;
+			double x, y, z;
+
+			r11 = matrix(0, 0);
+			r12 = matrix(0, 1);
+			r13 = matrix(0, 2);
+			r21 = matrix(1, 0);
+			r22 = matrix(1, 1);
+			r23 = matrix(1, 2);
+			r31 = matrix(2, 0);
+			r32 = matrix(2, 1);
+			r33 = matrix(2, 2);
+
+			// Calcul des paramètres selon cours
+			y = 180.0 * (atan2(-r31, sqrt(r11 * r11 + r21 * r21))) / EIGEN_PI;
+
+			if (y == 90.0)          // singularité
+			{
+				x = 0.0;
+				z = 180.0 * (atan2(r12, r22)) / EIGEN_PI;
+			}
+			else if (y == -90.0)     // singularité
+			{
+				x = 0.0;
+				z = 180.0 * (-atan2(r12, r22)) / EIGEN_PI;
+			}
+			else
+			{
+				x = 180.0 * (atan2(r21, r11)) / EIGEN_PI;
+				z = 180.0 * (atan2(r32, r33)) / EIGEN_PI;
+			}
+
+			x = clampv5(x, 0.0, 180.0, 360.0, -180.0, -360.0);
+			y = clampv5(y, 0.0, 180.0, 360.0, -180.0, -360.0);
+			z = clampv5(z, 0.0, 180.0, 360.0, -180.0, -360.0);
+
+			*a = x;
+			*b = y;
+			*c = z;
 		}
 	}
 }
