@@ -162,10 +162,24 @@ namespace ReScan
 
 		static void computeBase3D(const ScatterGraph& scatterGraph, Base3D* base3D);
 		static void computeBase3D(const ScatterGraph& scatterGraph, const Point3D& origin, const Plan& averagePlan, Base3D* base3D);
-		static void fixBase3D(const Base3D& baseReference, Base3D* base3D);
+		
+		/// <summary>
+		/// Try to fix the given base according a reference base.
+		/// </summary>
+		/// <param name="baseReference">Reference base with correct orientation</param>
+		/// <param name="base3D">The base to be straightened towards the nearest orientation.</param>
+		/// <returns>Return SUCCESS_CODE (0) or NO_MATRIX_INVERSE_ERROR_CODE if the invert matrix can't be calculated.</returns>
+		static int fixBase3D(const Base3D& baseReference, Base3D* base3D);
 		
 	private:
-		static double getAnglesBetweenBasesXAxis(const Base3D& base1, const Base3D& base2);
+		/// <summary>
+		/// Gives the angle between the bases, whose rotation around the Z axis aligns the X axes of the two bases.
+		/// </summary>
+		/// <param name="base1">Base 1</param>
+		/// <param name="base2">Base 2</param>
+		/// <param name="angle">Result angle in degrees.</param>
+		/// <returns>Return SUCCESS_CODE (0) or NO_MATRIX_INVERSE_ERROR_CODE if the invert matrix can't be calculated.</returns>
+		static int getAngleToAlignXAxis(const Base3D& base1, const Base3D& base2, double* angle);
 	};
 }
 

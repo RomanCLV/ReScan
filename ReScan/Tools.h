@@ -97,7 +97,14 @@ namespace ReScan
 		/// <returns>Angle in degrees required to rotate vector1 in vector2.</returns>
 		double angleBetween(Eigen::Vector3d vector1, Eigen::Vector3d vector2);
 
-		bool getBase1IntoBase2(const Base3D& base1, const Base3D& base2, Base3D* base1InBase2);
+		/// <summary>
+		/// Express the coordinates of base 1 in base 2.
+		/// </summary>
+		/// <param name="base1">Base 1</param>
+		/// <param name="base2">Base 2</param>
+		/// <param name="base1InBase2">Base 1 expressed in base 2</param>
+		/// <returns>Returns SUCCESS_CODE (0) or NO_MATRIX_INVERSE_ERROR_CODE if the invert matrix can't be calculated.</returns>
+		int getBase1IntoBase2(const Base3D& base1, const Base3D& base2, Base3D* base1InBase2);
 
 		/// <summary>
 		/// Calculates ABC operational coordinates according to the Euler ZYX convention, adapted for KUKA robots.

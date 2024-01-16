@@ -27,8 +27,8 @@ namespace ReScan
 		ReScan(const ReScan& reScan);
 		~ReScan();
 
-		int process(const bool exportSubDivisions = false);
-		int process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions = false);
+		int process(const bool exportSubDivisions = false, const bool exportBasesCartesian = true, const bool exportBasesEulerAngles = true);
+		int process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions = false, const bool exportBasesCartesian = true, const bool exportBasesEulerAngles = true);
 
 	private:
 		bool isFileValid() const;
@@ -41,8 +41,9 @@ namespace ReScan
 			double (Point3D::* getters[2])() const,
 			const unsigned int step1, const unsigned int step2, const unsigned int subDivision1, const unsigned int subDivision2, const bool deleteIfEmpty = true) const;
 
-		int internalProcess(const bool exportSubDivisions);
-		bool exportBasesToCSV(const std::string& basePath, const std::vector<Base3D>& bases, const bool writeHeaders = true, const bool decimalCharIsDot = true) const;
+		int internalProcess(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles);
+		bool exportBasesCartesianToCSV(const std::string& basePath, const std::vector<Base3D>& bases, const bool writeHeaders = true, const bool decimalCharIsDot = true) const;
+		bool exportBasesEulerAnglesToCSV(const std::string& basePath, const std::vector<Base3D>& bases, const bool writeHeaders = true, const bool decimalCharIsDot = true) const;
 		void exportSubDivisionsToCSV(const std::string& basePath, const std::vector<ScatterGraph>& subDivisions) const;
 	};
 }

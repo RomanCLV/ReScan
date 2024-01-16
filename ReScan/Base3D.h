@@ -84,6 +84,8 @@ namespace ReScan
 		/// </param>
 		void rotate(const Eigen::Vector3d& rotationAxis, const double rotationAngle, const bool autoCallEndRotate = true);
 
+		void toEulerAnglesZYX(double* a, double* b, double* c) const;
+
 		static Base3D computeOrientedBase(Eigen::Vector3d direction, const Axis axis);
 	};
 }

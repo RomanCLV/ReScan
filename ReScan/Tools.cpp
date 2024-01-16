@@ -150,26 +150,29 @@ namespace ReScan
 			return r2d(radians);
 		}
 
-		bool getBase1IntoBase2(const Base3D& base1, const Base3D& base2, Base3D* base1InBase2)
+		int getBase1IntoBase2(const Base3D& base1, const Base3D& base2, Base3D* base1InBase2)
 		{
 			Eigen::Matrix3d tb10 = base1.toMatrix3d();  // matrice de la base 1 dans R0
 			Eigen::Matrix3d tb20 = base2.toMatrix3d();  // matrice de la base 2 dans R0
 
 			double detTb20 = tb20.determinant();
+			int result = SUCCESS_CODE;
 
 			if (detTb20 == 0.0)
 			{
 				// La matrice n'est pas inversible
-				return false;
+				result = NO_MATRIX_INVERSE_ERROR_CODE;
+			}
+			else
+			{
+				Eigen::Matrix3d tb02 = tb20.inverse();            // matrice de passage de base2 vers R0
+				Eigen::Matrix3d tb12 = tb02 * tb10;               // base 1 dans la base 2
+
+				// Modifier la base1InBase2 avec la nouvelle base
+				base1InBase2->setFromMatrix3d(tb12);
 			}
 
-			Eigen::Matrix3d tb02 = tb20.inverse();            // matrice de passage de base2 vers R0
-			Eigen::Matrix3d tb12 = tb02 * tb10;               // base 1 dans la base 2
-
-			// Modifier la base1InBase2 avec la nouvelle base
-			base1InBase2->setFromMatrix3d(tb12);
-
-			return true;
+			return result;
 		}
 
 		void computeABC(const Eigen::Matrix3d& matrix, double* a, double* b, double* c)

@@ -298,6 +298,12 @@ namespace ReScan
 		}
 	}
 
+	void Base3D::toEulerAnglesZYX(double* a, double* b, double* c) const
+	{
+		Tools::computeABC(toMatrix3d(), a, b, c);
+	}
+
+
 	Base3D Base3D::computeOrientedBase(Eigen::Vector3d direction, const Axis axis)
 	{
 		Vector3d rotationAxis;

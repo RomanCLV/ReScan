@@ -11,7 +11,7 @@ using namespace std;
 
 namespace ReScan
 {
-	#pragma region Constructors & Desctructor
+#pragma region Constructors & Desctructor
 
 	ReScan::ReScan(const std::string& fileName) :
 		m_fileName(fileName),
@@ -56,9 +56,9 @@ namespace ReScan
 		m_stepAxis2 = nullptr;
 	}
 
-	#pragma endregion
-	
-	#pragma region private functions
+#pragma endregion
+
+#pragma region private functions
 
 	Plan2D ReScan::selectPlan2D() const
 	{
@@ -209,7 +209,7 @@ namespace ReScan
 		return true;
 	}
 
-	int ReScan::internalProcess(const bool exportSubDivisions)
+	int ReScan::internalProcess(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles)
 	{
 		// declarations
 		vector<float> vertices;
@@ -346,29 +346,40 @@ namespace ReScan
 		vector<Base3D> bases(subDivisions.size());
 
 		Base3D reference = Base3D(Point3D(), Eigen::Vector3d(0.0, -1.0, 0.0), Eigen::Vector3d(0.0, 0.0, 1.0), Eigen::Vector3d(-1.0, 0.0, 0.0));
-
+		int fixResult;
 		for (int i = 0; i < subDivisions.size(); i++)
 		{
 			ScatterGraph::computeBase3D(subDivisions[i], &bases[i]);
-			ScatterGraph::fixBase3D(reference, &bases[i]);
+			fixResult = ScatterGraph::fixBase3D(reference, &bases[i]);
+			if (fixResult == NO_MATRIX_INVERSE_ERROR_CODE)
+			{
+				cout << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
+			}
 		}
 
-		cout << "Exporting bases..." << endl;
+		std::string basePath = filenameWithoutExtention + "_bases_" + getDate();
 
-		exportBasesToCSV(filenameWithoutExtention + "-bases", bases, true, false);
+		if (exportBasesCartesian)
+		{
+			cout << endl << "Exporting bases in cartesian..." << endl;
+			exportBasesCartesianToCSV(basePath + "_cartesian.csv", bases, true, false);
+		}
+		if (exportBasesEulerAngles)
+		{
+			cout << endl << "Exporting Euler angles..." << endl;
+			exportBasesEulerAnglesToCSV(basePath + "_euler-angles-ZYX.csv", bases, true, false);
+		}
 
 		return SUCCESS_CODE;
 	}
 
-	bool ReScan::exportBasesToCSV(const std::string& basePath, const std::vector<Base3D>& bases, const bool writeHeaders, bool decimalCharIsDot) const
+	bool ReScan::exportBasesCartesianToCSV(const std::string& filename, const std::vector<Base3D>& bases, const bool writeHeaders, bool decimalCharIsDot) const
 	{
-		if (basePath.length() == 0)
+		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			std::cerr << "basePath can't be empty" << std::endl;
+			std::cerr << "File is not a .csv" << std::endl;
 			return false;
 		}
-
-		const std::string filename(basePath + "-" + getDate() + ".csv");
 
 		std::ofstream outputFile(filename);
 
@@ -461,7 +472,84 @@ namespace ReScan
 
 		outputFile.close();
 
-		std::cout << "Bases saved into: " << filename << std::endl;
+		std::cout << "Bases saved into:" << std::endl << filename << std::endl;
+
+		return true;
+	}
+
+	bool ReScan::exportBasesEulerAnglesToCSV(const std::string& filename, const std::vector<Base3D>& bases, const bool writeHeaders, bool decimalCharIsDot) const
+	{
+		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
+		{
+			std::cerr << "File is not a .csv" << std::endl;
+			return false;
+		}
+
+		std::ofstream outputFile(filename);
+
+		if (!outputFile.is_open())
+		{
+			std::cerr << "Cannot open: " + filename << std::endl;
+			return false;
+		}
+
+		if (writeHeaders)
+		{
+			outputFile << "o_x;o_y;o_z;a;b;c" << std::endl;
+		}
+
+		std::string oxStr;
+		std::string oyStr;
+		std::string ozStr;
+		std::string rxStr;
+		std::string ryStr;
+		std::string rzStr;
+
+		const Point3D* origin;
+
+		double a;
+		double b;
+		double c;
+
+		for (const Base3D base3D : bases)
+		{
+			origin = base3D.getOrigin();
+			base3D.toEulerAnglesZYX(&a, &b, &c);
+
+			oxStr = std::to_string(origin->getX());
+			oyStr = std::to_string(origin->getY());
+			ozStr = std::to_string(origin->getZ());
+			rxStr = std::to_string(a);
+			ryStr = std::to_string(b);
+			rzStr = std::to_string(c);
+
+			if (decimalCharIsDot)
+			{
+				Tools::strReplace(oxStr, ',', '.');
+				Tools::strReplace(oyStr, ',', '.');
+				Tools::strReplace(ozStr, ',', '.');
+				Tools::strReplace(rxStr, ',', '.');
+				Tools::strReplace(ryStr, ',', '.');
+				Tools::strReplace(rzStr, ',', '.');
+			}
+			else
+			{
+				Tools::strReplace(oxStr, '.', ',');
+				Tools::strReplace(oyStr, '.', ',');
+				Tools::strReplace(ozStr, '.', ',');
+				Tools::strReplace(rxStr, '.', ',');
+				Tools::strReplace(ryStr, '.', ',');
+				Tools::strReplace(rzStr, '.', ',');
+			}
+
+			outputFile \
+				<< oxStr << ";" << oyStr << ";" << ozStr << ";" \
+				<< rxStr << ";" << ryStr << ";" << rzStr << ";" << std::endl;
+		}
+
+		outputFile.close();
+
+		std::cout << "Euler angles saved into:" << std::endl << filename << std::endl;
 
 		return true;
 	}
@@ -474,11 +562,11 @@ namespace ReScan
 		}
 	}
 
-	#pragma endregion
-	
-	#pragma region public functions
+#pragma endregion
 
-	int ReScan::process(const bool exportSubDivisions)
+#pragma region public functions
+
+	int ReScan::process(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles)
 	{
 		delete m_plan2D;
 		m_plan2D = nullptr;
@@ -489,10 +577,10 @@ namespace ReScan
 		delete m_stepAxis2;
 		m_stepAxis2 = nullptr;
 
-		return internalProcess(exportSubDivisions);
+		return internalProcess(exportSubDivisions, exportBasesCartesian, exportBasesEulerAngles);
 	}
 
-	int ReScan::process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions)
+	int ReScan::process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles)
 	{
 		if (!m_plan2D)
 		{
@@ -509,7 +597,7 @@ namespace ReScan
 		*m_plan2D = plan2D;
 		*m_stepAxis1 = stepAxis1;
 		*m_stepAxis2 = stepAxis2;
-		return internalProcess(exportSubDivisions);
+		return internalProcess(exportSubDivisions, exportBasesCartesian, exportBasesEulerAngles);
 	}
 
 #pragma endregion
@@ -521,11 +609,11 @@ std::string getDate()
 	std::tm now;
 	//std::tm* now = std::localtime(&t);
 
-	#ifdef _WIN32
+#ifdef _WIN32
 	localtime_s(&now, &t);
-	#else
+#else
 	localtime_r(&t, &now); // Utilisation de localtime_r pour les systèmes non-Windows
-	#endif
+#endif
 
 	std::ostringstream oss;
 	oss << std::put_time(&now, "%Y-%m-%d_%H-%M-%S");
