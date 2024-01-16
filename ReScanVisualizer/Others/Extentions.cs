@@ -70,7 +70,6 @@ namespace ReScanVisualizer
             return ((value - clampFactor * Const.ZERO_CLAMP) < d) && (d < (value + clampFactor * Const.ZERO_CLAMP)) ? value : d;
         }
 
-
         internal static void Clamp(this ref Matrix3D matrix)
         {
             matrix.M11 = matrix.M11.Clamp().Clamp(-1.0).Clamp(1.0);

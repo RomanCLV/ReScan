@@ -419,6 +419,10 @@ namespace ReScanVisualizer.ViewModels.Parts
                     foreach (object? item in e.NewItems)
                     {
                         ScatterGraphViewModel scatterGraphViewModel = (ScatterGraphViewModel)item;
+                        if (scatterGraphViewModel.Part != this)
+                        {
+                            scatterGraphViewModel.Part = this;
+                        }
                         scatterGraphViewModel.Barycenter.PropertyChanged += ItemBarycenter_PropertyChanged;
                         scatterGraphViewModel.IsHiddenChanged += ScatterGraphViewModel_IsHiddenChanged;
                     }
