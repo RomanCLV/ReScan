@@ -172,7 +172,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 {
                     if (DataContext is AddScatterGraphViewModel model)
                     {
-                        model.BuildAsync(item);
+                        model!.BuildAsync(item);
                     }
                 }
             }

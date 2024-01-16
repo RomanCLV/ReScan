@@ -442,9 +442,18 @@ namespace ReScanVisualizer.Models
             rot.Rotate(new Quaternion(rotationAxis, rotationAngle));
             rot.Clamp();
 
-            X = Vector3D.Multiply(_beginRotateX, rot);
-            Y = Vector3D.Multiply(_beginRotateY, rot);
-            Z = Vector3D.Multiply(_beginRotateZ, rot);
+            Vector3D x = Vector3D.Multiply(_beginRotateX, rot);
+            Vector3D y = Vector3D.Multiply(_beginRotateY, rot);
+            Vector3D z = Vector3D.Multiply(_beginRotateZ, rot);
+
+            x.Clamp();
+            y.Clamp();
+            z.Clamp();
+
+            X = x;
+            Y = y;
+            Z = z;
+
             if (autoCallEndRotate)
             {
                 EndRotate();

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace ReScanVisualizer.ViewModels
@@ -33,6 +34,29 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _containsHeader, value);
         }
 
+        private double _scaleFactor;
+        public double ScaleFactor
+        {
+            get => _scaleFactor;
+            set => SetValue(ref _scaleFactor, value);
+        }
+
+        private double _axisScaleFactor;
+        public double AxisScaleFactor
+        {
+            get => _axisScaleFactor;
+            set => SetValue(ref _axisScaleFactor, value);
+        }
+
+        private RenderQuality _renderQuality;
+        public RenderQuality RenderQuality
+        {
+            get => _renderQuality;
+            set => SetValue(ref _renderQuality, value);
+        }
+
+        public List<RenderQuality> RenderQualities { get; }
+
         public CommandKey ValidateCommand { get; private set; }
         
         public CommandKey CancelCommand { get; private set; }
@@ -41,8 +65,12 @@ namespace ReScanVisualizer.ViewModels
         {
             _filePath = string.Empty;
             _containsHeader = true;
+            _scaleFactor = 1.0;
+            _axisScaleFactor = 1.0;
+            _renderQuality = RenderQuality.High;
             _mainViewModel = mainViewModel;
             _importBasesWindow = importBasesWindow;
+            RenderQualities = Tools.GetRenderQualitiesList();
             ValidateCommand = new CommandKey(new ValidateImportBasesCommand(this), Key.Enter, ModifierKeys.None, "Import");
             CancelCommand = new CommandKey(new ActionCommand(_importBasesWindow.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
@@ -148,11 +176,10 @@ namespace ReScanVisualizer.ViewModels
                     {
                         for (int i = 0; i < bases.Count; i++)
                         {
-                            Base3DViewModel base3DViewModel = new Base3DViewModel(bases[i], 0.02)
+                            Base3DViewModel base3DViewModel = new Base3DViewModel(bases[i], _scaleFactor, _axisScaleFactor, _renderQuality)
                             {
-                                Name = $"{_filePath} {i}"
+                                Name = $"{Path.GetFileNameWithoutExtension(_filePath)} {i + 1}"
                             };
-                            // TODO: remove 0.02 later
                             _mainViewModel.Bases.Add(base3DViewModel); 
                         }
                         _importBasesWindow.Close();

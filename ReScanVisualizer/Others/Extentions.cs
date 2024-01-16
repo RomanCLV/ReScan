@@ -73,19 +73,26 @@ namespace ReScanVisualizer
 
         internal static void Clamp(this ref Matrix3D matrix)
         {
-            matrix.M11 = matrix.M11.Clamp().Clamp(-1).Clamp(1);
-            matrix.M12 = matrix.M12.Clamp().Clamp(-1).Clamp(1);
-            matrix.M13 = matrix.M13.Clamp().Clamp(-1).Clamp(1);
-            matrix.M14 = matrix.M14.Clamp().Clamp(-1).Clamp(1);
-            matrix.M21 = matrix.M21.Clamp().Clamp(-1).Clamp(1);
-            matrix.M22 = matrix.M22.Clamp().Clamp(-1).Clamp(1);
-            matrix.M23 = matrix.M23.Clamp().Clamp(-1).Clamp(1);
-            matrix.M24 = matrix.M24.Clamp().Clamp(-1).Clamp(1);
-            matrix.M31 = matrix.M31.Clamp().Clamp(-1).Clamp(1);
-            matrix.M32 = matrix.M32.Clamp().Clamp(-1).Clamp(1);
-            matrix.M33 = matrix.M33.Clamp().Clamp(-1).Clamp(1);
-            matrix.M34 = matrix.M34.Clamp().Clamp(-1).Clamp(1);
-            matrix.M44 = matrix.M44.Clamp().Clamp(-1).Clamp(1);
+            matrix.M11 = matrix.M11.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M12 = matrix.M12.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M13 = matrix.M13.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M14 = matrix.M14.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M21 = matrix.M21.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M22 = matrix.M22.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M23 = matrix.M23.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M24 = matrix.M24.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M31 = matrix.M31.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M32 = matrix.M32.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M33 = matrix.M33.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M34 = matrix.M34.Clamp().Clamp(-1.0).Clamp(1.0);
+            matrix.M44 = matrix.M44.Clamp().Clamp(-1.0).Clamp(1.0);
+        }
+
+        internal static void Clamp(this ref Vector3D vector)
+        {
+            vector.X = vector.X.Clamp().Clamp(-1.0).Clamp(1.0);
+            vector.Y = vector.Y.Clamp().Clamp(-1.0).Clamp(1.0);
+            vector.Z = vector.Z.Clamp().Clamp(-1.0).Clamp(1.0);
         }
 
         internal static Point4D ToPoint4D(this Point3D point)
