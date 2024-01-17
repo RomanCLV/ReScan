@@ -2,13 +2,18 @@
 #define RESCAN_TOOLS_H
 
 #include "Base3D.h"
+#include "Plan2D.h"
 
+#include <string>
 #include <Eigen/Dense>
 
 namespace ReScan
 {
 	namespace Tools
 	{
+		int Plan2DToString(const Plan2D& plan2D, std::string& result);
+		int StringToPlan2D(const std::string planStr, Plan2D& plan2D);
+
 		void strReplace(std::string& s, char oldChar, char newChar);
 
 		/// <summary>

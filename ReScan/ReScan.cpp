@@ -13,15 +13,13 @@ namespace ReScan
 {
 #pragma region Constructors & Desctructor
 
-	ReScan::ReScan(const std::string& configFileName) :
-		m_configFile(configFileName),
+	ReScan::ReScan() :
 		m_processData()
 	{
 	}
 
 	ReScan::ReScan(const ReScan& reScan) :
-		m_configFile(reScan.m_configFile),
-		m_processData()
+		m_processData(reScan.m_processData)
 	{
 	}
 
@@ -40,9 +38,10 @@ namespace ReScan
 		m_processData.reset();
 	}
 
-	Plan2D ReScan::selectPlan2D() const
+	int ReScan::selectPlan2D(Plan2D* plan2D) const
 	{
 		int choice;
+		int result = SUCCESS_CODE;
 
 		// Choix des axes
 		do
@@ -64,21 +63,25 @@ namespace ReScan
 		{
 		case 1:
 			cout << "XY axes selected" << endl << endl;
-			return Plan2D::XY;
-
+			*plan2D = Plan2D::XY;
+			break;
 		case 2:
 			cout << "XZ axes selected" << endl << endl;
-			return Plan2D::XZ;
+			*plan2D = Plan2D::XZ;
+			break;
 
 		case 3:
 			cout << "YZ axes selected" << endl << endl;
-			return Plan2D::YZ;
+			*plan2D = Plan2D::YZ;
+			break;
 
 		default:
 			std::cerr << "Unexpected plan choice." << std::endl;
-			exit(-1);
+			result = INVALID_PLAN_ERROR_CODE;
 			break;
 		}
+
+		return result;
 	}
 
 	double ReScan::getDistance1D(const Point3D& point1, const Point3D& point2, double (Point3D::* getter)() const) const
@@ -88,10 +91,10 @@ namespace ReScan
 		return abs(x2 - x1);
 	}
 
-	void ReScan::getDistances(Point3D const& minPoint, Point3D const& maxPoint, double (Point3D::* getters[2])() const, double& distance1, double& distance2) const
+	void ReScan::getDistances(Point3D const& minPoint, Point3D const& maxPoint, double (Point3D::* getters[2])() const)
 	{
-		distance1 = getDistance1D(minPoint, maxPoint, getters[0]);
-		distance2 = getDistance1D(minPoint, maxPoint, getters[1]);
+		m_processData.setDistance1(getDistance1D(minPoint, maxPoint, getters[0]));
+		m_processData.setDistance2(getDistance1D(minPoint, maxPoint, getters[1]));
 	}
 
 	unsigned int ReScan::selectStep(char axisName, unsigned int min, unsigned int max) const
@@ -116,8 +119,7 @@ namespace ReScan
 	}
 
 	void ReScan::fillSubDivisions(const Point3D& minPoint, const ScatterGraph& graph, std::vector<ScatterGraph>* subGraph,
-		double (Point3D::* getters[2])() const,
-		const unsigned int step1, const unsigned int step2, const unsigned int subDivision1, const unsigned int subDivision2, const bool deleteIfEmpty) const
+		double (Point3D::* getters[2])() const, const bool deleteIfEmpty) const
 	{
 		const Point3D* currentPoint;
 		double minX;
@@ -134,7 +136,7 @@ namespace ReScan
 		minX = (minPoint.*getters[0])();
 		minY = (minPoint.*getters[1])();
 
-		double totalSubDivision = subDivision1 * subDivision2;
+		double totalSubDivision = m_processData.getTotalSubDivisions();
 
 		subGraph->clear();
 		for (int i = 0; i < totalSubDivision; i++)
@@ -151,10 +153,10 @@ namespace ReScan
 			dx = abs(x - minX);
 			dy = abs(y - minY);
 
-			divX = (unsigned int)(dx / step1);
-			divY = (unsigned int)(dy / step2);
+			divX = (unsigned int)(dx / *m_processData.getStepAxis1());
+			divY = (unsigned int)(dy / *m_processData.getStepAxis2());
 
-			divIndex = divY * subDivision1 + divX;
+			divIndex = divY * m_processData.getSubDivisions1() + divX;
 			(subGraph->at(divIndex)).addPoint(currentPoint);
 		}
 
@@ -175,13 +177,14 @@ namespace ReScan
 
 	bool ReScan::isFileValid() const
 	{
-		std::ifstream fileExists(m_fileName);
+		std::string filename = m_processData.getObjFile();
+		std::ifstream fileExists(filename);
 		if (!fileExists)
 		{
-			std::cerr << "File: " << m_fileName << " not found." << std::endl;
+			std::cerr << "File: " << filename << " not found." << std::endl;
 			return false;
 		}
-		if (m_fileName.length() < 4 || m_fileName.substr(m_fileName.length() - 4) != ".obj")
+		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".obj")
 		{
 			std::cerr << "File is not .obj" << std::endl;
 			return false;
@@ -192,6 +195,8 @@ namespace ReScan
 	int ReScan::internalProcess()
 	{
 		// declarations
+		const unsigned int MIN_DISTANCE = 50;
+
 		vector<float> vertices;
 
 		// Tableau de pointeurs de membres pour les getters désirés
@@ -206,43 +211,58 @@ namespace ReScan
 
 		// END - declarations
 
+		if (m_processData.getObjFile().length() == 0)
+		{
+			std::cerr << "No obj file specified" << std::endl;
+			return INVALID_FILE_ERROR_CODE;
+		}
+
 		if (!isFileValid())
 		{
 			return INVALID_FILE_ERROR_CODE;
 		}
-		string filenameWithoutExtention = removeFileExtension();
+		string filename = m_processData.getObjFile();
+		string filenameWithoutExtention = removeFileExtension(filename);
 
 		// Read obj file
-		//objio::readObjFile(m_fileName, &vertices, &triangles, &uvs, &uvtriangles);
-		objio::readObjFileVertices(m_fileName, &vertices);
+		objio::readObjFileVertices(filename, &vertices);
 
 		// populate graph with vertex read in the file
 		ScatterGraph::populateFromVectorXYZ(&vertices, graph);
 
 		// Select plan if needed
-		if (!m_plan2D)
+		if (!m_processData.getPlan2D())
 		{
-			m_plan2D = new Plan2D(selectPlan2D());
+			Plan2D plan2D;
+			int result = selectPlan2D(&plan2D);
+			if (result == SUCCESS_CODE)
+			{
+				m_processData.setPlan2D(plan2D);
+			}
+			else
+			{
+				return result;
+			}
 		}
 
 		// Select getters
-		switch (*m_plan2D)
+		switch (*m_processData.getPlan2D())
 		{
 		case Plan2D::XY:
-			axis1Name = 'X';
-			axis2Name = 'Y';
+			m_processData.setAxis1Name('X');
+			m_processData.setAxis2Name('Y');
 			getters[0] = &Point3D::getX;
 			getters[1] = &Point3D::getY;
 			break;
 		case Plan2D::XZ:
-			axis1Name = 'X';
-			axis2Name = 'Z';
+			m_processData.setAxis1Name('X');
+			m_processData.setAxis2Name('Z');
 			getters[0] = &Point3D::getX;
 			getters[1] = &Point3D::getZ;
 			break;
 		case Plan2D::YZ:
-			axis1Name = 'Y';
-			axis2Name = 'Z';
+			m_processData.setAxis1Name('Y');
+			m_processData.setAxis2Name('Z');
 			getters[0] = &Point3D::getY;
 			getters[1] = &Point3D::getZ;
 			break;
@@ -251,50 +271,57 @@ namespace ReScan
 			return INVALID_PLAN_ERROR_CODE;
 		}
 
-		cout << "\nSelected plan: " << axis1Name << axis2Name << std::endl;
+		cout << "\nSelected plan: " << m_processData.getAxis1Name() << m_processData.getAxis2Name() << std::endl;
 
 		// Find extremas points (2 corners of the ROI)
-		ScatterGraph::findExtrema(graph, *m_plan2D, getters, &minPoint, &maxPoint);
+		ScatterGraph::findExtrema(graph, *m_processData.getPlan2D(), getters, &minPoint, &maxPoint);
 
 		cout << std::endl;
 		cout << "min point: " << minPoint << endl;
 		cout << "max point: " << maxPoint << endl;
 
 		// Compute dimensions of the ROI
-		getDistances(minPoint, maxPoint, getters, distance1, distance2);
+		getDistances(minPoint, maxPoint, getters);
 
 		// display infos about distances
 		cout << std::endl;
-		cout << "distance " << axis1Name << ": " << distance1 << " mm" << endl;
-		cout << "distance " << axis2Name << ": " << distance2 << " mm" << endl;
+		cout << "distance " << m_processData.getAxis1Name() << ": " << m_processData.getDistance1() << " mm" << endl;
+		cout << "distance " << m_processData.getAxis2Name() << ": " << m_processData.getDistance2() << " mm" << endl;
+
 
 		// Select step of axis 1 if needed
-		if (!m_stepAxis1)
+		if (!m_processData.getStepAxis1())
 		{
-			m_stepAxis1 = new unsigned int(selectStep(axis1Name, 50, int(distance1)));
+			m_processData.setStepAxis1(selectStep(m_processData.getAxis1Name(), MIN_DISTANCE, int(m_processData.getDistance1())));
 		}
-		// Select step of axis 2 if needed
-		if (!m_stepAxis2)
+		else if (!m_processData.isStep1Valid(MIN_DISTANCE))
 		{
-			m_stepAxis2 = new unsigned int(selectStep(axis2Name, 50, int(distance2)));
+			cout << m_processData.getAxis1Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance1() << endl;
+		}
+
+
+		// Select step of axis 2 if needed
+		if (!m_processData.getStepAxis2())
+		{
+			m_processData.setStepAxis2(selectStep(m_processData.getAxis2Name(), MIN_DISTANCE, int(m_processData.getDistance2())));
 		}
 
 		cout << std::endl;
-		cout << axis1Name << " axis step selected: " << *m_stepAxis1 << " mm" << std::endl;
-		cout << axis2Name << " axis step selected: " << *m_stepAxis2 << " mm" << std::endl;
+		cout << m_processData.getAxis1Name() << " axis step selected: " << *m_processData.getStepAxis1() << " mm" << std::endl;
+		cout << m_processData.getAxis2Name() << " axis step selected: " << *m_processData.getStepAxis2() << " mm" << std::endl;
 
 		// compute number of subdivsions on both axis
-		subDivision1 = getSubDivision(distance1, *m_stepAxis1);
-		subDivision2 = getSubDivision(distance2, *m_stepAxis2);
+		m_processData.setSubDivision1(getSubDivision(m_processData.getDistance1(), *m_processData.getStepAxis1()));
+		m_processData.setSubDivision2(getSubDivision(m_processData.getDistance2(), *m_processData.getStepAxis2()));
 
 		// display infos about subdivisions
 		cout << endl;
-		cout << "Number of subdivisions on " << axis1Name << ": " << subDivision1 << endl;
-		cout << "Number of subdivisions on " << axis2Name << ": " << subDivision2 << endl;
-		cout << "Total of subdivisions: " << (subDivision1 * subDivision2) << endl << endl;
+		cout << "Number of subdivisions on " << m_processData.getAxis1Name() << ": " << m_processData.getSubDivisions1() << endl;
+		cout << "Number of subdivisions on " << m_processData.getAxis2Name() << ": " << m_processData.getSubDivisions2() << endl;
+		cout << "Total of subdivisions: " << (m_processData.getTotalSubDivisions()) << endl << endl;
 
 		// fill all sub graphs
-		fillSubDivisions(minPoint, graph, &subDivisions, getters, *m_stepAxis1, *m_stepAxis2, subDivision1, subDivision2, false);
+		fillSubDivisions(minPoint, graph, &subDivisions, getters, false);
 
 		// display infos about points
 		cout << "Number of points in the main graph: " << graph.size() << endl << endl;
@@ -307,7 +334,7 @@ namespace ReScan
 		}
 		cout << "Total of points: " << sum << endl;
 
-		if (exportSubDivisions)
+		if (m_processData.getExportSubDivisions())
 		{
 			exportSubDivisionsToCSV(filenameWithoutExtention, subDivisions);
 		}
@@ -339,22 +366,20 @@ namespace ReScan
 
 		std::string basePath = filenameWithoutExtention + "_bases_" + getDate();
 
-		if (exportBasesCartesian)
+		if (m_processData.getExportBasesCartesian())
 		{
 			cout << endl << "Exporting bases in cartesian..." << endl;
-			string defaultNullText = "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0";
-			exportBasesCartesianToCSV(basePath + "_cartesian.csv", bases, defaultNullText, writeHeaders, decimalCharIsDot);
+			exportBasesCartesianToCSV(basePath + "_cartesian.csv", bases, "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0");
 		}
-		if (exportBasesEulerAngles)
+		if (m_processData.getExportBasesEulerAngles())
 		{
 			cout << endl << "Exporting Euler angles..." << endl;
-			string defaultNullText = "0.0;0.0;0.0;0.0;0.0;0.0";
-			exportBasesEulerAnglesToCSV(basePath + "_euler-angles-ZYX.csv", bases, defaultNullText, writeHeaders, decimalCharIsDot);
+			exportBasesEulerAnglesToCSV(basePath + "_euler-angles-ZYX.csv", bases, "0.0;0.0;0.0;0.0;0.0;0.0");
 		}
-		if (exportDetailsFile)
+		if (m_processData.getExportDetailsFile())
 		{
 			cout << endl << "Exporting trajectory file details..." << endl;
-			exportTrajectoryDetailsFile(basePath + "_details.csv", distance1, distance2, *m_stepAxis1, *m_stepAxis2, subDivision1, subDivision2, decimalCharIsDot);
+			exportTrajectoryDetailsFile(basePath + "_details.csv");
 		}
 
 		for (int i = 0; i < bases.size(); i++)
@@ -377,7 +402,7 @@ namespace ReScan
 		}
 	}
 
-	bool ReScan::exportBasesCartesianToCSV(const std::string& filename, const std::vector<Base3D*>& bases, const std::string& nullText, const bool writeHeaders, const bool decimalCharIsDot) const
+	bool ReScan::exportBasesCartesianToCSV(const std::string& filename, const std::vector<Base3D*>& bases, const std::string& nullText) const
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
@@ -393,7 +418,7 @@ namespace ReScan
 			return false;
 		}
 
-		if (writeHeaders)
+		if (m_processData.getWriteHeaders())
 		{
 			outputFile << "o_x;o_y;o_z;x_x;x_y;x_z;y_x;y_y;y_z;z_x;z_y;z_z" << std::endl;
 		}
@@ -442,7 +467,7 @@ namespace ReScan
 				zyStr = std::to_string((*z)[1]);
 				zzStr = std::to_string((*z)[2]);
 
-				if (decimalCharIsDot)
+				if (m_processData.getDecimalCharIsDot())
 				{
 					Tools::strReplace(oxStr, ',', '.');
 					Tools::strReplace(oyStr, ',', '.');
@@ -488,7 +513,7 @@ namespace ReScan
 		return true;
 	}
 
-	bool ReScan::exportBasesEulerAnglesToCSV(const std::string& filename, const std::vector<Base3D*>& bases, const std::string& nullText, const bool writeHeaders, const bool decimalCharIsDot) const
+	bool ReScan::exportBasesEulerAnglesToCSV(const std::string& filename, const std::vector<Base3D*>& bases, const std::string& nullText) const
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
@@ -504,7 +529,7 @@ namespace ReScan
 			return false;
 		}
 
-		if (writeHeaders)
+		if (m_processData.getWriteHeaders())
 		{
 			outputFile << "o_x;o_y;o_z;a;b;c" << std::endl;
 		}
@@ -540,7 +565,7 @@ namespace ReScan
 				ryStr = std::to_string(b);
 				rzStr = std::to_string(c);
 
-				if (decimalCharIsDot)
+				if (m_processData.getDecimalCharIsDot())
 				{
 					Tools::strReplace(oxStr, ',', '.');
 					Tools::strReplace(oyStr, ',', '.');
@@ -572,7 +597,7 @@ namespace ReScan
 		return true;
 	}
 
-	bool ReScan::exportTrajectoryDetailsFile(const std::string& filename, const ReScanProcessData& processData) const
+	bool ReScan::exportTrajectoryDetailsFile(const std::string& filename) const
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
@@ -588,9 +613,9 @@ namespace ReScan
 			return false;
 		}
 
-		string distance1Str = to_string(processData.getDistance1());
-		string distance2Str = to_string(processData.getDistance2());
-		if (decimalCharIsDot)
+		string distance1Str = to_string(m_processData.getDistance1());
+		string distance2Str = to_string(m_processData.getDistance2());
+		if (m_processData.getDecimalCharIsDot())
 		{
 			Tools::strReplace(distance1Str, ',', '.');
 			Tools::strReplace(distance2Str, ',', '.');
@@ -603,11 +628,11 @@ namespace ReScan
 
 		outputFile << "X dimensions (mm);" << distance1Str << std::endl;
 		outputFile << "Y dimensions (mm);" << distance2Str << std::endl;
-		outputFile << "X step (mm);" << to_string(*processData.getStepAxis1()) << std::endl;
-		outputFile << "Y step (mm);" << to_string(*processData.getStepAxis2()) << std::endl;
-		outputFile << "X divisions;" << to_string(subDivision1) << std::endl;
-		outputFile << "Y divisions;" << to_string(subDivision2) << std::endl;
-		outputFile << "total divisions;" << to_string(subDivision1 * subDivision2) << std::endl;
+		outputFile << "X step (mm);" << to_string(*m_processData.getStepAxis1()) << std::endl;
+		outputFile << "Y step (mm);" << to_string(*m_processData.getStepAxis2()) << std::endl;
+		outputFile << "X divisions;" << to_string(m_processData.getSubDivisions1()) << std::endl;
+		outputFile << "Y divisions;" << to_string(m_processData.getSubDivisions2()) << std::endl;
+		outputFile << "total divisions;" << to_string(m_processData.getTotalSubDivisions()) << std::endl;
 
 		outputFile.close();
 
@@ -618,36 +643,84 @@ namespace ReScan
 
 #pragma region public functions
 
-	int ReScan::process()
+	int ReScan::process(std::string& configFile)
 	{
-		int result = SUCCESS_CODE;
+		int result;
 
 		resetProcessData();
 
 		ReScanConfig config;
-		result = ReScanConfig::loadConfigFromFile(m_configFile, &config);
+		result = ReScanConfig::loadConfigFromFile(configFile, &config);
 
 		if (result == SUCCESS_CODE)
 		{
+			m_processData.setFromConfig(config);
 			result = internalProcess();
+		}
+		else if (result == FILE_NOT_FOUND_ERROR_CODE || result == READ_CONFIG_ERROR_CODE || result == SET_CONFIG_ERROR_CODE)
+		{
+			if (!configFile.ends_with(".ini"))
+			{
+				configFile += ".ini";
+			}
+			std::cout << "Would you like to create a new config file (" << configFile << ") ? " << std::endl;
+			std::cout << "0: No" << std::endl;
+			std::cout << "1: Create a new config file" << std::endl;
+			std::cout << "2: Create a new config file adapated for ICNDE" << std::endl;
+
+			int choice;
+			do
+			{
+				cin >> choice;
+				if (choice < 0 || choice > 2)
+				{
+					cout << "Invalide choice." << endl;
+				}
+			} while (choice < 0 || choice > 2);
+
+			if (choice == 1)
+			{
+				ReScanConfig::saveConfigToFile(ReScanConfig(), configFile);
+			}
+			else if (choice == 2)
+			{
+				ReScanConfig::saveConfigToFile(ReScanConfig::createDassaultConfig(), configFile);
+			}
+			if (choice != 0)
+			{
+				std::cout << "You now have to edit this new file to set the obj file." << std::endl;
+			}
 		}
 		return result;
 	}
 
-	int ReScan::process(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
+	int ReScan::process(const std::string& objFile, const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
 		resetProcessData();
-
+		m_processData.setObjFile(objFile);
+		m_processData.setExportSubDivisions(exportSubDivisions);
+		m_processData.setExportBasesCartesian(exportBasesCartesian);
+		m_processData.setExportBasesEulerAngles(exportBasesEulerAngles);
+		m_processData.setExportDetailsFile(exportDetailsFile);
+		m_processData.setWriteHeaders(writeHeaders);
+		m_processData.setDecimalCharIsDot(decimalCharIsDot);
 		return internalProcess();
 	}
 
-	int ReScan::process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
+	int ReScan::process(const std::string& objFile, const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
 		resetProcessData();
-		*m_plan2D = plan2D;
-		*m_stepAxis1 = stepAxis1;
-		*m_stepAxis2 = stepAxis2;
-		return internalProcess(exportSubDivisions, exportBasesCartesian, exportBasesEulerAngles, exportDetailsFile, writeHeaders, decimalCharIsDot);
+		m_processData.setObjFile(objFile);
+		m_processData.setPlan2D(plan2D);
+		m_processData.setStepAxis1(stepAxis1);
+		m_processData.setStepAxis2(stepAxis2);
+		m_processData.setExportSubDivisions(exportSubDivisions);
+		m_processData.setExportBasesCartesian(exportBasesCartesian);
+		m_processData.setExportBasesEulerAngles(exportBasesEulerAngles);
+		m_processData.setExportDetailsFile(exportDetailsFile);
+		m_processData.setWriteHeaders(writeHeaders);
+		m_processData.setDecimalCharIsDot(decimalCharIsDot);
+		return internalProcess();
 	}
 
 #pragma endregion

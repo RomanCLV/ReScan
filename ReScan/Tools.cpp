@@ -7,6 +7,53 @@ namespace ReScan
 {
 	namespace Tools
 	{
+		int Plan2DToString(const Plan2D& plan2D, std::string& result)
+		{
+			int r = SUCCESS_CODE;
+
+			switch (plan2D)
+			{
+			case Plan2D::XY:
+				result = "XY";
+				break;
+			case Plan2D::XZ:
+				result = "XZ";
+				break;
+			case Plan2D::YZ:
+				result = "YZ";
+				break;
+			default:
+				result = "Unknow";
+				r = INVALID_PLAN_ERROR_CODE;
+				break;
+			}
+			return r;
+		}
+
+		int StringToPlan2D(const std::string planStr, Plan2D& plan2D)
+		{
+			int r = SUCCESS_CODE;
+
+			if (planStr == "XY")
+			{
+				plan2D = Plan2D::XY;
+			}
+			else if (planStr == "XZ")
+			{
+				plan2D = Plan2D::XZ;
+			}
+			else if (planStr == "YZ")
+			{
+				plan2D = Plan2D::YZ;
+			}
+			else
+			{
+				r = INVALID_PLAN_ERROR_CODE;
+			}
+
+			return r;
+		}
+
 		void strReplace(std::string& s, char oldChar, char newChar)
 		{
 			for (int i = 0; i < s.length(); i++)

@@ -18,29 +18,30 @@ namespace ReScan
 	{
 
 	private:
-		std::string m_configFile;
 		ReScanProcessData m_processData;
 
 	public:
-		ReScan(const std::string& m_configFileName);
+		ReScan();
 		ReScan(const ReScan& reScan);
 		~ReScan();
 
-		int process();
+		int process(std::string& configFile);
 
 		int process(
-			const bool exportSubDivisions = false,
-			const bool exportBasesCartesian = true, 
-			const bool exportBasesEulerAngles = true, 
+			const std::string& objFile,
+			const bool exportSubDivisions,
+			const bool exportBasesCartesian = true,
+			const bool exportBasesEulerAngles = true,
 			const bool exportDetailsFile = true,
 			const bool writeHeaders = true,
 			const bool decimalCharIsDot = true);
 
 		int process(
+			const std::string& objFile,
 			const Plan2D plan2D, 
 			const unsigned int stepAxis1, 
 			const unsigned int stepAxis2, 
-			const bool exportSubDivisions = false, 
+			const bool exportSubDivisions, 
 			const bool exportBasesCartesian = true, 
 			const bool exportBasesEulerAngles = true, 
 			const bool exportDetailsFile = true, 
@@ -50,28 +51,20 @@ namespace ReScan
 	private:
 		void resetProcessData();
 		bool isFileValid() const;
-		Plan2D selectPlan2D() const;
+		int selectPlan2D(Plan2D* plan2D) const;
 		double getDistance1D(const Point3D& point1, const Point3D& point2, double (Point3D::* getter)() const) const;
-		void getDistances(Point3D const& minPoint, Point3D const& maxPoint, double (Point3D::* getters[2])() const, double& distance1, double& distance2) const;
+		void getDistances(Point3D const& minPoint, Point3D const& maxPoint, double (Point3D::* getters[2])() const);
 		unsigned int selectStep(char axisName, unsigned int min, unsigned int max) const;
 		unsigned int getSubDivision(double distance, int step) const;
 		void fillSubDivisions(const Point3D& minPoint, const ScatterGraph& graph, std::vector<ScatterGraph>* subGraph,
-			double (Point3D::* getters[2])() const,
-			const unsigned int step1, const unsigned int step2, const unsigned int subDivision1, const unsigned int subDivision2, const bool deleteIfEmpty = true) const;
+			double (Point3D::* getters[2])() const, const bool deleteIfEmpty = true) const;
 
 		int internalProcess();
 
 		void exportSubDivisionsToCSV(const std::string& basePath, const std::vector<ScatterGraph>& subDivisions) const;
-		bool exportBasesCartesianToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "", const bool writeHeaders = true, const bool decimalCharIsDot = true) const;
-		bool exportBasesEulerAnglesToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "", const bool writeHeaders = true, const bool decimalCharIsDot = true) const;
-		bool exportTrajectoryDetailsFile(const std::string& filename,
-			const double distance1,
-			const double distance2,
-			const unsigned int stepAxis1,
-			const unsigned int stepAxis2,
-			const unsigned int subDivision1,
-			const unsigned int subDivision2,
-			const bool decimalCharIsDot) const;
+		bool exportBasesCartesianToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "") const;
+		bool exportBasesEulerAnglesToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "") const;
+		bool exportTrajectoryDetailsFile(const std::string& filename) const;
 	};
 }
 

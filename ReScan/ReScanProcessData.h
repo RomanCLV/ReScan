@@ -2,6 +2,7 @@
 #define RESCAN_RESCANPROCESSDATA_H
 
 #include "Plan2D.h"
+#include "ReScanConfig.h"
 
 #include <string>
 
@@ -33,6 +34,8 @@ namespace ReScan
 			~ReScanProcessData();
 
 			/* Setters */
+
+			void setFromConfig(const ReScanConfig& config);
 
 			void reset();
 
@@ -74,8 +77,9 @@ namespace ReScan
 			char getAxis2Name() const;
 			double getDistance1() const;
 			double getDistance2() const;
-			unsigned int getSubDivision1() const;
-			unsigned int getSubDivision2() const;
+			unsigned int getSubDivisions1() const;
+			unsigned int getSubDivisions2() const;
+			unsigned int getTotalSubDivisions() const;
 			std::string getObjFile() const;
 			bool getExportSubDivisions() const;
 			bool getExportBasesCartesian() const;
@@ -85,6 +89,9 @@ namespace ReScan
 			bool getDecimalCharIsDot() const;
 
 			/* End - Getters */
+
+			bool isStep1Valid(unsigned int min) const;
+			bool isStep2Valid(unsigned int min) const;
 	};
 }
 
