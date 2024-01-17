@@ -2,6 +2,8 @@
 #define RESCAN_RESCAN_H
 
 #include "ObjFileIO.h"
+#include "ReScanProcessData.h"
+#include "ReScanConfig.h"
 #include "ScatterGraph.h"
 #include "Plan2D.h"
 #include "Point3D.h"
@@ -16,16 +18,15 @@ namespace ReScan
 	{
 
 	private:
-		std::string m_fileName;
-
-		Plan2D* m_plan2D;
-		unsigned int* m_stepAxis1;
-		unsigned int* m_stepAxis2;
+		std::string m_configFile;
+		ReScanProcessData m_processData;
 
 	public:
-		ReScan(const std::string& fileName);
+		ReScan(const std::string& m_configFileName);
 		ReScan(const ReScan& reScan);
 		~ReScan();
+
+		int process();
 
 		int process(
 			const bool exportSubDivisions = false,
@@ -47,6 +48,7 @@ namespace ReScan
 			const bool decimalCharIsDot = true);
 
 	private:
+		void resetProcessData();
 		bool isFileValid() const;
 		Plan2D selectPlan2D() const;
 		double getDistance1D(const Point3D& point1, const Point3D& point2, double (Point3D::* getter)() const) const;
@@ -57,13 +59,7 @@ namespace ReScan
 			double (Point3D::* getters[2])() const,
 			const unsigned int step1, const unsigned int step2, const unsigned int subDivision1, const unsigned int subDivision2, const bool deleteIfEmpty = true) const;
 
-		int internalProcess(
-			const bool exportSubDivisions, 
-			const bool exportBasesCartesian,
-			const bool exportBasesEulerAngles,
-			const bool exportDetailsFile, 
-			const bool writeHeaders,
-			const bool decimalCharIsDot);
+		int internalProcess();
 
 		void exportSubDivisionsToCSV(const std::string& basePath, const std::vector<ScatterGraph>& subDivisions) const;
 		bool exportBasesCartesianToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "", const bool writeHeaders = true, const bool decimalCharIsDot = true) const;

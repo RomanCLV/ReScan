@@ -23,10 +23,10 @@ namespace ReScan
 		bool m_decimalCharIsDot;
 
 	private:
-		ReScanConfig();
 		ReScanConfig(const ReScanConfig& config);
 
 	public:
+		ReScanConfig();
 		~ReScanConfig();
 
 		unsigned int getXAxisStep();

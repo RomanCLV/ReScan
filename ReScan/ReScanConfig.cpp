@@ -82,6 +82,7 @@ namespace ReScan
 	int ReScanConfig::loadConfigFromFile(const std::string& filePath, ReScanConfig* config)
 	{
 		int result = SUCCESS_CODE;
+
 		boost::property_tree::ptree pt;
 		try
 		{

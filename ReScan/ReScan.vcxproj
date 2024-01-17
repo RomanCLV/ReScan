@@ -138,6 +138,7 @@
     <ClCompile Include="Base3D.cpp" />
     <ClCompile Include="ReScan.cpp" />
     <ClCompile Include="ReScanConfig.cpp" />
+    <ClCompile Include="ReScanProcessData.cpp" />
     <ClCompile Include="ScatterGraph.cpp" />
     <ClCompile Include="tools.cpp" />
   </ItemGroup>
@@ -151,6 +152,7 @@
     <ClInclude Include="Base3D.h" />
     <ClInclude Include="ReScan.h" />
     <ClInclude Include="ReScanConfig.h" />
+    <ClInclude Include="ReScanProcessData.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScatterGraph.h" />
     <ClInclude Include="tools.h" />

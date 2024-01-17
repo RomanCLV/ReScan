@@ -13,52 +13,32 @@ namespace ReScan
 {
 #pragma region Constructors & Desctructor
 
-	ReScan::ReScan(const std::string& fileName) :
-		m_fileName(fileName),
-		m_plan2D(nullptr),
-		m_stepAxis1(nullptr),
-		m_stepAxis2(nullptr)
+	ReScan::ReScan(const std::string& configFileName) :
+		m_configFile(configFileName),
+		m_processData()
 	{
 	}
 
 	ReScan::ReScan(const ReScan& reScan) :
-		m_fileName(reScan.m_fileName),
-		m_plan2D(nullptr),
-		m_stepAxis1(nullptr),
-		m_stepAxis2(nullptr)
-
+		m_configFile(reScan.m_configFile),
+		m_processData()
 	{
-		if (reScan.m_plan2D)
-		{
-			m_plan2D = new Plan2D(*reScan.m_plan2D);
-		}
-		if (reScan.m_stepAxis1)
-		{
-			m_stepAxis1 = new unsigned int(*reScan.m_stepAxis1);
-		}
-		if (reScan.m_stepAxis2)
-		{
-			m_stepAxis2 = new unsigned int(*reScan.m_stepAxis2);
-		}
 	}
 
 	// desconstructor
 
 	ReScan::~ReScan()
 	{
-		delete m_plan2D;
-		m_plan2D = nullptr;
-
-		delete m_stepAxis1;
-		m_stepAxis1 = nullptr;
-
-		delete m_stepAxis2;
-		m_stepAxis2 = nullptr;
 	}
 
 #pragma endregion
 
 #pragma region private functions
+
+	void ReScan::resetProcessData()
+	{
+		m_processData.reset();
+	}
 
 	Plan2D ReScan::selectPlan2D() const
 	{
@@ -209,13 +189,10 @@ namespace ReScan
 		return true;
 	}
 
-	int ReScan::internalProcess(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
+	int ReScan::internalProcess()
 	{
 		// declarations
 		vector<float> vertices;
-
-		char axis1Name;
-		char axis2Name;
 
 		// Tableau de pointeurs de membres pour les getters désirés
 		double (Point3D:: * getters[2])() const; {}
@@ -225,12 +202,6 @@ namespace ReScan
 		Point3D minPoint;
 		Point3D maxPoint;
 
-		double distance1;
-		double distance2;
-
-		unsigned int subDivision1;
-		unsigned int subDivision2;
-
 		vector<ScatterGraph> subDivisions;
 
 		// END - declarations
@@ -239,7 +210,7 @@ namespace ReScan
 		{
 			return INVALID_FILE_ERROR_CODE;
 		}
-		string filenameWithoutExtention = removeFileExtension(m_fileName);
+		string filenameWithoutExtention = removeFileExtension();
 
 		// Read obj file
 		//objio::readObjFile(m_fileName, &vertices, &triangles, &uvs, &uvtriangles);
@@ -601,14 +572,7 @@ namespace ReScan
 		return true;
 	}
 
-	bool ReScan::exportTrajectoryDetailsFile(const std::string& filename,
-		const double distance1,
-		const double distance2,
-		const unsigned int stepAxis1,
-		const unsigned int stepAxis2,
-		const unsigned int subDivision1,
-		const unsigned int subDivision2,
-		const bool decimalCharIsDot) const
+	bool ReScan::exportTrajectoryDetailsFile(const std::string& filename, const ReScanProcessData& processData) const
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
@@ -624,8 +588,8 @@ namespace ReScan
 			return false;
 		}
 
-		string distance1Str = to_string(distance1);
-		string distance2Str = to_string(distance2);
+		string distance1Str = to_string(processData.getDistance1());
+		string distance2Str = to_string(processData.getDistance2());
 		if (decimalCharIsDot)
 		{
 			Tools::strReplace(distance1Str, ',', '.');
@@ -639,8 +603,8 @@ namespace ReScan
 
 		outputFile << "X dimensions (mm);" << distance1Str << std::endl;
 		outputFile << "Y dimensions (mm);" << distance2Str << std::endl;
-		outputFile << "X step (mm);" << to_string(stepAxis1) << std::endl;
-		outputFile << "Y step (mm);" << to_string(stepAxis2) << std::endl;
+		outputFile << "X step (mm);" << to_string(*processData.getStepAxis1()) << std::endl;
+		outputFile << "Y step (mm);" << to_string(*processData.getStepAxis2()) << std::endl;
 		outputFile << "X divisions;" << to_string(subDivision1) << std::endl;
 		outputFile << "Y divisions;" << to_string(subDivision2) << std::endl;
 		outputFile << "total divisions;" << to_string(subDivision1 * subDivision2) << std::endl;
@@ -654,39 +618,32 @@ namespace ReScan
 
 #pragma region public functions
 
-	int process(const std::string& configFile)
+	int ReScan::process()
 	{
+		int result = SUCCESS_CODE;
 
+		resetProcessData();
+
+		ReScanConfig config;
+		result = ReScanConfig::loadConfigFromFile(m_configFile, &config);
+
+		if (result == SUCCESS_CODE)
+		{
+			result = internalProcess();
+		}
+		return result;
 	}
 
 	int ReScan::process(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
-		delete m_plan2D;
-		m_plan2D = nullptr;
+		resetProcessData();
 
-		delete m_stepAxis1;
-		m_stepAxis1 = nullptr;
-
-		delete m_stepAxis2;
-		m_stepAxis2 = nullptr;
-
-		return internalProcess(exportSubDivisions, exportBasesCartesian, exportBasesEulerAngles, exportDetailsFile, writeHeaders, decimalCharIsDot);
+		return internalProcess();
 	}
 
 	int ReScan::process(const Plan2D plan2D, const unsigned int stepAxis1, const unsigned int stepAxis2, const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
-		if (!m_plan2D)
-		{
-			m_plan2D = new Plan2D();
-		}
-		if (!m_stepAxis1)
-		{
-			m_stepAxis1 = new unsigned int(0);
-		}
-		if (!m_stepAxis2)
-		{
-			m_stepAxis2 = new unsigned int(0);
-		}
+		resetProcessData();
 		*m_plan2D = plan2D;
 		*m_stepAxis1 = stepAxis1;
 		*m_stepAxis2 = stepAxis2;
