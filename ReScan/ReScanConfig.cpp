@@ -180,6 +180,7 @@ namespace ReScan
 		try
 		{
 			boost::property_tree::write_ini(filePath, pt);
+			std::cout << "Config saved: " << filePath << std::endl << std::endl;
 		}
 		catch (const std::exception& e)
 		{
