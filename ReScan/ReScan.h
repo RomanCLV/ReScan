@@ -9,7 +9,6 @@
 
 #include <Eigen/Dense>
 #include <string>
-#include <unordered_map>
 
 namespace ReScan
 {

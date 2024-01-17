@@ -10,6 +10,9 @@ namespace ReScan
 #define INVALID_FILE_ERROR_CODE			1
 #define INVALID_PLAN_ERROR_CODE			2
 #define MEMORY_ALLOCATION_ERROR_CODE	3
+#define SAVE_CONFIG_ERROR_CODE          4
+#define READ_CONFIG_ERROR_CODE          5
+#define SET_CONFIG_ERROR_CODE           6
 
 #define NO_MATRIX_INVERSE_ERROR_CODE	101
 }

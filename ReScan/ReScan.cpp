@@ -650,10 +650,14 @@ namespace ReScan
 		return true;
 	}
 
-
 #pragma endregion
 
 #pragma region public functions
+
+	int process(const std::string& configFile)
+	{
+
+	}
 
 	int ReScan::process(const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
