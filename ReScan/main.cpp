@@ -24,8 +24,8 @@ void help()
 	std::cout << "ReScan.exe [-cc]                       Create a new default config file: config.ini" << std::endl;
 	std::cout << "ReScan.exe [--create-config]           " << std::endl;
 	std::cout << std::endl;
-	std::cout << "ReScan.exe [-cci]                       Create a new default config file adapted for ICNDE: config.ini" << std::endl;
-	std::cout << "ReScan.exe [--create-config-icnde]      " << std::endl;
+	std::cout << "ReScan.exe [-cci]                      Create a new default config file adapted for ICNDE: config.ini" << std::endl;
+	std::cout << "ReScan.exe [--create-config-icnde]     " << std::endl;
 	std::cout << std::endl;
 }
 
