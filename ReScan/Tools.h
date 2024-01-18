@@ -11,8 +11,8 @@ namespace ReScan
 {
 	namespace Tools
 	{
-		int Plan2DToString(const Plan2D& plan2D, std::string& result);
-		int StringToPlan2D(const std::string planStr, Plan2D& plan2D);
+		int plan2DToString(const Plan2D& plan2D, std::string& result);
+		int stringToPlan2D(const std::string planStr, Plan2D& plan2D);
 
 		void strReplace(std::string& s, char oldChar, char newChar);
 

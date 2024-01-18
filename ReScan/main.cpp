@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			std::cerr << "Unknow option: " << arg1 << std::endl;
+			ReScan::StreamHelper::out << "Unknow option: " << arg1 << std::endl;
 			help();
 		}
 	}
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			std::cerr << "Unknow option: " << arg1 << std::endl;
+			ReScan::StreamHelper::out << "Unknow option: " << arg1 << std::endl;
 			help();
 		}
 	}

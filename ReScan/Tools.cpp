@@ -7,7 +7,7 @@ namespace ReScan
 {
 	namespace Tools
 	{
-		int Plan2DToString(const Plan2D& plan2D, std::string& result)
+		int plan2DToString(const Plan2D& plan2D, std::string& result)
 		{
 			int r = SUCCESS_CODE;
 
@@ -30,7 +30,7 @@ namespace ReScan
 			return r;
 		}
 
-		int StringToPlan2D(const std::string planStr, Plan2D& plan2D)
+		int stringToPlan2D(const std::string planStr, Plan2D& plan2D)
 		{
 			int r = SUCCESS_CODE;
 

@@ -1,5 +1,6 @@
 #include "ReScan.h"
 #include "Tools.h"
+#include "StreamHelper.h"
 
 #include <iostream>   // for reading / writing files
 #include <fstream>    // for reading / writing files
@@ -76,7 +77,7 @@ namespace ReScan
 			break;
 
 		default:
-			std::cerr << "Unexpected plan choice." << std::endl;
+			StreamHelper::out << "Unexpected plan choice." << std::endl;
 			result = INVALID_PLAN_ERROR_CODE;
 			break;
 		}
@@ -181,12 +182,12 @@ namespace ReScan
 		std::ifstream fileExists(filename);
 		if (!fileExists)
 		{
-			std::cerr << "File: " << filename << " not found." << std::endl;
+			StreamHelper::out << "File: " << filename << " not found." << std::endl;
 			return false;
 		}
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".obj")
 		{
-			std::cerr << "File is not .obj" << std::endl;
+			StreamHelper::out << "File is not .obj" << std::endl;
 			return false;
 		}
 		return true;
@@ -213,7 +214,7 @@ namespace ReScan
 
 		if (m_processData.getObjFile().length() == 0)
 		{
-			std::cerr << "No obj file specified" << std::endl;
+			StreamHelper::out << "No obj file specified" << std::endl;
 			return INVALID_FILE_ERROR_CODE;
 		}
 
@@ -267,7 +268,7 @@ namespace ReScan
 			getters[1] = &Point3D::getZ;
 			break;
 		default:
-			std::cerr << "Unexpected plan." << std::endl;
+			StreamHelper::out << "Unexpected plan." << std::endl;
 			return INVALID_PLAN_ERROR_CODE;
 		}
 
@@ -406,7 +407,7 @@ namespace ReScan
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			std::cerr << "File is not a .csv" << std::endl;
+			StreamHelper::out << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -414,7 +415,7 @@ namespace ReScan
 
 		if (!outputFile.is_open())
 		{
-			std::cerr << "Cannot open: " + filename << std::endl;
+			StreamHelper::out << "Cannot open: " + filename << std::endl;
 			return false;
 		}
 
@@ -508,7 +509,7 @@ namespace ReScan
 
 		outputFile.close();
 
-		std::cout << "Bases saved into:" << std::endl << filename << std::endl;
+		StreamHelper::out << "Bases saved into:" << std::endl << filename << std::endl;
 
 		return true;
 	}
@@ -517,7 +518,7 @@ namespace ReScan
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			std::cerr << "File is not a .csv" << std::endl;
+			StreamHelper::out << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -525,7 +526,7 @@ namespace ReScan
 
 		if (!outputFile.is_open())
 		{
-			std::cerr << "Cannot open: " + filename << std::endl;
+			StreamHelper::out << "Cannot open: " + filename << std::endl;
 			return false;
 		}
 
@@ -592,7 +593,7 @@ namespace ReScan
 
 		outputFile.close();
 
-		std::cout << "Euler angles saved into:" << std::endl << filename << std::endl;
+		StreamHelper::out << "Euler angles saved into:" << std::endl << filename << std::endl;
 
 		return true;
 	}
@@ -601,7 +602,7 @@ namespace ReScan
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			std::cerr << "File is not a .csv" << std::endl;
+			StreamHelper::out << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -609,7 +610,7 @@ namespace ReScan
 
 		if (!outputFile.is_open())
 		{
-			std::cerr << "Cannot open: " + filename << std::endl;
+			StreamHelper::out << "Cannot open: " + filename << std::endl;
 			return false;
 		}
 
@@ -663,10 +664,10 @@ namespace ReScan
 			{
 				configFile += ".ini";
 			}
-			std::cout << "Would you like to create a new config file (" << configFile << ") ? " << std::endl;
-			std::cout << "0: No" << std::endl;
-			std::cout << "1: Create a new config file" << std::endl;
-			std::cout << "2: Create a new config file adapated for ICNDE" << std::endl;
+			StreamHelper::out << "Would you like to create a new config file (" << configFile << ") ? " << std::endl;
+			StreamHelper::out << "0: No" << std::endl;
+			StreamHelper::out << "1: Create a new config file" << std::endl;
+			StreamHelper::out << "2: Create a new config file adapated for ICNDE" << std::endl;
 
 			int choice;
 			do
@@ -681,7 +682,7 @@ namespace ReScan
 			if (choice == 1)
 			{
 				ReScanConfig::saveConfigToFile(ReScanConfig(), configFile);
-				std::cout << "You now have to edit this new file to set the obj file." << std::endl;
+				StreamHelper::out << "You now have to edit this new file to set the obj file." << std::endl;
 			}
 			else if (choice == 2)
 			{

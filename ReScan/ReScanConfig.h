@@ -29,6 +29,7 @@ namespace ReScan
 		ReScanConfig();
 		~ReScanConfig();
 
+		bool getEnableCout() const;
 		std::string getObjFile() const;
 		Plan2D getPlan2D() const;
 		unsigned int getStepAxis1() const;

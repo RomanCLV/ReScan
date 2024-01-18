@@ -1,5 +1,6 @@
 #include "ReScanConfig.h"
 #include "tools.h"
+#include "StreamHelper.h"
 
 #include <iostream>
 #include <boost/property_tree/ptree.hpp>
@@ -94,12 +95,12 @@ namespace ReScan
 		std::ifstream fileExists(filename);
 		if (!fileExists)
 		{
-			std::cerr << "File: " << filename << " not found." << std::endl;
+			ReScan::StreamHelper::out << "File: " << filename << " not found." << std::endl;
 			return false;
 		}
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".ini")
 		{
-			std::cerr << "File is not .ini" << std::endl;
+			ReScan::StreamHelper::out << "File is not .ini" << std::endl;
 			return false;
 		}
 		return true;
@@ -119,7 +120,7 @@ namespace ReScan
 			catch (const std::exception& e)
 			{
 				result = READ_CONFIG_ERROR_CODE;
-				std::cerr << "error occured when reading config file:" << filePath << std::endl << e.what() << std::endl;
+				ReScan::StreamHelper::out << "error occured when reading config file:" << filePath << std::endl << e.what() << std::endl;
 			}
 
 			if (result == SUCCESS_CODE)
@@ -129,7 +130,7 @@ namespace ReScan
 					config->m_objFile = pt.get<std::string>("General.objFile", "");
 					std::string planStr = pt.get<std::string>("General.plan2D");
 					Plan2D plan2D;
-					if (Tools::StringToPlan2D(planStr, plan2D) != SUCCESS_CODE)
+					if (Tools::stringToPlan2D(planStr, plan2D) != SUCCESS_CODE)
 					{
 						throw std::exception("Invalid value for Plan2D");
 					}
@@ -146,7 +147,7 @@ namespace ReScan
 				catch (const std::exception& e)
 				{
 					result = SET_CONFIG_ERROR_CODE;
-					std::cerr << "error occured when setting read config file:" << std::endl << e.what() << std::endl;
+					ReScan::StreamHelper::out << "error occured when setting read config file:" << std::endl << e.what() << std::endl;
 				}
 			}
 		}
@@ -163,7 +164,7 @@ namespace ReScan
 		boost::property_tree::ptree pt;
 
 		std::string planStr;
-		Tools::Plan2DToString(config.m_plan2D, planStr);
+		Tools::plan2DToString(config.m_plan2D, planStr);
 
 		pt.put("General.objFile", config.m_objFile);
 		pt.put("General.plan2D", planStr);
@@ -180,12 +181,12 @@ namespace ReScan
 		try
 		{
 			boost::property_tree::write_ini(filePath, pt);
-			std::cout << "Config saved: " << filePath << std::endl << std::endl;
+			ReScan::StreamHelper::out << "Config saved: " << filePath << std::endl << std::endl;
 		}
 		catch (const std::exception& e)
 		{
 			result = SAVE_CONFIG_ERROR_CODE;
-			std::cerr << "error occured when writing config file:" << std::endl << e.what() << std::endl;
+			ReScan::StreamHelper::out << "error occured when writing config file:" << std::endl << e.what() << std::endl;
 		}
 		return result;
 	}
