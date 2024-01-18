@@ -1,12 +1,7 @@
 #include "ReScan.h"
-
-#include <iostream>
+#include "OStreamListened.h"
+#include <ostream>
 #include <fstream>
-#include <string>
-#include <Eigen/Dense>
-
-void createConfig();
-void createConfigICNDE();
 
 static void help()
 {
@@ -32,6 +27,18 @@ static void help()
 
 int main(int argc, char* argv[])
 {
+	std::ofstream log("aaa.log");
+	auto customCallback = [&log](const std::string& eventData)
+		{
+			log << eventData;
+		};
+
+	OStreamListened osl(std::cout);
+	osl.addListener(customCallback);
+
+	auto pOut = &ReScan::StreamHelper::out;
+	ReScan::StreamHelper::out.add(&osl);
+
 	if (argc == 2)
 	{
 		std::string arg1(argv[1]);
@@ -41,11 +48,11 @@ int main(int argc, char* argv[])
 		}
 		else if (arg1 == "-cc" || arg1 == "--create-config")
 		{
-			createConfig();
+			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig(), "config.ini");
 		}
 		else if (arg1 == "-cci" || arg1 == "--create-config-icnde")
 		{
-			createConfigICNDE();
+			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createDassaultConfig(), "config.ini");
 		}
 		else
 		{
@@ -77,17 +84,11 @@ int main(int argc, char* argv[])
 		help();
 	}
 
+	ReScan::StreamHelper::out.remove(&osl);
+	osl.removeListener(customCallback);
+	log.close();
+
 	std::cout << std::endl << "Press enter to exit..." << std::endl;
 	std::cin.get();
 	return 0;
-}
-
-void createConfig()
-{
-	ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig(), "config.ini");
-}
-
-void createConfigICNDE()
-{
-	ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createDassaultConfig(), "config.ini");
 }

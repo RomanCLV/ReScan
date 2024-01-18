@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ObjFileIO.cpp" />
+    <ClCompile Include="OStreamListened.cpp" />
     <ClCompile Include="Plan.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="main.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Axis.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="ObjFileIO.h" />
+    <ClInclude Include="OStreamListened.h" />
     <ClInclude Include="Plan.h" />
     <ClInclude Include="Plan2D.h" />
     <ClInclude Include="Point3D.h" />
