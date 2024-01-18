@@ -681,14 +681,11 @@ namespace ReScan
 			if (choice == 1)
 			{
 				ReScanConfig::saveConfigToFile(ReScanConfig(), configFile);
+				std::cout << "You now have to edit this new file to set the obj file." << std::endl;
 			}
 			else if (choice == 2)
 			{
 				ReScanConfig::saveConfigToFile(ReScanConfig::createDassaultConfig(), configFile);
-			}
-			if (choice != 0)
-			{
-				std::cout << "You now have to edit this new file to set the obj file." << std::endl;
 			}
 		}
 		return result;

@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
 		}
 		else if (arg1 == "-f" || arg1 == "--file")
 		{
-			reScan.process(arg2, true, true, true, true, false, true);
+			reScan.process(arg2, true);
 		}
 		else
 		{

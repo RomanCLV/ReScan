@@ -193,6 +193,7 @@ namespace ReScan
 	ReScanConfig ReScanConfig::createDassaultConfig()
 	{
 		ReScanConfig config;
+		config.m_objFile = "Resulting-Mesh-smoothed.obj";
 		config.m_plan2D = Plan2D::YZ;
 		config.m_exportBasesCartesian = false;
 		config.m_writeHeaders = false;
