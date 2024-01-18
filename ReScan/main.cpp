@@ -33,11 +33,12 @@ int main(int argc, char* argv[])
 			log << eventData;
 		};
 
-	OStreamListened osl(std::cout);
-	osl.addListener(customCallback);
+	//OStreamListened osl(std::cout);
+	//osl.addListener(customCallback);
 
 	auto pOut = &ReScan::StreamHelper::out;
-	ReScan::StreamHelper::out.add(&osl);
+	ReScan::StreamHelper::out.add(&log);
+	//ReScan::StreamHelper::out.add(&osl);
 
 	if (argc == 2)
 	{
@@ -84,8 +85,8 @@ int main(int argc, char* argv[])
 		help();
 	}
 
-	ReScan::StreamHelper::out.remove(&osl);
-	osl.removeListener(customCallback);
+	//ReScan::StreamHelper::out.remove(&osl);
+	//osl.removeListener(customCallback);
 	log.close();
 
 	std::cout << std::endl << "Press enter to exit..." << std::endl;
