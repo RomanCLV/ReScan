@@ -1,9 +1,10 @@
 #ifndef RESCAN_RESCAN_H
 #define RESCAN_RESCAN_H
 
-#include "ObjFileIO.h"
+#include "StreamHelper.h"
 #include "ReScanProcessData.h"
 #include "ReScanConfig.h"
+#include "ObjFileIO.h"
 #include "ScatterGraph.h"
 #include "Plan2D.h"
 #include "Point3D.h"

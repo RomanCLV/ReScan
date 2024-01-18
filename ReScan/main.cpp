@@ -1,13 +1,14 @@
 #include "ReScan.h"
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <Eigen/Dense>
 
 void createConfig();
 void createConfigICNDE();
 
-void help()
+static void help()
 {
 	std::cout << std::endl;
 	std::cout << "Usage:" << std::endl;
