@@ -11,6 +11,7 @@ namespace ReScan
 	class ReScanConfig
 	{
 	private:
+		bool m_enableUserInput;
 		std::string m_objFile;
 		Plan2D m_plan2D;
 		unsigned int m_xAxisStep;
@@ -29,7 +30,7 @@ namespace ReScan
 		ReScanConfig();
 		~ReScanConfig();
 
-		bool getEnableCout() const;
+		bool getEnableUserInput() const;
 		std::string getObjFile() const;
 		Plan2D getPlan2D() const;
 		unsigned int getStepAxis1() const;

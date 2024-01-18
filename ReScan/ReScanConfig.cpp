@@ -9,6 +9,7 @@
 namespace ReScan
 {
 	ReScanConfig::ReScanConfig() :
+		m_enableUserInput(true),
 		m_objFile(""),
 		m_plan2D(Plan2D::XY),
 		m_xAxisStep(100),
@@ -23,6 +24,7 @@ namespace ReScan
 	}
 
 	ReScanConfig::ReScanConfig(const ReScanConfig& config) :
+		m_enableUserInput(config.m_enableUserInput),
 		m_objFile(config.m_objFile),
 		m_plan2D(config.m_plan2D),
 		m_xAxisStep(config.m_xAxisStep),
@@ -38,6 +40,11 @@ namespace ReScan
 
 	ReScanConfig::~ReScanConfig()
 	{
+	}
+
+	bool ReScanConfig::getEnableUserInput() const
+	{
+		return m_enableUserInput;
 	}
 
 	std::string ReScanConfig::getObjFile() const
@@ -127,7 +134,7 @@ namespace ReScan
 			{
 				try
 				{
-					config->m_objFile = pt.get<std::string>("General.objFile", "");
+					config->m_objFile = pt.get<std::string>("General.objFile");
 					std::string planStr = pt.get<std::string>("General.plan2D");
 					Plan2D plan2D;
 					if (Tools::stringToPlan2D(planStr, plan2D) != SUCCESS_CODE)
@@ -135,14 +142,15 @@ namespace ReScan
 						throw std::exception("Invalid value for Plan2D");
 					}
 					config->m_plan2D = plan2D;
-					config->m_xAxisStep = pt.get<unsigned int>("General.xAxisStep", 0);
-					config->m_yAxisStep = pt.get<unsigned int>("General.yAxisStep", 0);
-					config->m_decimalCharIsDot = pt.get<bool>("General.decimalCharIsDot", false);
-					config->m_exportSubDivisions = pt.get<bool>("Export.exportSubDivisions", false);
-					config->m_exportBasesCartesian = pt.get<bool>("Export.exportBasesCartesian", false);
-					config->m_exportBasesEulerAngles = pt.get<bool>("Export.exportBasesEulerAngles", false);
-					config->m_exportDetailsFile = pt.get<bool>("Export.exportDetailsFile", false);
-					config->m_writeHeaders = pt.get<bool>("Export.writeHeaders", false);
+					config->m_xAxisStep = pt.get<unsigned int>("General.xAxisStep");
+					config->m_yAxisStep = pt.get<unsigned int>("General.yAxisStep");
+					config->m_decimalCharIsDot = pt.get<bool>("General.decimalCharIsDot");
+					config->m_exportSubDivisions = pt.get<bool>("Export.exportSubDivisions");
+					config->m_exportBasesCartesian = pt.get<bool>("Export.exportBasesCartesian");
+					config->m_exportBasesEulerAngles = pt.get<bool>("Export.exportBasesEulerAngles");
+					config->m_exportDetailsFile = pt.get<bool>("Export.exportDetailsFile");
+					config->m_writeHeaders = pt.get<bool>("Export.writeHeaders");
+					config->m_enableUserInput = pt.get<bool>("General.enableUserInput");
 				}
 				catch (const std::exception& e)
 				{
@@ -171,6 +179,7 @@ namespace ReScan
 		pt.put("General.xAxisStep", config.m_xAxisStep);
 		pt.put("General.yAxisStep", config.m_yAxisStep);
 		pt.put("General.decimalCharIsDot", config.m_decimalCharIsDot);
+		pt.put("General.enableUserInput", config.m_enableUserInput);
 
 		pt.put("Export.exportSubDivisions", config.m_exportSubDivisions);
 		pt.put("Export.exportBasesCartesian", config.m_exportBasesCartesian);
@@ -194,6 +203,7 @@ namespace ReScan
 	ReScanConfig ReScanConfig::createDassaultConfig()
 	{
 		ReScanConfig config;
+		config.m_enableUserInput = false;
 		config.m_objFile = "Resulting-Mesh-smoothed.obj";
 		config.m_plan2D = Plan2D::YZ;
 		config.m_exportBasesCartesian = false;

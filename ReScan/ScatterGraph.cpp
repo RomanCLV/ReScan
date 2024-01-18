@@ -156,7 +156,7 @@ namespace ReScan
 		}
 		else
 		{
-			cout << "reducePercent aborted: invalid percent value given: " << percent << ". Shoud be in ]0.0;100.0]" << endl;
+			StreamHelper::out << "reducePercent aborted: invalid percent value given: " << percent << ". Shoud be in ]0.0;100.0]" << endl;
 		}
 	}
 
@@ -200,7 +200,7 @@ namespace ReScan
 		}
 		else
 		{
-			cout << "reduce aborted: invalid skipped value given: " << skipped << ". Shoud be in [2;" << size << "]" << endl;
+			StreamHelper::out << "reduce aborted: invalid skipped value given: " << skipped << ". Shoud be in [2;" << size << "]" << endl;
 		}
 	}
 

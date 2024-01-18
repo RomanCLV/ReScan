@@ -11,6 +11,7 @@ namespace ReScan
 	class ReScanProcessData
 	{
 	private:
+		bool m_enableUserInput;
 		Plan2D* m_plan2D;
 		unsigned int* m_stepAxis1;
 		unsigned int* m_stepAxis2;
@@ -70,6 +71,7 @@ namespace ReScan
 
 			/* Getters */
 
+			bool getEnableUserInput() const;
 			const Plan2D* getPlan2D() const;
 			const unsigned int* getStepAxis1() const;
 			const unsigned int* getStepAxis2() const;

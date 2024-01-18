@@ -3,26 +3,28 @@
 namespace ReScan
 {
 	ReScanProcessData::ReScanProcessData() :
-	m_plan2D(nullptr),
-	m_stepAxis1(nullptr),
-	m_stepAxis2(nullptr),
-	m_axis1Name('?'),
-	m_axis2Name('?'),
-	m_distance1(0.0),
-	m_distance2(0.0),
-	m_subDivision1(0),
-	m_subDivision2(0),
-	m_objFile(""),
-	m_exportSubDivisions(false),
-	m_exportBasesCartesian(true),
-	m_exportBasesEulerAngles(true),
-	m_exportDetailsFile(true),
-	m_writeHeaders(true),
-	m_decimalCharIsDot(true)
+		m_enableUserInput(true),
+		m_plan2D(nullptr),
+		m_stepAxis1(nullptr),
+		m_stepAxis2(nullptr),
+		m_axis1Name('?'),
+		m_axis2Name('?'),
+		m_distance1(0.0),
+		m_distance2(0.0),
+		m_subDivision1(0),
+		m_subDivision2(0),
+		m_objFile(""),
+		m_exportSubDivisions(false),
+		m_exportBasesCartesian(true),
+		m_exportBasesEulerAngles(true),
+		m_exportDetailsFile(true),
+		m_writeHeaders(true),
+		m_decimalCharIsDot(true)
 	{
 	}
 
 	ReScanProcessData::ReScanProcessData(const ReScanProcessData& reScanProcessData) :
+		m_enableUserInput(reScanProcessData.m_enableUserInput),
 		m_plan2D(nullptr),
 		m_stepAxis1(nullptr),
 		m_stepAxis2(nullptr),
@@ -64,6 +66,7 @@ namespace ReScan
 	void ReScanProcessData::setFromConfig(const ReScanConfig& config) 
 	{
 		reset();
+		m_enableUserInput = config.getEnableUserInput();
 		setObjFile(config.getObjFile());
 		setPlan2D(config.getPlan2D());
 		setStepAxis1(config.getStepAxis1());
@@ -78,6 +81,7 @@ namespace ReScan
 
 	void ReScanProcessData::reset()
 	{
+		m_enableUserInput = true;
 		resetPlan2D();
 		resetStepAxis1();
 		resetStepAxis2();
@@ -220,6 +224,11 @@ namespace ReScan
 #pragma endregion
 
 #pragma region Getters
+
+	bool ReScanProcessData::getEnableUserInput() const
+	{
+		return m_enableUserInput;
+	}
 
 	const Plan2D* ReScanProcessData::getPlan2D() const
 	{
