@@ -1,7 +1,10 @@
 #include "ReScan.h"
+#include "MultiOStream.h"
 #include "OStreamListened.h"
+
 #include <ostream>
 #include <fstream>
+#include <chrono>
 
 static void help()
 {
@@ -27,18 +30,23 @@ static void help()
 
 int main(int argc, char* argv[])
 {
-	std::ofstream log("aaa.log");
+	int result = SUCCESS_CODE;
+	std::ofstream log("a.log");
 	auto customCallback = [&log](const std::string& eventData)
 		{
+			std::cout << "cb" << std::endl;
 			log << eventData;
 		};
 
-	//OStreamListened osl(std::cout);
-	//osl.addListener(customCallback);
+	ReScan::StreamHelper::OStreamListened osl(std::cout);
+	osl.addListener(customCallback);
+	ReScan::mout.add(&osl);
 
-	auto pOut = &ReScan::StreamHelper::out;
-	ReScan::StreamHelper::out.add(&log);
-	//ReScan::StreamHelper::out.add(&osl);
+	ReScan::mout << "Test" << std::endl;
+
+	ReScan::mout.remove(&osl);
+	osl.removeListener(customCallback);
+	log.close();
 
 	if (argc == 2)
 	{
@@ -57,7 +65,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			ReScan::StreamHelper::out << "Unknow option: " << arg1 << std::endl;
+			ReScan::mout << "Unknow option: " << arg1 << std::endl;
 			help();
 		}
 	}
@@ -68,15 +76,15 @@ int main(int argc, char* argv[])
 		ReScan::ReScan reScan;
 		if (arg1 == "-c" || arg1 == "--config")
 		{
-			reScan.process(arg2);
+			result = reScan.process(arg2);
 		}
 		else if (arg1 == "-f" || arg1 == "--file")
 		{
-			reScan.process(arg2, true);
+			result = reScan.process(arg2, true);
 		}
 		else
 		{
-			ReScan::StreamHelper::out << "Unknow option: " << arg1 << std::endl;
+			ReScan::mout << "Unknow option: " << arg1 << std::endl;
 			help();
 		}
 	}
@@ -85,11 +93,10 @@ int main(int argc, char* argv[])
 		help();
 	}
 
-	//ReScan::StreamHelper::out.remove(&osl);
-	//osl.removeListener(customCallback);
-	log.close();
-
-	std::cout << std::endl << "Press enter to exit..." << std::endl;
-	std::cin.get();
+	if (result != SUCCESS_CODE)
+	{
+		std::cout << std::endl << "Press enter to exit..." << std::endl;
+		std::cin.get();
+	}
 	return 0;
 }

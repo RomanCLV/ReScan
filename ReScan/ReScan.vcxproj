@@ -141,7 +141,7 @@
     <ClCompile Include="ReScanConfig.cpp" />
     <ClCompile Include="ReScanProcessData.cpp" />
     <ClCompile Include="ScatterGraph.cpp" />
-    <ClCompile Include="StreamHelper.cpp" />
+    <ClCompile Include="MultiOStream.cpp" />
     <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -158,7 +158,7 @@
     <ClInclude Include="ReScanProcessData.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScatterGraph.h" />
-    <ClInclude Include="StreamHelper.h" />
+    <ClInclude Include="MultiOStream.h" />
     <ClInclude Include="tools.h" />
   </ItemGroup>
   <ItemGroup>

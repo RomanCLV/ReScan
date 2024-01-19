@@ -1,4 +1,9 @@
-#include "StreamHelper.h"
+#include "MultiOStream.h"
+
+namespace ReScan
+{
+    StreamHelper::MultiOStream mout;
+}
 
 namespace ReScan::StreamHelper
 {
@@ -10,7 +15,7 @@ namespace ReScan::StreamHelper
 
     MultiOStream::MultiOStream(const MultiOStream& other) :
         std::ostream(nullptr),
-        m_useCoutIfNoStream(true)
+        m_useCoutIfNoStream(other.m_useCoutIfNoStream)
     {
         m_outs = other.m_outs;
     }

@@ -1,7 +1,7 @@
 #ifndef RESCAN_RESCAN_H
 #define RESCAN_RESCAN_H
 
-#include "StreamHelper.h"
+#include "MultiOStream.h"
 #include "ReScanProcessData.h"
 #include "ReScanConfig.h"
 #include "ObjFileIO.h"

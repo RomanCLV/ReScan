@@ -1,5 +1,5 @@
 #include "ObjFileIO.h"
-#include "StreamHelper.h"
+#include "MultiOStream.h"
 
 #include <iostream>
 #include <sstream>
@@ -9,7 +9,7 @@
 
 void objio::VerticesParser(std::string buffer, std::vector<float>* vertices)
 {
-	ReScan::StreamHelper::out << "In Vertices Parser\n";
+	ReScan::mout << "In Vertices Parser\n";
 	size_t found, foundendline, foundPrec = 0;
 	std::string elementType("\nv ");
 	std::string line, word;
@@ -33,13 +33,13 @@ void objio::VerticesParser(std::string buffer, std::vector<float>* vertices)
 			vertices->push_back(stof(word));
 		}
 	} while (found != std::string::npos);
-	ReScan::StreamHelper::out << "Vertices parser ended\n";
+	ReScan::mout << "Vertices parser ended\n";
 }
 
 
 void objio::FacesParser(std::string buffer, std::vector<int>* triangles, std::vector<int>* uvtriangles)
 {
-	ReScan::StreamHelper::out << "In Faces Parser\n";
+	ReScan::mout << "In Faces Parser\n";
 	size_t found, foundSeparator, foundendline, foundPrec = 0, foundSeparatorPrec;
 	std::string elementType("\nf ");
 	std::string line, word, value;
@@ -90,13 +90,13 @@ void objio::FacesParser(std::string buffer, std::vector<int>* triangles, std::ve
 			ss.clear();
 		}
 	} while (found != std::string::npos);
-	ReScan::StreamHelper::out << "Faces parser ended\n";
+	ReScan::mout << "Faces parser ended\n";
 }
 
 
 void objio::UVsParser(std::string buffer, std::vector<float>* uvs)
 {
-	ReScan::StreamHelper::out << "In UVs Parser\n";
+	ReScan::mout << "In UVs Parser\n";
 	size_t found, foundendline, foundPrec = 0;
 	std::string elementType("\nvt ");
 	std::string line, word;
@@ -116,7 +116,7 @@ void objio::UVsParser(std::string buffer, std::vector<float>* uvs)
 			uvs->push_back(stof(word)); //putting 'v' value in vector
 		}
 	} while (found != std::string::npos);
-	ReScan::StreamHelper::out << "UVs parser ended\n";
+	ReScan::mout << "UVs parser ended\n";
 }
 
 
@@ -165,7 +165,7 @@ void objio::_internalReadObjFile(std::string& path,
 	char* buffer;
 	size_t result;
 
-	ReScan::StreamHelper::out << "File Path is : " << path << std::endl;
+	ReScan::mout << "File Path is : " << path << std::endl;
 
 	fopen_s(&pFile, path.c_str(), "rb"); //Strange way to convert, there must be another way
 	if (pFile == NULL)
@@ -187,7 +187,7 @@ void objio::_internalReadObjFile(std::string& path,
 		return;
 	}
 
-	ReScan::StreamHelper::out << "Reading...\n";
+	ReScan::mout << "Reading...\n";
 
 	// copy the file into the buffer:
 	result = fread(buffer, 1, lSize, pFile);
@@ -197,7 +197,7 @@ void objio::_internalReadObjFile(std::string& path,
 		return;
 	}
 
-	ReScan::StreamHelper::out << "Read done\n";
+	ReScan::mout << "Read done\n";
 
 	/* the whole file is now loaded in the memory buffer. */
 
@@ -264,7 +264,7 @@ void objio::_internalReadObjFile(std::string& path,
 
 	_end = std::chrono::system_clock::now();
 	elapsed_seconds = _end - _start;
-	ReScan::StreamHelper::out << "File read in : " << elapsed_seconds.count() << " seconds\n";
+	ReScan::mout << "File read in : " << elapsed_seconds.count() << " seconds\n";
 	for (int i = 0; i < threads.size(); i++)
 	{
 		delete threads[i];

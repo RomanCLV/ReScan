@@ -1,7 +1,7 @@
 ﻿#include "ScatterGraph.h"
 #include "tools.h"
 #include "Axis.h"
-#include "StreamHelper.h"
+#include "MultiOStream.h"
 
 #include <iostream>   // for reading / writing files
 #include <fstream>    // for reading / writing files
@@ -96,7 +96,7 @@ namespace ReScan
 		}
 		else
 		{
-			ReScan::StreamHelper::out << "Memory allocation error" << endl;
+			ReScan::mout << "Memory allocation error" << endl;
 			return nullptr;
 		}
 	}
@@ -156,7 +156,7 @@ namespace ReScan
 		}
 		else
 		{
-			StreamHelper::out << "reducePercent aborted: invalid percent value given: " << percent << ". Shoud be in ]0.0;100.0]" << endl;
+			mout << "reducePercent aborted: invalid percent value given: " << percent << ". Shoud be in ]0.0;100.0]" << endl;
 		}
 	}
 
@@ -200,7 +200,7 @@ namespace ReScan
 		}
 		else
 		{
-			StreamHelper::out << "reduce aborted: invalid skipped value given: " << skipped << ". Shoud be in [2;" << size << "]" << endl;
+			mout << "reduce aborted: invalid skipped value given: " << skipped << ". Shoud be in [2;" << size << "]" << endl;
 		}
 	}
 
@@ -209,7 +209,7 @@ namespace ReScan
 		ScatterGraph* graph = new ScatterGraph(*this);
 		if (!graph)
 		{
-			ReScan::StreamHelper::out << "Memory allocation error" << endl;
+			ReScan::mout << "Memory allocation error" << endl;
 			return nullptr;
 		}
 		graph->reducePercent(percent);
@@ -221,7 +221,7 @@ namespace ReScan
 		ScatterGraph* graph = new ScatterGraph(*this);
 		if (!graph)
 		{
-			ReScan::StreamHelper::out << "Memory allocation error" << endl;
+			ReScan::mout << "Memory allocation error" << endl;
 			return nullptr;
 		}
 		graph->reduce(skipped);
@@ -321,7 +321,7 @@ namespace ReScan
 			break;
 
 		default:
-			ReScan::StreamHelper::out << "Plan non reconnu." << std::endl;
+			ReScan::mout << "Plan non reconnu." << std::endl;
 			break;
 		}
 	}
@@ -330,7 +330,7 @@ namespace ReScan
 	{
 		// Vérification du nombre de points minimum
 		if (numPoints < 8) {
-			ReScan::StreamHelper::out << "Le nombre de points doit être au moins 8." << std::endl;
+			ReScan::mout << "Le nombre de points doit être au moins 8." << std::endl;
 			return;
 		}
 
@@ -380,7 +380,7 @@ namespace ReScan
 			break;
 
 		default:
-			ReScan::StreamHelper::out << "Plan non reconnu." << std::endl;
+			ReScan::mout << "Plan non reconnu." << std::endl;
 			break;
 		}
 	}
@@ -389,7 +389,7 @@ namespace ReScan
 	{
 		// Vérification du nombre de points minimum
 		if (numPoints < 4) {
-			ReScan::StreamHelper::out << "Le nombre de points doit être au moins 4." << std::endl;
+			ReScan::mout << "Le nombre de points doit être au moins 4." << std::endl;
 			return;
 		}
 
@@ -439,7 +439,7 @@ namespace ReScan
 			break;
 
 		default:
-			ReScan::StreamHelper::out << "Plan non reconnu." << std::endl;
+			ReScan::mout << "Plan non reconnu." << std::endl;
 			break;
 		}
 	}
@@ -453,14 +453,14 @@ namespace ReScan
 		// Vérifier si le nom de fichier se termine par ".csv"
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			ReScan::StreamHelper::out << "File is not a .csv" << std::endl;
+			ReScan::mout << "File is not a .csv" << std::endl;
 			return false;
 		}
 
 		std::ifstream fileExists(filename);
 		if (fileExists && !replaceIfFileExists)
 		{
-			ReScan::StreamHelper::out << "The file " + filename + " already exists." << std::endl;
+			ReScan::mout << "The file " + filename + " already exists." << std::endl;
 			fileExists.close();
 			return false;
 		}
@@ -470,7 +470,7 @@ namespace ReScan
 
 		if (!outputFile.is_open())
 		{
-			ReScan::StreamHelper::out << "Cannot open : " + filename << std::endl;
+			ReScan::mout << "Cannot open : " + filename << std::endl;
 			return false;
 		}
 
@@ -507,7 +507,7 @@ namespace ReScan
 
 		outputFile.close();
 
-		ReScan::StreamHelper::out << "Data saved into : " << filename << std::endl;
+		ReScan::mout << "Data saved into : " << filename << std::endl;
 
 		return true;
 	}
@@ -517,7 +517,7 @@ namespace ReScan
 		// Vérifier si le nom de fichier se termine par ".csv"
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			ReScan::StreamHelper::out << "File is not a .csv" << std::endl;
+			ReScan::mout << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -526,7 +526,7 @@ namespace ReScan
 
 		if (!inputFile.is_open())
 		{
-			ReScan::StreamHelper::out << "Cannot open : " + filename << std::endl;
+			ReScan::mout << "Cannot open : " + filename << std::endl;
 			return false;
 		}
 
@@ -558,7 +558,7 @@ namespace ReScan
 				catch (const std::exception& e)
 				{
 					// Gérer les erreurs de conversion
-					ReScan::StreamHelper::out << "Cannot parse the cell in double - Line : " << lineN << " - Cell : " << cell << " - " << e.what() << std::endl;
+					ReScan::mout << "Cannot parse the cell in double - Line : " << lineN << " - Cell : " << cell << " - " << e.what() << std::endl;
 					return false;
 				}
 			}
@@ -566,7 +566,7 @@ namespace ReScan
 			// Vérifier si le nombre de colonnes est valide (3 pour Point3D)
 			if (rowData.size() != 3)
 			{
-				ReScan::StreamHelper::out << "File doesn't contain the expected number of columns (3). Line : " + lineN << std::endl;
+				ReScan::mout << "File doesn't contain the expected number of columns (3). Line : " + lineN << std::endl;
 				return false;
 			}
 
@@ -644,7 +644,7 @@ namespace ReScan
 			break;
 
 		default:
-			ReScan::StreamHelper::out << "Unexpected plan." << std::endl;
+			ReScan::mout << "Unexpected plan." << std::endl;
 			break;
 		}
 	}

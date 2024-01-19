@@ -1,6 +1,6 @@
 #include "ReScanConfig.h"
 #include "tools.h"
-#include "StreamHelper.h"
+#include "MultiOStream.h"
 
 #include <iostream>
 #include <boost/property_tree/ptree.hpp>
@@ -102,12 +102,12 @@ namespace ReScan
 		std::ifstream fileExists(filename);
 		if (!fileExists)
 		{
-			ReScan::StreamHelper::out << "File: " << filename << " not found." << std::endl;
+			ReScan::mout << "File: " << filename << " not found." << std::endl;
 			return false;
 		}
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".ini")
 		{
-			ReScan::StreamHelper::out << "File is not .ini" << std::endl;
+			ReScan::mout << "File is not .ini" << std::endl;
 			return false;
 		}
 		return true;
@@ -127,7 +127,7 @@ namespace ReScan
 			catch (const std::exception& e)
 			{
 				result = READ_CONFIG_ERROR_CODE;
-				ReScan::StreamHelper::out << "error occured when reading config file:" << filePath << std::endl << e.what() << std::endl;
+				ReScan::mout << "error occured when reading config file:" << filePath << std::endl << e.what() << std::endl;
 			}
 
 			if (result == SUCCESS_CODE)
@@ -155,7 +155,7 @@ namespace ReScan
 				catch (const std::exception& e)
 				{
 					result = SET_CONFIG_ERROR_CODE;
-					ReScan::StreamHelper::out << "error occured when setting read config file:" << std::endl << e.what() << std::endl;
+					ReScan::mout << "error occured when setting read config file:" << std::endl << e.what() << std::endl;
 				}
 			}
 		}
@@ -190,12 +190,12 @@ namespace ReScan
 		try
 		{
 			boost::property_tree::write_ini(filePath, pt);
-			ReScan::StreamHelper::out << "Config saved: " << filePath << std::endl << std::endl;
+			ReScan::mout << "Config saved: " << filePath << std::endl << std::endl;
 		}
 		catch (const std::exception& e)
 		{
 			result = SAVE_CONFIG_ERROR_CODE;
-			ReScan::StreamHelper::out << "error occured when writing config file:" << std::endl << e.what() << std::endl;
+			ReScan::mout << "error occured when writing config file:" << std::endl << e.what() << std::endl;
 		}
 		return result;
 	}

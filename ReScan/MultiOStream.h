@@ -15,8 +15,8 @@ namespace ReScan::StreamHelper
 		bool m_useCoutIfNoStream;
 
 	public:
-		MultiOStream();
-		MultiOStream(const MultiOStream& other);
+        MultiOStream();
+        MultiOStream(const MultiOStream& other);
 		~MultiOStream();
 
 		void setUseCoutIfNoStream(const bool value);
@@ -66,8 +66,11 @@ namespace ReScan::StreamHelper
             return *this;
         }
 	};
-	
-    static MultiOStream out;
+}
+
+namespace ReScan
+{
+    extern StreamHelper::MultiOStream mout;
 }
 
 #endif // !RESCAN_STREAMHELPER_H

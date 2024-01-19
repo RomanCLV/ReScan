@@ -45,7 +45,7 @@
     <ClCompile Include="ReScanProcessData.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="StreamHelper.cpp">
+    <ClCompile Include="MultiOStream.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="OStreamListened.cpp">
@@ -92,7 +92,7 @@
     <ClInclude Include="ReScanProcessData.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="StreamHelper.h">
+    <ClInclude Include="MultiOStream.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="OStreamListened.h">

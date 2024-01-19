@@ -1,6 +1,6 @@
 #include "ReScan.h"
 #include "Tools.h"
-#include "StreamHelper.h"
+#include "MultiOStream.h"
 
 #include <iostream>   // for reading / writing files
 #include <fstream>    // for reading / writing files
@@ -47,15 +47,15 @@ namespace ReScan
 		// Choix des axes
 		do
 		{
-			StreamHelper::out << endl << "Find extrema:" << endl;
-			StreamHelper::out << "1) XY" << endl;
-			StreamHelper::out << "2) XZ" << endl;
-			StreamHelper::out << "3) YZ" << endl << endl;
+			mout << endl << "Find extrema:" << endl;
+			mout << "1) XY" << endl;
+			mout << "2) XZ" << endl;
+			mout << "3) YZ" << endl << endl;
 
 			std::cin >> choice;
 
 			if (choice < 1 || choice > 3) {
-				StreamHelper::out << "Invalide choice." << endl;
+				mout << "Invalide choice." << endl;
 			}
 
 		} while (choice < 1 || choice > 3);
@@ -63,21 +63,21 @@ namespace ReScan
 		switch (choice)
 		{
 		case 1:
-			StreamHelper::out << "XY axes selected" << endl << endl;
+			mout << "XY axes selected" << endl << endl;
 			*plan2D = Plan2D::XY;
 			break;
 		case 2:
-			StreamHelper::out << "XZ axes selected" << endl << endl;
+			mout << "XZ axes selected" << endl << endl;
 			*plan2D = Plan2D::XZ;
 			break;
 
 		case 3:
-			StreamHelper::out << "YZ axes selected" << endl << endl;
+			mout << "YZ axes selected" << endl << endl;
 			*plan2D = Plan2D::YZ;
 			break;
 
 		default:
-			StreamHelper::out << "Unexpected plan choice." << std::endl;
+			mout << "Unexpected plan choice." << std::endl;
 			result = INVALID_PLAN_ERROR_CODE;
 			break;
 		}
@@ -103,7 +103,7 @@ namespace ReScan
 		unsigned int step;
 		do
 		{
-			StreamHelper::out << endl << "Select the " << axisName << " axis step between " << to_string(min) << " mm and " << to_string(max) << " mm" << endl << endl;
+			mout << endl << "Select the " << axisName << " axis step between " << to_string(min) << " mm and " << to_string(max) << " mm" << endl << endl;
 			std::cin >> step;
 		} while (step < min || step > max);
 		return step;
@@ -172,7 +172,7 @@ namespace ReScan
 					removed++;
 				}
 			}
-			StreamHelper::out << removed << " removed empty graph(s)" << std::endl;
+			mout << removed << " removed empty graph(s)" << std::endl;
 		}
 	}
 
@@ -182,12 +182,12 @@ namespace ReScan
 		std::ifstream fileExists(filename);
 		if (!fileExists)
 		{
-			StreamHelper::out << "File: " << filename << " not found." << std::endl;
+			mout << "File: " << filename << " not found." << std::endl;
 			return false;
 		}
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".obj")
 		{
-			StreamHelper::out << "File is not .obj" << std::endl;
+			mout << "File is not .obj" << std::endl;
 			return false;
 		}
 		return true;
@@ -214,7 +214,7 @@ namespace ReScan
 
 		if (m_processData.getObjFile().length() == 0)
 		{
-			StreamHelper::out << "No obj file specified" << std::endl;
+			mout << "No obj file specified" << std::endl;
 			return INVALID_FILE_ERROR_CODE;
 		}
 
@@ -275,26 +275,26 @@ namespace ReScan
 			getters[1] = &Point3D::getZ;
 			break;
 		default:
-			StreamHelper::out << "Unexpected plan." << std::endl;
+			mout << "Unexpected plan." << std::endl;
 			return INVALID_PLAN_ERROR_CODE;
 		}
 
-		StreamHelper::out << "\nSelected plan: " << m_processData.getAxis1Name() << m_processData.getAxis2Name() << std::endl;
+		mout << "\nSelected plan: " << m_processData.getAxis1Name() << m_processData.getAxis2Name() << std::endl;
 
 		// Find extremas points (2 corners of the ROI)
 		ScatterGraph::findExtrema(graph, *m_processData.getPlan2D(), getters, &minPoint, &maxPoint);
 
-		StreamHelper::out << std::endl;
-		StreamHelper::out << "min point: " << minPoint << endl;
-		StreamHelper::out << "max point: " << maxPoint << endl;
+		mout << std::endl;
+		mout << "min point: " << minPoint << endl;
+		mout << "max point: " << maxPoint << endl;
 
 		// Compute dimensions of the ROI
 		getDistances(minPoint, maxPoint, getters);
 
 		// display infos about distances
-		StreamHelper::out << std::endl;
-		StreamHelper::out << "distance " << m_processData.getAxis1Name() << ": " << m_processData.getDistance1() << " mm" << endl;
-		StreamHelper::out << "distance " << m_processData.getAxis2Name() << ": " << m_processData.getDistance2() << " mm" << endl;
+		mout << std::endl;
+		mout << "distance " << m_processData.getAxis1Name() << ": " << m_processData.getDistance1() << " mm" << endl;
+		mout << "distance " << m_processData.getAxis2Name() << ": " << m_processData.getDistance2() << " mm" << endl;
 
 		// Select step of axis 1 if needed
 		if (!m_processData.getStepAxis1())
@@ -305,20 +305,20 @@ namespace ReScan
 			}
 			else
 			{
-				StreamHelper::out << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
+				mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
 				return NO_STEP_AXIS_1_SELECTED_ERROR_CODE;
 			}
 		}
 		else if (!m_processData.isStep1Valid(MIN_DISTANCE))
 		{
-			StreamHelper::out << m_processData.getAxis1Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance1() << endl;
+			mout << m_processData.getAxis1Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance1() << endl;
 			if (m_processData.getEnableUserInput())
 			{
 				m_processData.setStepAxis1(selectStep(m_processData.getAxis1Name(), MIN_DISTANCE, int(m_processData.getDistance1())));
 			}
 			else
 			{
-				StreamHelper::out << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
+				mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
 				return NO_STEP_AXIS_1_SELECTED_ERROR_CODE;
 			}
 		}
@@ -332,58 +332,58 @@ namespace ReScan
 			}
 			else
 			{
-				StreamHelper::out << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
+				mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
 				return NO_STEP_AXIS_2_SELECTED_ERROR_CODE;
 			}
 		}
 		else if (!m_processData.isStep2Valid(MIN_DISTANCE))
 		{
-			StreamHelper::out << m_processData.getAxis2Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance2() << endl;
+			mout << m_processData.getAxis2Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance2() << endl;
 			if (m_processData.getEnableUserInput())
 			{
 				m_processData.setStepAxis2(selectStep(m_processData.getAxis2Name(), MIN_DISTANCE, int(m_processData.getDistance2())));
 			}
 			else
 			{
-				StreamHelper::out << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
+				mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
 				return NO_STEP_AXIS_2_SELECTED_ERROR_CODE;
 			}
 		}
 
-		StreamHelper::out << std::endl;
-		StreamHelper::out << m_processData.getAxis1Name() << " axis step selected: " << *m_processData.getStepAxis1() << " mm" << std::endl;
-		StreamHelper::out << m_processData.getAxis2Name() << " axis step selected: " << *m_processData.getStepAxis2() << " mm" << std::endl;
+		mout << std::endl;
+		mout << m_processData.getAxis1Name() << " axis step selected: " << *m_processData.getStepAxis1() << " mm" << std::endl;
+		mout << m_processData.getAxis2Name() << " axis step selected: " << *m_processData.getStepAxis2() << " mm" << std::endl;
 
 		// compute number of subdivsions on both axis
 		m_processData.setSubDivision1(getSubDivision(m_processData.getDistance1(), *m_processData.getStepAxis1()));
 		m_processData.setSubDivision2(getSubDivision(m_processData.getDistance2(), *m_processData.getStepAxis2()));
 
 		// display infos about subdivisions
-		StreamHelper::out << endl;
-		StreamHelper::out << "Number of subdivisions on " << m_processData.getAxis1Name() << ": " << m_processData.getSubDivisions1() << endl;
-		StreamHelper::out << "Number of subdivisions on " << m_processData.getAxis2Name() << ": " << m_processData.getSubDivisions2() << endl;
-		StreamHelper::out << "Total of subdivisions: " << (m_processData.getTotalSubDivisions()) << endl << endl;
+		mout << endl;
+		mout << "Number of subdivisions on " << m_processData.getAxis1Name() << ": " << m_processData.getSubDivisions1() << endl;
+		mout << "Number of subdivisions on " << m_processData.getAxis2Name() << ": " << m_processData.getSubDivisions2() << endl;
+		mout << "Total of subdivisions: " << (m_processData.getTotalSubDivisions()) << endl << endl;
 
 		// fill all sub graphs
 		fillSubDivisions(minPoint, graph, &subDivisions, getters, false);
 
 		// display infos about points
-		StreamHelper::out << "Number of points in the main graph: " << graph.size() << endl << endl;
-		StreamHelper::out << "Number of points in the sub graphes" << endl;
+		mout << "Number of points in the main graph: " << graph.size() << endl << endl;
+		mout << "Number of points in the sub graphes" << endl;
 		unsigned int sum = 0;
 		for (int i = 0; i < subDivisions.size(); i++)
 		{
-			StreamHelper::out << "Graph " << i + 1 << ": " << subDivisions[i].size() << endl;
+			mout << "Graph " << i + 1 << ": " << subDivisions[i].size() << endl;
 			sum += (unsigned int)subDivisions[i].size();
 		}
-		StreamHelper::out << "Total of points: " << sum << endl;
+		mout << "Total of points: " << sum << endl;
 
 		if (m_processData.getExportSubDivisions())
 		{
 			exportSubDivisionsToCSV(filenameWithoutExtention, subDivisions);
 		}
 
-		StreamHelper::out << endl << "Computing base..." << endl;
+		mout << endl << "Computing base..." << endl;
 
 		vector<Base3D*> bases(subDivisions.size(), nullptr);
 
@@ -402,7 +402,7 @@ namespace ReScan
 				fixResult = ScatterGraph::fixBase3D(reference, base);
 				if (fixResult == NO_MATRIX_INVERSE_ERROR_CODE)
 				{
-					StreamHelper::out << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
+					mout << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
 				}
 				bases[i] = base;
 			}
@@ -412,17 +412,17 @@ namespace ReScan
 
 		if (m_processData.getExportBasesCartesian())
 		{
-			StreamHelper::out << endl << "Exporting bases in cartesian..." << endl;
+			mout << endl << "Exporting bases in cartesian..." << endl;
 			exportBasesCartesianToCSV(basePath + "_cartesian.csv", bases, "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0");
 		}
 		if (m_processData.getExportBasesEulerAngles())
 		{
-			StreamHelper::out << endl << "Exporting Euler angles..." << endl;
+			mout << endl << "Exporting Euler angles..." << endl;
 			exportBasesEulerAnglesToCSV(basePath + "_euler-angles-ZYX.csv", bases, "0.0;0.0;0.0;0.0;0.0;0.0");
 		}
 		if (m_processData.getExportDetailsFile())
 		{
-			StreamHelper::out << endl << "Exporting trajectory file details..." << endl;
+			mout << endl << "Exporting trajectory file details..." << endl;
 			exportTrajectoryDetailsFile(basePath + "_details.csv");
 		}
 
@@ -450,7 +450,7 @@ namespace ReScan
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			StreamHelper::out << "File is not a .csv" << std::endl;
+			mout << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -458,7 +458,7 @@ namespace ReScan
 
 		if (!outputFile.is_open())
 		{
-			StreamHelper::out << "Cannot open: " + filename << std::endl;
+			mout << "Cannot open: " + filename << std::endl;
 			return false;
 		}
 
@@ -552,7 +552,7 @@ namespace ReScan
 
 		outputFile.close();
 
-		StreamHelper::out << "Bases saved into:" << std::endl << filename << std::endl;
+		mout << "Bases saved into:" << std::endl << filename << std::endl;
 
 		return true;
 	}
@@ -561,7 +561,7 @@ namespace ReScan
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			StreamHelper::out << "File is not a .csv" << std::endl;
+			mout << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -569,7 +569,7 @@ namespace ReScan
 
 		if (!outputFile.is_open())
 		{
-			StreamHelper::out << "Cannot open: " + filename << std::endl;
+			mout << "Cannot open: " + filename << std::endl;
 			return false;
 		}
 
@@ -636,7 +636,7 @@ namespace ReScan
 
 		outputFile.close();
 
-		StreamHelper::out << "Euler angles saved into:" << std::endl << filename << std::endl;
+		mout << "Euler angles saved into:" << std::endl << filename << std::endl;
 
 		return true;
 	}
@@ -645,7 +645,7 @@ namespace ReScan
 	{
 		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
 		{
-			StreamHelper::out << "File is not a .csv" << std::endl;
+			mout << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -653,7 +653,7 @@ namespace ReScan
 
 		if (!outputFile.is_open())
 		{
-			StreamHelper::out << "Cannot open: " + filename << std::endl;
+			mout << "Cannot open: " + filename << std::endl;
 			return false;
 		}
 
@@ -711,10 +711,10 @@ namespace ReScan
 			{
 				configFile += ".ini";
 			}
-			StreamHelper::out << "Would you like to create a new config file (" << configFile << ") ? " << std::endl;
-			StreamHelper::out << "0: No" << std::endl;
-			StreamHelper::out << "1: Create a new config file" << std::endl;
-			StreamHelper::out << "2: Create a new config file adapated for ICNDE and use it" << std::endl;
+			mout << "Would you like to create a new config file (" << configFile << ") ? " << std::endl;
+			mout << "0: No" << std::endl;
+			mout << "1: Create a new config file" << std::endl;
+			mout << "2: Create a new config file adapated for ICNDE and use it" << std::endl;
 
 			int choice;
 			do
@@ -722,14 +722,14 @@ namespace ReScan
 				std::cin >> choice;
 				if (choice < 0 || choice > 2)
 				{
-					StreamHelper::out << "Invalide choice." << endl;
+					mout << "Invalide choice." << endl;
 				}
 			} while (choice < 0 || choice > 2);
 
 			if (choice == 1)
 			{
 				ReScanConfig::saveConfigToFile(ReScanConfig(), configFile);
-				StreamHelper::out << "You now have to edit this new file to set the obj file." << std::endl;
+				mout << "You now have to edit this new file to set the obj file." << std::endl;
 			}
 			else if (choice == 2)
 			{
