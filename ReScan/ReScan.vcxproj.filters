@@ -48,7 +48,7 @@
     <ClCompile Include="MultiOStream.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="OStreamListened.cpp">
+    <ClCompile Include="ObservableOStream.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,7 +95,7 @@
     <ClInclude Include="MultiOStream.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="OStreamListened.h">
+    <ClInclude Include="ObservableOStream.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

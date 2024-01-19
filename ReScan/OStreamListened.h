@@ -14,6 +14,7 @@ namespace ReScan::StreamHelper
 	{
 	public:
 		OStreamListened(std::ostream& listenedStream);
+		~OStreamListened();
 
 		using EventCallback = std::function<void(const std::string&)>;
 
@@ -25,16 +26,22 @@ namespace ReScan::StreamHelper
 		template <typename T>
 		void notifyListeners(const T& value)
 		{
-			std::cout << "notifyListeners" << std::endl;
 			std::lock_guard<std::mutex> lock(m_mutex);
 			for (const auto& listener : m_listeners)
 			{
 				std::ostringstream oss;
 				oss << value;
-				std::cout << "call:" << oss.str() << std::endl;
 				listener(oss.str());
 			}
 		}
+
+		// override overflow from: std::streambuf
+
+		//int overflow(int c) override
+		//{
+		//	notifyListeners(c);
+		//	m_listenedStream->put(c);
+		//}
 
 	public:
 		template <typename T>

@@ -8,6 +8,13 @@ namespace ReScan::StreamHelper
 	{
 	}
 
+	OStreamListened::~OStreamListened()
+	{
+		m_listenedStream = nullptr;
+		m_listeners.clear();
+	}
+
+
 	void OStreamListened::addListener(EventCallback listener)
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
