@@ -2,10 +2,6 @@
 #include "tools.h"
 #include "MultiOStream.h"
 
-#include <iostream>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
-
 namespace ReScan
 {
 	ReScanConfig::ReScanConfig() :
@@ -14,6 +10,7 @@ namespace ReScan
 		m_plan2D(Plan2D::XY),
 		m_xAxisStep(100),
 		m_yAxisStep(100),
+		m_referenceBase(),
 		m_exportSubDivisions(false),
 		m_exportBasesCartesian(true),
 		m_exportBasesEulerAngles(true),
@@ -29,6 +26,7 @@ namespace ReScan
 		m_plan2D(config.m_plan2D),
 		m_xAxisStep(config.m_xAxisStep),
 		m_yAxisStep(config.m_yAxisStep),
+		m_referenceBase(config.m_referenceBase),
 		m_exportSubDivisions(config.m_exportSubDivisions),
 		m_exportBasesCartesian(config.m_exportBasesCartesian),
 		m_exportBasesEulerAngles(config.m_exportBasesEulerAngles),
@@ -65,6 +63,11 @@ namespace ReScan
 	unsigned int ReScanConfig::getStepAxis2() const
 	{
 		return m_yAxisStep;
+	}
+
+	const Base3D* ReScanConfig::getReferenceBase() const
+	{
+		return &m_referenceBase;
 	}
 
 	bool ReScanConfig::getExportSubDivisions() const
@@ -134,23 +137,40 @@ namespace ReScan
 			{
 				try
 				{
-					config->m_objFile = pt.get<std::string>("General.objFile");
-					std::string planStr = pt.get<std::string>("General.plan2D");
+					config->m_objFile = getConfigNode<std::string>(pt, "General.objFile");
+					std::string planStr = getConfigNode<std::string>(pt, "General.plan2D");
 					Plan2D plan2D;
 					if (Tools::stringToPlan2D(planStr, plan2D) != SUCCESS_CODE)
 					{
-						throw std::exception("Invalid value for Plan2D");
+						throw std::runtime_error("Invalid value for Plan2D - Value " + planStr);
 					}
 					config->m_plan2D = plan2D;
-					config->m_xAxisStep = pt.get<unsigned int>("General.xAxisStep");
-					config->m_yAxisStep = pt.get<unsigned int>("General.yAxisStep");
-					config->m_decimalCharIsDot = pt.get<bool>("General.decimalCharIsDot");
-					config->m_exportSubDivisions = pt.get<bool>("Export.exportSubDivisions");
-					config->m_exportBasesCartesian = pt.get<bool>("Export.exportBasesCartesian");
-					config->m_exportBasesEulerAngles = pt.get<bool>("Export.exportBasesEulerAngles");
-					config->m_exportDetailsFile = pt.get<bool>("Export.exportDetailsFile");
-					config->m_writeHeaders = pt.get<bool>("Export.writeHeaders");
-					config->m_enableUserInput = pt.get<bool>("General.enableUserInput");
+					config->m_xAxisStep = getConfigNode<unsigned int>(pt, "General.xAxisStep");
+					config->m_yAxisStep = getConfigNode<unsigned int>(pt, "General.yAxisStep");
+					config->m_decimalCharIsDot = getConfigNode<bool>(pt, "General.decimalCharIsDot");
+					config->m_enableUserInput = getConfigNode<bool>(pt, "General.enableUserInput");
+					std::string fixBaseStr = getConfigNode<std::string>(pt, "General.referenceBase");
+
+					try
+					{
+						std::vector<double> baseValues = splitAndConvert(fixBaseStr);
+						if (baseValues.size() != 9)
+						{
+							throw std::runtime_error("Invalid reference base. Number of element not equal to 9.");
+						}
+						config->m_referenceBase.setFrom(Base3D(baseValues[0], baseValues[1], baseValues[2], baseValues[3], baseValues[4], baseValues[5], baseValues[6], baseValues[7], baseValues[8]));
+					}
+					catch (const std::exception& e)
+					{
+						std::string message(e.what());
+						throw std::runtime_error(message + " - Value: " + fixBaseStr);
+					}
+
+					config->m_exportSubDivisions = getConfigNode<bool>(pt, "Export.exportSubDivisions");
+					config->m_exportBasesCartesian = getConfigNode<bool>(pt, "Export.exportBasesCartesian");
+					config->m_exportBasesEulerAngles = getConfigNode<bool>(pt, "Export.exportBasesEulerAngles");
+					config->m_exportDetailsFile = getConfigNode<bool>(pt, "Export.exportDetailsFile");
+					config->m_writeHeaders = getConfigNode<bool>(pt, "Export.writeHeaders");
 				}
 				catch (const std::exception& e)
 				{
@@ -164,6 +184,20 @@ namespace ReScan
 			result = FILE_NOT_FOUND_ERROR_CODE;
 		}
 		return result;
+	}
+
+	std::vector<double> ReScanConfig::splitAndConvert(const std::string& inputString) 
+	{
+		std::vector<double> doubleValues;
+		std::istringstream ss(inputString);
+		std::string token;
+
+		while (std::getline(ss, token, ';')) 
+		{
+			doubleValues.push_back(std::stod(token));
+		}
+
+		return doubleValues;
 	}
 
 	int ReScanConfig::saveConfigToFile(const ReScanConfig& config, const std::string& filePath)
@@ -180,6 +214,7 @@ namespace ReScan
 		pt.put("General.yAxisStep", config.m_yAxisStep);
 		pt.put("General.decimalCharIsDot", config.m_decimalCharIsDot);
 		pt.put("General.enableUserInput", config.m_enableUserInput);
+		pt.put("General.referenceBase", config.m_referenceBase.toStr());
 
 		pt.put("Export.exportSubDivisions", config.m_exportSubDivisions);
 		pt.put("Export.exportBasesCartesian", config.m_exportBasesCartesian);
@@ -208,6 +243,7 @@ namespace ReScan
 		config.m_plan2D = Plan2D::YZ;
 		config.m_exportBasesCartesian = false;
 		config.m_writeHeaders = false;
+		config.m_referenceBase = Base3D(0.0, -1.0, 0.0, 0.0, 0.0, 1.0, -1.0, 0.0, 0.0);
 		return config;
 	}
 }

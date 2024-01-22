@@ -387,7 +387,9 @@ namespace ReScan
 
 		vector<Base3D*> bases(subDivisions.size(), nullptr);
 
-		Base3D reference = Base3D(Point3D(), Eigen::Vector3d(0.0, -1.0, 0.0), Eigen::Vector3d(0.0, 0.0, 1.0), Eigen::Vector3d(-1.0, 0.0, 0.0));
+		Base3D refBase = Base3D(*m_processData.getReferenceBase());
+		bool isNotBaseIdentity = !refBase.isIdentity();
+
 		int fixResult;
 		for (int i = 0; i < subDivisions.size(); i++)
 		{
@@ -399,10 +401,13 @@ namespace ReScan
 					return MEMORY_ALLOCATION_ERROR_CODE;
 				}
 				ScatterGraph::computeBase3D(subDivisions[i], base);
-				fixResult = ScatterGraph::fixBase3D(reference, base);
-				if (fixResult == NO_MATRIX_INVERSE_ERROR_CODE)
+				if (isNotBaseIdentity)
 				{
-					mout << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
+					fixResult = ScatterGraph::fixBase3D(refBase, base);
+					if (fixResult == NO_MATRIX_INVERSE_ERROR_CODE)
+					{
+						mout << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
+					}
 				}
 				bases[i] = base;
 			}

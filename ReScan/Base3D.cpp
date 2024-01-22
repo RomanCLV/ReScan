@@ -43,11 +43,35 @@ namespace ReScan
 	{
 	}
 
+	Base3D::Base3D(const double ox, const double oy, const double oz) :
+		m_origin(ox, oy, oz),
+		m_x(1.0, 0.0, 0.0),
+		m_y(0.0, 1.0, 0.0),
+		m_z(0.0, 0.0, 1.0),
+		m_isRotating(false),
+		m_beginRotateX(0.0, 0.0, 0.0),
+		m_beginRotateY(0.0, 0.0, 0.0),
+		m_beginRotateZ(0.0, 0.0, 0.0)
+	{
+	}
+	
 	Base3D::Base3D(const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z) :
 		m_origin(0.0, 0.0, 0.0),
 		m_x(x),
 		m_y(y),
 		m_z(z),
+		m_isRotating(false),
+		m_beginRotateX(0.0, 0.0, 0.0),
+		m_beginRotateY(0.0, 0.0, 0.0),
+		m_beginRotateZ(0.0, 0.0, 0.0)
+	{
+	}
+
+	Base3D::Base3D(const double xx, const double xy, const double xz, const double yx, const double yy, const double yz, const double zx, const double zy, const double zz) :
+		m_origin(0.0, 0.0, 0.0),
+		m_x(xx, xy, xz),
+		m_y(yx, yy, yz),
+		m_z(zx, zy, zz),
 		m_isRotating(false),
 		m_beginRotateX(0.0, 0.0, 0.0),
 		m_beginRotateY(0.0, 0.0, 0.0),
@@ -67,12 +91,40 @@ namespace ReScan
 	{
 	}
 
+	Base3D::Base3D(const double ox, const double oy, const double oz, const double xx, const double xy, const double xz, const double yx, const double yy, const double yz, const double zx, const double zy, const double zz) :
+		m_origin(ox, oy, oz),
+		m_x(xx, xy, xz),
+		m_y(yx, yy, yz),
+		m_z(zx, zy, zz),
+		m_isRotating(false),
+		m_beginRotateX(0.0, 0.0, 0.0),
+		m_beginRotateY(0.0, 0.0, 0.0),
+		m_beginRotateZ(0.0, 0.0, 0.0)
+	{
+	}
+
 	Base3D::~Base3D()
 	{
 	}
 
+	bool Base3D::isIdentity() const
+	{
+		return
+			m_x[0] == 1.0 &&
+			m_x[1] == 0.0 &&
+			m_x[2] == 0.0 &&
+			m_y[0] == 0.0 &&
+			m_y[1] == 1.0 &&
+			m_y[2] == 0.0 &&
+			m_z[0] == 0.0 &&
+			m_z[1] == 0.0 &&
+			m_z[2] == 1.0;
+	}
+
 	void Base3D::reset()
 	{
+		m_isRotating = false;
+
 		m_origin.setXYZ(0.0, 0.0, 0.0);
 
 		m_x[0] = 1.0;
@@ -301,6 +353,15 @@ namespace ReScan
 	void Base3D::toEulerAnglesZYX(double* a, double* b, double* c) const
 	{
 		Tools::computeABC(toMatrix3d(), a, b, c);
+	}
+
+	std::string Base3D::toStr() const
+	{
+		std::stringstream ss;
+		ss << m_x[0] << ";" << m_x[1] << ";" << m_x[2] << ";";
+		ss << m_y[0] << ";" << m_y[1] << ";" << m_y[2] << ";";
+		ss << m_z[0] << ";" << m_z[1] << ";" << m_z[2];
+		return ss.str();
 	}
 
 

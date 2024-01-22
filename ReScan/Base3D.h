@@ -24,10 +24,14 @@ namespace ReScan
 		Base3D();
 		Base3D(const Base3D& base3D);
 		Base3D(const Point3D& origin);
+		Base3D(const double ox, const double oy, const double oz);
 		Base3D(const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z);
+		Base3D(const double xx, const double xy, const double xz, const double yx, const double yy, const double yz, const double zx, const double zy, const double zz);
 		Base3D(const Point3D& origin, const Eigen::Vector3d& x, const Eigen::Vector3d& y, const Eigen::Vector3d& z);
+		Base3D(const double ox, const double oy, const double oz, const double xx, const double xy, const double xz, const double yx, const double yy, const double yz, const double zx, const double zy, const double zz);
 		~Base3D();
 
+		bool isIdentity() const;
 		void reset();
 		void setFrom(const Base3D& base3D, const bool setOrigin = true);
 		void setFromMatrix3d(const Eigen::Matrix3d& matrix);
@@ -85,6 +89,8 @@ namespace ReScan
 		void rotate(const Eigen::Vector3d& rotationAxis, const double rotationAngle, const bool autoCallEndRotate = true);
 
 		void toEulerAnglesZYX(double* a, double* b, double* c) const;
+
+		std::string toStr() const;
 
 		static Base3D computeOrientedBase(Eigen::Vector3d direction, const Axis axis);
 	};

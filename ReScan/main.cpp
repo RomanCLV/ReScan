@@ -1,4 +1,5 @@
 #include "ReScan.h"
+#include "ReScanConfig.h"
 #include "MultiOStream.h"
 #include "ObservableOStream.h"
 #include <ostream>
@@ -83,7 +84,7 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-void example()
+static void example()
 {
 	std::ofstream log("a.log");
 

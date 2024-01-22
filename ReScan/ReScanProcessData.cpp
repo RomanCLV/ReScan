@@ -7,6 +7,7 @@ namespace ReScan
 		m_plan2D(nullptr),
 		m_stepAxis1(nullptr),
 		m_stepAxis2(nullptr),
+		m_referenceBase(),
 		m_axis1Name('?'),
 		m_axis2Name('?'),
 		m_distance1(0.0),
@@ -28,6 +29,7 @@ namespace ReScan
 		m_plan2D(nullptr),
 		m_stepAxis1(nullptr),
 		m_stepAxis2(nullptr),
+		m_referenceBase(reScanProcessData.m_referenceBase),
 		m_axis1Name(reScanProcessData.m_axis1Name),
 		m_axis2Name(reScanProcessData.m_axis2Name),
 		m_distance1(reScanProcessData.m_distance1),
@@ -71,6 +73,7 @@ namespace ReScan
 		setPlan2D(config.getPlan2D());
 		setStepAxis1(config.getStepAxis1());
 		setStepAxis2(config.getStepAxis2());
+		setReferenceBase(config.getReferenceBase());
 		setExportSubDivisions(config.getExportSubDivisions());
 		setExportBasesCartesian(config.getExportBasesCartesian());
 		setExportBasesEulerAngles(config.getExportBasesEulerAngles());
@@ -85,6 +88,7 @@ namespace ReScan
 		resetPlan2D();
 		resetStepAxis1();
 		resetStepAxis2();
+		resetReferenceBase();
 		m_distance1 = 0.0;
 		m_distance2 = 0.0;
 		m_axis1Name = '?';
@@ -154,6 +158,16 @@ namespace ReScan
 			m_stepAxis2 = new unsigned int(0);
 		}
 		*m_stepAxis2 = value;
+	}
+
+	void ReScanProcessData::resetReferenceBase()
+	{
+		m_referenceBase.reset();
+	}
+
+	void ReScanProcessData::setReferenceBase(const Base3D* base)
+	{
+		m_referenceBase.setFrom(*base, true);
 	}
 
 	void ReScanProcessData::setAxis1Name(const char c)
@@ -243,6 +257,11 @@ namespace ReScan
 	const unsigned int* ReScanProcessData::getStepAxis2() const
 	{
 		return m_stepAxis2;
+	}
+
+	const Base3D* ReScanProcessData::getReferenceBase() const
+	{
+		return &m_referenceBase;
 	}
 
 	char ReScanProcessData::getAxis1Name() const

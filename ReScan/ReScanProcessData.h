@@ -3,6 +3,7 @@
 
 #include "Plan2D.h"
 #include "ReScanConfig.h"
+#include "Base3D.h"
 
 #include <string>
 
@@ -15,6 +16,7 @@ namespace ReScan
 		Plan2D* m_plan2D;
 		unsigned int* m_stepAxis1;
 		unsigned int* m_stepAxis2;
+		Base3D m_referenceBase;
 		char m_axis1Name;
 		char m_axis2Name;
 		double m_distance1;
@@ -49,6 +51,9 @@ namespace ReScan
 			void resetStepAxis2();
 			void setStepAxis2(const unsigned int value);
 			
+			void resetReferenceBase();
+			void setReferenceBase(const Base3D* base);
+
 			void setAxis1Name(const char c);
 			void setAxis2Name(const char c);
 
@@ -75,6 +80,7 @@ namespace ReScan
 			const Plan2D* getPlan2D() const;
 			const unsigned int* getStepAxis1() const;
 			const unsigned int* getStepAxis2() const;
+			const Base3D* getReferenceBase() const;
 			char getAxis1Name() const;
 			char getAxis2Name() const;
 			double getDistance1() const;
