@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 		}
 		else if (arg1 == "-ccil" || arg1 == "--create-config-icnde-lateral")
 		{
-			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createFrontalICNDEConfig(), "configLateral.ini");
+			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createLateralICNDEConfig(), "configLateral.ini");
 		}
 		else
 		{
