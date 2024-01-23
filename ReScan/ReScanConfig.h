@@ -69,11 +69,19 @@ namespace ReScan
 					std::transform(valueStr.begin(), valueStr.end(), valueStr.begin(), ::tolower);
 
 					if (valueStr == "true")
-						value = true;
+					{
+						ss = std::stringstream("1");
+						ss >> value;
+					}
 					else if (valueStr == "false")
-						value = false;
+					{
+						ss = std::stringstream("0");
+						ss >> value;
+					}
 					else
+					{
 						throw std::invalid_argument("Invalid boolean value");
+					}
 				}
 				else if (!(ss >> value))
 				{

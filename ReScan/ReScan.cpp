@@ -712,10 +712,15 @@ namespace ReScan
 			{
 				return result;
 			}
+			if (configFile.size() == 0)
+			{
+				configFile = "config.ini";
+			}
 			if (!configFile.ends_with(".ini"))
 			{
 				configFile += ".ini";
 			}
+
 			mout << "Would you like to create a new config file (" << configFile << ") ? " << std::endl;
 			mout << "0: No" << std::endl;
 			mout << "1: Create a new config file" << std::endl;
