@@ -724,26 +724,30 @@ namespace ReScan
 			mout << "Would you like to create a new config file (" << configFile << ") ? " << std::endl;
 			mout << "0: No" << std::endl;
 			mout << "1: Create a new config file" << std::endl;
-			mout << "2: Create a new config file adapated for ICNDE and use it" << std::endl;
+			mout << "2: Create a new config file adapated for ICNDE (frontal) and use it" << std::endl;
+			mout << "3: Create a new config file adapated for ICNDE (lateral) and use it" << std::endl;
 
 			int choice;
 			do
 			{
 				std::cin >> choice;
-				if (choice < 0 || choice > 2)
+				if (choice < 0 || choice > 3)
 				{
 					mout << "Invalide choice." << endl;
 				}
-			} while (choice < 0 || choice > 2);
+			} while (choice < 0 || choice > 3);
 
 			if (choice == 1)
 			{
 				ReScanConfig::saveConfigToFile(ReScanConfig(), configFile);
 				mout << "You now have to edit this new file to set the obj file." << std::endl;
 			}
-			else if (choice == 2)
+			else if (choice == 2 || choice == 3)
 			{
-				config = ReScanConfig::createDassaultConfig();
+				config = choice == 2 ?
+					ReScanConfig::createFrontalICNDEConfig() :
+					ReScanConfig::createLateralICNDEConfig();
+
 				ReScanConfig::saveConfigToFile(config, configFile);
 				m_processData.setFromConfig(config);
 				result = internalProcess();

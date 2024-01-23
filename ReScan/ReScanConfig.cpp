@@ -235,7 +235,7 @@ namespace ReScan
 		return result;
 	}
 
-	ReScanConfig ReScanConfig::createDassaultConfig()
+	ReScanConfig ReScanConfig::createFrontalICNDEConfig()
 	{
 		ReScanConfig config;
 		config.m_enableUserInput = false;
@@ -244,6 +244,18 @@ namespace ReScan
 		config.m_exportBasesCartesian = false;
 		config.m_writeHeaders = false;
 		config.m_referenceBase = Base3D(0.0, -1.0, 0.0, 0.0, 0.0, 1.0, -1.0, 0.0, 0.0);
+		return config;
+	}
+
+	ReScanConfig ReScanConfig::createLateralICNDEConfig()
+	{
+		ReScanConfig config;
+		config.m_enableUserInput = false;
+		config.m_objFile = "Resulting-Mesh-smoothed.obj";
+		config.m_plan2D = Plan2D::XZ;
+		config.m_exportBasesCartesian = false;
+		config.m_writeHeaders = false;
+		config.m_referenceBase = Base3D(-1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0);
 		return config;
 	}
 }

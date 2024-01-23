@@ -125,7 +125,8 @@ namespace ReScan
 		static int loadConfigFromFile(const std::string& filePath, ReScanConfig* config);
 		static int saveConfigToFile(const ReScanConfig& config, const std::string& filePath);
 
-		static ReScanConfig createDassaultConfig();
+		static ReScanConfig createFrontalICNDEConfig();
+		static ReScanConfig createLateralICNDEConfig();
 	};
 }
 
