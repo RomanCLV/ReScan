@@ -16,7 +16,10 @@ namespace ReScan
 		m_exportBasesEulerAngles(true),
 		m_exportDetailsFile(true),
 		m_writeHeaders(true),
-		m_decimalCharIsDot(true)
+		m_decimalCharIsDot(true),
+		m_basesCartesianDefaultFileName(""),
+		m_basesEulerAnglesDefaultFileName(""),
+		m_detailsDefaultFileName("")
 	{
 	}
 
@@ -32,7 +35,10 @@ namespace ReScan
 		m_exportBasesEulerAngles(config.m_exportBasesEulerAngles),
 		m_exportDetailsFile(config.m_exportDetailsFile),
 		m_writeHeaders(config.m_writeHeaders),
-		m_decimalCharIsDot(config.m_decimalCharIsDot)
+		m_decimalCharIsDot(config.m_decimalCharIsDot),
+		m_basesCartesianDefaultFileName(config.m_basesCartesianDefaultFileName),
+		m_basesEulerAnglesDefaultFileName(config.m_basesEulerAnglesDefaultFileName),
+		m_detailsDefaultFileName(config.m_detailsDefaultFileName)
 	{
 	}
 
