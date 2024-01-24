@@ -756,6 +756,12 @@ namespace ReScan
 		return result;
 	}
 
+	int ReScan::process(const ReScanConfig& config)
+	{
+		m_processData.setFromConfig(config);
+		return internalProcess();
+	}
+
 	int ReScan::process(const std::string& objFile, const bool exportSubDivisions, const bool exportBasesCartesian, const bool exportBasesEulerAngles, const bool exportDetailsFile, const bool writeHeaders, const bool decimalCharIsDot)
 	{
 		resetProcessData();

@@ -27,6 +27,7 @@ namespace ReScan
 		~ReScan();
 
 		int process(std::string& configFile);
+		int process(const ReScanConfig& config);
 
 		int process(
 			const std::string& objFile,
