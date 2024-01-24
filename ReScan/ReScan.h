@@ -52,7 +52,8 @@ namespace ReScan
 
 	private:
 		void resetProcessData();
-		bool isFileValid() const;
+		bool isObjFileValid() const;
+
 		int selectPlan2D(Plan2D* plan2D) const;
 		double getDistance1D(const Point3D& point1, const Point3D& point2, double (Point3D::* getter)() const) const;
 		void getDistances(Point3D const& minPoint, Point3D const& maxPoint, double (Point3D::* getters[2])() const);
@@ -67,6 +68,8 @@ namespace ReScan
 		bool exportBasesCartesianToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "") const;
 		bool exportBasesEulerAnglesToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "") const;
 		bool exportTrajectoryDetailsFile(const std::string& filename) const;
+
+		static bool isValidNameFile(const std::string& filename, const std::string& extention);
 	};
 }
 

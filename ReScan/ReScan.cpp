@@ -7,6 +7,7 @@
 #include <sstream>    // for reading / writing files
 #include <ctime>	  // for getDate()
 #include <iomanip>	  // for getDate()
+#include <algorithm>  // for transform
 
 using namespace std;
 
@@ -176,18 +177,41 @@ namespace ReScan
 		}
 	}
 
-	bool ReScan::isFileValid() const
+	bool ReScan::isObjFileValid() const
 	{
 		std::string filename = m_processData.getObjFile();
-		std::ifstream fileExists(filename);
-		if (!fileExists)
+
+		if (isValidNameFile(filename, "oBj"))
 		{
-			mout << "File: " << filename << " not found." << std::endl;
+			std::ifstream fileExists(filename);
+			if (!fileExists)
+			{
+				mout << "File: " << filename << " not found." << std::endl;
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	bool ReScan::isValidNameFile(const std::string& filename, const std::string& extention)
+	{
+		size_t extentionLength = extention.length();
+		std::string extentionLower = extention;
+
+		std::transform(extentionLower.begin(), extentionLower.end(), extentionLower.begin(), ::tolower);
+
+		if (filename.length() - extentionLength - 1 <= 0)
+		{
+			mout << "Filename is empty" << std::endl;
 			return false;
 		}
-		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".obj")
+		std::string filenameExtentionLower = filename.substr(filename.length() - extentionLength);
+		std::transform(filenameExtentionLower.begin(), filenameExtentionLower.end(), filenameExtentionLower.begin(), ::tolower);
+
+		if (filenameExtentionLower != extentionLower)
 		{
-			mout << "File is not .obj" << std::endl;
+			mout << "File " << filename << " is not ." << extentionLower << std::endl;
 			return false;
 		}
 		return true;
@@ -218,7 +242,7 @@ namespace ReScan
 			return INVALID_FILE_ERROR_CODE;
 		}
 
-		if (!isFileValid())
+		if (!isObjFileValid())
 		{
 			return INVALID_FILE_ERROR_CODE;
 		}
@@ -376,14 +400,15 @@ namespace ReScan
 			mout << "Graph " << i + 1 << ": " << subDivisions[i].size() << endl;
 			sum += (unsigned int)subDivisions[i].size();
 		}
-		mout << "Total of points: " << sum << endl;
+		mout << "Total of points: " << sum << endl << endl;
 
 		if (m_processData.getExportSubDivisions())
 		{
 			exportSubDivisionsToCSV(filenameWithoutExtention, subDivisions);
+			mout << std::endl;
 		}
 
-		mout << endl << "Computing base..." << endl;
+		mout << "Computing base..." << endl;
 
 		vector<Base3D*> bases(subDivisions.size(), nullptr);
 
@@ -417,18 +442,80 @@ namespace ReScan
 
 		if (m_processData.getExportBasesCartesian())
 		{
-			mout << endl << "Exporting bases in cartesian..." << endl;
-			exportBasesCartesianToCSV(basePath + "_cartesian.csv", bases, "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0");
+			std::string path = basePath + "_cartesian.csv";
+			std::string defaultFileName = m_processData.getBasesCartesianDefaultFileName();
+			if (defaultFileName.size() != 0)
+			{
+				if (isValidNameFile(defaultFileName, "csv"))
+				{
+					path = defaultFileName;
+				}
+				else
+				{
+					mout << "Default file name for bases cartesian invalid." << std::endl;
+				}
+			}
+			mout << endl << "Exporting bases (cartesian)..." << endl;
+			if (exportBasesCartesianToCSV(path, bases, "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0"))
+			{
+				mout << "Bases (cartesians) saved into:" << std::endl << path << std::endl;
+			}
+			else
+			{
+				mout << "Bases (cartesians) not saved" << std::endl;
+			}
 		}
+
 		if (m_processData.getExportBasesEulerAngles())
 		{
-			mout << endl << "Exporting Euler angles..." << endl;
-			exportBasesEulerAnglesToCSV(basePath + "_euler-angles-ZYX.csv", bases, "0.0;0.0;0.0;0.0;0.0;0.0");
+			std::string path = basePath + "_euler-angles-ZYX.csv";
+			std::string defaultFileName = m_processData.getBasesEulerAnglesDefaultFileName();
+			if (defaultFileName.size() != 0)
+			{
+				if (isValidNameFile(defaultFileName, "csv"))
+				{
+					path = defaultFileName;
+				}
+				else
+				{
+					mout << "Default file name for bases Euler angles invalid." << std::endl;
+				}
+			}
+			mout << endl << "Exporting bases (Euler angles)..." << endl;
+			if (exportBasesEulerAnglesToCSV(path, bases, "0.0;0.0;0.0;0.0;0.0;0.0"))
+			{
+				mout << "Bases (Euler angles) saved into:" << std::endl << path << std::endl;
+			}
+			else
+			{
+				mout << "Bases (Euler angles) not saved" << std::endl;
+			}
 		}
+
 		if (m_processData.getExportDetailsFile())
 		{
-			mout << endl << "Exporting trajectory file details..." << endl;
-			exportTrajectoryDetailsFile(basePath + "_details.csv");
+			std::string path = basePath + "_details.csv";
+			std::string defaultFileName = m_processData.getDetailsDefaultFileName();
+			if (defaultFileName.size() != 0)
+			{
+				if (isValidNameFile(defaultFileName, "csv"))
+				{
+					path = defaultFileName;
+				}
+				else
+				{
+					mout << "Default file name for details invalid." << std::endl;
+				}
+			}
+			mout << endl << "Exporting trajectory details file..." << endl;
+			if (exportTrajectoryDetailsFile(path))
+			{
+				mout << "Details saved into:" << std::endl << path << std::endl;
+			}
+			else
+			{
+				mout << "Details not saved" << std::endl;
+			}
 		}
 
 		for (int i = 0; i < bases.size(); i++)
@@ -453,9 +540,8 @@ namespace ReScan
 
 	bool ReScan::exportBasesCartesianToCSV(const std::string& filename, const std::vector<Base3D*>& bases, const std::string& nullText) const
 	{
-		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
+		if (!isValidNameFile(filename, "csv"))
 		{
-			mout << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -556,17 +642,13 @@ namespace ReScan
 		}
 
 		outputFile.close();
-
-		mout << "Bases saved into:" << std::endl << filename << std::endl;
-
 		return true;
 	}
 
 	bool ReScan::exportBasesEulerAnglesToCSV(const std::string& filename, const std::vector<Base3D*>& bases, const std::string& nullText) const
 	{
-		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
+		if (!isValidNameFile(filename, "csv"))
 		{
-			mout << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -640,17 +722,13 @@ namespace ReScan
 		}
 
 		outputFile.close();
-
-		mout << "Euler angles saved into:" << std::endl << filename << std::endl;
-
 		return true;
 	}
 
 	bool ReScan::exportTrajectoryDetailsFile(const std::string& filename) const
 	{
-		if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".csv")
+		if (!isValidNameFile(filename, "csv"))
 		{
-			mout << "File is not a .csv" << std::endl;
 			return false;
 		}
 
@@ -684,7 +762,6 @@ namespace ReScan
 		outputFile << "total divisions;" << to_string(m_processData.getTotalSubDivisions()) << std::endl;
 
 		outputFile.close();
-
 		return true;
 	}
 
