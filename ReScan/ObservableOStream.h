@@ -14,41 +14,36 @@ namespace ReScan::StreamHelper
     public:
         using EventCallback = std::function<void(const std::string&)>;
 
-        ObservableOStream(std::ostream& wrappedStream) : 
-            std::ostream(&buffer), 
-            buffer(wrappedStream, this)
-        {
-        }
+        ObservableOStream();
+        ObservableOStream(std::ostream* wrappedStream);
+        ~ObservableOStream();
 
-        void subscribe(EventCallback callback)
-        {
-            subscribers.push_back(callback);
-        }
-
-        void unsubscribe(EventCallback callback)
-        {
-            auto it = std::find_if(subscribers.begin(), subscribers.end(),
-                [callback](const EventCallback& cb) { return cb.target<void(const std::string&)>() == callback.target<void(const std::string&)>(); });
-
-            if (it != subscribers.end())
-            {
-                subscribers.erase(it);
-            }
-        }
+        void subscribe(EventCallback callback);
+        void unsubscribe(EventCallback callback);
 
     private:
         class ObservableBuffer : public std::stringbuf 
         {
         public:
-            explicit ObservableBuffer(std::ostream& wrappedStream, ObservableOStream* observableStream) :
-                wrappedStream(wrappedStream),
-                m_observableStream(observableStream)
+            explicit ObservableBuffer(ObservableOStream* observableStream) :
+                m_observableStream(observableStream),
+                m_wrappedStream(nullptr)
+            {
+            }
+
+            explicit ObservableBuffer(std::ostream* wrappedStream, ObservableOStream* observableStream) :
+                m_observableStream(observableStream),
+                m_wrappedStream(wrappedStream)
             {
             }
 
             int sync() override
             {
-                int result = wrappedStream.rdbuf()->pubsync();
+                int result = 0;
+                if (m_wrappedStream) 
+                {
+                    result = m_wrappedStream->rdbuf()->pubsync();
+                }
                 notifyObservers(str());
                 str(""); // Réinitialiser le tampon interne
                 return result;
@@ -57,7 +52,7 @@ namespace ReScan::StreamHelper
             // Méthode pour notifier les abonnés
             void notifyObservers(const std::string& message) 
             {
-                auto subscribers = m_observableStream->subscribers;
+                auto subscribers = m_observableStream->m_subscribers;
                 for (const auto& subscriber : subscribers)
                 {
                     subscriber(message);
@@ -66,11 +61,11 @@ namespace ReScan::StreamHelper
 
         private:
             ObservableOStream* m_observableStream;
-            std::ostream& wrappedStream;
+            std::ostream* m_wrappedStream;
         };
 
-        ObservableBuffer buffer;
-        std::vector<std::function<void(const std::string&)>> subscribers;
+        ObservableBuffer m_buffer;
+        std::vector<std::function<void(const std::string&)>> m_subscribers;
     };
 }
 

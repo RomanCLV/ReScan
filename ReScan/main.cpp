@@ -1,9 +1,6 @@
 #include "ReScan.h"
 #include "ReScanConfig.h"
-#include "MultiOStream.h"
-#include "ObservableOStream.h"
-#include <ostream>
-#include <fstream>
+#include "StreamHelperExamples.h"
 
 static void help()
 {
@@ -34,6 +31,9 @@ int main(int argc, char* argv[])
 {
 	int result = SUCCESS_CODE;
 
+	example2();
+
+	return 0;
 	if (argc == 2)
 	{
 		std::string arg1(argv[1]);
@@ -89,24 +89,4 @@ int main(int argc, char* argv[])
 		std::cin.get();
 	}
 	return 0;
-}
-
-static void example()
-{
-	std::ofstream log("a.log");
-
-	auto customCallback = [&log](const std::string& message)
-		{
-			log << message;
-		};
-
-	ReScan::StreamHelper::ObservableOStream ost(std::cout);
-	ost.subscribe(customCallback);
-	ReScan::mout.add(&ost);
-
-	ReScan::mout << "Test qui affiche un message dans std::cout et qui le sauvegarde dans un fichier grace a l'ObservableOStream." << std::endl;
-
-	ReScan::mout.remove(&ost);
-	ost.unsubscribe(customCallback);
-	log.close();
 }
