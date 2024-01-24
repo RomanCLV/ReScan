@@ -102,6 +102,21 @@ namespace ReScan
 		return m_decimalCharIsDot;
 	}
 
+	std::string ReScanConfig::getBasesCartesianDefaultFileName() const
+	{
+		return m_basesCartesianDefaultFileName;
+	}
+
+	std::string ReScanConfig::getBasesEulerAnglesDefaultFileName() const
+	{
+		return m_basesEulerAnglesDefaultFileName;
+	}
+
+	std::string ReScanConfig::getDetailsDefaultFileName() const
+	{
+		return m_detailsDefaultFileName;
+	}
+
 	/* Setters */
 
 	void ReScanConfig::setEnableUserInput(const bool enableUserInput)
@@ -162,6 +177,21 @@ namespace ReScan
 	void ReScanConfig::setDecimalCharIsDot(const bool decimalCharIsDot)
 	{
 		m_decimalCharIsDot = decimalCharIsDot;
+	}
+
+	void ReScanConfig::setBasesCartesianDefaultFileName(const std::string& basesCartesianDefaultFileName)
+	{
+		m_basesCartesianDefaultFileName = basesCartesianDefaultFileName;
+	}
+
+	void ReScanConfig::setBasesEulerAnglesDefaultFileName(const std::string& basesEulerAnglesDefaultFileName)
+	{
+		m_basesEulerAnglesDefaultFileName = basesEulerAnglesDefaultFileName;
+	}
+
+	void ReScanConfig::setDetailsDefaultFileName(const std::string& detailsDefaultFileName)
+	{
+		m_detailsDefaultFileName = detailsDefaultFileName;
 	}
 
 	/* Static */
@@ -237,11 +267,14 @@ namespace ReScan
 					config->m_exportBasesEulerAngles = getConfigNode<bool>(pt, "Export.exportBasesEulerAngles");
 					config->m_exportDetailsFile = getConfigNode<bool>(pt, "Export.exportDetailsFile");
 					config->m_writeHeaders = getConfigNode<bool>(pt, "Export.writeHeaders");
+					config->m_basesCartesianDefaultFileName = getConfigNode<std::string>(pt, "Export.basesCartesianDefaultFileName");
+					config->m_basesEulerAnglesDefaultFileName = getConfigNode<std::string>(pt, "Export.basesEulerAnglesDefaultFileName");
+					config->m_detailsDefaultFileName = getConfigNode<std::string>(pt, "Export.detailsDefaultFileName");
 				}
 				catch (const std::exception& e)
 				{
 					result = SET_CONFIG_ERROR_CODE;
-					ReScan::mout << "error occured when setting read config file:" << std::endl << e.what() << std::endl;
+					ReScan::mout << "error occured when setting config from file:" << std::endl << e.what() << std::endl;
 				}
 			}
 		}
@@ -287,6 +320,9 @@ namespace ReScan
 		pt.put("Export.exportBasesEulerAngles", config.m_exportBasesEulerAngles);
 		pt.put("Export.exportDetailsFile", config.m_exportDetailsFile);
 		pt.put("Export.writeHeaders", config.m_writeHeaders);
+		pt.put("Export.basesCartesianDefaultFileName", config.m_basesCartesianDefaultFileName);
+		pt.put("Export.basesEulerAnglesDefaultFileName", config.m_basesEulerAnglesDefaultFileName);
+		pt.put("Export.detailsDefaultFileName", config.m_detailsDefaultFileName);
 
 		try
 		{
