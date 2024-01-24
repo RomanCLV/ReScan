@@ -30,6 +30,9 @@ namespace ReScan
 		bool m_exportDetailsFile;
 		bool m_writeHeaders;
 		bool m_decimalCharIsDot;
+		std::string m_basesCartesianDefaultFileName;
+		std::string m_basesEulerAnglesDefaultFileName;
+		std::string m_detailsDefaultFileName;
 
 		public:
 			ReScanProcessData();
@@ -72,6 +75,10 @@ namespace ReScan
 			void setWriteHeaders(const bool value);
 			void setDecimalCharIsDot(const bool value);
 
+			void setBasesCartesianDefaultFileName(const std::string& basesCartesianDefaultFileName);
+			void setBasesEulerAnglesDefaultFileName(const std::string& basesEulerAnglesDefaultFileName);
+			void setDetailsDefaultFileName(const std::string& detailsDefaultFileName);
+
 			/* End - Setters */
 
 			/* Getters */
@@ -95,6 +102,9 @@ namespace ReScan
 			bool getExportDetailsFile() const;
 			bool getWriteHeaders() const;
 			bool getDecimalCharIsDot() const;
+			std::string getBasesCartesianDefaultFileName() const;
+			std::string getBasesEulerAnglesDefaultFileName() const;
+			std::string getDetailsDefaultFileName() const;
 
 			/* End - Getters */
 

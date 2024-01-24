@@ -20,7 +20,11 @@ namespace ReScan
 		m_exportBasesEulerAngles(true),
 		m_exportDetailsFile(true),
 		m_writeHeaders(true),
-		m_decimalCharIsDot(true)
+		m_decimalCharIsDot(true),
+		m_basesCartesianDefaultFileName(""),
+		m_basesEulerAnglesDefaultFileName(""),
+		m_detailsDefaultFileName("")
+
 	{
 	}
 
@@ -42,7 +46,10 @@ namespace ReScan
 		m_exportBasesEulerAngles(reScanProcessData.m_exportBasesEulerAngles),
 		m_exportDetailsFile(reScanProcessData.m_exportDetailsFile),
 		m_writeHeaders(reScanProcessData.m_writeHeaders),
-		m_decimalCharIsDot(reScanProcessData.m_decimalCharIsDot)
+		m_decimalCharIsDot(reScanProcessData.m_decimalCharIsDot),
+		m_basesCartesianDefaultFileName(reScanProcessData.m_basesCartesianDefaultFileName),
+		m_basesEulerAnglesDefaultFileName(reScanProcessData.m_basesEulerAnglesDefaultFileName),
+		m_detailsDefaultFileName(reScanProcessData.m_detailsDefaultFileName)
 	{
 		if (reScanProcessData.m_plan2D)
 		{
@@ -80,6 +87,9 @@ namespace ReScan
 		setExportDetailsFile(config.getExportDetailsFile());
 		setWriteHeaders(config.getWriteHeaders());
 		setDecimalCharIsDot(config.getDecimalCharIsDot());
+		setBasesCartesianDefaultFileName(config.getBasesCartesianDefaultFileName());
+		setBasesEulerAnglesDefaultFileName(config.getBasesEulerAnglesDefaultFileName());
+		setDetailsDefaultFileName(config.getDetailsDefaultFileName());
 	}
 
 	void ReScanProcessData::reset()
@@ -104,6 +114,9 @@ namespace ReScan
 		m_exportDetailsFile = true;
 		m_writeHeaders = true;
 		m_decimalCharIsDot = true;
+		m_basesCartesianDefaultFileName = "";
+		m_basesEulerAnglesDefaultFileName = "";
+		m_detailsDefaultFileName = "";
 	}
 
 	void ReScanProcessData::resetPlan2D()
@@ -235,6 +248,22 @@ namespace ReScan
 		m_decimalCharIsDot = value;
 	}
 
+	void ReScanProcessData::setBasesCartesianDefaultFileName(const std::string& basesCartesianDefaultFileName)
+	{
+		m_basesCartesianDefaultFileName = basesCartesianDefaultFileName;
+	}
+
+	void ReScanProcessData::setBasesEulerAnglesDefaultFileName(const std::string& basesEulerAnglesDefaultFileName)
+	{
+		m_basesEulerAnglesDefaultFileName = basesEulerAnglesDefaultFileName;
+	}
+
+	void ReScanProcessData::setDetailsDefaultFileName(const std::string& detailsDefaultFileName)
+	{
+		m_detailsDefaultFileName = detailsDefaultFileName;
+	}
+
+
 #pragma endregion
 
 #pragma region Getters
@@ -333,6 +362,22 @@ namespace ReScan
 	{
 		return m_decimalCharIsDot;
 	}
+
+	std::string ReScanProcessData::getBasesCartesianDefaultFileName() const
+	{
+		return m_basesCartesianDefaultFileName;
+	}
+
+	std::string ReScanProcessData::getBasesEulerAnglesDefaultFileName() const
+	{
+		return m_basesEulerAnglesDefaultFileName;
+	}
+
+	std::string ReScanProcessData::getDetailsDefaultFileName() const
+	{
+		return m_detailsDefaultFileName;
+	}
+
 
 #pragma endregion
 
