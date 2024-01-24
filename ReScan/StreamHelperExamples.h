@@ -58,6 +58,8 @@ static void example2()
 static void example3()
 {
 	// utilisation de ReScan::mout
+
+	// aucun stream ajouté au multi out, donc std::cout utilisé par défaut
 	ReScan::mout << "Test message envoye a std::cout par defaut" << std::endl;
 
 	std::ofstream log("example3.log");

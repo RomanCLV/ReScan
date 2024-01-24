@@ -22,6 +22,7 @@ namespace ReScan::StreamHelper
         void unsubscribe(EventCallback callback);
 
     private:
+
         class ObservableBuffer : public std::stringbuf 
         {
         public:
@@ -43,13 +44,15 @@ namespace ReScan::StreamHelper
                 if (m_wrappedStream) 
                 {
                     result = m_wrappedStream->rdbuf()->pubsync();
+                    *m_wrappedStream << str(); // redirection dans le flux
                 }
                 notifyObservers(str());
                 str(""); // Réinitialiser le tampon interne
                 return result;
             }
 
-            // Méthode pour notifier les abonnés
+        private:
+
             void notifyObservers(const std::string& message) 
             {
                 auto subscribers = m_observableStream->m_subscribers;

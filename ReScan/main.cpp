@@ -1,6 +1,5 @@
 #include "ReScan.h"
 #include "ReScanConfig.h"
-#include "StreamHelperExamples.h"
 
 static void help()
 {
@@ -31,9 +30,6 @@ int main(int argc, char* argv[])
 {
 	int result = SUCCESS_CODE;
 
-	example2();
-
-	return 0;
 	if (argc == 2)
 	{
 		std::string arg1(argv[1]);
