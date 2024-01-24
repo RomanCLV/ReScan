@@ -40,6 +40,8 @@ namespace ReScan
 	{
 	}
 
+	/* Getters */
+
 	bool ReScanConfig::getEnableUserInput() const
 	{
 		return m_enableUserInput;
@@ -99,6 +101,70 @@ namespace ReScan
 	{
 		return m_decimalCharIsDot;
 	}
+
+	/* Setters */
+
+	void ReScanConfig::setEnableUserInput(const bool enableUserInput)
+	{
+		m_enableUserInput = enableUserInput;
+	}
+
+	void ReScanConfig::setObjFile(const std::string& objFile)
+	{
+		m_objFile = objFile;
+	}
+
+	void ReScanConfig::setPlan2D(const Plan2D& plan2D)
+	{
+		m_plan2D = plan2D;
+	}
+
+	void ReScanConfig::setStepAxis1(const unsigned int xAxisStep)
+	{
+		m_xAxisStep = xAxisStep;
+	}
+
+	void ReScanConfig::setStepAxis2(const unsigned int yAxisStep)
+	{
+		m_yAxisStep = yAxisStep;
+	}
+
+	void ReScanConfig::setReferenceBase(const Base3D& referenceBase)
+	{
+		m_referenceBase = referenceBase;
+	}
+
+	void ReScanConfig::setExportSubDivisions(const bool exportSubDivisions)
+	{
+		m_exportSubDivisions = exportSubDivisions;
+	}
+
+	void ReScanConfig::setExportBasesCartesian(const bool exportBasesCartesian)
+	{
+		m_exportBasesCartesian = exportBasesCartesian;
+	}
+
+	void ReScanConfig::setExportBasesEulerAngles(const bool exportBasesEulerAngles)
+	{
+		m_exportBasesEulerAngles = exportBasesEulerAngles;
+	}
+
+	void ReScanConfig::setExportDetailsFile(const bool exportDetailsFile)
+	{
+		m_exportDetailsFile = exportDetailsFile;
+	}
+
+	void ReScanConfig::setWriteHeaders(const bool writeHeaders)
+	{
+		m_writeHeaders = writeHeaders;
+	}
+
+	void ReScanConfig::setDecimalCharIsDot(const bool decimalCharIsDot)
+	{
+		m_decimalCharIsDot = decimalCharIsDot;
+	}
+
+	/* Static */
 
 	bool ReScanConfig::isFileValid(const std::string& filename)
 	{

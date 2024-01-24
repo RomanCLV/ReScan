@@ -108,6 +108,8 @@ namespace ReScan
 		ReScanConfig();
 		~ReScanConfig();
 
+		/* Getters */
+
 		bool getEnableUserInput() const;
 		std::string getObjFile() const;
 		Plan2D getPlan2D() const;
@@ -120,6 +122,23 @@ namespace ReScan
 		bool getExportDetailsFile() const;
 		bool getWriteHeaders() const;
 		bool getDecimalCharIsDot() const;
+
+		/* Setters */
+
+		void setEnableUserInput(const bool enableUserInput);
+		void setObjFile(const std::string& objFile);
+		void setPlan2D(const Plan2D& plan2D);
+		void setStepAxis1(const unsigned int xAxisStep);
+		void setStepAxis2(const unsigned int yAxisStep);
+		void setReferenceBase(const Base3D& referenceBase);
+		void setExportSubDivisions(const bool exportSubDivisions);
+		void setExportBasesCartesian(const bool exportBasesCartesian);
+		void setExportBasesEulerAngles(const bool exportBasesEulerAngles);
+		void setExportDetailsFile(const bool exportDetailsFile);
+		void setWriteHeaders(const bool writeHeaders);
+		void setDecimalCharIsDot(const bool decimalCharIsDot);
+
+		/* Static */
 
 		static bool isFileValid(const std::string& filename);
 		static int loadConfigFromFile(const std::string& filePath, ReScanConfig* config);
