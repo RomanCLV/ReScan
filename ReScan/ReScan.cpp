@@ -534,7 +534,7 @@ namespace ReScan
 	{
 		for (int i = 0; i < subDivisions.size(); i++)
 		{
-			ScatterGraph::saveCSV(basePath + to_string(i + 1) + ".csv", subDivisions[i], true, true);
+			ScatterGraph::saveCSV(basePath + "-" + to_string(i + 1) + ".csv", subDivisions[i], true, true);
 		}
 	}
 

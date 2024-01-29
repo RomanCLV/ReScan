@@ -968,6 +968,13 @@ namespace ReScan
 		{
 			base3D->rotate(*base3D->getZ(), angle);
 		}
+
+		angle = Tools::angleBetween(*base3D->getX(), *baseReference.getX());
+		if (angle > 90)
+		{
+			// Mettre le X dans la bonne direction
+			base3D->rotate(*base3D->getZ(), 180.0);
+		}
 		
 		return result;
 	}

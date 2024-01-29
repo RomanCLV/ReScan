@@ -635,17 +635,24 @@ namespace ReScanVisualizer.ViewModels
             if (_part != null)
             {
                 Base3D nearestBase = _part.FindNeareatBase(base3D.Origin);
-                double angleBetween = Vector3D.AngleBetween(base3D.Z, nearestBase.Z);
-                if (angleBetween > 90)
+                double angle = Vector3D.AngleBetween(base3D.Z, nearestBase.Z);
+                if (angle > 90)
                 {
                     // Mettre le Z dans la bonne direction
                     base3D.Rotate(base3D.Y, 180.0);
                 }
 
-                double angle = GetAnglesBetweenBasesXAxis(base3D, nearestBase);
+                angle = GetAnglesBetweenBasesXAxis(base3D, nearestBase);
                 if (!double.IsNaN(angle))
                 {
                     base3D.Rotate(base3D.Z, angle);
+                }
+
+                angle = Vector3D.AngleBetween(base3D.X, nearestBase.X);
+                if (angle > 90)
+                {
+                    // Mettre le X dans la bonne direction
+                    base3D.Rotate(base3D.Z, 180.0);
                 }
             }
         }
