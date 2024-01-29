@@ -128,7 +128,7 @@ namespace ReScanVisualizer.ViewModels
                         {
                             lineIndex++;
 
-                            string[] cells = line.Split(';');
+                            string[] cells = (line.Replace('.', ',')).Split(';');
                             if (cells.Length != 12) // 12 = origin xyz (3) + x xyz (3) + y xyz (3) + z xyz (3)
                             {
                                 isError = true;
