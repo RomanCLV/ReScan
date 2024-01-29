@@ -1,10 +1,13 @@
 #include "ReScan.h"
 #include "ReScanConfig.h"
+#include <iostream>
+#include <string>
 
 static void help()
 {
 	std::cout << std::endl;
 	std::cout << "Usage:" << std::endl;
+	std::cout << "ReScan.exe	                                  Basic usage" << std::endl;
 	std::cout << std::endl;
 	std::cout << "ReScan.exe [-h]                                 Help" << std::endl;
 	std::cout << "ReScan.exe [--help]                             " << std::endl;
@@ -30,7 +33,16 @@ int main(int argc, char* argv[])
 {
 	int result = SUCCESS_CODE;
 
-	if (argc == 2)
+	if (argc == 1)
+	{
+		ReScan::ReScan rescan;
+		std::string filename;
+		std::cout << "filename: ";
+		std::getline(std::cin, filename);
+
+		rescan.process(filename, true);
+	}
+	else if (argc == 2)
 	{
 		std::string arg1(argv[1]);
 		if (arg1 == "-h" || arg1 == "--help")
