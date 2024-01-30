@@ -15,6 +15,7 @@ using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
 using System.Windows.Documents;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -636,23 +637,29 @@ namespace ReScanVisualizer.ViewModels
             {
                 Base3D nearestBase = _part.FindNeareatBase(base3D.Origin);
                 double angle = Vector3D.AngleBetween(base3D.Z, nearestBase.Z);
-                if (angle > 90)
+                if (angle > 90.0)
                 {
                     // Mettre le Z dans la bonne direction
                     base3D.Rotate(base3D.Y, 180.0);
+                }
+
+                angle = Vector3D.AngleBetween(base3D.X, nearestBase.X);
+                if (angle > 90.0)
+                {
+                    // Mettre le X dans la bonne direction
+                    base3D.Rotate(base3D.Z, 180.0);
+
+                    // remarque : techniquement on ne devrait pas a avoir le faire
+                    // mais cas particulier fait que une base avait son X parfaitement à 180° de X de reference
+                    // donc patch
+                    // de plus, ca replace les x entre [-90;90] au lieu de [-180;180] donc ça aide (enormement) pour l'algorithme suivant
+                    // donc pas plus mal de le faire
                 }
 
                 angle = GetAnglesBetweenBasesXAxis(base3D, nearestBase);
                 if (!double.IsNaN(angle))
                 {
                     base3D.Rotate(base3D.Z, angle);
-                }
-
-                angle = Vector3D.AngleBetween(base3D.X, nearestBase.X);
-                if (angle > 90)
-                {
-                    // Mettre le X dans la bonne direction
-                    base3D.Rotate(base3D.Z, 180.0);
                 }
             }
         }
@@ -673,6 +680,20 @@ namespace ReScanVisualizer.ViewModels
                 return double.NaN;
             }
 
+            /*
+             * La but est de trouver un angle qui fait que la rotation de la base autour de son Z (par cette angle)
+             * fait que le nouveau vecteur X est applatit dans le plan XZ
+             * (donc le vecteur engendre par X(1,0,0) ^ X'(xx',xy',xz') appartient au plan XY et on en deduit que xy' = 0)
+             * On cherche dont l'angle a tq xy' = 0
+             * 
+             * Pour le trouver on fait B'=R*B (B' base rotate, B base normal, R rotation)
+             * On souhaite faire la rotation autour de l'axe Z de la base donc on construit la matrice de rotation selon un axe U (zx, zy, zz) d'angle a.
+             * Comme on cherche que xy', pas besoin de faire tous la rotation, on peut faire les calculs a la main juste pour avoir xy'.
+             * On trouve : xy' = k0 + k1 * cos(a) + k2 * sin(a) => 2 "inconnus" pour 1 equation
+             * 
+             * Algo pas optimise car l'angle est teste par incrementation
+             */
+
             double xx = base3DInPartBase.X.X;
             double xy = base3DInPartBase.X.Y;
             double xz = base3DInPartBase.X.Z;
@@ -689,8 +710,12 @@ namespace ReScanVisualizer.ViewModels
 
             double epsilon = 0.01;
 
+            // valeur de l'angle teste
             double a = 0.0;
+
+            // nouvelle valeur de la composante Y du vecteur X lorsqu'il a ete tourne par a autour de son Z. On veut cette valeur le plus proche de 0.
             double newXY = k0 + k1;
+
             double step = Math.PI / 360.0;
 
             double minNewXY = newXY;
@@ -702,18 +727,25 @@ namespace ReScanVisualizer.ViewModels
                 while (newXY > epsilon)
                 {
                     a -= step;
-                    newXY = k0 + Math.Cos(a) * k1 + Math.Sin(a) * k2;
-                    if (newXY < 0.0)
+                    newXY = k0 + Math.Cos(a) * k1 + Math.Sin(a) * k2; // calcul de la nouvelle composante Y du vecteur X apres rotation
+                    if (newXY < 0.0)        // 0 atteint
                     {
-                        a += step;      // go back to last pos
-                        step /= 10.0;   // reduce step
+                        a += step;          // go back to last pos
+                        step /= 10.0;       // reduce step to be more precise
                     }
+
+                    /*
+                     * patch dans le cas ou il arriverait pas a atteindre le 0 (cas assez rare mais possible..)
+                     * ne devrait plus arriver grace au flip du vecteur X (voir un cran au dessus dans la pile d'appel)
+                     * mais ca mange pas de pain de le laisser au cas ou...
+                     */
+
                     if (newXY < minNewXY)
                     {
                         minNewXY = newXY;
-                        minA = a;
+                        minA = a;           // on enregistre la valeur de a qui permet d'avoir un newXY minimal
                     }
-                    if (a <= -360.0)
+                    if (a <= -360.0)        // patch dans le cas où il arriverait pas a atteindre le 0 et qu'il vient de faire un tour complet
                     {
                         a = minA;
                         break;

@@ -957,10 +957,23 @@ namespace ReScan
 	int ScatterGraph::fixBase3D(const Base3D& baseReference, Base3D* base3D)
 	{
 		double angle = Tools::angleBetween(*base3D->getZ(), *baseReference.getZ());
-		if (angle > 90)
+		if (angle > 90.0)
 		{
 			// Mettre le Z dans la bonne direction
 			base3D->rotate(*base3D->getY(), 180.0);
+		}
+
+		angle = Tools::angleBetween(*base3D->getX(), *baseReference.getX());
+		if (angle > 90.0)
+		{
+			// Mettre le X dans la bonne direction
+			base3D->rotate(*base3D->getZ(), 180.0);
+
+			// remarque : techniquement on ne devrait pas a avoir le faire
+			// mais cas particulier fait que une base avait son X parfaitement à 180° de X de reference
+			// donc patch
+			// de plus, ca replace les x entre [-90;90] au lieu de [-180;180] donc ça aide (enormement) pour l'algorithme suivant
+			// donc pas plus mal de le faire
 		}
 
 		int result = getAngleToAlignXAxis(*base3D, baseReference, &angle);
@@ -969,13 +982,6 @@ namespace ReScan
 			base3D->rotate(*base3D->getZ(), angle);
 		}
 
-		angle = Tools::angleBetween(*base3D->getX(), *baseReference.getX());
-		if (angle > 90)
-		{
-			// Mettre le X dans la bonne direction
-			base3D->rotate(*base3D->getZ(), 180.0);
-		}
-		
 		return result;
 	}
 
@@ -985,6 +991,20 @@ namespace ReScan
 		int result = Tools::getBase1IntoBase2(base1, base2, &base3DInPartBase);
 		if (result == SUCCESS_CODE)
 		{
+			/*
+			 * La but est de trouver un angle qui fait que la rotation de la base autour de son Z (par cette angle)
+			 * fait que le nouveau vecteur X est applatit dans le plan XZ
+			 * (donc le vecteur engendre par X(1,0,0) ^ X'(xx',xy',xz') appartient au plan XY et on en deduit que xy' = 0)
+			 * On cherche dont l'angle a tq xy' = 0
+			 *
+			 * Pour le trouver on fait B'=R*B (B' base rotate, B base normal, R rotation)
+			 * On souhaite faire la rotation autour de l'axe Z de la base donc on construit la matrice de rotation selon un axe U (zx, zy, zz) d'angle a.
+			 * Comme on cherche que xy', pas besoin de faire tous la rotation, on peut faire les calculs a la main juste pour avoir xy'.
+			 * On trouve : xy' = k + k1 * cos(a) + k2 * sin(a) => 2 "inconnus" pour 1 equation
+			 *
+			 * Algo pas optimise car l'angle est teste par incrementation
+			 */
+
 			Eigen::Vector3d x = *base3DInPartBase.getX();
 			Eigen::Vector3d z = *base3DInPartBase.getZ();
 
@@ -1004,8 +1024,12 @@ namespace ReScan
 
 			double epsilon = 0.01;
 
+			// valeur de l'angle teste
 			double a = 0.0;
+
+			// nouvelle valeur de la composante Y du vecteur X lorsqu'il a ete tourne par a autour de son Z. On veut cette valeur le plus proche de 0.
 			double newXY = k0 + k1;
+
 			double step = EIGEN_PI / 360.0;
 
 			double minNewXY = newXY;
@@ -1017,18 +1041,25 @@ namespace ReScan
 				while (newXY > epsilon)
 				{
 					a -= step;
-					newXY = k0 + cos(a) * k1 + sin(a) * k2;
+					newXY = k0 + cos(a) * k1 + sin(a) * k2;  // calcul de la nouvelle composante Y du vecteur X apres rotation
 					if (newXY < 0.0)
 					{
 						a += step;      // go back to last pos
-						step /= 10.0;   // reduce step
+						step /= 10.0;   // reduce step to be more precise
 					}
+
+					/*
+					* patch dans le cas ou il arriverait pas a atteindre le 0 (cas assez rare mais possible..)
+					* ne devrait plus arriver grace au flip du vecteur X (voir un cran au dessus dans la pile d'appel)
+					* mais ca mange pas de pain de le laisser au cas ou...
+					*/
+
 					if (newXY < minNewXY)
 					{
 						minNewXY = newXY;
-						minA = a;
+						minA = a;           // on enregistre la valeur de a qui permet d'avoir un newXY minimal
 					}
-					if (a <= -360.0)
+					if (a <= -360.0)        // patch dans le cas où il arriverait pas a atteindre le 0 et qu'il vient de faire un tour complet
 					{
 						a = minA;
 						break;
