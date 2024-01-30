@@ -14,8 +14,6 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
-using System.Windows.Documents;
-using System.Diagnostics;
 
 #nullable enable
 

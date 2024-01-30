@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Win32;
 using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.Views;
 
