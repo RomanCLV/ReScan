@@ -808,11 +808,11 @@ namespace ReScanVisualizer.Models
 
                     while ((line = reader.ReadLine()) != null)
                     {
-                        string[] values = (line.Replace('.', ',')).Split(';');
+                        string[] values = line.Split(';');
                         if (values.Length >= 3 &&
-                            double.TryParse(values[0], out double x) &&
-                            double.TryParse(values[1], out double y) &&
-                            double.TryParse(values[2], out double z))
+                            Tools.TryParse(values[0], out double x) &&
+                            Tools.TryParse(values[1], out double y) &&
+                            Tools.TryParse(values[2], out double z))
                         {
                             Point3D point = new Point3D(x, y, z);
                             points.Add(point);

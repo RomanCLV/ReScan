@@ -84,7 +84,7 @@ namespace ReScanVisualizer.Views
         private void RotateNDegreeButton_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
-            if (double.TryParse(button.Tag.ToString(), out double degree) && DataContext is BaseViewModel viewModel)
+            if (Tools.TryParse(button.Tag.ToString(), out double degree) && DataContext is BaseViewModel viewModel)
             {
                 viewModel.RotateNDegree(degree);
             }

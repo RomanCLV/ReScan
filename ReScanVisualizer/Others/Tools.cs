@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -456,6 +457,63 @@ namespace ReScanVisualizer
                 HorizontalAlignment.Right,
                 HorizontalAlignment.Stretch
             };
+        }
+
+        public static Rect3D GetGlobalRect(List<Rect3D> rects)
+        {
+            if (rects.Count == 0)
+            {
+                throw new ArgumentException("rects are empty", nameof(rects));
+            }
+            Rect3D globalRect = rects[0];
+            for (int i = 1; i < rects.Count; i++)
+            {
+                globalRect = Rect3D.Union(globalRect, rects[i]);
+            }
+
+            return globalRect;
+        }
+
+        public static bool TryParse(string text, out bool result)
+        {
+            result = false;
+            if (text == "0" || text == "false" || text == "False" || text == "f" || text == "F")
+            {
+                return true;
+            }
+            if (text == "1" || text == "true" || text == "True" || text == "t" || text == "T")
+            {
+                result = true;
+                return true;
+            }
+            return false;
+        }
+
+        public static bool TryParse(string text, out float result)
+        {
+            if (text.Contains(','))
+            {
+                text = text.Replace(',', '.');
+            }
+            return float.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
+        }
+
+        public static bool TryParse(string text, out double result)
+        {
+            if (text.Contains(','))
+            {
+                text = text.Replace(',', '.');
+            }
+            return double.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
+        }
+
+        public static bool TryParse(string text, out decimal result)
+        {
+            if (text.Contains(','))
+            {
+                text = text.Replace(',', '.');
+            }
+            return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
         }
     }
 }

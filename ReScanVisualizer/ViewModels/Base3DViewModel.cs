@@ -8,6 +8,7 @@ using System.Windows.Media.Media3D;
 using ReScanVisualizer.Models;
 using HelixToolkit.Wpf;
 using ReScanVisualizer.ViewModels.Parts;
+using System.Windows;
 
 #nullable enable
 

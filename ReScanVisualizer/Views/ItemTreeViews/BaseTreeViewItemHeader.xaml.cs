@@ -33,7 +33,14 @@ namespace ReScanVisualizer.Views.ItemTreeViews
             if (DataContext is Base3DViewModel base3D)
             {
                 double ratio = Math.Max(1.0, MainWindow.GetViewPortRatio());
-                MainWindow.SetCamera(base3D.GetCameraConfigurationToFocus(MainWindow.GetCamera()!.FieldOfView, ratio));
+                try
+                {
+                    MainWindow.SetCamera(base3D.GetCameraConfigurationToFocus(MainWindow.GetCamera()!.FieldOfView, ratio));
+                }
+                catch (Exception err)
+                {
+                    MessageBox.Show(err.Message, err.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

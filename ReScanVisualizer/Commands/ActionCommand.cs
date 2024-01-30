@@ -21,5 +21,7 @@ namespace ReScanVisualizer.Commands
         {
             _action();
         }
+
+        public static ActionCommand DoNothing => new ActionCommand(() => { });
     }
 }

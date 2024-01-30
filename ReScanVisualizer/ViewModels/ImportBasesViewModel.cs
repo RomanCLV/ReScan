@@ -13,18 +13,20 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels
 {
     public class ImportBasesViewModel : ViewModelBase
     {
         private readonly MainViewModel _mainViewModel;
-        private readonly ImportBasesWindow _importBasesWindow;
+        private readonly ImportBasesWindow? _importBasesWindow;
 
         private string _filePath;
         public string FilePath
         {
             get => _filePath;
-            private set => SetValue(ref _filePath, value);
+            set => SetValue(ref _filePath, value);
         }
 
         private bool _containsHeader;
@@ -61,7 +63,7 @@ namespace ReScanVisualizer.ViewModels
         
         public CommandKey CancelCommand { get; private set; }
 
-        public ImportBasesViewModel(MainViewModel mainViewModel, ImportBasesWindow importBasesWindow)
+        public ImportBasesViewModel(MainViewModel mainViewModel, ImportBasesWindow? importBasesWindow)
         {
             _filePath = string.Empty;
             _containsHeader = true;
@@ -72,7 +74,7 @@ namespace ReScanVisualizer.ViewModels
             _importBasesWindow = importBasesWindow;
             RenderQualities = Tools.GetRenderQualitiesList();
             ValidateCommand = new CommandKey(new ValidateImportBasesCommand(this), Key.Enter, ModifierKeys.None, "Import");
-            CancelCommand = new CommandKey(new ActionCommand(_importBasesWindow.Close), Key.Escape, ModifierKeys.None, "Cancel");
+            CancelCommand =  new CommandKey(_importBasesWindow is null ?  ActionCommand.DoNothing : new ActionCommand(_importBasesWindow.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
         ~ImportBasesViewModel()
@@ -128,7 +130,7 @@ namespace ReScanVisualizer.ViewModels
                         {
                             lineIndex++;
 
-                            string[] cells = (line.Replace('.', ',')).Split(';');
+                            string[] cells = line.Split(';');
                             if (cells.Length != 12) // 12 = origin xyz (3) + x xyz (3) + y xyz (3) + z xyz (3)
                             {
                                 isError = true;
@@ -140,7 +142,7 @@ namespace ReScanVisualizer.ViewModels
                             double[] doubles = new double[12];
                             for (int i = 0; i < 12; i++)
                             {
-                                if (double.TryParse(cells[i], out double value))
+                                if (Tools.TryParse(cells[i], out double value))
                                 {
                                     doubles[i] = value;
                                 }
@@ -182,7 +184,7 @@ namespace ReScanVisualizer.ViewModels
                             };
                             _mainViewModel.Bases.Add(base3DViewModel); 
                         }
-                        _importBasesWindow.Close();
+                        _importBasesWindow?.Close();
                     }
                 }
             }

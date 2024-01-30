@@ -139,6 +139,12 @@
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
     <Compile Include="EventArgs\PositionEventArgs.cs" />
+    <Compile Include="Models\CommandLineParser\CommandLineParameter.cs" />
+    <Compile Include="Models\CommandLineParser\CommandLineParser.cs" />
+    <Compile Include="Models\CommandLineParser\CommandLineUnknowOptionException.cs" />
+    <Compile Include="Models\CommandLineParser\Options\CommandLineOptionBase.cs" />
+    <Compile Include="Models\CommandLineParser\Options\CommandLineOptionHelp.cs" />
+    <Compile Include="Models\CommandLineParser\Options\CommandLineOptionAddBases.cs" />
     <Compile Include="ViewModels\ImportBasesViewModel.cs" />
     <Compile Include="Models\CameraConfiguration.cs" />
     <Compile Include="Models\ICameraFocusable.cs" />

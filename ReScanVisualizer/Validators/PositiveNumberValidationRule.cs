@@ -15,7 +15,7 @@ namespace ReScanVisualizer.Validators
             if (value is string strValue)
             {
                 double number;
-                if (double.TryParse(strValue, out number) || double.TryParse(strValue.Replace('.', ','), out number))
+                if (Tools.TryParse(strValue, out number))
                 {
                     if (number > 0)
                     {
