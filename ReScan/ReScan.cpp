@@ -8,6 +8,7 @@
 #include <ctime>	  // for getDate()
 #include <iomanip>	  // for getDate()
 #include <algorithm>  // for transform
+#include <filesystem> // for create_directory
 
 using namespace std;
 
@@ -404,7 +405,13 @@ namespace ReScan
 
 		if (m_processData.getExportSubDivisions())
 		{
-			exportSubDivisionsToCSV(filenameWithoutExtention, subDivisions);
+			std::string subdivisionsDir = filenameWithoutExtention + "_subdivisions";
+			std::filesystem::create_directory(subdivisionsDir);
+
+			auto splitPath = Tools::splitString(filenameWithoutExtention, "\\");
+			std::string subdivionBasePath = subdivisionsDir + "\\" + splitPath[splitPath.size() - 1];
+
+			exportSubDivisionsToCSV(subdivionBasePath, subDivisions);
 			mout << std::endl;
 		}
 

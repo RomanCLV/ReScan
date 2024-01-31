@@ -5,6 +5,8 @@
 #include "Plan2D.h"
 
 #include <string>
+#include <iostream>
+#include <vector>
 #include <Eigen/Dense>
 
 namespace ReScan
@@ -128,6 +130,8 @@ namespace ReScan
 		/// <param name="b">Result of angle B in degrees.</param>
 		/// <param name="c">Result of angle C in degrees.</param>
 		void computeABC(const Eigen::Matrix4d& matrix, double* a, double* b, double* c);
+
+		std::vector<std::string> splitString(const std::string& input, const std::string& delimiter);
 	}
 }
 
