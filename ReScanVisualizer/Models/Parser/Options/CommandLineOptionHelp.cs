@@ -34,18 +34,18 @@ namespace ReScanVisualizer.Models.Parser.Options
         {
             if (MaximumParameters == 0 && args.Count != 0)
             {
-                throw new ArgumentException($"CommandLineOptionAddBases: Too many parameters - No parameter expected");
+                throw new ArgumentException($"{GetType().Name}: Too many parameters - No parameter expected");
             }
             if (args.Count < MinimumParameters)
             {
-                throw new ArgumentException($"CommandLineOptionAddBases: Too few parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
+                throw new ArgumentException($"{GetType().Name}: Too few parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
             }
             if (args.Count > MaximumParameters)
             {
-                throw new ArgumentException($"CommandLineOptionAddBases: Too many parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
+                throw new ArgumentException($"{GetType().Name}: Too many parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
             }
 
-            if (args.Count == 1)
+            if (args.Count >= 1)
             {
                 Command = args[0];
             }

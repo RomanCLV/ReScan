@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using ReScanVisualizer.Models.Parser;
 using System.Diagnostics;
 using System.IO;
+using System.Collections.ObjectModel;
 
 #nullable enable
 
@@ -90,6 +91,10 @@ namespace ReScanVisualizer.Models
                                 {
                                     ApplyViewBases(abs);
                                 }
+                                else if (item is CommandLineOptionUDP udp)
+                                {
+                                    ApplyUDP(udp);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -137,7 +142,7 @@ namespace ReScanVisualizer.Models
                 RenderQuality = abs.RenderQuality
             };
             importBasesViewModel.ImportFile();
-            System.Collections.ObjectModel.ObservableCollection<Base3DViewModel> bases = _mainViewModel.Bases;
+            ObservableCollection<Base3DViewModel> bases = _mainViewModel.Bases;
             List<Rect3D> rects = new List<Rect3D>(bases.Count);
 
             foreach (var base3D in bases)
@@ -157,6 +162,11 @@ namespace ReScanVisualizer.Models
                 Rect3D globalRect = Tools.GetGlobalRect(rects);
                 Views.MainWindow.SetCamera(CameraHelper.GetCameraConfigurationToFocus(globalRect));
             }
+        }
+
+        private void ApplyUDP(CommandLineOptionUDP udp)
+        {
+
         }
     }
 }

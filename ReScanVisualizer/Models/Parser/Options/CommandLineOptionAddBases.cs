@@ -39,15 +39,15 @@ namespace ReScanVisualizer.Models.Parser.Options
         {
             if (MaximumParameters == 0 && args.Count != 0)
             {
-                throw new ArgumentException($"CommandLineOptionAddBases: Too many parameters - No parameter expected");
+                throw new ArgumentException($"{GetType().Name}: Too many parameters - No parameter expected");
             }
             if (args.Count < MinimumParameters)
             {
-                throw new ArgumentException($"CommandLineOptionAddBases: Too few parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
+                throw new ArgumentException($"{GetType().Name}: Too few parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
             }
             if (args.Count > MaximumParameters)
             {
-                throw new ArgumentException($"CommandLineOptionAddBases: Too many parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
+                throw new ArgumentException($"{GetType().Name}: Too many parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
             }
 
             FilePath = args[0];
@@ -60,7 +60,7 @@ namespace ReScanVisualizer.Models.Parser.Options
                 }
                 else
                 {
-                    throw new ArgumentException("CommandLineOptionAddBases: Cannot parse " + args[1] + " into a double", ScaleFactorParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[1] + " into a double", ScaleFactorParameter.Name);
                 }
             }
             else
@@ -76,7 +76,7 @@ namespace ReScanVisualizer.Models.Parser.Options
                 }
                 else
                 {
-                    throw new ArgumentException("CommandLineOptionAddBases: Cannot parse " + args[2] + " into a boolean", ContainsHeaderParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[2] + " into a boolean", ContainsHeaderParameter.Name);
                 }
             }
             else
@@ -92,7 +92,7 @@ namespace ReScanVisualizer.Models.Parser.Options
                 }
                 else
                 {
-                    throw new ArgumentException("CommandLineOptionAddBases: Cannot parse " + args[3] + " into a double", AxisScaleFactorParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[3] + " into a double", AxisScaleFactorParameter.Name);
                 }
             }
             else
@@ -108,7 +108,7 @@ namespace ReScanVisualizer.Models.Parser.Options
                 }
                 else
                 {
-                    throw new ArgumentException("CommandLineOptionAddBases: Cannot parse " + args[4] + " into a RenderQuality", RenderQualityParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[4] + " into a RenderQuality", RenderQualityParameter.Name);
                 }
             }
             else
