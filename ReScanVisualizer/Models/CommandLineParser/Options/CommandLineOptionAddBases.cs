@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReScanVisualizer.Models.CommandLineParser.Options
+namespace ReScanVisualizer.Models.Parser.Options
 {
     public class CommandLineOptionAddBases : CommandLineOptionBase
     {
@@ -51,10 +51,6 @@ namespace ReScanVisualizer.Models.CommandLineParser.Options
             }
 
             FilePath = args[0];
-            if (!File.Exists(FilePath))
-            {
-                throw new FileNotFoundException(FilePath);
-            }
 
             if (args.Count >= 2)
             {

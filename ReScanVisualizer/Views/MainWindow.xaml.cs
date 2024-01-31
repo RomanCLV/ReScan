@@ -53,6 +53,11 @@ namespace ReScanVisualizer.Views
             }
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((MainViewModel)DataContext).ModifierPipe.Start();
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ((MainViewModel)DataContext).Dispose();

@@ -17,6 +17,7 @@
         WindowState="Maximized"
         Background="{StaticResource backgroundColor}"
         Closing="Window_Closing"
+        Loaded="Window_Loaded"
         >
     <Window.Resources>
         <converters:CommandKeyToInputGestureTextConverter x:Key="CommandKeyToInputGestureTextConverter" />

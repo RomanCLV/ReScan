@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ReScanVisualizer.Models.CommandLineParser.Options;
+using ReScanVisualizer.Models.Parser.Options;
 
 #nullable enable
 
-namespace ReScanVisualizer.Models.CommandLineParser
+namespace ReScanVisualizer.Models.Parser
 {
     public class CommandLineParser
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReScanVisualizer.Models.CommandLineParser.Options
+namespace ReScanVisualizer.Models.Parser.Options
 {
     public class CommandLineOptionHelp : CommandLineOptionBase
     {

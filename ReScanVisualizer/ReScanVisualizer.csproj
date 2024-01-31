@@ -145,6 +145,7 @@
     <Compile Include="Models\CommandLineParser\Options\CommandLineOptionBase.cs" />
     <Compile Include="Models\CommandLineParser\Options\CommandLineOptionHelp.cs" />
     <Compile Include="Models\CommandLineParser\Options\CommandLineOptionAddBases.cs" />
+    <Compile Include="Models\ModifierPipe.cs" />
     <Compile Include="ViewModels\ImportBasesViewModel.cs" />
     <Compile Include="Models\CameraConfiguration.cs" />
     <Compile Include="Models\ICameraFocusable.cs" />

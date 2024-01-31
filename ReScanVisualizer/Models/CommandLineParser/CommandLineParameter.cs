@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace ReScanVisualizer.Models.CommandLineParser
+namespace ReScanVisualizer.Models.Parser
 {
     public abstract class CommandLineParameterBase
     {

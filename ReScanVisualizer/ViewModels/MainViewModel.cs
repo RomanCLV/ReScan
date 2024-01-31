@@ -105,6 +105,8 @@ namespace ReScanVisualizer.ViewModels
 
         public CommandKey ExportBaseCommand { get; }
 
+        public ModifierPipe ModifierPipe { get; private set; }
+
         private static readonly Lazy<MainViewModel> instance = new Lazy<MainViewModel>(() => new MainViewModel());
 
         private MainViewModel()
@@ -112,6 +114,7 @@ namespace ReScanVisualizer.ViewModels
             IsDisposed = false;
 
             //OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
+            ModifierPipe = new ModifierPipe(this);
 
             Models = new Model3DGroup();
             BasesModels = new Model3DGroup();
@@ -152,6 +155,7 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
+                ModifierPipe.Stop();
                 if (_selectedViewModel is BaseViewModel baseViewModel)
                 {
                     baseViewModel.Dispose();
