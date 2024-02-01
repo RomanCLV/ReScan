@@ -4,13 +4,15 @@ namespace ReScan::StreamHelper
 {
     ObservableOStream::ObservableOStream() :
         m_buffer(this),
-        std::ostream(&m_buffer)
+        std::ostream(&m_buffer),
+        m_subscribers()
     {
     }
 
     ObservableOStream::ObservableOStream(std::ostream* wrappedStream) :
         m_buffer(wrappedStream, this),
-        std::ostream(&m_buffer)
+        std::ostream(&m_buffer),
+        m_subscribers()
     {
     }
 

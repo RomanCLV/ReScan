@@ -9,22 +9,29 @@
 #include "Plan2D.h"
 #include "Point3D.h"
 #include "macros.h"
+#include "ReScanFileType.h"
 
 #include <Eigen/Dense>
 #include <string>
+#include <vector>
 
 namespace ReScan
 {
 	class ReScan
 	{
-
 	private:
 		ReScanProcessData m_processData;
+		std::vector<std::function<void(const FileType, const std::string&)>> m_subscribers;
 
 	public:
+		using EventCallback = std::function<void(const FileType, const std::string&)>;
+
 		ReScan();
 		ReScan(const ReScan& reScan);
 		~ReScan();
+
+		void subscribe(EventCallback callback);
+		void unsubscribe(EventCallback callback);
 
 		int process(std::string& configFile);
 		int process(const ReScanConfig& config);
@@ -51,6 +58,8 @@ namespace ReScan
 			const bool decimalCharIsDot = true);
 
 	private:
+		void notifyObservers(const FileType fileType, const std::string& path) const;
+
 		void resetProcessData();
 		bool isObjFileValid() const;
 

@@ -156,6 +156,7 @@
     <ClInclude Include="Base3D.h" />
     <ClInclude Include="ReScan.h" />
     <ClInclude Include="ReScanConfig.h" />
+    <ClInclude Include="ReScanFileType.h" />
     <ClInclude Include="ReScanProcessData.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScatterGraph.h" />

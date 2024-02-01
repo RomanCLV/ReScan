@@ -8,6 +8,7 @@
 #include <ctime>	  // for getDate()
 #include <iomanip>	  // for getDate()
 #include <algorithm>  // for transform
+#include <functional>
 #include <filesystem> // for create_directory
 
 using namespace std;
@@ -17,12 +18,14 @@ namespace ReScan
 #pragma region Constructors & Desctructor
 
 	ReScan::ReScan() :
-		m_processData()
+		m_processData(),
+		m_subscribers()
 	{
 	}
 
 	ReScan::ReScan(const ReScan& reScan) :
-		m_processData(reScan.m_processData)
+		m_processData(reScan.m_processData),
+		m_subscribers()
 	{
 	}
 
@@ -30,11 +33,20 @@ namespace ReScan
 
 	ReScan::~ReScan()
 	{
+		m_subscribers.clear();
 	}
 
 #pragma endregion
 
 #pragma region private functions
+
+	void ReScan::notifyObservers(const FileType fileType, const std::string& path) const
+	{
+		for (const auto& subscriber : m_subscribers)
+		{
+			subscriber(fileType, path);
+		}
+	}
 
 	void ReScan::resetProcessData()
 	{
@@ -466,6 +478,7 @@ namespace ReScan
 			if (exportBasesCartesianToCSV(path, bases, "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0"))
 			{
 				mout << "Bases (cartesians) saved into:" << std::endl << path << std::endl;
+				notifyObservers(FileType::BasesCartesian, path);
 			}
 			else
 			{
@@ -492,6 +505,7 @@ namespace ReScan
 			if (exportBasesEulerAnglesToCSV(path, bases, "0.0;0.0;0.0;0.0;0.0;0.0"))
 			{
 				mout << "Bases (Euler angles) saved into:" << std::endl << path << std::endl;
+				notifyObservers(FileType::BasesEulerAngles, path);
 			}
 			else
 			{
@@ -518,6 +532,7 @@ namespace ReScan
 			if (exportTrajectoryDetailsFile(path))
 			{
 				mout << "Details saved into:" << std::endl << path << std::endl;
+				notifyObservers(FileType::BasesDetails, path);
 			}
 			else
 			{
@@ -541,7 +556,11 @@ namespace ReScan
 	{
 		for (int i = 0; i < subDivisions.size(); i++)
 		{
-			ScatterGraph::saveCSV(basePath + "-" + to_string(i + 1) + ".csv", subDivisions[i], true, true);
+			const std::string path = basePath + "-" + to_string(i + 1) + ".csv";
+			if (ScatterGraph::saveCSV(path, subDivisions[i], true, true))
+			{
+				notifyObservers(FileType::Subdivision, path);
+			}
 		}
 	}
 
@@ -775,6 +794,22 @@ namespace ReScan
 #pragma endregion
 
 #pragma region public functions
+
+	void ReScan::subscribe(EventCallback callback)
+	{
+		m_subscribers.push_back(callback);
+	}
+
+	void ReScan::unsubscribe(EventCallback callback)
+	{
+		auto it = std::find_if(m_subscribers.begin(), m_subscribers.end(),
+			[callback](const EventCallback& cb) { return cb.target<void(const std::string&)>() == callback.target<void(const std::string&)>(); });
+
+		if (it != m_subscribers.end())
+		{
+			m_subscribers.erase(it);
+		}
+	}
 
 	int ReScan::process(std::string& configFile)
 	{
