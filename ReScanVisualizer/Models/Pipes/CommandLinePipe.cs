@@ -14,6 +14,9 @@ using System.IO;
 using System.Collections.ObjectModel;
 using System.Net.Sockets;
 using System.Net;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
+using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
+using System.Windows.Media;
 
 #nullable enable
 
@@ -104,11 +107,15 @@ namespace ReScanVisualizer.Models.Pipes
                                 {
                                     ApplyMaxPoints(maxPoints);
                                 }
+                                else if (item is CommandLineOptionAddGraph ag)
+                                {
+                                    ApplyAddGraph(ag);
+                                }
                             }
                             catch (Exception ex)
                             {
                                 MessageBox.Show(
-                                    "Command type: " + item.GetType().Name + "\n\n" + ex.Message,
+                                    "Command type: " + item.GetType().Name + "\n\n" + ex.Message + "\n\nArguments: " + string.Join(" ", args),
                                     "Applying command error: " + ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
@@ -151,6 +158,8 @@ namespace ReScanVisualizer.Models.Pipes
                 RenderQuality = abs.RenderQuality
             };
             importBasesViewModel.ImportFile();
+            importBasesViewModel.Dispose();
+
             ObservableCollection<Base3DViewModel> bases = _mainViewModel.Bases;
             List<Rect3D> rects = new List<Rect3D>(bases.Count);
 
@@ -195,6 +204,39 @@ namespace ReScanVisualizer.Models.Pipes
             {
                 _maxPoints = (int)maxPoints.MaxPoints;
             }
+        }
+
+        private async void ApplyAddGraph(CommandLineOptionAddGraph ag)
+        {
+            AddScatterGraphViewModel addScatterGraphViewModel = new AddScatterGraphViewModel(null, _mainViewModel);
+            ScatterGraphFileBuilder scatterGraphFileBuilder = new ScatterGraphFileBuilder(ag.FilePath, Colors.White, ag.ContainsHeader);
+            addScatterGraphViewModel.AddBuilder(scatterGraphFileBuilder);
+
+            await addScatterGraphViewModel.BuildAllAsync();
+            if (_maxPoints > 0)
+            {
+                addScatterGraphViewModel.MaxPoints = (uint)_maxPoints;
+                addScatterGraphViewModel.ApplyMaxPoints();
+            }
+
+            addScatterGraphViewModel.CommonScaleFactor = ag.ScaleFactor;
+            addScatterGraphViewModel.CommonAxisScaleFactor = ag.AxisScaleFactor;
+            addScatterGraphViewModel.CommonPointRadius = ag.PointRadius;
+            addScatterGraphViewModel.CommonDisplayBarycenter = ag.DisplayBarycenter;
+            addScatterGraphViewModel.CommonDisplayAveragePlan = ag.DisplayAveragePlan;
+            addScatterGraphViewModel.CommonDisplayBase = ag.DisplayBase;
+            addScatterGraphViewModel.CommonRenderQuality = ag.RenderQuality;
+
+            addScatterGraphViewModel.ApplyCommonScaleFactor();
+            addScatterGraphViewModel.ApplyCommonAxisScaleFactor();
+            addScatterGraphViewModel.ApplyCommonPointRadius();
+            addScatterGraphViewModel.ApplyCommonDisplayBarycenter();
+            addScatterGraphViewModel.ApplyCommonDisplayAveragePlan();
+            addScatterGraphViewModel.ApplyCommonDisplayBase();
+            addScatterGraphViewModel.ApplyCommonRenderQuality();
+
+            await addScatterGraphViewModel.LoadAllAsync();
+            addScatterGraphViewModel.Dispose();
         }
     }
 }

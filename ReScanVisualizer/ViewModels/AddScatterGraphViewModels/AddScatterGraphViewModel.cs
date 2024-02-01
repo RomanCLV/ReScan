@@ -20,7 +20,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 {
     public class AddScatterGraphViewModel : ViewModelBase
     {
-        private readonly AddScatterGraphWindow _view;
+        private readonly AddScatterGraphWindow? _view;
         private readonly MainViewModel _mainViewModel;
 
         public ObservableCollection<KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>> Items { get; private set; }
@@ -118,7 +118,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
         public CommandKey LoadAndCloseCommand { get; private set; }
         public CommandKey CancelCommand { get; private set; }
 
-        public AddScatterGraphViewModel(AddScatterGraphWindow view, MainViewModel mainViewModel)
+        public AddScatterGraphViewModel(AddScatterGraphWindow? view, MainViewModel mainViewModel)
         {
             _view = view;
             _mainViewModel = mainViewModel;
@@ -139,12 +139,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             _mainViewModel.Parts.CollectionChanged += Parts_CollectionChanged;
             Items.CollectionChanged += Items_CollectionChanged;
 
-            AddScatterGraphBuilderCommand = new CommandKey(new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new builder");
+            AddScatterGraphBuilderCommand = new CommandKey(_view == null ? (ICommand)ActionCommand.DoNothing : new AddScatterGraphBuilderCommand(_view, this), Key.A, ModifierKeys.Control | ModifierKeys.Shift, "Add a new builder");
             AddPartCommand = new CommandKey(new AddPartCommand(_partsListSource), Key.P, ModifierKeys.Control | ModifierKeys.Shift, "Add a new part");
             BuildCommand = new CommandKey(new BuildScatterGraphCommand(this), Key.B, ModifierKeys.Control, "Build");
             LoadCommand = new CommandKey(new LoadScatterGraphCommand(this, false), Key.L, ModifierKeys.Control, "Load");
             LoadAndCloseCommand = new CommandKey(new LoadScatterGraphCommand(this, true), Key.L, ModifierKeys.Control | ModifierKeys.Shift, "Load and close");
-            CancelCommand = new CommandKey(new ActionCommand(_view.Close), Key.Escape, ModifierKeys.None, "Cancel");
+            CancelCommand = new CommandKey(_view == null ? ActionCommand.DoNothing : new ActionCommand(_view.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
         ~AddScatterGraphViewModel()
@@ -525,7 +525,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
             if (closeWindow && Items.Count == 0)
             {
-                _view.Close();
+                _view?.Close();
             }
         }
 

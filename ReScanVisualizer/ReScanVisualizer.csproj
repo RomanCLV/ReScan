@@ -142,9 +142,11 @@
     <Compile Include="Models\Parser\CommandLineParameter.cs" />
     <Compile Include="Models\Parser\CommandLineParser.cs" />
     <Compile Include="Models\Parser\CommandLineUnknowOptionException.cs" />
+    <Compile Include="Models\Parser\Options\CommandLineOptionAddGraph.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionBase.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionHelp.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionAddBases.cs" />
+    <Compile Include="Models\Parser\Options\CommandLineOptionMaxPoints.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionUDP.cs" />
     <Compile Include="Models\Pipes\CommandLinePipe.cs" />
     <Compile Include="Models\Pipes\PipeBase.cs" />

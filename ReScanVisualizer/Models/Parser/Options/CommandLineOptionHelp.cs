@@ -45,6 +45,7 @@ namespace ReScanVisualizer.Models.Parser.Options
                 throw new ArgumentException($"{GetType().Name}: Too many parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
             }
 
+            Command = string.Empty;
             if (args.Count >= 1)
             {
                 Command = args[0];
