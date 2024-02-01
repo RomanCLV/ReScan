@@ -14,16 +14,19 @@ namespace ReScanVisualizer.Models.Parser.Options
         public new static string Key => KEY;
         public new static string FullKey => FULL_KEY;
         public new static string Keys => Key + " | " + FullKey;
-        public new static string Description => "Start an UDP listener on specified port";
-        public new static uint MinimumParameters => 1;
-        public new static uint MaximumParameters => 1;
+        public new static string Description => "Start or close an UDP client on a specified port";
+        public new static uint MinimumParameters => 2;
+        public new static uint MaximumParameters => 2;
+        public static CommandLineParameter<string> OpenParameter { get; } = new CommandLineParameter<string>("open", "Option to open (o) or close (c) the UDP client", true);
         public static CommandLineParameter<ushort> PortParameter { get; } = new CommandLineParameter<ushort>("port", "Receiver port", true);
 
         public new static List<CommandLineParameterBase> Parameters { get; } = new List<CommandLineParameterBase>()
         {
+            OpenParameter,
             PortParameter
         };
 
+        public bool IsToOpen { get; }
         public ushort Port { get; }
 
         public CommandLineOptionUDP() : this (new List<string>(0))
@@ -45,13 +48,27 @@ namespace ReScanVisualizer.Models.Parser.Options
                 throw new ArgumentException($"{GetType().Name}: Too many parameters - minimum: {MinimumParameters} - maximum: {MaximumParameters}");
             }
 
-            if (ushort.TryParse(args[0], out ushort port))
+            string toStartArg = args[0].ToLower();
+            if (toStartArg == "o" || toStartArg == "open")
+            {
+                IsToOpen = true;
+            }
+            else if (toStartArg == "c" || toStartArg == "close")
+            {
+                IsToOpen = false;
+            }
+            else
+            {
+                throw new ArgumentException(GetType().Name + ": Wrong input to open (o) or close (c) udp. Given: " + args[0], OpenParameter.Name);
+            }
+
+            if (ushort.TryParse(args[1], out ushort port))
             {
                 Port = port;
             }
             else
             {
-                throw new ArgumentException(GetType().Name + ": Cannot parse " + args[0] + " into a ushort", PortParameter.Name);
+                throw new ArgumentException(GetType().Name + ": Cannot parse " + args[1] + " into a ushort", PortParameter.Name);
             }
         }
 

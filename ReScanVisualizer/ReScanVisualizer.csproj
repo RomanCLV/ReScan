@@ -146,7 +146,9 @@
     <Compile Include="Models\Parser\Options\CommandLineOptionHelp.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionAddBases.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionUDP.cs" />
-    <Compile Include="Models\ModifierPipe.cs" />
+    <Compile Include="Models\Pipes\CommandLinePipe.cs" />
+    <Compile Include="Models\Pipes\PipeBase.cs" />
+    <Compile Include="Models\Pipes\UDPPipe.cs" />
     <Compile Include="ViewModels\ImportBasesViewModel.cs" />
     <Compile Include="Models\CameraConfiguration.cs" />
     <Compile Include="Models\ICameraFocusable.cs" />

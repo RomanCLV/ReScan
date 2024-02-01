@@ -707,21 +707,30 @@ namespace ReScanVisualizer.ViewModels
                     udpPipe.Start();
                     _pipes.Add(udpPipe);
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(e.Message, e.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
         public void StopUDPPipe(ushort port)
         {
-            foreach (PipeBase pipe in _pipes)
+            for (int i = 0; i < _pipes.Count; i++)
             {
-                if (pipe is UDPPipe udpPipe && udpPipe.Port == port)
+                if (_pipes[i] is UDPPipe udpPipe && udpPipe.Port == port)
                 {
                     udpPipe.ErrorThrowed -= Pipe_ErrorThrowed;
-                    udpPipe.Stop();
+                    try
+                    {
+                        udpPipe.Stop();
+                        _pipes.RemoveAt(i);
+                        i--;
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message, e.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }

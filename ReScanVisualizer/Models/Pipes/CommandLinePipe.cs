@@ -70,9 +70,13 @@ namespace ReScanVisualizer.Models.Pipes
                     }
                     catch (Exception ex)
                     {
+                        if (ex.InnerException != null)
+                        {
+                            ex = ex.InnerException;
+                        }
                         MessageBox.Show(
-                            ex.InnerException.Message + "\n\nArguments: " + string.Join(" ", args),
-                            "Command line parsing error: " + ex.InnerException.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                            ex.Message + "\n\nArguments: " + string.Join(" ", args),
+                            "Command line parsing error: " + ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                     }
 
                     if (commandLineParser != null)
@@ -164,7 +168,14 @@ namespace ReScanVisualizer.Models.Pipes
 
         private void ApplyUDP(CommandLineOptionUDP udp)
         {
-            _mainViewModel.StartUDPPipe(udp.Port);
+            if (udp.IsToOpen)
+            {
+                _mainViewModel.StartUDPPipe(udp.Port);
+            }
+            else
+            {
+                _mainViewModel.StopUDPPipe(udp.Port);
+            }
         }
     }
 }

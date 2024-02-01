@@ -81,6 +81,10 @@ namespace ReScanVisualizer.Models.Parser
             {
                 return typeof(CommandLineOptionAddBases);
             }
+            else if (key == CommandLineOptionUDP.KEY || key == CommandLineOptionUDP.FULL_KEY)
+            {
+                return typeof(CommandLineOptionUDP);
+            }
             else
             {
                 return null;
@@ -110,6 +114,10 @@ namespace ReScanVisualizer.Models.Parser
             help += CommandLineOptionAddBases.Keys + '\n';
             help += CommandLineOptionAddBases.ParametersNames() + '\n';
             help += CommandLineOptionAddBases.Description + "\n\n";
+
+            help += CommandLineOptionUDP.Keys + '\n';
+            help += CommandLineOptionUDP.ParametersNames() + '\n';
+            help += CommandLineOptionUDP.Description + "\n\n";
 
             return help;
         }
@@ -144,6 +152,15 @@ namespace ReScanVisualizer.Models.Parser
                     CommandLineOptionAddBases.Description,
                     CommandLineOptionAddBases.Parameters);
             }
+            else if (type == typeof(CommandLineOptionUDP))
+            {
+                help = HelpOption(
+                    CommandLineOptionUDP.Keys,
+                    CommandLineOptionUDP.ParametersNames(),
+                    CommandLineOptionUDP.Description,
+                    CommandLineOptionUDP.Parameters);
+            }
+
             else
             {
                 throw new ArgumentException("Unexpected type given: " + type.Name);
