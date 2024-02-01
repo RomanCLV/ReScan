@@ -144,6 +144,8 @@
     <Compile Include="Models\Parser\CommandLineUnknowOptionException.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionAddGraph.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionBase.cs" />
+    <Compile Include="Models\Parser\Options\CommandLineOptionClearBases.cs" />
+    <Compile Include="Models\Parser\Options\CommandLineOptionClearGraphs.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionHelp.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionAddBases.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionMaxPoints.cs" />

@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using ReScanVisualizer.ViewModels;
-using ReScanVisualizer.Models.Parser.Options;
+using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using ReScanVisualizer.Models.Parser;
-using System.Diagnostics;
-using System.IO;
-using System.Collections.ObjectModel;
-using System.Net.Sockets;
-using System.Net;
+using ReScanVisualizer.Models.Parser.Options;
+using ReScanVisualizer.ViewModels;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
-using System.Windows.Media;
 
 #nullable enable
 
@@ -111,6 +108,14 @@ namespace ReScanVisualizer.Models.Pipes
                                 {
                                     ApplyAddGraph(ag);
                                 }
+                                else if (item is CommandLineOptionClearGraphs)
+                                {
+                                    ApplyClearGraphs();
+                                }
+                                else if (item is CommandLineOptionClearBases)
+                                {
+                                    ApplyClearBases();
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -195,9 +200,16 @@ namespace ReScanVisualizer.Models.Pipes
             addScatterGraphViewModel.ApplyCommonDisplayBase();
             addScatterGraphViewModel.ApplyCommonRenderQuality();
 
-            await Application.Current.Dispatcher.Invoke(async () =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                await addScatterGraphViewModel.LoadAllAsync();
+                try
+                {
+                    addScatterGraphViewModel.LoadAll();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             });
             addScatterGraphViewModel.Dispose();
         }
@@ -206,42 +218,79 @@ namespace ReScanVisualizer.Models.Pipes
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (!File.Exists(abs.FilePath))
+                try
                 {
-                    throw new FileNotFoundException("File not found", abs.FilePath);
-                }
-
-                ImportBasesViewModel importBasesViewModel = new ImportBasesViewModel(_mainViewModel, null)
-                {
-                    FilePath = abs.FilePath,
-                    ScaleFactor = abs.ScaleFactor,
-                    ContainsHeader = abs.ContainsHeader,
-                    AxisScaleFactor = abs.AxisScaleFactor,
-                    RenderQuality = abs.RenderQuality
-                };
-
-                importBasesViewModel.ImportFile();
-                importBasesViewModel.Dispose();
-
-                ObservableCollection<Base3DViewModel> bases = _mainViewModel.Bases;
-                List<Rect3D> rects = new List<Rect3D>(bases.Count);
-
-                foreach (var base3D in bases)
-                {
-                    if (base3D != null)
+                    if (!File.Exists(abs.FilePath))
                     {
-                        Rect3D bounds = base3D.Model.Bounds;
-                        if (!bounds.IsEmpty && !double.IsNaN(bounds.SizeX) && !double.IsNaN(bounds.SizeY) && !double.IsNaN(bounds.SizeZ))
+                        throw new FileNotFoundException("File not found", abs.FilePath);
+                    }
+
+                    ImportBasesViewModel importBasesViewModel = new ImportBasesViewModel(_mainViewModel, null)
+                    {
+                        FilePath = abs.FilePath,
+                        ScaleFactor = abs.ScaleFactor,
+                        ContainsHeader = abs.ContainsHeader,
+                        AxisScaleFactor = abs.AxisScaleFactor,
+                        RenderQuality = abs.RenderQuality
+                    };
+
+                    importBasesViewModel.ImportFile();
+                    importBasesViewModel.Dispose();
+
+                    ObservableCollection<Base3DViewModel> bases = _mainViewModel.Bases;
+                    List<Rect3D> rects = new List<Rect3D>(bases.Count);
+
+                    foreach (var base3D in bases)
+                    {
+                        if (base3D != null)
                         {
-                            rects.Add(bounds);
+                            Rect3D bounds = base3D.Model.Bounds;
+                            if (!bounds.IsEmpty && !double.IsNaN(bounds.SizeX) && !double.IsNaN(bounds.SizeY) && !double.IsNaN(bounds.SizeZ))
+                            {
+                                rects.Add(bounds);
+                            }
                         }
                     }
-                }
 
-                if (rects.Count > 0)
+                    if (rects.Count > 0)
+                    {
+                        Rect3D globalRect = Tools.GetGlobalRect(rects);
+                        Views.MainWindow.SetCamera(CameraHelper.GetCameraConfigurationToFocus(globalRect));
+                    }
+                }
+                catch (Exception ex)
                 {
-                    Rect3D globalRect = Tools.GetGlobalRect(rects);
-                    Views.MainWindow.SetCamera(CameraHelper.GetCameraConfigurationToFocus(globalRect));
+                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
+        }
+
+        private void ApplyClearGraphs()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    _mainViewModel.ClearScatterGraphs();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
+        }
+
+        private void ApplyClearBases()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    _mainViewModel.ClearBases();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
         }

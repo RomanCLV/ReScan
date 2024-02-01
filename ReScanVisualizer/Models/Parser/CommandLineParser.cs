@@ -86,6 +86,14 @@ namespace ReScanVisualizer.Models.Parser
             {
                 return typeof(CommandLineOptionAddBases);
             }
+            else if (key == CommandLineOptionClearGraphs.KEY || key == CommandLineOptionClearGraphs.FULL_KEY)
+            {
+                return typeof(CommandLineOptionClearGraphs);
+            }
+            else if (key == CommandLineOptionClearBases.KEY || key == CommandLineOptionClearBases.FULL_KEY)
+            {
+                return typeof(CommandLineOptionClearBases);
+            }
             else
             {
                 return null;
@@ -128,6 +136,13 @@ namespace ReScanVisualizer.Models.Parser
             help += CommandLineOptionAddBases.ParametersNames() + '\n';
             help += CommandLineOptionAddBases.Description + "\n\n";
 
+            help += CommandLineOptionClearGraphs.Keys + '\n';
+            help += CommandLineOptionClearGraphs.ParametersNames() + '\n';
+            help += CommandLineOptionClearGraphs.Description + "\n\n";
+
+            help += CommandLineOptionClearBases.Keys + '\n';
+            help += CommandLineOptionClearBases.ParametersNames() + '\n';
+            help += CommandLineOptionClearBases.Description + "\n\n";
 
             return help;
         }
@@ -185,6 +200,22 @@ namespace ReScanVisualizer.Models.Parser
                     CommandLineOptionAddBases.ParametersNames(),
                     CommandLineOptionAddBases.Description,
                     CommandLineOptionAddBases.Parameters);
+            }
+            else if (type == typeof(CommandLineOptionClearGraphs))
+            {
+                help = HelpOption(
+                    CommandLineOptionClearGraphs.Keys,
+                    CommandLineOptionClearGraphs.ParametersNames(),
+                    CommandLineOptionClearGraphs.Description,
+                    CommandLineOptionClearGraphs.Parameters);
+            }
+            else if (type == typeof(CommandLineOptionClearBases))
+            {
+                help = HelpOption(
+                    CommandLineOptionClearBases.Keys,
+                    CommandLineOptionClearBases.ParametersNames(),
+                    CommandLineOptionClearBases.Description,
+                    CommandLineOptionClearBases.Parameters);
             }
             else
             {
