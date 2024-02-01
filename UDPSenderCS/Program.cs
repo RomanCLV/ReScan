@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace UDPSenderCS
 {
@@ -21,11 +22,16 @@ namespace UDPSenderCS
                 Console.WriteLine("[0] Exit");
                 Console.WriteLine("[1] Test if a port is used");
                 Console.WriteLine("[2] Write a message to a port");
+                Console.WriteLine("[3] Send the content of file to a port");
 
                 do
                 {
                     consoleKey = Console.ReadKey(true).Key;
-                } while (consoleKey != ConsoleKey.NumPad0 && consoleKey != ConsoleKey.NumPad1 && consoleKey != ConsoleKey.NumPad2);
+                } while (
+                consoleKey != ConsoleKey.NumPad0 &&
+                consoleKey != ConsoleKey.NumPad1 &&
+                consoleKey != ConsoleKey.NumPad2 &&
+                consoleKey != ConsoleKey.NumPad3);
                 Console.WriteLine();
 
                 if (consoleKey == ConsoleKey.NumPad0)
@@ -55,6 +61,21 @@ namespace UDPSenderCS
                     Console.Write("Message: ");
                     string message = Console.ReadLine();
                     SendUDP(message, "127.0.0.1", port);
+                }
+                else if (consoleKey == ConsoleKey.NumPad3)
+                {
+                    ushort port = SelectPort();
+                    Console.Write("Path: ");
+                    string path = Console.ReadLine();
+                    if (File.Exists(path))
+                    {
+                        string content = File.ReadAllText(path);
+                        SendUDP(content, "127.0.0.1", port);
+                    }
+                    else 
+                    {
+                        Console.WriteLine("File not found");
+                    }
                 }
 
                 if (consoleKey != ConsoleKey.NumPad0)
