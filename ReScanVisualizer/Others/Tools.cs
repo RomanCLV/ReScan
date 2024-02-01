@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -514,6 +517,41 @@ namespace ReScanVisualizer
                 text = text.Replace(',', '.');
             }
             return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
+        }
+
+        public static bool IsPortInUse(int port, ProtocolType protocolType)
+        {
+            bool isPortInUse = false;
+            IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+
+            switch (protocolType)
+            {
+                case ProtocolType.Tcp:
+                    IPEndPoint[] tcpListeners = ipGlobalProperties.GetActiveTcpListeners();
+                    foreach (IPEndPoint endpoint in tcpListeners)
+                    {
+                        if (endpoint.Port == port)
+                        {
+                            isPortInUse = true;
+                            break;
+                        }
+                    }
+                    break;
+
+                case ProtocolType.Udp:
+                    IPEndPoint[] udpListeners = ipGlobalProperties.GetActiveUdpListeners();
+                    foreach (IPEndPoint endpoint in udpListeners)
+                    {
+                        if (endpoint.Port == port)
+                        {
+                            isPortInUse = true;
+                            break;
+                        }
+                    }
+                    break;
+            }
+
+            return isPortInUse;
         }
     }
 }

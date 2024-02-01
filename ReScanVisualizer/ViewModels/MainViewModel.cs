@@ -13,7 +13,10 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.Commands;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
-using HelixToolkit.Wpf;
+using ReScanVisualizer.Models.Pipes;
+using System.Net.Sockets;
+using System.Net;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -105,7 +108,9 @@ namespace ReScanVisualizer.ViewModels
 
         public CommandKey ExportBaseCommand { get; }
 
-        public ModifierPipe ModifierPipe { get; private set; }
+        public CommandLinePipe ModifierPipe { get; private set; }
+
+        private readonly List<PipeBase> _pipes;
 
         private static readonly Lazy<MainViewModel> instance = new Lazy<MainViewModel>(() => new MainViewModel());
 
@@ -114,7 +119,8 @@ namespace ReScanVisualizer.ViewModels
             IsDisposed = false;
 
             //OriginModel = Helper3D.BuildBaseModel(new Point3D(), new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1), Brushes.Red, Brushes.Green, Brushes.Blue);
-            ModifierPipe = new ModifierPipe(this);
+            ModifierPipe = new CommandLinePipe(this);
+            _pipes = new List<PipeBase>() { ModifierPipe };
 
             Models = new Model3DGroup();
             BasesModels = new Model3DGroup();
@@ -155,7 +161,11 @@ namespace ReScanVisualizer.ViewModels
         {
             if (!IsDisposed)
             {
-                ModifierPipe.Stop();
+                foreach (PipeBase pipe in _pipes)
+                {
+                    pipe.Stop();
+                }
+
                 if (_selectedViewModel is BaseViewModel baseViewModel)
                 {
                     baseViewModel.Dispose();
@@ -679,6 +689,49 @@ namespace ReScanVisualizer.ViewModels
                     _viewModelMouseOver.IsMouseOver = true;
                 }
             }
+        }
+
+        public void StartUDPPipe(ushort port)
+        {
+            if (Tools.IsPortInUse(port, ProtocolType.Tcp) ||
+                Tools.IsPortInUse(port, ProtocolType.Udp))
+            {
+                MessageBox.Show($"The port {port} is already used.", "UDP error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                try
+                {
+                    UDPPipe udpPipe = new UDPPipe(this, port);
+                    udpPipe.ErrorThrowed += Pipe_ErrorThrowed;
+                    udpPipe.Start();
+                    _pipes.Add(udpPipe);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        public void StopUDPPipe(ushort port)
+        {
+            foreach (PipeBase pipe in _pipes)
+            {
+                if (pipe is UDPPipe udpPipe && udpPipe.Port == port)
+                {
+                    udpPipe.ErrorThrowed -= Pipe_ErrorThrowed;
+                    udpPipe.Stop();
+                }
+            }
+        }
+
+        private void Pipe_ErrorThrowed(object sender, Exception e)
+        {
+            // TODO: manage error
+#if DEBUG
+            Trace.WriteLine($"UDPPipe error ({e.GetType().Name}): {e.Message}");
+#endif
         }
     }
 }

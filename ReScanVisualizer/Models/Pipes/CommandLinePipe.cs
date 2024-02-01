@@ -12,23 +12,33 @@ using ReScanVisualizer.Models.Parser;
 using System.Diagnostics;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Net.Sockets;
+using System.Net;
 
 #nullable enable
 
-namespace ReScanVisualizer.Models
+namespace ReScanVisualizer.Models.Pipes
 {
-    public class ModifierPipe
+    public class CommandLinePipe : PipeBase
     {
         private readonly MainViewModel _mainViewModel;
-        private readonly Queue<string[]> _args;
-        private bool _isStarted;
+        protected readonly Queue<string[]> _args;
         private readonly Task _task;
 
-        public ModifierPipe(MainViewModel mainViewModel)
+        public CommandLinePipe(MainViewModel mainViewModel)
         {
             _mainViewModel = mainViewModel;
             _args = new Queue<string[]>();
             _task = new Task(Run);
+        }
+
+        public override void Start()
+        {
+            if (!_isStarted)
+            {
+                base.Start();
+                _task.Start();
+            }
         }
 
         public void Pipe(string[] args)
@@ -46,24 +56,12 @@ namespace ReScanVisualizer.Models
             _args.Clear();
         }
 
-        public void Start()
-        {
-            _isStarted = true;
-            _task.Start();
-        }
-
-        public void Stop()
-        {
-            _isStarted = false;
-        }
-
-        private void Run()
+        protected override void Run()
         {
             while (_isStarted)
             {
                 if (_args.Count > 0)
                 {
-
                     CommandLineParser? commandLineParser = null;
                     string[] args = _args.Dequeue();
                     try
@@ -107,7 +105,7 @@ namespace ReScanVisualizer.Models
                 }
                 else
                 {
-                    Task.Delay(250).Wait();
+                    Task.Delay(50).Wait();
                 }
             }
         }
@@ -166,7 +164,7 @@ namespace ReScanVisualizer.Models
 
         private void ApplyUDP(CommandLineOptionUDP udp)
         {
-
+            _mainViewModel.StartUDPPipe(udp.Port);
         }
     }
 }
