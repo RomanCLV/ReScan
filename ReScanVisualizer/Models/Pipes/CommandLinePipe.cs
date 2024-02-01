@@ -245,6 +245,5 @@ namespace ReScanVisualizer.Models.Pipes
                 }
             });
         }
-
     }
 }

@@ -519,6 +519,17 @@ namespace ReScanVisualizer
             return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
         }
 
+        public static bool TryParse<TEnum>(string text, out TEnum quality)
+            where TEnum : struct
+        {
+            if (Enum.TryParse(text, out quality))
+            {
+                return true;
+            }
+            string[] values = Enum.GetNames(typeof(TEnum)).Select(x => x.ToLower()).ToArray();
+            return values.Contains(text.ToLower());
+        }
+
         public static bool IsPortInUse(int port, ProtocolType protocolType)
         {
             bool isPortInUse = false;

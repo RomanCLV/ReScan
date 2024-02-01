@@ -576,7 +576,7 @@ namespace ReScanVisualizer.Views
         private void CubeHorizontalPositionMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
-            if (menuItem.Tag != null && Enum.TryParse(menuItem.Tag!.ToString(), out HorizontalAlignment result))
+            if (menuItem.Tag != null && Tools.TryParse(menuItem.Tag!.ToString(), out HorizontalAlignment result))
             {
                 _viewPort.ViewCubeHorizontalPosition = result;
             }
@@ -585,7 +585,7 @@ namespace ReScanVisualizer.Views
         private void CubeVerticalPositionMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
-            if (menuItem.Tag != null && Enum.TryParse(menuItem.Tag!.ToString(), out VerticalAlignment result))
+            if (menuItem.Tag != null && Tools.TryParse(menuItem.Tag!.ToString(), out VerticalAlignment result))
             {
                 _viewPort.ViewCubeVerticalPosition = result;
             }
@@ -594,7 +594,7 @@ namespace ReScanVisualizer.Views
         private void CoordinateSystemHorizontalPositionMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
-            if (menuItem.Tag != null && Enum.TryParse(menuItem.Tag!.ToString(), out HorizontalAlignment result))
+            if (menuItem.Tag != null && Tools.TryParse(menuItem.Tag!.ToString(), out HorizontalAlignment result))
             {
                 _viewPort.CoordinateSystemHorizontalPosition = result;
             }
@@ -603,7 +603,7 @@ namespace ReScanVisualizer.Views
         private void CoordinateSystemVerticalPositionMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
-            if (menuItem.Tag != null && Enum.TryParse(menuItem.Tag!.ToString(), out VerticalAlignment result))
+            if (menuItem.Tag != null && Tools.TryParse(menuItem.Tag!.ToString(), out VerticalAlignment result))
             {
                 _viewPort.CoordinateSystemVerticalPosition = result;
             }

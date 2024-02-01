@@ -212,7 +212,7 @@ namespace ReScanVisualizer.Models.Parser.Options
 
             if (args.Count >= 10)
             {
-                if (Enum.TryParse(args[9], out RenderQuality tmp))
+                if (Tools.TryParse(args[9], out RenderQuality tmp))
                 {
                     RenderQuality = tmp;
                 }
