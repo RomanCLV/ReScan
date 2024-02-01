@@ -85,6 +85,10 @@ namespace ReScanVisualizer.Models.Parser
             {
                 return typeof(CommandLineOptionUDP);
             }
+            else if (key == CommandLineOptionMaxPoints.KEY || key == CommandLineOptionMaxPoints.FULL_KEY)
+            {
+                return typeof(CommandLineOptionMaxPoints);
+            }
             else
             {
                 return null;
@@ -118,6 +122,11 @@ namespace ReScanVisualizer.Models.Parser
             help += CommandLineOptionUDP.Keys + '\n';
             help += CommandLineOptionUDP.ParametersNames() + '\n';
             help += CommandLineOptionUDP.Description + "\n\n";
+
+            help += CommandLineOptionMaxPoints.Keys + '\n';
+            help += CommandLineOptionMaxPoints.ParametersNames() + '\n';
+            help += CommandLineOptionMaxPoints.Description + "\n\n";
+            
 
             return help;
         }
@@ -160,7 +169,14 @@ namespace ReScanVisualizer.Models.Parser
                     CommandLineOptionUDP.Description,
                     CommandLineOptionUDP.Parameters);
             }
-
+            else if (type == typeof(CommandLineOptionMaxPoints))
+            {
+                help = HelpOption(
+                    CommandLineOptionMaxPoints.Keys,
+                    CommandLineOptionMaxPoints.ParametersNames(),
+                    CommandLineOptionMaxPoints.Description,
+                    CommandLineOptionMaxPoints.Parameters);
+            }
             else
             {
                 throw new ArgumentException("Unexpected type given: " + type.Name);

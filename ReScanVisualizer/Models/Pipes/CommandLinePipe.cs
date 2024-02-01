@@ -25,11 +25,14 @@ namespace ReScanVisualizer.Models.Pipes
         protected readonly Queue<string[]> _args;
         private readonly Task _task;
 
+        private int _maxPoints;
+
         public CommandLinePipe(MainViewModel mainViewModel)
         {
             _mainViewModel = mainViewModel;
             _args = new Queue<string[]>();
             _task = new Task(Run);
+            _maxPoints = -1;
         }
 
         public override void Start()
@@ -96,6 +99,10 @@ namespace ReScanVisualizer.Models.Pipes
                                 else if (item is CommandLineOptionUDP udp)
                                 {
                                     ApplyUDP(udp);
+                                }
+                                else if (item is CommandLineOptionMaxPoints maxPoints)
+                                {
+                                    ApplyMaxPoints(maxPoints);
                                 }
                             }
                             catch (Exception ex)
@@ -175,6 +182,18 @@ namespace ReScanVisualizer.Models.Pipes
             else
             {
                 _mainViewModel.StopUDPPipe(udp.Port);
+            }
+        }
+
+        private void ApplyMaxPoints(CommandLineOptionMaxPoints maxPoints)
+        {
+            if (maxPoints.ToReset)
+            {
+                _maxPoints = -1;
+            }
+            else
+            {
+                _maxPoints = (int)maxPoints.MaxPoints;
             }
         }
     }

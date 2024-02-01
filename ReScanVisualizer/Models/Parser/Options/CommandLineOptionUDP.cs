@@ -29,10 +29,6 @@ namespace ReScanVisualizer.Models.Parser.Options
         public bool IsToOpen { get; }
         public ushort Port { get; }
 
-        public CommandLineOptionUDP() : this (new List<string>(0))
-        { 
-        }
-
         public CommandLineOptionUDP(List<string> args)
         {
             if (MaximumParameters == 0 && args.Count != 0)
