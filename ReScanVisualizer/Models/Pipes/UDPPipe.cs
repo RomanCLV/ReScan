@@ -99,7 +99,8 @@ namespace ReScanVisualizer.Models.Pipes
                     Trace.WriteLine($"UDP Pipe ({_port}) received: {message}");
 #endif
 
-                    _mainViewModel.ModifierPipe.Pipe(message.Split(' '));
+                    string[] args = message.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    _mainViewModel.ModifierPipe.Pipe(args);
                 }
                 catch (Exception ex)
                 {

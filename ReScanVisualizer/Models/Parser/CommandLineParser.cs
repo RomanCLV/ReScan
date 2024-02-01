@@ -51,21 +51,15 @@ namespace ReScanVisualizer.Models.Parser
                     }
                     else
                     {
-                        if (!commandLineParser.HasValue<CommandLineOptionHelp>() || paramType != typeof(CommandLineOptionHelp))
-                        {
-                            commandLineParser._items.Add((CommandLineOptionBase)Activator.CreateInstance(paramType!, argParams!));
-                        }
-                        paramType = null;
-                        argParams = null;
+                        commandLineParser._items.Add((CommandLineOptionBase)Activator.CreateInstance(paramType!, argParams!));
+                        paramType = type;
+                        argParams = new List<string>();
                     }
                 }
             }
             if (paramType != null)
             {
-                if (!commandLineParser.HasValue<CommandLineOptionHelp>() || paramType != typeof(CommandLineOptionHelp))
-                {
-                    commandLineParser._items.Add((CommandLineOptionBase)Activator.CreateInstance(paramType!, argParams!));
-                }
+                commandLineParser._items.Add((CommandLineOptionBase)Activator.CreateInstance(paramType!, argParams!));
             }
             return commandLineParser;
         }

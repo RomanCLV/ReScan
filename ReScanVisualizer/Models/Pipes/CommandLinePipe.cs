@@ -142,46 +142,6 @@ namespace ReScanVisualizer.Models.Pipes
             }
         }
 
-        private void ApplyViewBases(CommandLineOptionAddBases abs)
-        {
-            if (!File.Exists(abs.FilePath))
-            {
-                throw new FileNotFoundException("File not found", abs.FilePath);
-            }
-
-            ImportBasesViewModel importBasesViewModel = new ImportBasesViewModel(_mainViewModel, null)
-            {
-                FilePath = abs.FilePath,
-                ScaleFactor = abs.ScaleFactor,
-                ContainsHeader = abs.ContainsHeader,
-                AxisScaleFactor = abs.AxisScaleFactor,
-                RenderQuality = abs.RenderQuality
-            };
-            importBasesViewModel.ImportFile();
-            importBasesViewModel.Dispose();
-
-            ObservableCollection<Base3DViewModel> bases = _mainViewModel.Bases;
-            List<Rect3D> rects = new List<Rect3D>(bases.Count);
-
-            foreach (var base3D in bases)
-            {
-                if (base3D != null)
-                {
-                    Rect3D bounds = base3D.Model.Bounds;
-                    if (!bounds.IsEmpty && !double.IsNaN(bounds.SizeX) && !double.IsNaN(bounds.SizeY) && !double.IsNaN(bounds.SizeZ))
-                    {
-                        rects.Add(bounds);
-                    }
-                }
-            }
-
-            if (rects.Count > 0)
-            {
-                Rect3D globalRect = Tools.GetGlobalRect(rects);
-                Views.MainWindow.SetCamera(CameraHelper.GetCameraConfigurationToFocus(globalRect));
-            }
-        }
-
         private void ApplyUDP(CommandLineOptionUDP udp)
         {
             if (udp.IsToOpen)
@@ -235,8 +195,56 @@ namespace ReScanVisualizer.Models.Pipes
             addScatterGraphViewModel.ApplyCommonDisplayBase();
             addScatterGraphViewModel.ApplyCommonRenderQuality();
 
-            await addScatterGraphViewModel.LoadAllAsync();
+            await Application.Current.Dispatcher.Invoke(async () =>
+            {
+                await addScatterGraphViewModel.LoadAllAsync();
+            });
             addScatterGraphViewModel.Dispose();
         }
+
+        private void ApplyViewBases(CommandLineOptionAddBases abs)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (!File.Exists(abs.FilePath))
+                {
+                    throw new FileNotFoundException("File not found", abs.FilePath);
+                }
+
+                ImportBasesViewModel importBasesViewModel = new ImportBasesViewModel(_mainViewModel, null)
+                {
+                    FilePath = abs.FilePath,
+                    ScaleFactor = abs.ScaleFactor,
+                    ContainsHeader = abs.ContainsHeader,
+                    AxisScaleFactor = abs.AxisScaleFactor,
+                    RenderQuality = abs.RenderQuality
+                };
+
+                importBasesViewModel.ImportFile();
+                importBasesViewModel.Dispose();
+
+                ObservableCollection<Base3DViewModel> bases = _mainViewModel.Bases;
+                List<Rect3D> rects = new List<Rect3D>(bases.Count);
+
+                foreach (var base3D in bases)
+                {
+                    if (base3D != null)
+                    {
+                        Rect3D bounds = base3D.Model.Bounds;
+                        if (!bounds.IsEmpty && !double.IsNaN(bounds.SizeX) && !double.IsNaN(bounds.SizeY) && !double.IsNaN(bounds.SizeZ))
+                        {
+                            rects.Add(bounds);
+                        }
+                    }
+                }
+
+                if (rects.Count > 0)
+                {
+                    Rect3D globalRect = Tools.GetGlobalRect(rects);
+                    Views.MainWindow.SetCamera(CameraHelper.GetCameraConfigurationToFocus(globalRect));
+                }
+            });
+        }
+
     }
 }
