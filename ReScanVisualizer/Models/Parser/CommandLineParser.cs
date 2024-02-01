@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -77,10 +76,6 @@ namespace ReScanVisualizer.Models.Parser
             {
                 return typeof(CommandLineOptionHelp);
             }
-            else if (key == CommandLineOptionAddBases.KEY || key == CommandLineOptionAddBases.FULL_KEY)
-            {
-                return typeof(CommandLineOptionAddBases);
-            }
             else if (key == CommandLineOptionUDP.KEY || key == CommandLineOptionUDP.FULL_KEY)
             {
                 return typeof(CommandLineOptionUDP);
@@ -88,6 +83,14 @@ namespace ReScanVisualizer.Models.Parser
             else if (key == CommandLineOptionMaxPoints.KEY || key == CommandLineOptionMaxPoints.FULL_KEY)
             {
                 return typeof(CommandLineOptionMaxPoints);
+            }
+            else if (key == CommandLineOptionAddGraph.KEY || key == CommandLineOptionAddGraph.FULL_KEY)
+            {
+                return typeof(CommandLineOptionAddGraph);
+            }
+            else if (key == CommandLineOptionAddBases.KEY || key == CommandLineOptionAddBases.FULL_KEY)
+            {
+                return typeof(CommandLineOptionAddBases);
             }
             else
             {
@@ -115,10 +118,6 @@ namespace ReScanVisualizer.Models.Parser
             help += CommandLineOptionHelp.ParametersNames() + '\n';
             help += CommandLineOptionHelp.Description + "\n\n";
 
-            help += CommandLineOptionAddBases.Keys + '\n';
-            help += CommandLineOptionAddBases.ParametersNames() + '\n';
-            help += CommandLineOptionAddBases.Description + "\n\n";
-
             help += CommandLineOptionUDP.Keys + '\n';
             help += CommandLineOptionUDP.ParametersNames() + '\n';
             help += CommandLineOptionUDP.Description + "\n\n";
@@ -126,7 +125,15 @@ namespace ReScanVisualizer.Models.Parser
             help += CommandLineOptionMaxPoints.Keys + '\n';
             help += CommandLineOptionMaxPoints.ParametersNames() + '\n';
             help += CommandLineOptionMaxPoints.Description + "\n\n";
-            
+
+            help += CommandLineOptionAddGraph.Keys + '\n';
+            help += CommandLineOptionAddGraph.ParametersNames() + '\n';
+            help += CommandLineOptionAddGraph.Description + "\n\n";
+
+            help += CommandLineOptionAddBases.Keys + '\n';
+            help += CommandLineOptionAddBases.ParametersNames() + '\n';
+            help += CommandLineOptionAddBases.Description + "\n\n";
+
 
             return help;
         }
@@ -153,14 +160,6 @@ namespace ReScanVisualizer.Models.Parser
                     CommandLineOptionHelp.Parameters);
 
             }
-            else if (type == typeof(CommandLineOptionAddBases))
-            {
-                help = HelpOption(
-                    CommandLineOptionAddBases.Keys,
-                    CommandLineOptionAddBases.ParametersNames(),
-                    CommandLineOptionAddBases.Description,
-                    CommandLineOptionAddBases.Parameters);
-            }
             else if (type == typeof(CommandLineOptionUDP))
             {
                 help = HelpOption(
@@ -176,6 +175,22 @@ namespace ReScanVisualizer.Models.Parser
                     CommandLineOptionMaxPoints.ParametersNames(),
                     CommandLineOptionMaxPoints.Description,
                     CommandLineOptionMaxPoints.Parameters);
+            }
+            else if (type == typeof(CommandLineOptionAddGraph))
+            {
+                help = HelpOption(
+                    CommandLineOptionAddGraph.Keys,
+                    CommandLineOptionAddGraph.ParametersNames(),
+                    CommandLineOptionAddGraph.Description,
+                    CommandLineOptionAddGraph.Parameters);
+            }
+            else if (type == typeof(CommandLineOptionAddBases))
+            {
+                help = HelpOption(
+                    CommandLineOptionAddBases.Keys,
+                    CommandLineOptionAddBases.ParametersNames(),
+                    CommandLineOptionAddBases.Description,
+                    CommandLineOptionAddBases.Parameters);
             }
             else
             {
