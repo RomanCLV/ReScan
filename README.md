@@ -85,10 +85,76 @@ Available options:
     - To set the max points:
       - `opt` must be an interger strictly greater than 0.
     - To reset the max points:
-      -  `opt`
+      -  `opt`must be `reset` or `0` (or a negative number)
 - Add graph:
+  - `-ag | -add-graph type filepath [containsHeader] [scaleFactor] [axisScaleFactor] [pointRadius] [displayBarycenter] [displayAveragePlan] [displayBase] [renderQuality]`
+    - Required parameters:
+      - `type` is the type of the file. Currently only `csv` is supported.
+      - `filepath` is the path of the file to open. Better if it's the absolute path.
+    - Additionnal parameters:
+      - `containsHeader` indicates if the first line of the file is headers.
+        - Accepted values for true: `true`, `t`, `1`
+        - Accepted values for false: `false`, `f`, `0`
+        - Default value if the parameter is not given: `true`
+      - `scaleFactor` indicates the scale factor to apply for the visual representation of the graph.
+        - Must be a strictly positive number.
+        - Default value if the parameter is not given: `1`
+      - `axisScaleFactor` indicates the scale factor to apply for the visual representation of the graph's base.
+        - Must be a strictly positive number.
+        - Default value if the parameter is not given: `1`
+      - `pointRadius` indicates the point's radius to apply for the visual representation of each point.
+        - Must be a strictly positive number.
+        - Default value if the parameter is not given: `0.25`
+      - `displayBarycenter` show or hide the barycenter of a graph.
+        - Accepted values for true: `true`, `t`, `1`
+        - Accepted values for false: `false`, `f`, `0`
+        - Default value if the parameter is not given: `true`
+      - `displayAveragePlan` show or hide the average plan of a graph.
+        - Accepted values for true: `true`, `t`, `1`
+        - Accepted values for false: `false`, `f`, `0`
+        - Default value if the parameter is not given: `true`
+      - `displayBase` show or hide the base of a graph.
+        - Accepted values for true: `true`, `t`, `1`
+        - Accepted values for false: `false`, `f`, `0`
+        - Default value if the parameter is not given: `true`
+      - `renderQuality` set the render quality.
+        - Accepted values: `VeryLow`, `Low`, `Medium`, `High`, `VeryHigh`
+        - Default value if the parameter is not given: `High`
+
+  If you want to set an additionnal value, you have to indicates all the previous additionnal values.
+
+  Example: If you want to set the point radius to 2 (and let the other default values) and supposing your file has headers, use:
+
+  `-ag csv path\to\myfile.csv t 1 1 2`
+
+  Important: Add a huge file (e.g. 1000 points or more) can be hard to manage. That's why we recommand to set the max points to add with the command `max points`. See this command above in the file.
+  
 - Add bases:
+  - `-abs | -add-bases filepath [containsHeader] [scaleFactor] [axisScaleFactor] [renderQuality]`
+    - Required parameters:
+      - `filepath` is the path of the file to open. Better if it's the absolute path.
+    - Additionnal parameters:
+      - `containsHeader` indicates if the first line of the file is headers.
+        - Accepted values for true: `true`, `t`, `1`
+        - Accepted values for false: `false`, `f`, `0`
+        - Default value if the parameter is not given: `true`
+      - `scaleFactor` indicates the scale factor to apply for the visual representation of the graph.
+        - Must be a strictly positive number.
+        - Default value if the parameter is not given: `1`
+      - `axisScaleFactor` indicates the scale factor to apply for the visual representation of the graph's base.
+        - Must be a strictly positive number.
+        - Default value if the parameter is not given: `1`
+      - `renderQuality` set the render quality.
+        - Accepted values: `VeryLow`, `Low`, `Medium`, `High`, `VeryHigh`
+        - Default value if the parameter is not given: `High`
+  If you want to set an additionnal value, you have to indicates all the previous additionnal values.
+
+  Example: If you want to set the render quality to low (and let the other default values) and supposing your file has headers, use:
+
+  `-abs path\to\myfile.csv t 1 1 low`
 - Clear graphs:
+  - `-cg` clear all the added graphs. 
 - Clear bases:
+  - `-cb` clear all the added bases. 
 
 Several commands can be use at the at a time.
