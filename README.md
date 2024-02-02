@@ -155,6 +155,8 @@ Available options:
 - Clear graphs:
   - `-cg` clear all the added graphs. 
 - Clear bases:
-  - `-cb` clear all the added bases. 
+  - `-cb` clear all the added bases.
+- Kill:
+  - `-k | --kill` to shutdown the application (close automatically all UDP client opened)
 
-Several commands can be use at the at a time.
+Several commands can be used at the at a time.
