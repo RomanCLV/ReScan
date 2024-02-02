@@ -36,7 +36,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Name" Style="{StaticResource myTextBlockLeft}" />
-                            <TextBox Style="{StaticResource myTextBox}" Width="150" IsEnabled="{Binding CanEditName}">
+                            <TextBox Style="{StaticResource myTextBox}" Width="250" IsEnabled="{Binding CanEditName}">
                                 <TextBox.Text>
                                     <Binding Path="Base.Name" UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>

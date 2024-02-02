@@ -233,7 +233,7 @@ namespace ReScan
 	int ReScan::internalProcess()
 	{
 		// declarations
-		const unsigned int MIN_DISTANCE = 50;
+		const unsigned int MIN_DISTANCE = 1;
 
 		vector<float> vertices;
 
