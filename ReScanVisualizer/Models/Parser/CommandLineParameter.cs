@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
+#nullable enable
+
 namespace ReScanVisualizer.Models.Parser
 {
     public abstract class CommandLineParameterBase
@@ -21,8 +23,8 @@ namespace ReScanVisualizer.Models.Parser
         private readonly Type _type;
         public Type Type => _type;
 
-        private readonly object _defaultValue;
-        public object DefaultValue => _defaultValue;
+        private readonly object? _defaultValue;
+        public object? DefaultValue => _defaultValue;
 
         /// <summary>
         /// Construct a command line parameter that is REQUIRED. Its default value is NULL.
@@ -57,13 +59,13 @@ namespace ReScanVisualizer.Models.Parser
 
     public class CommandLineParameter<T> : CommandLineParameterBase
     {
-        public new T DefaultValue => (T)base.DefaultValue;
+        public new T DefaultValue => (T)base.DefaultValue!;
 
         public CommandLineParameter(string name, string description) : base(typeof(T), name, description)
         {
         }
 
-        public CommandLineParameter(string name, string description, T defaultValue) : base(typeof(T), name, description, defaultValue)
+        public CommandLineParameter(string name, string description, T defaultValue) : base(typeof(T), name, description, defaultValue!)
         {
         }
     }

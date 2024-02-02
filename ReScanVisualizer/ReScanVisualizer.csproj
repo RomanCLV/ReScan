@@ -148,6 +148,7 @@
     <Compile Include="Models\Parser\Options\CommandLineOptionClearGraphs.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionHelp.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionAddBases.cs" />
+    <Compile Include="Models\Parser\Options\CommandLineOptionKill.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionMaxPoints.cs" />
     <Compile Include="Models\Parser\Options\CommandLineOptionUDP.cs" />
     <Compile Include="Models\Pipes\CommandLinePipe.cs" />

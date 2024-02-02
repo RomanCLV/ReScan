@@ -116,6 +116,10 @@ namespace ReScanVisualizer.Models.Pipes
                                 {
                                     ApplyClearBases();
                                 }
+                                else if (item is CommandLineOptionKill)
+                                {
+                                    ApplyKill();
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -293,6 +297,11 @@ namespace ReScanVisualizer.Models.Pipes
                     MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
+        }
+
+        private void ApplyKill()
+        {
+            Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
         }
     }
 }

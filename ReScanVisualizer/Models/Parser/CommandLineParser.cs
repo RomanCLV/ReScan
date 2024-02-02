@@ -94,6 +94,10 @@ namespace ReScanVisualizer.Models.Parser
             {
                 return typeof(CommandLineOptionClearBases);
             }
+            else if (key == CommandLineOptionKill.KEY || key == CommandLineOptionKill.FULL_KEY)
+            {
+                return typeof(CommandLineOptionKill);
+            }
             else
             {
                 return null;
@@ -143,6 +147,10 @@ namespace ReScanVisualizer.Models.Parser
             help += CommandLineOptionClearBases.Keys + '\n';
             help += CommandLineOptionClearBases.ParametersNames() + '\n';
             help += CommandLineOptionClearBases.Description + "\n\n";
+
+            help += CommandLineOptionKill.Keys + '\n';
+            help += CommandLineOptionKill.ParametersNames() + '\n';
+            help += CommandLineOptionKill.Description + "\n\n";
 
             return help;
         }
@@ -216,6 +224,14 @@ namespace ReScanVisualizer.Models.Parser
                     CommandLineOptionClearBases.ParametersNames(),
                     CommandLineOptionClearBases.Description,
                     CommandLineOptionClearBases.Parameters);
+            }
+            else if (type == typeof(CommandLineOptionKill))
+            {
+                help = HelpOption(
+                    CommandLineOptionKill.Keys,
+                    CommandLineOptionKill.ParametersNames(),
+                    CommandLineOptionKill.Description,
+                    CommandLineOptionKill.Parameters);
             }
             else
             {
