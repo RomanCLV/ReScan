@@ -29,7 +29,7 @@ namespace ReScanVisualizer.Models.Parser.Options
 
         public static CommandLineParameter<string> TypeParameter { get; } = new CommandLineParameter<string>("type", "file type. Accecpted: " + _joinedExtentions, true);
         public static CommandLineParameter<string> FilePathParameter { get; } = new CommandLineParameter<string>("filePath", "file path", true);
-        public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If file contains headers: true|True|t|T|1 or 1 - else: false|False|f|F|0");
+        public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If file contains headers: true|t|1 - else: false|f|0");
         public static CommandLineParameter<double> ScaleFactorParameter { get; } = new CommandLineParameter<double>("scaleFactor", "");
         public static CommandLineParameter<double> AxisScaleFactorParameter { get; } = new CommandLineParameter<double>("axisScaleFactor", "");
         public static CommandLineParameter<double> PointRadiusParameter { get; } = new CommandLineParameter<double>("pointRadius", "");

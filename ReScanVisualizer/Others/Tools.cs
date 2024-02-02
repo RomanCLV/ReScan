@@ -479,12 +479,13 @@ namespace ReScanVisualizer
 
         public static bool TryParse(string text, out bool result)
         {
+            string textLower = text.ToLower();
             result = false;
-            if (text == "0" || text == "false" || text == "False" || text == "f" || text == "F")
+            if (textLower == "0" || textLower == "f" || textLower == "false")
             {
                 return true;
             }
-            if (text == "1" || text == "true" || text == "True" || text == "t" || text == "T")
+            if (textLower == "1" || textLower == "t" || textLower == "true")
             {
                 result = true;
                 return true;

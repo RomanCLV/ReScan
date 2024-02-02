@@ -19,19 +19,19 @@ namespace ReScanVisualizer.Models.Parser.Options
         public new static uint MinimumParameters => 1;
         public new static uint MaximumParameters => 5;
         public static CommandLineParameter<string> FilePathParameter { get; } = new CommandLineParameter<string>("filePath", "Path of the CSV file that contains bases (in cartesians) to load.", true);
+        public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If file contains headers: true|t|1 - else: false|f|0");
         public static CommandLineParameter<double> ScaleFactorParameter { get; } = new CommandLineParameter<double>("scaleFactor", "Scale factor to apply. Must be greater than 0. Example: 0.02 | 1.5");
-        public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If file contains headers: true|True|t|T|1 or 1 - else: false|False|f|F|0");
         public static CommandLineParameter<double> AxisScaleFactorParameter { get; } = new CommandLineParameter<double>("axisScaleFactor", "Axis scale factor to apply. Must be greater than 0. Example: 0.5 | 2");
         public static CommandLineParameter<RenderQuality> RenderQualityParameter { get; } = new CommandLineParameter<RenderQuality>("renderQuality", "Render quality: " + string.Join("|", Tools.GetRenderQualitiesList().ToArray()));
 
         public new static List<CommandLineParameterBase> Parameters { get; } = new List<CommandLineParameterBase>()
         {
-            FilePathParameter, ScaleFactorParameter, ContainsHeaderParameter, AxisScaleFactorParameter, RenderQualityParameter
+            FilePathParameter, ContainsHeaderParameter, ScaleFactorParameter, AxisScaleFactorParameter, RenderQualityParameter
         };
 
         public string FilePath { get; }
-        public double ScaleFactor { get; }
         public bool ContainsHeader { get; }
+        public double ScaleFactor { get; }
         public double AxisScaleFactor { get; }
         public RenderQuality RenderQuality { get; }
 
@@ -54,29 +54,13 @@ namespace ReScanVisualizer.Models.Parser.Options
 
             if (args.Count >= 2)
             {
-                if (Tools.TryParse(args[1], out double tmp))
-                {
-                    ScaleFactor = tmp;
-                }
-                else
-                {
-                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[1] + " into a double", ScaleFactorParameter.Name);
-                }
-            }
-            else
-            {
-                ScaleFactor = 1.0;
-            }
-
-            if (args.Count >= 3)
-            {
-                if (Tools.TryParse(args[2], out bool tmp))
+                if (Tools.TryParse(args[1], out bool tmp))
                 {
                     ContainsHeader = tmp;
                 }
                 else
                 {
-                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[2] + " into a boolean", ContainsHeaderParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[1] + " into a boolean", ContainsHeaderParameter.Name);
                 }
             }
             else
@@ -84,11 +68,35 @@ namespace ReScanVisualizer.Models.Parser.Options
                 ContainsHeader = true;
             }
 
+            if (args.Count >= 3)
+            {
+                if (Tools.TryParse(args[2], out double tmp))
+                {
+                    ScaleFactor = tmp;
+                    if (ScaleFactor <= 0.0)
+                    {
+                        throw new ArgumentException(GetType().Name + ": Scale factor must be positive. Given: " + ScaleFactor, ScaleFactorParameter.Name);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[2] + " into a double", ScaleFactorParameter.Name);
+                }
+            }
+            else
+            {
+                ScaleFactor = 1.0;
+            }
+
             if (args.Count >= 4)
             {
                 if (Tools.TryParse(args[3], out double tmp))
                 {
                     AxisScaleFactor = tmp;
+                    if (AxisScaleFactor <= 0.0)
+                    {
+                        throw new ArgumentException(GetType().Name + ": Scale factor must be positive. Given: " + AxisScaleFactor, AxisScaleFactorParameter.Name);
+                    }
                 }
                 else
                 {
