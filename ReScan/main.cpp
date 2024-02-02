@@ -8,25 +8,13 @@ static void help()
 {
 	std::cout << std::endl;
 	std::cout << "Usage:" << std::endl;
-	std::cout << "ReScan.exe	                                  Basic usage" << std::endl;
-	std::cout << std::endl;
-	std::cout << "ReScan.exe [-h]                                 Help" << std::endl;
-	std::cout << "ReScan.exe [--help]                             " << std::endl;
-	std::cout << std::endl;								          
-	std::cout << "ReScan.exe [-c config.ini]                      Config file is specified" << std::endl;
-	std::cout << "ReScan.exe [--config config.ini]                " << std::endl;
-	std::cout << std::endl;								          
-	std::cout << "ReScan.exe [-f objFile.obj]                     Obj file is specified" << std::endl;
-	std::cout << "ReScan.exe [--file objFile.obj]                 " << std::endl;
-	std::cout << std::endl;								          
-	std::cout << "ReScan.exe [-cc]                                Create a new default config file: config.ini" << std::endl;
-	std::cout << "ReScan.exe [--create-config]                    " << std::endl;
-	std::cout << std::endl;								          
-	std::cout << "ReScan.exe [-ccif]                              Create a new default config file adapted for ICNDE (frontal): configFrontal.ini" << std::endl;
-	std::cout << "ReScan.exe [--create-config-icnde-frontal] "    << std::endl;
-	std::cout << std::endl;
-	std::cout << "ReScan.exe [-ccil]                              Create a new default config file adapted for ICNDE (lateral): configLateral.ini" << std::endl;
-	std::cout << "ReScan.exe [--create-config-icnde-lateral] "    << std::endl;
+	std::cout << "ReScan.exe	                                     Basic usage" << std::endl << std::endl;
+	std::cout << "ReScan.exe [-h|--help]                             Help" << std::endl << std::endl;
+	std::cout << "ReScan.exe [-c|--config] config.ini                Config file is specified" << std::endl << std::endl;
+	std::cout << "ReScan.exe [-f|--file] objFile.obj                 Obj file is specified" << std::endl << std::endl;
+	std::cout << "ReScan.exe [-cc|--create-config]                   Create a new default config file: config.ini" << std::endl;
+	std::cout << "ReScan.exe [-ccif|--create-config-icnde-frontal]   Create a new config file adapted for ICNDE (frontal): configFrontal.ini" << std::endl << std::endl;
+	std::cout << "ReScan.exe [-ccil|--create-config-icnde-lateral]   Create a new config file adapted for ICNDE (lateral): configLateral.ini" << std::endl << std::endl;
 	std::cout << std::endl;
 }
 
