@@ -27,16 +27,16 @@ namespace ReScanVisualizer.Models.Parser.Options
 
         public static IReadOnlyList<string> Extentions => _extentions;
 
-        public static CommandLineParameter<string> TypeParameter { get; } = new CommandLineParameter<string>("type", "file type. Accecpted: " + _joinedExtentions, true);
-        public static CommandLineParameter<string> FilePathParameter { get; } = new CommandLineParameter<string>("filePath", "file path", true);
-        public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If file contains headers: true|t|1 - else: false|f|0");
-        public static CommandLineParameter<double> ScaleFactorParameter { get; } = new CommandLineParameter<double>("scaleFactor", "");
-        public static CommandLineParameter<double> AxisScaleFactorParameter { get; } = new CommandLineParameter<double>("axisScaleFactor", "");
-        public static CommandLineParameter<double> PointRadiusParameter { get; } = new CommandLineParameter<double>("pointRadius", "");
-        public static CommandLineParameter<bool> DisplayBarycenterParameter { get; } = new CommandLineParameter<bool>("displayBarycenter", "");
-        public static CommandLineParameter<bool> DisplayAveragePlanParameter { get; } = new CommandLineParameter<bool>("displayAverageplan", "");
-        public static CommandLineParameter<bool> DisplayBaseParameter { get; } = new CommandLineParameter<bool>("displayBase", "");
-        public static CommandLineParameter<RenderQuality> RenderQualityParameter { get; } = new CommandLineParameter<RenderQuality>("renderQuality", "");
+        public static CommandLineParameter<string> TypeParameter { get; } = new CommandLineParameter<string>("type", "file type. Supported files: " + _joinedExtentions);
+        public static CommandLineParameter<string> FilePathParameter { get; } = new CommandLineParameter<string>("filePath", "file path");
+        public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If the file contains headers: true|t|1 - else: false|f|0", true);
+        public static CommandLineParameter<double> ScaleFactorParameter { get; } = new CommandLineParameter<double>("scaleFactor", "scale factor to apply for the visual representation of the graph", 1.0);
+        public static CommandLineParameter<double> AxisScaleFactorParameter { get; } = new CommandLineParameter<double>("axisScaleFactor", "scale factor to apply for the visual representation of the graph's base", 1.0);
+        public static CommandLineParameter<double> PointRadiusParameter { get; } = new CommandLineParameter<double>("pointRadius", "the point's radius to apply for the visual representation of each point", 0.25);
+        public static CommandLineParameter<bool> DisplayBarycenterParameter { get; } = new CommandLineParameter<bool>("displayBarycenter", "show or hide the barycenter of a graph. true|t|1 or false|f|0", true);
+        public static CommandLineParameter<bool> DisplayAveragePlanParameter { get; } = new CommandLineParameter<bool>("displayAverageplan", "show or hide the average plan of a graph. true|t|1 or false|f|0", true);
+        public static CommandLineParameter<bool> DisplayBaseParameter { get; } = new CommandLineParameter<bool>("displayBase", "show or hide the base of a graph. true|t|1 or false|f|0", true);
+        public static CommandLineParameter<RenderQuality> RenderQualityParameter { get; } = new CommandLineParameter<RenderQuality>("renderQuality", "Render quality: " + string.Join("|", Tools.GetRenderQualitiesList().ToArray()), RenderQuality.High);
 
         public new static List<CommandLineParameterBase> Parameters { get; } = new List<CommandLineParameterBase>()
         {
@@ -99,7 +99,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                ContainsHeader = true;
+                ContainsHeader = ContainsHeaderParameter.DefaultValue;
             }
 
             if (args.Count >= 4)
@@ -119,7 +119,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                ScaleFactor = 1.0;
+                ScaleFactor = ScaleFactorParameter.DefaultValue;
             }
 
             if (args.Count >= 5)
@@ -139,7 +139,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                AxisScaleFactor = 1.0;
+                AxisScaleFactor = AxisScaleFactorParameter.DefaultValue;
             }
 
             if (args.Count >= 6)
@@ -159,7 +159,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                PointRadius = 0.25;
+                PointRadius = PointRadiusParameter.DefaultValue;
             }
 
             if (args.Count >= 7)
@@ -175,7 +175,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                DisplayBarycenter = true;
+                DisplayBarycenter = DisplayBarycenterParameter.DefaultValue;
             }
 
             if (args.Count >= 8)
@@ -191,7 +191,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                DisplayAveragePlan = true;
+                DisplayAveragePlan = DisplayAveragePlanParameter.DefaultValue;
             }
 
             if (args.Count >= 9)
@@ -207,7 +207,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                DisplayBase = true;
+                DisplayBase = DisplayBaseParameter.DefaultValue;
             }
 
             if (args.Count >= 10)
@@ -223,7 +223,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                RenderQuality = RenderQuality.High;
+                RenderQuality = RenderQualityParameter.DefaultValue;
             }
         }
 

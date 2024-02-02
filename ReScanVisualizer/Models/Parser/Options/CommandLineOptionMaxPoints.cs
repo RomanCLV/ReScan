@@ -17,7 +17,7 @@ namespace ReScanVisualizer.Models.Parser.Options
         public new static string Description => "Set the max points of graph added by command line";
         public new static uint MinimumParameters => 1;
         public new static uint MaximumParameters => 1;
-        public static CommandLineParameter<string> OptionParameter { get; } = new CommandLineParameter<string>("option", "option: reset (or 0, -1) or a positive integer. Examples: -mp reset | -mp 50", true);
+        public static CommandLineParameter<string> OptionParameter { get; } = new CommandLineParameter<string>("option", "option: reset (or a 0-negative number) or a positive integer. Examples: -mp reset | -mp 50");
 
         public new static List<CommandLineParameterBase> Parameters { get; } = new List<CommandLineParameterBase>()
         {
@@ -62,7 +62,7 @@ namespace ReScanVisualizer.Models.Parser.Options
                 }
                 else
                 {
-                    throw new ArgumentException(GetType().Name + ": Wrong max points option given. Must be reset or a positive integer. Given: " + args[0], OptionParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Wrong max points option given. Must be reset (or a 0-negative number) or a positive integer. Given: " + args[0], OptionParameter.Name);
                 }
             }
         }

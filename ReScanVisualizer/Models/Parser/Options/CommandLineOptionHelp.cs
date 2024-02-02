@@ -17,7 +17,7 @@ namespace ReScanVisualizer.Models.Parser.Options
         public new static string Description => "Display general help or help of the specified command. Example: -h abs";
         public new static uint MinimumParameters => 0;
         public new static uint MaximumParameters => 1;
-        public static CommandLineParameter<string> CommandParameter { get; } = new CommandLineParameter<string>("filePath", "Path of the CSV file that contains bases (in cartesians) to load.", true);
+        public static CommandLineParameter<string> CommandParameter { get; } = new CommandLineParameter<string>("filePath", "Path of the CSV file that contains bases (in cartesians) to load.");
 
         public new static List<CommandLineParameterBase> Parameters { get; } = new List<CommandLineParameterBase>()
         {
@@ -48,7 +48,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             Command = string.Empty;
             if (args.Count >= 1)
             {
-                Command = args[0];
+                Command = args[0].ToLower();
             }
         }
 

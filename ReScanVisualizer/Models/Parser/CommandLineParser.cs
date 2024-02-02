@@ -235,7 +235,7 @@ namespace ReScanVisualizer.Models.Parser
             };
             foreach (CommandLineParameterBase parameter in parameters)
             {
-                help.Add($"{parameter.Name}: {parameter.Type.Name} - {parameter.Description} - Required: {parameter.IsRequired}");
+                help.Add($"{parameter.Name}: {parameter.Type.Name} - {parameter.Description} - Required: {parameter.IsRequired}{((parameter.IsRequired) ? "" : $" - Default value: {parameter.DefaultValue}")}\n");
             }
             return help;
         }

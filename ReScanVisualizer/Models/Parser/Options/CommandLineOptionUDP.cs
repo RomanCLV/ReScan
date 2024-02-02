@@ -17,8 +17,8 @@ namespace ReScanVisualizer.Models.Parser.Options
         public new static string Description => "Start or close an UDP client on a specified port";
         public new static uint MinimumParameters => 2;
         public new static uint MaximumParameters => 2;
-        public static CommandLineParameter<string> OpenParameter { get; } = new CommandLineParameter<string>("open", "Option to open (o) or close (c) the UDP client", true);
-        public static CommandLineParameter<ushort> PortParameter { get; } = new CommandLineParameter<ushort>("port", "Receiver port", true);
+        public static CommandLineParameter<string> OpenParameter { get; } = new CommandLineParameter<string>("open", "Option to open (o) or close (c) the UDP client");
+        public static CommandLineParameter<ushort> PortParameter { get; } = new CommandLineParameter<ushort>("port", "Receiver port");
 
         public new static List<CommandLineParameterBase> Parameters { get; } = new List<CommandLineParameterBase>()
         {

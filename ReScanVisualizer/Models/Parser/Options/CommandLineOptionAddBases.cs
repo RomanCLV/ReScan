@@ -18,11 +18,11 @@ namespace ReScanVisualizer.Models.Parser.Options
         public new static string Description => "Read a CSV file and add the contained bases";
         public new static uint MinimumParameters => 1;
         public new static uint MaximumParameters => 5;
-        public static CommandLineParameter<string> FilePathParameter { get; } = new CommandLineParameter<string>("filePath", "Path of the CSV file that contains bases (in cartesians) to load.", true);
-        public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If file contains headers: true|t|1 - else: false|f|0");
-        public static CommandLineParameter<double> ScaleFactorParameter { get; } = new CommandLineParameter<double>("scaleFactor", "Scale factor to apply. Must be greater than 0. Example: 0.02 | 1.5");
-        public static CommandLineParameter<double> AxisScaleFactorParameter { get; } = new CommandLineParameter<double>("axisScaleFactor", "Axis scale factor to apply. Must be greater than 0. Example: 0.5 | 2");
-        public static CommandLineParameter<RenderQuality> RenderQualityParameter { get; } = new CommandLineParameter<RenderQuality>("renderQuality", "Render quality: " + string.Join("|", Tools.GetRenderQualitiesList().ToArray()));
+        public static CommandLineParameter<string> FilePathParameter { get; } = new CommandLineParameter<string>("filePath", "Path of the CSV file that contains bases (in cartesians) to load.");
+        public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If the file contains headers: true|t|1 - else: false|f|0", true);
+        public static CommandLineParameter<double> ScaleFactorParameter { get; } = new CommandLineParameter<double>("scaleFactor", "Scale factor to apply. Must be greater than 0. Example: 0.02 | 1.5", 1.0);
+        public static CommandLineParameter<double> AxisScaleFactorParameter { get; } = new CommandLineParameter<double>("axisScaleFactor", "Axis scale factor to apply. Must be greater than 0. Example: 0.5 | 2", 1.0);
+        public static CommandLineParameter<RenderQuality> RenderQualityParameter { get; } = new CommandLineParameter<RenderQuality>("renderQuality", "Render quality: " + string.Join("|", Tools.GetRenderQualitiesList().ToArray()), RenderQuality.High);
 
         public new static List<CommandLineParameterBase> Parameters { get; } = new List<CommandLineParameterBase>()
         {
@@ -65,7 +65,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                ContainsHeader = true;
+                ContainsHeader = ContainsHeaderParameter.DefaultValue;
             }
 
             if (args.Count >= 3)
@@ -85,7 +85,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                ScaleFactor = 1.0;
+                ScaleFactor = ScaleFactorParameter.DefaultValue;
             }
 
             if (args.Count >= 4)
@@ -105,7 +105,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                AxisScaleFactor = 1.0;
+                AxisScaleFactor = AxisScaleFactorParameter.DefaultValue;
             }
 
             if (args.Count >= 5)
@@ -121,7 +121,7 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
             else
             {
-                RenderQuality = RenderQuality.High;
+                RenderQuality = RenderQualityParameter.DefaultValue;
             }
         }
 
