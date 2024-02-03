@@ -3,7 +3,7 @@
 
 namespace ReScan
 {
-#define ZERO_CLAMP								0.000001
+#define ZERO_CLAMP								0.001
 
 #define SUCCESS_CODE							0
 
@@ -19,6 +19,8 @@ namespace ReScan
 #define SAVE_CONFIG_ERROR_CODE					200
 #define READ_CONFIG_ERROR_CODE					201
 #define SET_CONFIG_ERROR_CODE					202
+#define SAVE_CSV_ERROR_CODE						203
+#define READ_CSV_ERROR_CODE						204
 
 #define NO_MATRIX_INVERSE_ERROR_CODE			300
 }

@@ -759,19 +759,42 @@ namespace ReScan
 			else
 			{
 				Vector3d y(0.0, 1.0, 0.0);
+				int indexBestAngle = 2;
+				double bestAngle = 0.0;
+				double currentAngle;
+
 				for (size_t i = 2; i < size; i++)
 				{
 					y = *scatterGraph.at(i) - *p0;
-					if (!ReScan::Tools::areVectorsColinear(x, y))
+					currentAngle = ReScan::Tools::angleBetween(x, y);
+					if (abs(90.0 - currentAngle) < abs(90.0 - bestAngle))
 					{
-						break;
+						indexBestAngle = i;
 					}
+					//if (!ReScan::Tools::areVectorsColinear(x, y))
+					//{
+					//	break;
+					//}
 				}
+				y = *scatterGraph.at(indexBestAngle) - *p0;
+
 				z = x.cross(y);
+			}
+			if (z.z() == -0.0)
+			{
+				z.z() = 0.0;
 			}
 			if (z.z() < 0.0)
 			{
 				z *= -1.0;
+			}
+			if (z.x() == -0.0)
+			{
+				z.x() = 0.0;
+			}
+			if (z.y() == -0.0)
+			{
+				z.y() = 0.0;
 			}
 			z.normalize();
 			averagePlan->setABCD(z.x(), z.y(), z.z(), -(z.x() * barycenter.getX() + z.y() * barycenter.getY() + z.z() * barycenter.getZ()));
@@ -840,11 +863,23 @@ namespace ReScan
 			b *= (k / D);
 			c *= (-k / D);
 
+			if (c == -0.0)
+			{
+				c = 0.0;
+			}
 			if (c < 0)
 			{
 				a *= -1;
 				b *= -1;
 				c *= -1;
+			}
+			if (a == -0.0)
+			{
+				a = 0.0;
+			}
+			if (b == -0.0)
+			{
+				b = 0.0;
 			}
 			Vector3d z(a, b, c);
 			if (z.norm() == 0.0)
@@ -888,7 +923,7 @@ namespace ReScan
 			else
 			{
 				vector3 = *scatterGraph.at(i) - *p0;
-				isCoplanar = abs(ReScan::Tools::mixteProduct(vector1, vector2, vector3)) < 0.001;
+				isCoplanar = abs(ReScan::Tools::mixteProduct(vector1, vector2, vector3)) < ZERO_CLAMP;
 				if (!isCoplanar)
 				{
 					break;

@@ -190,21 +190,10 @@ namespace ReScan
 		}
 	}
 
-	bool ReScan::isObjFileValid() const
+	bool ReScan::fileExists(const std::string& filename) const
 	{
-		std::string filename = m_processData.getObjFile();
-
-		if (isValidNameFile(filename, "oBj"))
-		{
-			std::ifstream fileExists(filename);
-			if (!fileExists)
-			{
-				mout << "File: " << filename << " not found." << std::endl;
-				return false;
-			}
-			return true;
-		}
-		return false;
+		std::ifstream ifs(filename);
+		return ifs ? true : false;
 	}
 
 	bool ReScan::isValidNameFile(const std::string& filename, const std::string& extention)
@@ -255,176 +244,197 @@ namespace ReScan
 			return INVALID_FILE_ERROR_CODE;
 		}
 
-		if (!isObjFileValid())
+		if (!fileExists(m_processData.getObjFile()))
 		{
-			return INVALID_FILE_ERROR_CODE;
+			return FILE_NOT_FOUND_ERROR_CODE;
 		}
+
 		string filename = m_processData.getObjFile();
 		string filenameWithoutExtention = removeFileExtension(filename);
 
-		// Read obj file
-		objio::readObjFileVertices(filename, &vertices);
-
-		// populate graph with vertex read in the file
-		ScatterGraph::populateFromVectorXYZ(&vertices, graph);
-
-		// Select plan if needed
-		if (!m_processData.getPlan2D())
+		if (isValidNameFile(filename, "obj"))
 		{
-			if (m_processData.getEnableUserInput())
+			// Read obj file
+			objio::readObjFileVertices(filename, &vertices);
+
+			// populate graph with vertex read in the file
+			ScatterGraph::populateFromVectorXYZ(&vertices, graph);
+
+			// Select plan if needed
+			if (!m_processData.getPlan2D())
 			{
-				Plan2D plan2D;
-				int result = selectPlan2D(&plan2D);
-				if (result == SUCCESS_CODE)
+				if (m_processData.getEnableUserInput())
 				{
-					m_processData.setPlan2D(plan2D);
+					Plan2D plan2D;
+					int result = selectPlan2D(&plan2D);
+					if (result == SUCCESS_CODE)
+					{
+						m_processData.setPlan2D(plan2D);
+					}
+					else
+					{
+						return result;
+					}
 				}
 				else
 				{
-					return result;
+					return NO_PLAN_SELECTED_ERROR_CODE;
 				}
 			}
-			else
+
+			// Select getters
+			switch (*m_processData.getPlan2D())
 			{
-				return NO_PLAN_SELECTED_ERROR_CODE;
+			case Plan2D::XY:
+				m_processData.setAxis1Name('X');
+				m_processData.setAxis2Name('Y');
+				getters[0] = &Point3D::getX;
+				getters[1] = &Point3D::getY;
+				break;
+			case Plan2D::XZ:
+				m_processData.setAxis1Name('X');
+				m_processData.setAxis2Name('Z');
+				getters[0] = &Point3D::getX;
+				getters[1] = &Point3D::getZ;
+				break;
+			case Plan2D::YZ:
+				m_processData.setAxis1Name('Y');
+				m_processData.setAxis2Name('Z');
+				getters[0] = &Point3D::getY;
+				getters[1] = &Point3D::getZ;
+				break;
+			default:
+				mout << "Unexpected plan." << std::endl;
+				return INVALID_PLAN_ERROR_CODE;
 			}
-		}
 
-		// Select getters
-		switch (*m_processData.getPlan2D())
-		{
-		case Plan2D::XY:
-			m_processData.setAxis1Name('X');
-			m_processData.setAxis2Name('Y');
-			getters[0] = &Point3D::getX;
-			getters[1] = &Point3D::getY;
-			break;
-		case Plan2D::XZ:
-			m_processData.setAxis1Name('X');
-			m_processData.setAxis2Name('Z');
-			getters[0] = &Point3D::getX;
-			getters[1] = &Point3D::getZ;
-			break;
-		case Plan2D::YZ:
-			m_processData.setAxis1Name('Y');
-			m_processData.setAxis2Name('Z');
-			getters[0] = &Point3D::getY;
-			getters[1] = &Point3D::getZ;
-			break;
-		default:
-			mout << "Unexpected plan." << std::endl;
-			return INVALID_PLAN_ERROR_CODE;
-		}
+			mout << "\nSelected plan: " << m_processData.getAxis1Name() << m_processData.getAxis2Name() << std::endl;
 
-		mout << "\nSelected plan: " << m_processData.getAxis1Name() << m_processData.getAxis2Name() << std::endl;
+			// Find extremas points (2 corners of the ROI)
+			ScatterGraph::findExtrema(graph, *m_processData.getPlan2D(), getters, &minPoint, &maxPoint);
 
-		// Find extremas points (2 corners of the ROI)
-		ScatterGraph::findExtrema(graph, *m_processData.getPlan2D(), getters, &minPoint, &maxPoint);
-
-		mout << std::endl;
-		mout << "min point: " << minPoint << endl;
-		mout << "max point: " << maxPoint << endl;
-
-		// Compute dimensions of the ROI
-		getDistances(minPoint, maxPoint, getters);
-
-		// display infos about distances
-		mout << std::endl;
-		mout << "distance " << m_processData.getAxis1Name() << ": " << m_processData.getDistance1() << " mm" << endl;
-		mout << "distance " << m_processData.getAxis2Name() << ": " << m_processData.getDistance2() << " mm" << endl;
-
-		// Select step of axis 1 if needed
-		if (!m_processData.getStepAxis1())
-		{
-			if (m_processData.getEnableUserInput())
-			{
-				m_processData.setStepAxis1(selectStep(m_processData.getAxis1Name(), MIN_DISTANCE, int(m_processData.getDistance1())));
-			}
-			else
-			{
-				mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
-				return NO_STEP_AXIS_1_SELECTED_ERROR_CODE;
-			}
-		}
-		else if (!m_processData.isStep1Valid(MIN_DISTANCE))
-		{
-			mout << m_processData.getAxis1Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance1() << endl;
-			if (m_processData.getEnableUserInput())
-			{
-				m_processData.setStepAxis1(selectStep(m_processData.getAxis1Name(), MIN_DISTANCE, int(m_processData.getDistance1())));
-			}
-			else
-			{
-				mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
-				return NO_STEP_AXIS_1_SELECTED_ERROR_CODE;
-			}
-		}
-
-		// Select step of axis 2 if needed
-		if (!m_processData.getStepAxis2())
-		{
-			if (m_processData.getEnableUserInput())
-			{
-				m_processData.setStepAxis2(selectStep(m_processData.getAxis2Name(), MIN_DISTANCE, int(m_processData.getDistance2())));
-			}
-			else
-			{
-				mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
-				return NO_STEP_AXIS_2_SELECTED_ERROR_CODE;
-			}
-		}
-		else if (!m_processData.isStep2Valid(MIN_DISTANCE))
-		{
-			mout << m_processData.getAxis2Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance2() << endl;
-			if (m_processData.getEnableUserInput())
-			{
-				m_processData.setStepAxis2(selectStep(m_processData.getAxis2Name(), MIN_DISTANCE, int(m_processData.getDistance2())));
-			}
-			else
-			{
-				mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
-				return NO_STEP_AXIS_2_SELECTED_ERROR_CODE;
-			}
-		}
-
-		mout << std::endl;
-		mout << m_processData.getAxis1Name() << " axis step selected: " << *m_processData.getStepAxis1() << " mm" << std::endl;
-		mout << m_processData.getAxis2Name() << " axis step selected: " << *m_processData.getStepAxis2() << " mm" << std::endl;
-
-		// compute number of subdivsions on both axis
-		m_processData.setSubDivision1(getSubDivision(m_processData.getDistance1(), *m_processData.getStepAxis1()));
-		m_processData.setSubDivision2(getSubDivision(m_processData.getDistance2(), *m_processData.getStepAxis2()));
-
-		// display infos about subdivisions
-		mout << endl;
-		mout << "Number of subdivisions on " << m_processData.getAxis1Name() << ": " << m_processData.getSubDivisions1() << endl;
-		mout << "Number of subdivisions on " << m_processData.getAxis2Name() << ": " << m_processData.getSubDivisions2() << endl;
-		mout << "Total of subdivisions: " << (m_processData.getTotalSubDivisions()) << endl << endl;
-
-		// fill all sub graphs
-		fillSubDivisions(minPoint, graph, &subDivisions, getters, false);
-
-		// display infos about points
-		mout << "Number of points in the main graph: " << graph.size() << endl << endl;
-		mout << "Number of points in the sub graphes" << endl;
-		unsigned int sum = 0;
-		for (int i = 0; i < subDivisions.size(); i++)
-		{
-			mout << "Graph " << i + 1 << ": " << subDivisions[i].size() << endl;
-			sum += (unsigned int)subDivisions[i].size();
-		}
-		mout << "Total of points: " << sum << endl << endl;
-
-		if (m_processData.getExportSubDivisions())
-		{
-			std::string subdivisionsDir = filenameWithoutExtention + "_subdivisions";
-			std::filesystem::create_directory(subdivisionsDir);
-
-			auto splitPath = Tools::splitString(filenameWithoutExtention, "\\");
-			std::string subdivionBasePath = subdivisionsDir + "\\" + splitPath[splitPath.size() - 1];
-
-			exportSubDivisionsToCSV(subdivionBasePath, subDivisions);
 			mout << std::endl;
+			mout << "min point: " << minPoint << endl;
+			mout << "max point: " << maxPoint << endl;
+
+			// Compute dimensions of the ROI
+			getDistances(minPoint, maxPoint, getters);
+
+			// display infos about distances
+			mout << std::endl;
+			mout << "distance " << m_processData.getAxis1Name() << ": " << m_processData.getDistance1() << " mm" << endl;
+			mout << "distance " << m_processData.getAxis2Name() << ": " << m_processData.getDistance2() << " mm" << endl;
+
+			// Select step of axis 1 if needed
+			if (!m_processData.getStepAxis1())
+			{
+				if (m_processData.getEnableUserInput())
+				{
+					m_processData.setStepAxis1(selectStep(m_processData.getAxis1Name(), MIN_DISTANCE, int(m_processData.getDistance1())));
+				}
+				else
+				{
+					mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
+					return NO_STEP_AXIS_1_SELECTED_ERROR_CODE;
+				}
+			}
+			else if (!m_processData.isStep1Valid(MIN_DISTANCE))
+			{
+				mout << m_processData.getAxis1Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance1() << endl;
+				if (m_processData.getEnableUserInput())
+				{
+					m_processData.setStepAxis1(selectStep(m_processData.getAxis1Name(), MIN_DISTANCE, int(m_processData.getDistance1())));
+				}
+				else
+				{
+					mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
+					return NO_STEP_AXIS_1_SELECTED_ERROR_CODE;
+				}
+			}
+
+			// Select step of axis 2 if needed
+			if (!m_processData.getStepAxis2())
+			{
+				if (m_processData.getEnableUserInput())
+				{
+					m_processData.setStepAxis2(selectStep(m_processData.getAxis2Name(), MIN_DISTANCE, int(m_processData.getDistance2())));
+				}
+				else
+				{
+					mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
+					return NO_STEP_AXIS_2_SELECTED_ERROR_CODE;
+				}
+			}
+			else if (!m_processData.isStep2Valid(MIN_DISTANCE))
+			{
+				mout << m_processData.getAxis2Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance2() << endl;
+				if (m_processData.getEnableUserInput())
+				{
+					m_processData.setStepAxis2(selectStep(m_processData.getAxis2Name(), MIN_DISTANCE, int(m_processData.getDistance2())));
+				}
+				else
+				{
+					mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
+					return NO_STEP_AXIS_2_SELECTED_ERROR_CODE;
+				}
+			}
+
+			mout << std::endl;
+			mout << m_processData.getAxis1Name() << " axis step selected: " << *m_processData.getStepAxis1() << " mm" << std::endl;
+			mout << m_processData.getAxis2Name() << " axis step selected: " << *m_processData.getStepAxis2() << " mm" << std::endl;
+
+			// compute number of subdivsions on both axis
+			m_processData.setSubDivision1(getSubDivision(m_processData.getDistance1(), *m_processData.getStepAxis1()));
+			m_processData.setSubDivision2(getSubDivision(m_processData.getDistance2(), *m_processData.getStepAxis2()));
+
+			// display infos about subdivisions
+			mout << endl;
+			mout << "Number of subdivisions on " << m_processData.getAxis1Name() << ": " << m_processData.getSubDivisions1() << endl;
+			mout << "Number of subdivisions on " << m_processData.getAxis2Name() << ": " << m_processData.getSubDivisions2() << endl;
+			mout << "Total of subdivisions: " << (m_processData.getTotalSubDivisions()) << endl << endl;
+
+			// fill all sub graphs
+			fillSubDivisions(minPoint, graph, &subDivisions, getters, false);
+
+			// display infos about points
+			mout << "Number of points in the main graph: " << graph.size() << endl << endl;
+			mout << "Number of points in the sub graphes" << endl;
+			unsigned int sum = 0;
+			for (int i = 0; i < subDivisions.size(); i++)
+			{
+				mout << "Graph " << i + 1 << ": " << subDivisions[i].size() << endl;
+				sum += (unsigned int)subDivisions[i].size();
+			}
+			mout << "Total of points: " << sum << endl << endl;
+
+			if (m_processData.getExportSubDivisions())
+			{
+				std::string subdivisionsDir = filenameWithoutExtention + "_subdivisions";
+				std::filesystem::create_directory(subdivisionsDir);
+
+				auto splitPath = Tools::splitString(filenameWithoutExtention, "\\");
+				std::string subdivionBasePath = subdivisionsDir + "\\" + splitPath[splitPath.size() - 1];
+
+				exportSubDivisionsToCSV(subdivionBasePath, subDivisions);
+				mout << std::endl;
+			}
+		}
+		else if (isValidNameFile(filename, "csv"))
+		{
+			ScatterGraph g;
+			if (ScatterGraph::readCSV(filename, &g))
+			{
+				subDivisions.push_back(g);
+			}
+			else
+			{
+				mout << "Error while reading " << filename << std::endl;
+				return READ_CSV_ERROR_CODE;
+			}
+		}
+		else
+		{
+			return INVALID_FILE_ERROR_CODE;
 		}
 
 		mout << "Computing base..." << endl;

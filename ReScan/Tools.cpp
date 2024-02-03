@@ -77,25 +77,25 @@ namespace ReScan
 
 		double clamp(double d)
 		{
-			return (-ZERO_CLAMP < d && d < ZERO_CLAMP) ? 0.0 : d;
+			return ((-ZERO_CLAMP < d) && (d < ZERO_CLAMP)) ? 0.0 : d;
 		}
 
 		double clampv(double d, double v)
 		{
-			return (v - ZERO_CLAMP < d && d < v + ZERO_CLAMP) ? v : d;
+			return ((v - ZERO_CLAMP < d) && (d < v + ZERO_CLAMP)) ? v : d;
 		}
 
 		double clampv3(double d, double v1, double v2, double v3)
 		{
-			if (v1 - ZERO_CLAMP < d && d < v1 + ZERO_CLAMP)
+			if ((v1 - ZERO_CLAMP < d) && (d < v1 + ZERO_CLAMP))
 			{
 				return v1;
 			}
-			else if (v2 - ZERO_CLAMP < d && d < v2 + ZERO_CLAMP)
+			else if ((v2 - ZERO_CLAMP < d) && (d < v2 + ZERO_CLAMP))
 			{
 				return v2;
 			}
-			else if (v3 - ZERO_CLAMP < d && d < v3 + ZERO_CLAMP)
+			else if ((v3 - ZERO_CLAMP < d) && (d < v3 + ZERO_CLAMP))
 			{
 				return v3;
 			}
@@ -104,23 +104,23 @@ namespace ReScan
 
 		double clampv5(double d, double v1, double v2, double v3, double v4, double v5)
 		{
-			if (v1 - ZERO_CLAMP < d && d < v1 + ZERO_CLAMP)
+			if ((v1 - ZERO_CLAMP < d) && (d < v1 + ZERO_CLAMP))
 			{
 				return v1;
 			}
-			else if (v2 - ZERO_CLAMP < d && d < v2 + ZERO_CLAMP)
+			else if ((v2 - ZERO_CLAMP < d) && (d < v2 + ZERO_CLAMP))
 			{
 				return v2;
 			}
-			else if (v3 - ZERO_CLAMP < d && d < v3 + ZERO_CLAMP)
+			else if ((v3 - ZERO_CLAMP < d) && (d < v3 + ZERO_CLAMP))
 			{
 				return v3;
 			}
-			else if (v4 - ZERO_CLAMP < d && d < v4 + ZERO_CLAMP)
+			else if ((v4 - ZERO_CLAMP < d) && (d < v4 + ZERO_CLAMP))
 			{
 				return v4;
 			}
-			else if (v5 - ZERO_CLAMP < d && d < v5 + ZERO_CLAMP)
+			else if ((v5 - ZERO_CLAMP) < d && (d < v5 + ZERO_CLAMP))
 			{
 				return v5;
 			}

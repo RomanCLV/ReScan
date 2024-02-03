@@ -61,7 +61,7 @@ namespace ReScan
 		void notifyObservers(const FileType fileType, const std::string& path) const;
 
 		void resetProcessData();
-		bool isObjFileValid() const;
+		bool fileExists(const std::string& filename) const;
 
 		int selectPlan2D(Plan2D* plan2D) const;
 		double getDistance1D(const Point3D& point1, const Point3D& point2, double (Point3D::* getter)() const) const;

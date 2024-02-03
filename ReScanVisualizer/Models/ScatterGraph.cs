@@ -438,15 +438,26 @@ namespace ReScanVisualizer.Models
                 }
                 else
                 {
-                    Vector3D y = new Vector3D(0, 1, 0);
+                    Vector3D y;
+                    int indexBestAngle = 2;
+                    double bestAngle = 0.0;
+                    double currentAngle;
+
                     for (int i = 2; i < size; i++)
                     {
                         y = _points[i] - _points[0];
-                        if (!Tools.AreVectorsColinear(x, y))
+                        currentAngle = Vector3D.AngleBetween(x, y);
+                        if (Math.Abs(90.0 - currentAngle) < Math.Abs(90.0 - bestAngle))
                         {
-                            break;
+                            indexBestAngle = i;
                         }
+                        //if (!Tools.AreVectorsColinear(x, y))
+                        //{
+                        //    break;
+                        //}
                     }
+                    y = _points[indexBestAngle] - _points[0];
+
                     z = Vector3D.CrossProduct(x, y);
                 }
                 if (z.Z < 0)

@@ -512,5 +512,30 @@ namespace ReScanVisualizer.Models
         {
             return $"{X.X};{X.Y};{X.Z};{Y.X};{Y.Y};{Y.Z};{Z.X};{Z.Y};{Z.Z}";
         }
+
+        public void SetFrom(Base3D nearestBase, bool setOrigin = true)
+        {
+            if (setOrigin)
+            {
+                Point3D oldOrigin = _origin;
+                Point3D newOrigin = nearestBase._origin;
+                _origin.X = nearestBase._origin.X;
+                _origin.Y = nearestBase._origin.Y;
+                _origin.Z = nearestBase._origin.Z;
+                OnOriginChanged(ref oldOrigin, ref newOrigin);
+            }
+            _x.X = nearestBase._x.X;
+            _x.Y = nearestBase._x.Y;
+            _x.Z = nearestBase._x.Z;
+            _y.X = nearestBase._y.X;
+            _y.Y = nearestBase._y.Y;
+            _y.Z = nearestBase._y.Z;
+            _z.X = nearestBase._z.X;
+            _z.Y = nearestBase._z.Y;
+            _z.Z = nearestBase._z.Z;
+            OnXChanged();
+            OnYChanged();
+            OnZChanged();
+        }
     }
 }

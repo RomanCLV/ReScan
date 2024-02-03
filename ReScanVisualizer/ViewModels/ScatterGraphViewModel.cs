@@ -201,7 +201,7 @@ namespace ReScanVisualizer.ViewModels
         public bool IsMouseOver
         {
             get => _isMouseOver;
-            set 
+            set
             {
                 if (SetValue(ref _isMouseOver, value) && _part != null)
                 {
@@ -573,6 +573,7 @@ namespace ReScanVisualizer.ViewModels
             Plan averagePlan = ComputeAveragePlan();
             Base3D base3D = ComputeBase3D(barycenter, averagePlan);
             CorrectBaseWithPart(base3D);
+
             double averagePlanLength = ComputeAveragePlanLength(base3D);
 
             _barycenter.UpdatePoint(barycenter);
@@ -605,7 +606,7 @@ namespace ReScanVisualizer.ViewModels
             Point3D currentPoint;
             double maxDistance = 0.0;
             double distance;
-            Matrix3D t0B= base3D.ToMatrix3D();
+            Matrix3D t0B = base3D.ToMatrix3D();
             Matrix3D tB0 = t0B.Inverse();
 
             for (int i = 0; i < size; i++)
@@ -621,6 +622,12 @@ namespace ReScanVisualizer.ViewModels
                     maxDistance = distance;
                 }
             }
+
+            if (maxDistance == 0.0)
+            {
+                maxDistance = 0.5;
+            }
+
             return 2.0 * maxDistance;
         }
 
@@ -634,30 +641,37 @@ namespace ReScanVisualizer.ViewModels
             if (_part != null)
             {
                 Base3D nearestBase = _part.FindNeareatBase(base3D.Origin);
-                double angle = Vector3D.AngleBetween(base3D.Z, nearestBase.Z);
-                if (angle > 90.0)
+                if (_scatterGraph.Count == 0)
                 {
-                    // Mettre le Z dans la bonne direction
-                    base3D.Rotate(base3D.Y, 180.0);
+                    base3D.SetFrom(nearestBase, false);
                 }
-
-                angle = Vector3D.AngleBetween(base3D.X, nearestBase.X);
-                if (angle > 90.0)
+                else
                 {
-                    // Mettre le X dans la bonne direction
-                    base3D.Rotate(base3D.Z, 180.0);
+                    double angle = Vector3D.AngleBetween(base3D.Z, nearestBase.Z);
+                    if (angle > 90.0)
+                    {
+                        // Mettre le Z dans la bonne direction
+                        base3D.Rotate(base3D.Y, 180.0);
+                    }
 
-                    // remarque : techniquement on ne devrait pas a avoir le faire
-                    // mais cas particulier fait que une base avait son X parfaitement à 180° de X de reference
-                    // donc patch
-                    // de plus, ca replace les x entre [-90;90] au lieu de [-180;180] donc ça aide (enormement) pour l'algorithme suivant
-                    // donc pas plus mal de le faire
-                }
+                    angle = Vector3D.AngleBetween(base3D.X, nearestBase.X);
+                    if (angle > 90.0)
+                    {
+                        // Mettre le X dans la bonne direction
+                        base3D.Rotate(base3D.Z, 180.0);
 
-                angle = GetAnglesBetweenBasesXAxis(base3D, nearestBase);
-                if (!double.IsNaN(angle))
-                {
-                    base3D.Rotate(base3D.Z, angle);
+                        // remarque : techniquement on ne devrait pas a avoir le faire
+                        // mais cas particulier fait que une base avait son X parfaitement à 180° de X de reference
+                        // donc patch
+                        // de plus, ca replace les x entre [-90;90] au lieu de [-180;180] donc ça aide (enormement) pour l'algorithme suivant
+                        // donc pas plus mal de le faire
+                    }
+
+                    angle = GetAnglesBetweenBasesXAxis(base3D, nearestBase);
+                    if (!double.IsNaN(angle) && angle != 0.0)
+                    {
+                        base3D.Rotate(base3D.Z, angle);
+                    }
                 }
             }
         }
