@@ -759,7 +759,7 @@ namespace ReScan
 			else
 			{
 				Vector3d y(0.0, 1.0, 0.0);
-				int indexBestAngle = 2;
+				size_t indexBestAngle = 2;
 				double bestAngle = 0.0;
 				double currentAngle;
 
