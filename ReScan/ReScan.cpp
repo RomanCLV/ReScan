@@ -472,13 +472,9 @@ namespace ReScan
 					{
 						mout << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
 					}
-					if (angleZ >= 90.0)
+					if (angleZ >= 90.0 || angleX >= 90.0)
 					{
-						mout << "base " << (i + 1) << " has a wrong Z correction: z angle difference: " << angleZ << std::endl;
-					}
-					if (angleX >= 90.0)
-					{ 
-						mout << "base " << (i + 1) << " has a wrong X correction: x angle difference: " << angleX << std::endl;
+						mout << "WARNING: base " << (i + 1) << " has a wrong correction: z angle diff.: " << angleZ << "°   |   x angle diff.: " << angleX << "°" << std::endl;
 					}
 				}
 				bases[i] = base;
