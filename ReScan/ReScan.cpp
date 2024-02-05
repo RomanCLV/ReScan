@@ -442,6 +442,9 @@ namespace ReScan
 		vector<Base3D*> bases(subDivisions.size(), nullptr);
 
 		Base3D refBase = Base3D(*m_processData.getReferenceBase());
+		const Eigen::Vector3d refZ = *(refBase.getZ());
+		const Eigen::Vector3d refX = *(refBase.getX());
+
 		bool isNotBaseIdentity = !refBase.isIdentity();
 
 		int fixResult;
@@ -458,9 +461,23 @@ namespace ReScan
 				if (isNotBaseIdentity)
 				{
 					fixResult = ScatterGraph::fixBase3D(refBase, base);
+					Eigen::Vector3d baseZ = *(base->getZ());
+					Eigen::Vector3d baseX = *(base->getX());
+
+					double angleZ = Tools::angleBetween(refZ, baseZ);
+					double angleX = Tools::angleBetween(refX, baseX);
+
 					if (fixResult == NO_MATRIX_INVERSE_ERROR_CODE)
 					{
 						mout << "cannot fix base " << (i + 1) << ": matrix can't be inverted" << endl;
+					}
+					if (angleZ >= 90.0)
+					{
+						mout << "base " << (i + 1) << " has a wrong Z correction: z angle difference: " << angleZ << std::endl;
+					}
+					if (angleX >= 90.0)
+					{ 
+						mout << "base " << (i + 1) << " has a wrong X correction: x angle difference: " << angleX << std::endl;
 					}
 				}
 				bases[i] = base;
@@ -485,7 +502,7 @@ namespace ReScan
 				}
 			}
 			mout << endl << "Exporting bases (cartesian)..." << endl;
-			if (exportBasesCartesianToCSV(path, bases, "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0"))
+			if (exportBasesCartesianToCSV(path, bases, "0;0;0;0;0;0;0;0;0;0;0;0"))
 			{
 				mout << "Bases (cartesians) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesCartesian, path);
@@ -512,7 +529,7 @@ namespace ReScan
 				}
 			}
 			mout << endl << "Exporting bases (Euler angles)..." << endl;
-			if (exportBasesEulerAnglesToCSV(path, bases, "0.0;0.0;0.0;0.0;0.0;0.0"))
+			if (exportBasesEulerAnglesToCSV(path, bases, "0;0;0;0;0;0"))
 			{
 				mout << "Bases (Euler angles) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesEulerAngles, path);
