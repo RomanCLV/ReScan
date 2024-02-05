@@ -246,6 +246,7 @@ namespace ReScan
 
 		if (!fileExists(m_processData.getObjFile()))
 		{
+			mout << "File " << m_processData.getObjFile() << " not found" << std::endl;
 			return FILE_NOT_FOUND_ERROR_CODE;
 		}
 
