@@ -4,20 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReScanVisualizer.Views"
+        xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
         mc:Ignorable="d"
         Title="Export bases" 
         Height="720" Width="1380"
+        MinHeight="720" MinWidth="1380"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource backgroundColor}"
         Foreground="{StaticResource foregroundColor}"
         >
+    <Window.Resources>
+        <converters:BoolToInverseBoolConverter x:Key="BoolToInverseBoolConverter"/>
+    </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="ValidateCommandKey" 
                 Command="{Binding Path=ValidateCommand.Command}"  
                 Key="{Binding Path=ValidateCommand.Key}" 
                 Modifiers="{Binding Path=ValidateCommand.Modifiers}"
                 />
-        
+
         <KeyBinding x:Name="CancelCommandKey" 
                 Command="{Binding Path=CancelCommand.Command}"  
                 Key="{Binding Path=CancelCommand.Key}" 
@@ -25,28 +30,57 @@
                 />
     </Window.InputBindings>
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="Export bases" Style="{StaticResource helpWindowTitle}"/>
-                <DockPanel Margin="50">
-                    <CheckBox DockPanel.Dock="Top" Margin="0 5" Content="Select all" IsChecked="{Binding SelectAll}" Foreground="{StaticResource foregroundColor}" />
-                    
-                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource myButton}"
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="Export bases" Style="{StaticResource helpWindowTitle}"/>
+            <DockPanel Margin="50">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Text="Sources:" />
+                    <CheckBox IsChecked="{Binding IsGraphSourcesSelected}"     Foreground="{StaticResource foregroundColor}" Margin="2" Content="All scatter graphs" />
+                    <CheckBox IsChecked="{Binding IsAddedBasesSourceSelected}" Foreground="{StaticResource foregroundColor}" Margin="2" Content="Added bases" />
+                </StackPanel>
+
+                <Separator DockPanel.Dock="Top" Margin="5 15"/>
+
+                <CheckBox DockPanel.Dock="Top" IsChecked="{Binding IncludeEmptyBases}"      Foreground="{StaticResource foregroundColor}" Margin="2" Content="Include empty bases" />
+                <CheckBox DockPanel.Dock="Top" IsChecked="{Binding WriteEmptyBasesWith0}"   Foreground="{StaticResource foregroundColor}" Margin="2" Content="Write 0 in columns of empty bases" />
+
+                <Separator DockPanel.Dock="Top" Margin="5 15"/>
+
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock Text="Mode:"/>
+                    <RadioButton IsChecked="{Binding IsCartesianMode}"   Margin="20 0" Foreground="{StaticResource foregroundColor}" Content="Cartesian" />
+                    <RadioButton IsChecked="{Binding IsEulerAnglesMode}" Margin="20 0" Foreground="{StaticResource foregroundColor}" Content="Euler angles ZYX" IsEnabled="False"/>
+                </StackPanel>
+
+                <Separator DockPanel.Dock="Top" Margin="5 15"/>
+
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock Text="Decimal character:"/>
+                    <RadioButton IsChecked="{Binding IsDecimalCharDot}" Margin="20 0" Foreground="{StaticResource foregroundColor}" Content="." />
+                    <RadioButton IsChecked="{Binding IsDecimalCharDot, Converter={StaticResource BoolToInverseBoolConverter}}" Margin="20 0" Foreground="{StaticResource foregroundColor}" Content=","/>
+                </StackPanel>
+
+                <Separator DockPanel.Dock="Top" Margin="5 15"/>
+
+                <CheckBox DockPanel.Dock="Top" Margin="0 5" Content="Select all" IsChecked="{Binding SelectAll}" Foreground="{StaticResource foregroundColor}" />
+
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource myButton}"
                                 Command="{Binding ElementName=ValidateCommandKey, Path=Command}"
                                 ToolTip="{Binding ValidateCommand.Description}">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource update}" Width="25" Height="25" />
-                                    <TextBlock Text="Export" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        <Button Content="Cancel" Style="{StaticResource myButton}"
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource update}" Width="25" Height="25" />
+                                <TextBlock Text="Export" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Content="Cancel" Style="{StaticResource myButton}"
                             Command="{Binding ElementName=CancelCommandKey, Path=Command}"
                             ToolTip="{Binding CancelCommand.Description}"/>
-                    </StackPanel>
-                    
+                </StackPanel>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0 15 0 0">
                     <ListView 
                         ItemsSource="{Binding Items}"
                         Background="{StaticResource backgroundListColor}" 
@@ -67,11 +101,9 @@
                                 </Style.Triggers>
                             </Style>
                         </ListView.ItemContainerStyle>
-                        
+
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Base name" Width="75" DisplayMemberBinding="{Binding Name}"/>
-
                                 <GridViewColumn Header="Selected" Width="60">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -79,12 +111,13 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                              
+                                <GridViewColumn Header="Base name" Width="200" DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="Source"    Width="400" DisplayMemberBinding="{Binding SourceStr}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
-                </DockPanel>
+                </ScrollViewer>
             </DockPanel>
-        </ScrollViewer>
+        </DockPanel>
     </Grid>
 </Window>

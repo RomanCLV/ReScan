@@ -307,5 +307,20 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 viewModel.ApplyCommonDisplayBase();
             }
         }
+
+        private void ApplyAllCommonParametersButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonPart();
+                viewModel.ApplyMaxPoints();
+                viewModel.ApplyCommonAxisScaleFactor();
+                viewModel.ApplyCommonPointRadius();
+                viewModel.ApplyCommonRenderQuality();
+                viewModel.ApplyCommonDisplayBarycenter();
+                viewModel.ApplyCommonDisplayAveragePlan();
+                viewModel.ApplyCommonDisplayBase();
+            }
+        }
     }
 }

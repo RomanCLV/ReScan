@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         Title="Import bases" 
         Height="720" Width="1380"
+        MinHeight="720" MinWidth="1380"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource backgroundColor}"
         Foreground="{StaticResource foregroundColor}"

@@ -19,113 +19,115 @@
             Command="{Binding Path=AddPartCommand.Command}"
             Key="{Binding Path=AddPartCommand.Key}" 
             Modifiers="{Binding Path=AddPartCommand.Modifiers}"/>
-        
+
     </UserControl.InputBindings>
-    <StackPanel>
+    <Grid>
         <DockPanel>
-            <Button HorizontalAlignment="Left" Command="{Binding SelectFilesCommand}" Style="{StaticResource myButton}" ToolTip="Select files">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource browse}" Width="25" Height="25" />
-                        <TextBlock Text="Select files" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <TextBlock Text="Create as a part" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                <ComboBox Margin="5" Width="100"
+            <StackPanel DockPanel.Dock="Top">
+                <Button HorizontalAlignment="Left" Command="{Binding SelectFilesCommand}" Style="{StaticResource myButton}" ToolTip="Select files">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{StaticResource browse}" Width="25" Height="25" />
+                            <TextBlock Text="Select files" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <TextBlock Text="Create as a part" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                    <ComboBox Margin="5" Width="100"
                     VerticalAlignment="Center"
                     ItemsSource="{Binding PartsListSource.Parts}" 
                     SelectedValue="{Binding Part}"
                     DisplayMemberPath="Name"
                     IsEnabled="{Binding PartsListSource.Parts, Converter={StaticResource EnumerableNonEmptyConverter}}"/>
 
-                <Button Style="{StaticResource myButtonIcon}" Width="25" Height="25"
+                    <Button Style="{StaticResource myButtonIcon}" Width="25" Height="25"
                         Command="{Binding ElementName=AddPartCommandKey, Path=Command}"
                         ToolTip="{Binding AddPartCommand.Description}">
-                    <Button.Content>
-                        <Image Source="{StaticResource add}" />
-                    </Button.Content>
-                </Button>
-                <Button Style="{StaticResource myButtonIcon}" Width="25" Height="25" Click="RemovePartButton_Click" ToolTip="Disassociate part" IsEnabled="{Binding Part, Converter={StaticResource IsNotNullConverter}}">
-                    <Button.Content>
-                        <Image Source="{StaticResource delete}" />
-                    </Button.Content>
-                </Button>
+                        <Button.Content>
+                            <Image Source="{StaticResource add}" />
+                        </Button.Content>
+                    </Button>
+                    <Button Style="{StaticResource myButtonIcon}" Width="25" Height="25" Click="RemovePartButton_Click" ToolTip="Disassociate part" IsEnabled="{Binding Part, Converter={StaticResource IsNotNullConverter}}">
+                        <Button.Content>
+                            <Image Source="{StaticResource delete}" />
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
             </StackPanel>
-        </DockPanel>
-        <ListView 
-            ItemsSource="{Binding Builders}" 
-            Background="{StaticResource backgroundListColor}" 
-            KeyUp="ListView_KeyUp"
-            FocusVisualStyle="{x:Null}"
-            Margin="10"
-            >
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="Transparent" />
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="Transparent" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.View>
-                <GridView>
-                    <!-- Colonne Contains Header -->
-                    <GridViewColumn Header="Contains Header" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding ContainsHeader}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+            <ListView 
+                    ItemsSource="{Binding Builders}" 
+                    Background="{StaticResource backgroundListColor}" 
+                    KeyUp="ListView_KeyUp"
+                    FocusVisualStyle="{x:Null}"
+                    Margin="10"
+                >
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <!-- Colonne Contains Header -->
+                        <GridViewColumn Header="Contains Header" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox HorizontalAlignment="Center" IsChecked="{Binding ContainsHeader}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
-                    <!-- Colonne Color -->
-                    <GridViewColumn Header="Color" Width="50">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <!-- Rectangle for Color Display -->
-                                    <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
+                        <!-- Colonne Color -->
+                        <GridViewColumn Header="Color" Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <!-- Rectangle for Color Display -->
+                                        <Rectangle HorizontalAlignment="Center" StrokeThickness="1" Stroke="Black"
                                                MouseUp="Rectangle_MouseUp"
                                                Fill="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" 
                                                Width="16" Height="16" 
                                                ToolTip="{Binding Color}"
                                                ToolTipService.Placement="Top"/>
 
-                                    <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
-                                        <uc:ColorSelector 
+                                        <Popup x:Name="ColorPopup" Placement="Bottom" Closed="ColorPopup_Closed">
+                                            <uc:ColorSelector 
                                             Background="{StaticResource backgroundColor}"
                                             BorderBrush="Black"
                                             BorderThickness="1"
                                             Padding="5"
                                             ColorChanged="ColorSelector_ColorChanged" />
-                                    </Popup>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                                        </Popup>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
-                    <!-- Colonne Filename -->
-                    <GridViewColumn Header="Filename" Width="600">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding FileName}" Style="{StaticResource myTextBlockLeft}">
-                                    <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding Path}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </StackPanel>
+                        <!-- Colonne Filename -->
+                        <GridViewColumn Header="Filename" Width="600">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FileName}" Style="{StaticResource myTextBlockLeft}">
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding Path}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+    </Grid>
 </UserControl>

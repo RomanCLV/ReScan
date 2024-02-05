@@ -36,59 +36,66 @@
             Command="{Binding Path=AddScatterGraphBuilderCommand.Command}"  
             Key="{Binding Path=AddScatterGraphBuilderCommand.Key}" 
             Modifiers="{Binding Path=AddScatterGraphBuilderCommand.Modifiers}"/>
-        
+
         <KeyBinding x:Name="AddPartCommandKey"
             Command="{Binding Path=AddPartCommand.Command}"
             Key="{Binding Path=AddPartCommand.Key}" 
             Modifiers="{Binding Path=AddPartCommand.Modifiers}"/>
-        
+
         <KeyBinding x:Name="BuildCommandKey" 
             Command="{Binding Path=BuildCommand.Command}"  
             Key="{Binding Path=BuildCommand.Key}" 
             Modifiers="{Binding Path=BuildCommand.Modifiers}"/>
-        
+
         <KeyBinding x:Name="LoadCommandKey" 
                     Command="{Binding Path=LoadCommand.Command}"  
                     Key="{Binding Path=LoadCommand.Key}" 
                     Modifiers="{Binding Path=LoadCommand.Modifiers}"/>
-        
+
         <KeyBinding x:Name="LoadAndCloseCommandKey" 
             Command="{Binding Path=LoadAndCloseCommand.Command}"  
             Key="{Binding Path=LoadAndCloseCommand.Key}" 
             Modifiers="{Binding Path=LoadAndCloseCommand.Modifiers}"/>
-        
+
         <KeyBinding x:Name="CancelCommandKey" 
                     Command="{Binding Path=CancelCommand.Command}"  
                     Key="{Binding Path=CancelCommand.Key}" 
                     Modifiers="{Binding Path=CancelCommand.Modifiers}"/>
-        
+
     </Window.InputBindings>
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="Add Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
-                <DockPanel Margin="50">
-                    <DockPanel DockPanel.Dock="Top">
-                        <Button 
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="Add Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
+            <DockPanel Margin="50">
+                <DockPanel DockPanel.Dock="Top">
+                    <Button 
                             DockPanel.Dock="Left" 
                             Style="{StaticResource myButton}"
                             VerticalAlignment="Bottom"
                             Command="{Binding ElementName=AddScatterGraphBuilderCommandKey, Path=Command}"
                             ToolTip="{Binding AddScatterGraphBuilderCommand.Description}"
                             >
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource add}" Width="25" Height="25" />
-                                    <TextBlock Text="Add scatter graph builder" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        
-                        <TextBlock DockPanel.Dock="Top" Text="Common parameters:" Style="{StaticResource myTextBlockLeft}"/>
-
-                        <StackPanel>
-                            <TextBlock Text="Part" Style="{StaticResource myTextBlock}"/>
+                        <Button.Content>
                             <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource add}" Width="25" Height="25" />
+                                <TextBlock Text="Add scatter graph builder" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <TextBlock Text="Common parameters:" Style="{StaticResource myTextBlockLeft}"/>
+                        <Button Content="Apply all common parameters" Style="{StaticResource myButton}" Click="ApplyAllCommonParametersButton_Click" />
+                    </StackPanel>
+
+                    <Border DockPanel.Dock="Left" BorderThickness="1 0 1 0" Margin="0 4 0 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <Button Content="Randomize colors" Style="{StaticResource myButton}" VerticalAlignment="Bottom" Click="RandomizeColorButton_Click"/>
+                    </Border>
+
+                    <Border DockPanel.Dock="Left" BorderThickness="0 0 1 0" Margin="0 4 0 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Part" Style="{StaticResource myTextBlock}" HorizontalAlignment="Left"/>
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                                 <ComboBox Margin="5" MinWidth="120" VerticalAlignment="Center"
                                     ItemsSource="{Binding PartsListSource.Parts}" 
                                     SelectedValue="{Binding Part}"
@@ -107,26 +114,28 @@
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
+                            <Button DockPanel.Dock="Bottom" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                 ToolTip="Apply the common part for every added builder."
                                 Click="ApplyCommonPartButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
 
-                        <Button DockPanel.Dock="Left" Content="Randomize colors" Style="{StaticResource myButton}" VerticalAlignment="Top" Click="RandomizeColorButton_Click"/>
-
-                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <TextBlock Text="Max points graph" Style="{StaticResource myTextBlock}"/>
-                            <TextBox Text="{Binding MaxPoints}" Width="75"  Style="{StaticResource myTextBox}"
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Max points graph" Style="{StaticResource myTextBlock}"/>
+                            <TextBox DockPanel.Dock="Top" Text="{Binding MaxPoints}" Width="75"  Style="{StaticResource myTextBox}"
                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
 
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
+                            <Button DockPanel.Dock="Top" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                     ToolTip="Find the reduction factor of all builded graphes to reach the specified max points."
                                     Click="ApplyMaxPointsButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
 
-                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <TextBlock Text="Scale factor" Style="{StaticResource myTextBlock}"/>
-                            <TextBox Width="75"  Style="{StaticResource myTextBox}"
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Scale factor" Style="{StaticResource myTextBlock}"/>
+                            <TextBox DockPanel.Dock="Top" Width="75"  Style="{StaticResource myTextBox}"
                                 GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
                                 <TextBox.Text>
                                     <Binding Path="CommonScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
@@ -136,14 +145,16 @@
                                     </Binding>
                                 </TextBox.Text>
                             </TextBox>
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
+                            <Button DockPanel.Dock="Top" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                 ToolTip="Apply this scale factor for all builded graphes."
                                 Click="ApplyCommonScaleFactorButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
 
-                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <TextBlock Text="Axis scale factor" Style="{StaticResource myTextBlock}"/>
-                            <TextBox Width="75"  Style="{StaticResource myTextBox}"
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Axis scale factor" Style="{StaticResource myTextBlock}"/>
+                            <TextBox DockPanel.Dock="Top" Width="75"  Style="{StaticResource myTextBox}"
                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
                                 <TextBox.Text>
                                     <Binding Path="CommonAxisScaleFactor" StringFormat="N3" UpdateSourceTrigger="PropertyChanged">
@@ -154,141 +165,156 @@
                                 </TextBox.Text>
                             </TextBox>
 
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
+                            <Button DockPanel.Dock="Top" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                     ToolTip="Apply this axis scale factor for all builded graphes."
                                     Click="ApplyCommonAxisScaleFactorButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
 
-                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <TextBlock Text="Point radius" Style="{StaticResource myTextBlock}"/>
-                            <TextBox Width="75"  Style="{StaticResource myTextBox}"
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Point radius" Style="{StaticResource myTextBlock}"/>
+                            <TextBox DockPanel.Dock="Top" Width="75"  Style="{StaticResource myTextBox}"
                                     GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus">
-                                    <TextBox.Text>
-                                        <Binding Path="CommonPointRadius" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
-                                            <Binding.ValidationRules>
-                                                <validators:PositiveNumberValidationRule />
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox.Text>
-                                </TextBox>
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
+                                <TextBox.Text>
+                                    <Binding Path="CommonPointRadius" StringFormat="N2" UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <validators:PositiveNumberValidationRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <Button DockPanel.Dock="Top" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                 ToolTip="Apply this point radius for all added graphes."
                                 Click="ApplyCommonPointRadiusButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
 
-                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <TextBlock Text="Render quality" Style="{StaticResource myTextBlock}"/>
-                            <ComboBox ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding CommonRenderQuality}" Margin="5" MinWidth="80" />
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" 
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Render quality" Style="{StaticResource myTextBlock}"/>
+                            <ComboBox DockPanel.Dock="Top" ItemsSource="{Binding RenderQualities}" SelectedValue="{Binding CommonRenderQuality}" Margin="5" MinWidth="80" />
+                            <Button Content="Apply" DockPanel.Dock="Bottom" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                     ToolTip="Apply the selected render quality for all added graphes."
                                     Click="ApplyCommonRenderQualityButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
 
-                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <CheckBox IsChecked="{Binding CommonDisplayBarycenter}" Foreground="{StaticResource foregroundColor}" Margin="5">
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <CheckBox DockPanel.Dock="Top" IsChecked="{Binding CommonDisplayBarycenter}" Foreground="{StaticResource foregroundColor}" Margin="5">
                                 <CheckBox.Content>
                                     <TextBlock Text="Display barycenter" Width="75" TextWrapping="Wrap" TextAlignment="Center" />
                                 </CheckBox.Content>
                             </CheckBox>
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" HorizontalAlignment="Right"
+                            <Button DockPanel.Dock="Bottom" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                     ToolTip="Apply the display barycenter for all added graphes."
                                     Click="ApplyCommonDisplayBarycenterButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
 
-                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <CheckBox IsChecked="{Binding CommonDisplayAveragePlan}" Foreground="{StaticResource foregroundColor}" Margin="5" >
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <CheckBox DockPanel.Dock="Top" IsChecked="{Binding CommonDisplayAveragePlan}" Foreground="{StaticResource foregroundColor}" Margin="5" >
                                 <CheckBox.Content>
                                     <TextBlock Text="Display average plan" Width="75" TextWrapping="Wrap" TextAlignment="Center" />
                                 </CheckBox.Content>
                             </CheckBox>
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" HorizontalAlignment="Right"
+                            <Button DockPanel.Dock="Bottom" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                     ToolTip="Apply the display average plan for all added graphes."
                                     Click="ApplyCommonDisplayAveragePlanButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
 
-                        <StackPanel DockPanel.Dock="Left" Margin="0 4 0 0">
-                            <CheckBox IsChecked="{Binding CommonDisplayBase}" Foreground="{StaticResource foregroundColor}" Margin="5" VerticalContentAlignment="Center">
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <CheckBox DockPanel.Dock="Top" IsChecked="{Binding CommonDisplayBase}" Foreground="{StaticResource foregroundColor}" Margin="5" VerticalContentAlignment="Center">
                                 <CheckBox.Content>
                                     <TextBlock Text="Display base" Width="75" TextWrapping="Wrap" TextAlignment="Center" />
                                 </CheckBox.Content>
                             </CheckBox>
-                            <Button Content="Apply" Width="75" Style="{StaticResource myButton}" HorizontalAlignment="Right" 
+                            <Button DockPanel.Dock="Bottom" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                     ToolTip="Apply the display base for all added graphes."
                                     Click="ApplyCommonDisplayBaseButton_Click"/>
-                        </StackPanel>
+                        </DockPanel>
+                    </Border>
+                    <StackPanel />
+                </DockPanel>
 
-                        <StackPanel />
-                    </DockPanel>
-                    
-                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource myButton}" 
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=BuildCommandKey, Path=Command}"
                                 ToolTip="Build all the added builders.&#10;[Ctrl+B]"
                                 >
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource play}" Width="25" Height="25" />
-                                    <TextBlock Text="Build all" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        <Button Style="{StaticResource myButton}" 
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource play}" Width="25" Height="25" />
+                                <TextBlock Text="Build all" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=LoadCommandKey, Path=Command}"
                                 ToolTip="Load all builded builders that are ready to be load.&#10;The windows is not closed at the end (even if all the builders have been loaded successfuly).&#10;[Ctrl+L]"
                                 ToolTipService.ShowDuration="10000"
                                 >
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource load}" Width="25" Height="25"/>
-                                    <TextBlock Text="Load" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        <Button Style="{StaticResource myButton}" 
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource load}" Width="25" Height="25"/>
+                                <TextBlock Text="Load" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Style="{StaticResource myButton}" 
                                 Command="{Binding ElementName=LoadAndCloseCommandKey, Path=Command}"
                                 ToolTip="Load all builded builders that are ready to be load.&#10;The windows is closed at the end (except if some builders have failed).&#10;[Ctrl+Alt+L]"
                                 ToolTipService.ShowDuration="10000"
                                 >
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{StaticResource load}" Width="25" Height="25" />
-                                    <TextBlock Text="Load and close" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        <Button Content="Cancel" Style="{StaticResource myButton}"
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource load}" Width="25" Height="25" />
+                                <TextBlock Text="Load and close" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Content="Cancel" Style="{StaticResource myButton}"
                                 Command="{Binding ElementName=CancelCommandKey, Path=Command}"
                                 ToolTip="{Binding CancelCommand.Description}"/>
-                    </StackPanel>
-                    
-                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                        <TextBlock Text="Count of items to add:" Style="{StaticResource myTextBlock}" />
-                        <TextBlock Text="{Binding ItemsToAddCount}" Style="{StaticResource myTextBlock}" />
-                    </StackPanel>
-                    
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                    <TextBlock Text="Count of items to add:" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Text="{Binding ItemsToAddCount}" Style="{StaticResource myTextBlock}" />
+                </StackPanel>
+
+                <ScrollViewer 
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Auto">
                     <ListView 
                         x:Name="lv"
                         ItemsSource="{Binding Items}"
                         Background="{StaticResource backgroundListColor}" 
                         KeyUp="ListView_KeyUp"
                         FocusVisualStyle="{x:Null}"
+                        ScrollViewer.CanContentScroll="False"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         >
                         <ListView.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListViewItem}">
-                                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
-                                    <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="ToolTip" Value="Double click to edit"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="Transparent" />
-                                        </Trigger>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="Transparent" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                                <Setter Property="Foreground" Value="{StaticResource foregroundColor}" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="ToolTip" Value="Double click to edit"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView>
                                 <!-- Colonne Contains Header -->
@@ -375,7 +401,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                
+
                                 <!-- Colonne Count -->
                                 <GridViewColumn Header="Count" Width="50">
                                     <GridViewColumn.CellTemplate>
@@ -502,7 +528,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                
+
                                 <!-- Colonne Display Average Plan -->
                                 <GridViewColumn Width="80">
                                     <GridViewColumn.Header>
@@ -514,7 +540,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                
+
                                 <!-- Colonne Display Base -->
                                 <GridViewColumn Width="55">
                                     <GridViewColumn.Header>
@@ -579,8 +605,8 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                </DockPanel>
+                </ScrollViewer>
             </DockPanel>
-        </ScrollViewer>
+        </DockPanel>
     </Grid>
 </Window>
