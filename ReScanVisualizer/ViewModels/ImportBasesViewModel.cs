@@ -36,6 +36,43 @@ namespace ReScanVisualizer.ViewModels
             set => SetValue(ref _containsHeader, value);
         }
 
+        private bool _isCartesianMode;
+        public bool IsCartesianMode
+        {
+            get => _isCartesianMode;
+            set
+            {
+                if (SetValue(ref _isCartesianMode, value))
+                {
+                    if (_isCartesianMode && _isEulerAnglesMode)
+                    {
+                        _isEulerAnglesMode = false;
+                        OnPropertyChanged(nameof(IsEulerAnglesMode));
+                    }
+                }
+            }
+        }
+
+        private bool _isEulerAnglesMode;
+        public bool IsEulerAnglesMode
+        {
+            get => _isEulerAnglesMode;
+            set
+            {
+                if (SetValue(ref _isEulerAnglesMode, value))
+                {
+                    if (_isEulerAnglesMode && _isCartesianMode)
+                    {
+                        _isCartesianMode = false;
+                        OnPropertyChanged(nameof(IsEulerAnglesMode));
+                    }
+                }
+            }
+        }
+
+        private static readonly string _cartesianHeaders = "o_x;o_y;o_z;x_x;x_y;x_z;y_x;y_y;y_z;z_x;z_y;z_z";
+        private static readonly string _eulerAnglesHeaders = "o_x;o_y;o_z;a;b;c";
+
         private double _scaleFactor;
         public double ScaleFactor
         {
@@ -67,6 +104,8 @@ namespace ReScanVisualizer.ViewModels
         {
             _filePath = string.Empty;
             _containsHeader = true;
+            _isCartesianMode = true;
+            _isEulerAnglesMode = false;
             _scaleFactor = 1.0;
             _axisScaleFactor = 1.0;
             _renderQuality = RenderQuality.High;
@@ -114,6 +153,7 @@ namespace ReScanVisualizer.ViewModels
             {
                 bool isError = false;
                 List<Base3D> bases = new List<Base3D>();
+                int columnsNumber = _isCartesianMode ? 12 : 6; // 12 = origin xyz(3) + x xyz(3) + y xyz(3) + z xyz(3) | 6 = origin xyz(3) + abc(3)
                 try
                 {
                     using (StreamReader reader = new StreamReader(_filePath))
@@ -131,16 +171,15 @@ namespace ReScanVisualizer.ViewModels
                             lineIndex++;
 
                             string[] cells = line.Split(';');
-                            if (cells.Length != 12) // 12 = origin xyz (3) + x xyz (3) + y xyz (3) + z xyz (3)
+                            if (cells.Length != columnsNumber)
                             {
                                 isError = true;
-                                MessageBox.Show($"Wrong format at line {lineIndex}: {cells.Length} columns instead of 12. Columns must be:" +
-                                    $"o_x;o_y;o_z;x_x;x_y;x_z;y_x;y_y;y_z;z_x;z_y;z_z", "Format error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show($"Wrong format at line {lineIndex}: {cells.Length} columns instead of {columnsNumber}. Columns must be: {(_isCartesianMode ? _cartesianHeaders : _eulerAnglesHeaders)}", "Format error", MessageBoxButton.OK, MessageBoxImage.Error);
                                 break;
                             }
 
-                            double[] doubles = new double[12];
-                            for (int i = 0; i < 12; i++)
+                            double[] doubles = new double[columnsNumber];
+                            for (int i = 0; i < columnsNumber; i++)
                             {
                                 if (Tools.TryParse(cells[i], out double value))
                                 {
@@ -149,17 +188,25 @@ namespace ReScanVisualizer.ViewModels
                                 else
                                 {
                                     isError = true;
-                                    MessageBox.Show($"Wrong format at line {lineIndex} - cell {i + 1}: {cells[i]} can't be parse into number." , "Format error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show($"Wrong format at line {lineIndex} - cell {i + 1}: {cells[i]} can't be parse into number.", "Format error", MessageBoxButton.OK, MessageBoxImage.Error);
                                     break;
                                 }
                             }
 
-                            bases.Add(new Base3D(
-                                new Point3D(doubles[0], doubles[1], doubles[2]),
-                                new Vector3D(doubles[3], doubles[4], doubles[5]),
-                                new Vector3D(doubles[6], doubles[7], doubles[8]),
-                                new Vector3D(doubles[9], doubles[10], doubles[11])));
-
+                            if (_isCartesianMode)
+                            {
+                                bases.Add(new Base3D(
+                                    new Point3D(doubles[0], doubles[1], doubles[2]),
+                                    new Vector3D(doubles[3], doubles[4], doubles[5]),
+                                    new Vector3D(doubles[6], doubles[7], doubles[8]),
+                                    new Vector3D(doubles[9], doubles[10], doubles[11])));
+                            }
+                            else
+                            {
+                                Base3D base3D = new Base3D(new Point3D(doubles[0], doubles[1], doubles[2]));
+                                base3D.SetFromEulerAnglesZYX(doubles[3], doubles[4], doubles[5]);
+                                bases.Add(base3D);
+                            }
                         }
                     }
                 }

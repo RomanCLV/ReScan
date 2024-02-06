@@ -12,14 +12,14 @@ using System.Security.AccessControl;
 
 namespace ReScanVisualizer
 {
-    internal static class Extentions
+    public static class Extentions
     {
         /// <summary>
         /// Set the BitmapImage with a Bitmap using a MemoryStream.
         /// </summary>
         /// <param name="bitmapImage">The instance to load.</param>
         /// <param name="bitmap">The source</param>
-        internal static void LoadFromBitmap(this BitmapImage bitmapImage, Bitmap bitmap)
+        public static void LoadFromBitmap(this BitmapImage bitmapImage, Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
             {
@@ -32,7 +32,7 @@ namespace ReScanVisualizer
             }
         }
 
-        internal static bool IsAnInteger(this string numString)
+        public static bool IsAnInteger(this string numString)
         {
             return int.TryParse(numString, out _);
         }
@@ -42,7 +42,7 @@ namespace ReScanVisualizer
         /// </summary>
         /// <param name="d">The value to clamp.</param>
         /// <returns>0 or <paramref name="d"/>.</returns>
-        internal static double Clamp(this double d)
+        public static double Clamp(this double d)
         {
             return (-Const.ZERO_CLAMP < d) && (d < Const.ZERO_CLAMP) ? 0.0: d;
         }
@@ -53,7 +53,7 @@ namespace ReScanVisualizer
         /// <param name="d">The value to clamp.</param>
         /// <param name="value">The clamp reference.</param>
         /// <returns><paramref name="value"/> or <paramref name="d"/>.</returns>
-        internal static double Clamp(this double d, double value)
+        public static double Clamp(this double d, double value)
         {
             return ((value - Const.ZERO_CLAMP) < d) && (d < (value + Const.ZERO_CLAMP)) ? value : d;
         }
@@ -65,41 +65,83 @@ namespace ReScanVisualizer
         /// <param name="value">The clamp reference.</param>
         /// <param name="clampFactor">A factor applied to <see cref="Const.ZERO_CLAMP"/></param>
         /// <returns><paramref name="value"/> or <paramref name="d"/>.</returns>
-        internal static double Clamp(this double d, double value, double clampFactor)
+        public static double Clamp(this double d, double value, double clampFactor)
         {
             return ((value - clampFactor * Const.ZERO_CLAMP) < d) && (d < (value + clampFactor * Const.ZERO_CLAMP)) ? value : d;
         }
 
-        internal static void Clamp(this ref Matrix3D matrix)
+        public static double Clamp3(this double d, double v1, double v2, double v3)
         {
-            matrix.M11 = matrix.M11.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M12 = matrix.M12.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M13 = matrix.M13.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M14 = matrix.M14.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M21 = matrix.M21.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M22 = matrix.M22.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M23 = matrix.M23.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M24 = matrix.M24.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M31 = matrix.M31.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M32 = matrix.M32.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M33 = matrix.M33.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M34 = matrix.M34.Clamp().Clamp(-1.0).Clamp(1.0);
-            matrix.M44 = matrix.M44.Clamp().Clamp(-1.0).Clamp(1.0);
+            if ((v1 - Const.ZERO_CLAMP < d) && (d < v1 + Const.ZERO_CLAMP))
+            {
+                return v1;
+            }
+            else if ((v2 - Const.ZERO_CLAMP < d) && (d < v2 + Const.ZERO_CLAMP))
+            {
+                return v2;
+            }
+            else if ((v3 - Const.ZERO_CLAMP < d) && (d < v3 + Const.ZERO_CLAMP))
+            {
+                return v3;
+            }
+            return d;
         }
 
-        internal static void Clamp(this ref Vector3D vector)
+        public static double Clamp5(this double d, double v1, double v2, double v3, double v4, double v5)
         {
-            vector.X = vector.X.Clamp().Clamp(-1.0).Clamp(1.0);
-            vector.Y = vector.Y.Clamp().Clamp(-1.0).Clamp(1.0);
-            vector.Z = vector.Z.Clamp().Clamp(-1.0).Clamp(1.0);
+            if ((v1 - Const.ZERO_CLAMP < d) && (d < v1 + Const.ZERO_CLAMP))
+            {
+                return v1;
+            }
+            else if ((v2 - Const.ZERO_CLAMP < d) && (d < v2 + Const.ZERO_CLAMP))
+            {
+                return v2;
+            }
+            else if ((v3 - Const.ZERO_CLAMP < d) && (d < v3 + Const.ZERO_CLAMP))
+            {
+                return v3;
+            }
+            else if ((v4 - Const.ZERO_CLAMP < d) && (d < v4 + Const.ZERO_CLAMP))
+            {
+                return v4;
+            }
+            else if ((v5 - Const.ZERO_CLAMP) < d && (d < v5 + Const.ZERO_CLAMP))
+            {
+                return v5;
+            }
+            return d;
         }
 
-        internal static Point4D ToPoint4D(this Point3D point)
+        public static void Clamp(this ref Matrix3D matrix)
+        {
+            matrix.M11 = matrix.M11.Clamp3(0.0, -1.0, 1.0);
+            matrix.M12 = matrix.M12.Clamp3(0.0, -1.0, 1.0);
+            matrix.M13 = matrix.M13.Clamp3(0.0, -1.0, 1.0);
+            matrix.M14 = matrix.M14.Clamp3(0.0, -1.0, 1.0);
+            matrix.M21 = matrix.M21.Clamp3(0.0, -1.0, 1.0);
+            matrix.M22 = matrix.M22.Clamp3(0.0, -1.0, 1.0);
+            matrix.M23 = matrix.M23.Clamp3(0.0, -1.0, 1.0);
+            matrix.M24 = matrix.M24.Clamp3(0.0, -1.0, 1.0);
+            matrix.M31 = matrix.M31.Clamp3(0.0, -1.0, 1.0);
+            matrix.M32 = matrix.M32.Clamp3(0.0, -1.0, 1.0);
+            matrix.M33 = matrix.M33.Clamp3(0.0, -1.0, 1.0);
+            matrix.M34 = matrix.M34.Clamp3(0.0, -1.0, 1.0);
+            matrix.M44 = matrix.M44.Clamp3(0.0, -1.0, 1.0);
+        }
+
+        public static void Clamp(this ref Vector3D vector)
+        {
+            vector.X = vector.X.Clamp3(0.0, -1.0, 1.0);
+            vector.Y = vector.Y.Clamp3(0.0, -1.0, 1.0);
+            vector.Z = vector.Z.Clamp3(0.0, -1.0, 1.0);
+        }
+
+        public static Point4D ToPoint4D(this Point3D point)
         {
             return new Point4D(point.X, point.Y, point.Z, 1.0);
         }
 
-        internal static Point3D ToPoint3D(this Point4D point)
+        public static Point3D ToPoint3D(this Point4D point)
         {
             return new Point3D(point.X, point.Y, point.Z);
         }

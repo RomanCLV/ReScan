@@ -60,13 +60,6 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        private bool _writeEmptyBasesWith0;
-        public bool WriteEmptyBasesWith0
-        {
-            get => _writeEmptyBasesWith0;
-            set => SetValue(ref _writeEmptyBasesWith0, value);
-        }
-
         private bool _isCartesianMode;
         public bool IsCartesianMode
         {
@@ -79,6 +72,8 @@ namespace ReScanVisualizer.ViewModels
                     {
                         _isEulerAnglesMode = false;
                         OnPropertyChanged(nameof(IsEulerAnglesMode));
+                        OnPropertyChanged(nameof(HeadersLine));
+                        OnPropertyChanged(nameof(EmptyBaseLine));
                     }
                 }
             }
@@ -96,6 +91,8 @@ namespace ReScanVisualizer.ViewModels
                     {
                         _isCartesianMode = false;
                         OnPropertyChanged(nameof(IsEulerAnglesMode));
+                        OnPropertyChanged(nameof(HeadersLine));
+                        OnPropertyChanged(nameof(EmptyBaseLine));
                     }
                 }
             }
@@ -107,6 +104,28 @@ namespace ReScanVisualizer.ViewModels
             get => _isDecimalCharDot;
             set => SetValue(ref _isDecimalCharDot, value);
         }
+
+        private bool _writeEmptyBasesWith0;
+        public bool WriteEmptyBasesWith0
+        {
+            get => _writeEmptyBasesWith0;
+            set => SetValue(ref _writeEmptyBasesWith0, value);
+        }
+
+        private bool _writeHeaders;
+        public bool WriteHeaders
+        {
+            get => _writeHeaders;
+            set => SetValue(ref _writeHeaders, value);
+        }
+
+        private static readonly string _cartesianHeaders = "o_x;o_y;o_z;x_x;x_y;x_z;y_x;y_y;y_z;z_x;z_y;z_z";
+        private static readonly string _eulerAnglesHeaders = "o_x;o_y;o_z;a;b;c";
+        private static readonly string _cartesianEmptyBaseLine = "0;0;0;0;0;0;0;0;0;0;0;0";
+        private static readonly string _eulerAnglesEmptyBaseLine = "0;0;0;0;0;0";
+
+        public string HeadersLine => _isCartesianMode ? _cartesianHeaders : _eulerAnglesHeaders;
+        public string EmptyBaseLine => _isCartesianMode ? _cartesianEmptyBaseLine : _eulerAnglesEmptyBaseLine;
 
         private bool _isSelectingAll;
 
@@ -136,10 +155,11 @@ namespace ReScanVisualizer.ViewModels
             _isGraphSourcesSelected = true;
             _isAddedBasesSourceSelected = false;
             _includeEmptyBases = true;
-            _writeEmptyBasesWith0 = false;
             _isCartesianMode = true;
             _isEulerAnglesMode = false;
             _isDecimalCharDot = false;
+            _writeEmptyBasesWith0 = false;
+            _writeHeaders = true;
             _isSelectingAll = false;
             _mainViewModel = mainViewModel;
 
@@ -232,38 +252,73 @@ namespace ReScanVisualizer.ViewModels
                     {
                         if (_isCartesianMode)
                         {
-                            writer.WriteLine("o_x;o_y;o_z;x_x;x_y;x_z;y_x;y_y;y_z;z_x;z_y;z_z");
+                            if (_writeHeaders)
+                            {
+                                writer.WriteLine(_cartesianHeaders);
+                            }
                             foreach (var item in Items)
                             {
                                 if (item.IsSelected)
                                 {
-                                    string line =
-                                           $"{item.Value.Origin.X};{item.Value.Origin.Y};{item.Value.Origin.Z};" +
-                                           $"{item.Value.X.X};{item.Value.X.Y};{item.Value.X.Z};" +
-                                           $"{item.Value.Y.X};{item.Value.Y.Y};{item.Value.Y.Z};" +
-                                           $"{item.Value.Z.X};{item.Value.Z.Y};{item.Value.Z.Z}";
-
-                                    if (_isDecimalCharDot)
+                                    string line;
+                                    if (item.Source is ScatterGraphViewModel scatterGraphViewModel && scatterGraphViewModel.Samples.Count == 0 && _writeEmptyBasesWith0)
                                     {
-                                        line = line.Replace(',', '.');
+                                        line = _cartesianEmptyBaseLine;
                                     }
                                     else
                                     {
-                                        line = line.Replace('.', ',');
+                                        line = $"{item.Value.Origin.X};{item.Value.Origin.Y};{item.Value.Origin.Z};" +
+                                            $"{item.Value.X.X};{item.Value.X.Y};{item.Value.X.Z};" +
+                                            $"{item.Value.Y.X};{item.Value.Y.Y};{item.Value.Y.Z};" +
+                                            $"{item.Value.Z.X};{item.Value.Z.Y};{item.Value.Z.Z}";
+                                        if (_isDecimalCharDot)
+                                        {
+                                            line = line.Replace(',', '.');
+                                        }
+                                        else
+                                        {
+                                            line = line.Replace('.', ',');
+                                        }
                                     }
 
-                                    if (item.Source is ScatterGraphViewModel scatterGraphViewModel && scatterGraphViewModel.Samples.Count == 0 && _writeEmptyBasesWith0)
-                                    {
-                                        line = "0;0;0;0;0;0;0;0;0;0;0;0";
-                                    }
                                     writer.WriteLine(line);
                                 }
                             }
                         }
                         else if (_isEulerAnglesMode)
                         {
-                            writer.WriteLine("o_x;o_y;o_z;a;b;c");
-                            // TODO: euler angles
+                            if (_writeHeaders)
+                            {
+                                writer.WriteLine(_eulerAnglesHeaders);
+                            }
+                            foreach (var item in Items)
+                            {
+                                if (item.IsSelected)
+                                {
+                                    string line;
+                                    if (item.Source is ScatterGraphViewModel scatterGraphViewModel && scatterGraphViewModel.Samples.Count == 0 && _writeEmptyBasesWith0)
+                                    {
+                                        line = _eulerAnglesEmptyBaseLine;
+                                    }
+                                    else
+                                    {
+                                        double a;
+                                        double b;
+                                        double c;
+                                        item.Value.Base3D.ToEulerAngleZYX(out a, out b, out c);
+                                        line = $"{item.Value.Origin.X};{item.Value.Origin.Y};{item.Value.Origin.Z};{a};{b};{c}";
+                                        if (_isDecimalCharDot)
+                                        {
+                                            line = line.Replace(',', '.');
+                                        }
+                                        else
+                                        {
+                                            line = line.Replace('.', ',');
+                                        }
+                                    }
+                                    writer.WriteLine(line);
+                                }
+                            }
                         }
                     }
                     success = true;

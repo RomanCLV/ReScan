@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 #nullable enable
@@ -508,34 +509,69 @@ namespace ReScanVisualizer.Models
             OnZChanged();
         }
 
-        public override string ToString()
-        {
-            return $"{X.X};{X.Y};{X.Z};{Y.X};{Y.Y};{Y.Z};{Z.X};{Z.Y};{Z.Z}";
-        }
-
-        public void SetFrom(Base3D nearestBase, bool setOrigin = true)
+        public void SetFrom(Base3D base3D, bool setOrigin = true)
         {
             if (setOrigin)
             {
                 Point3D oldOrigin = _origin;
-                Point3D newOrigin = nearestBase._origin;
-                _origin.X = nearestBase._origin.X;
-                _origin.Y = nearestBase._origin.Y;
-                _origin.Z = nearestBase._origin.Z;
+                Point3D newOrigin = base3D._origin;
+                _origin.X = base3D._origin.X;
+                _origin.Y = base3D._origin.Y;
+                _origin.Z = base3D._origin.Z;
                 OnOriginChanged(ref oldOrigin, ref newOrigin);
             }
-            _x.X = nearestBase._x.X;
-            _x.Y = nearestBase._x.Y;
-            _x.Z = nearestBase._x.Z;
-            _y.X = nearestBase._y.X;
-            _y.Y = nearestBase._y.Y;
-            _y.Z = nearestBase._y.Z;
-            _z.X = nearestBase._z.X;
-            _z.Y = nearestBase._z.Y;
-            _z.Z = nearestBase._z.Z;
+            _x.X = base3D._x.X;
+            _x.Y = base3D._x.Y;
+            _x.Z = base3D._x.Z;
+            _y.X = base3D._y.X;
+            _y.Y = base3D._y.Y;
+            _y.Z = base3D._y.Z;
+            _z.X = base3D._z.X;
+            _z.Y = base3D._z.Y;
+            _z.Z = base3D._z.Z;
             OnXChanged();
             OnYChanged();
             OnZChanged();
+        }
+
+        public void SetFrom(Matrix3D matrix3D, bool setOrigin = true)
+        {
+            if (setOrigin)
+            {
+                Point3D oldOrigin = _origin;
+                _origin.X = matrix3D.OffsetX;
+                _origin.Y = matrix3D.OffsetY;
+                _origin.Z = matrix3D.OffsetZ;
+                Point3D newOrigin = _origin;
+                OnOriginChanged(ref oldOrigin, ref newOrigin);
+            }
+            _x.X = matrix3D.M11;
+            _x.Y = matrix3D.M21;
+            _x.Z = matrix3D.M31;
+            _y.X = matrix3D.M12;
+            _y.Y = matrix3D.M22;
+            _y.Z = matrix3D.M32;
+            _z.X = matrix3D.M13;
+            _z.Y = matrix3D.M23;
+            _z.Z = matrix3D.M33;
+            OnXChanged();
+            OnYChanged();
+            OnZChanged();
+        }
+
+        public void ToEulerAngleZYX(out double a, out double b, out double c)
+        {
+            Tools.Matrix3DToEulerAnglesZYX(ToMatrix3D(), out a, out b, out c);
+        }
+
+        public void SetFromEulerAnglesZYX(double a, double b, double c)
+        {
+            SetFrom(Tools.EulerAnglesZYXToMatrix3D(a, b, c), false);
+        }
+
+        public override string ToString()
+        {
+            return $"{X.X};{X.Y};{X.Z};{Y.X};{Y.Y};{Y.Z};{Z.X};{Z.Y};{Z.Z}";
         }
     }
 }

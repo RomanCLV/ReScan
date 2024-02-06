@@ -35,30 +35,54 @@
             <DockPanel Margin="50">
                 <StackPanel DockPanel.Dock="Top">
                     <TextBlock Text="Sources:" />
-                    <CheckBox IsChecked="{Binding IsGraphSourcesSelected}"     Foreground="{StaticResource foregroundColor}" Margin="2" Content="All scatter graphs" />
-                    <CheckBox IsChecked="{Binding IsAddedBasesSourceSelected}" Foreground="{StaticResource foregroundColor}" Margin="2" Content="Added bases" />
+                    <StackPanel Margin="15 0">
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <CheckBox IsChecked="{Binding IsGraphSourcesSelected}" Foreground="{StaticResource foregroundColor}" Content="All scatter graphs" />
+                            <CheckBox IsChecked="{Binding IncludeEmptyBases}"      Foreground="{StaticResource foregroundColor}" Margin="30 0 0 0" Content="Include empty bases" IsEnabled="{Binding IsGraphSourcesSelected}" />
+                        </StackPanel>
+                        <CheckBox IsChecked="{Binding IsAddedBasesSourceSelected}" Foreground="{StaticResource foregroundColor}" Margin="2" Content="Added bases" />
+                    </StackPanel>
                 </StackPanel>
 
                 <Separator DockPanel.Dock="Top" Margin="5 15"/>
 
-                <CheckBox DockPanel.Dock="Top" IsChecked="{Binding IncludeEmptyBases}"      Foreground="{StaticResource foregroundColor}" Margin="2" Content="Include empty bases" />
-                <CheckBox DockPanel.Dock="Top" IsChecked="{Binding WriteEmptyBasesWith0}"   Foreground="{StaticResource foregroundColor}" Margin="2" Content="Write 0 in columns of empty bases" />
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Text="Writting options:" />
+                    <StackPanel Margin="15 0">
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock Text="Mode:" Width="105"/>
+                            <RadioButton IsChecked="{Binding IsCartesianMode}"   Width="100" Foreground="{StaticResource foregroundColor}" Content="Cartesian" />
+                            <RadioButton IsChecked="{Binding IsEulerAnglesMode}" Width="120" Foreground="{StaticResource foregroundColor}" Content="Euler angles ZYX" />
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock Text="Decimal character:" Width="105"/>
+                            <RadioButton IsChecked="{Binding IsDecimalCharDot}" Width="100" Foreground="{StaticResource foregroundColor}" Content="." />
+                            <RadioButton IsChecked="{Binding IsDecimalCharDot, Converter={StaticResource BoolToInverseBoolConverter}}" Width="120" Foreground="{StaticResource foregroundColor}" Content=","/>
+                        </StackPanel>
 
-                <Separator DockPanel.Dock="Top" Margin="5 15"/>
+                        <CheckBox IsChecked="{Binding WriteEmptyBasesWith0}"   Foreground="{StaticResource foregroundColor}" Margin="2" IsEnabled="{Binding IsGraphSourcesSelected}">
+                            <CheckBox.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Write 0 in columns of empty bases ("/>
+                                    <TextBlock Text="{Binding EmptyBaseLine}"/>
+                                    <TextBlock Text=")"/>
+                                </StackPanel>
+                            </CheckBox.Content>
+                        </CheckBox>
+                        <CheckBox IsChecked="{Binding WriteHeaders}"           Foreground="{StaticResource foregroundColor}" Margin="2">
+                            <CheckBox.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Write headers ("/>
+                                    <TextBlock Text="{Binding HeadersLine}"/>
+                                    <TextBlock Text=")"/>
+                                </StackPanel>
+                            </CheckBox.Content>
+                        </CheckBox>
+                    </StackPanel>
 
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                    <TextBlock Text="Mode:"/>
-                    <RadioButton IsChecked="{Binding IsCartesianMode}"   Margin="20 0" Foreground="{StaticResource foregroundColor}" Content="Cartesian" />
-                    <RadioButton IsChecked="{Binding IsEulerAnglesMode}" Margin="20 0" Foreground="{StaticResource foregroundColor}" Content="Euler angles ZYX" IsEnabled="False"/>
                 </StackPanel>
 
-                <Separator DockPanel.Dock="Top" Margin="5 15"/>
-
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                    <TextBlock Text="Decimal character:"/>
-                    <RadioButton IsChecked="{Binding IsDecimalCharDot}" Margin="20 0" Foreground="{StaticResource foregroundColor}" Content="." />
-                    <RadioButton IsChecked="{Binding IsDecimalCharDot, Converter={StaticResource BoolToInverseBoolConverter}}" Margin="20 0" Foreground="{StaticResource foregroundColor}" Content=","/>
-                </StackPanel>
 
                 <Separator DockPanel.Dock="Top" Margin="5 15"/>
 

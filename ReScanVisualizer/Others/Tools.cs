@@ -320,7 +320,7 @@ namespace ReScanVisualizer
                     throw new NotImplementedException();
             }
 
-            angle = angle.Clamp().Clamp(-180).Clamp(180) % 180.0;
+            angle = angle.Clamp3(0.0, -180.0, 180.0) % 180.0;
 
             if (angle != 0.0)
             {
@@ -564,6 +564,49 @@ namespace ReScanVisualizer
             }
 
             return isPortInUse;
+        }
+
+        /// <summary>
+        /// Compute A, B and  C, the ZYX Euler's angles. The computed angles are in degrees.
+        /// </summary>
+        /// <param name="matrix">The matrix to operate.</param>
+        /// <param name="a">The angle A in degrees.</param>
+        /// <param name="b">The angle B in degrees.</param>
+        /// <param name="c">The angle C in degrees.</param>
+        public static void Matrix3DToEulerAnglesZYX(Matrix3D matrix, out double a, out double b, out double c)
+        {
+            b = 180.0 * (Math.Atan2(-matrix.M31, Math.Sqrt(matrix.M11 * matrix.M11 + matrix.M21 * matrix.M21))) / Math.PI;
+
+            if (b == 90.0)          // singularité
+            {
+                a = 0.0;
+                c = 180.0 * (Math.Atan2(matrix.M12, matrix.M22)) / Math.PI;
+            }
+            else if (b == -90.0)     // singularité
+            {
+                a = 0.0;
+                c = 180.0 * (-Math.Atan2(matrix.M12, matrix.M22)) / Math.PI;
+            }
+            else
+            {
+                a = 180.0 * (Math.Atan2(matrix.M21, matrix.M11)) / Math.PI;
+                c = 180.0 * (Math.Atan2(matrix.M32, matrix.M33)) / Math.PI;
+            }
+            a.Clamp5(0.0, 180.0, 360.0, -180.0, -360.0);
+            b.Clamp5(0.0, 180.0, 360.0, -180.0, -360.0);
+            c.Clamp5(0.0, 180.0, 360.0, -180.0, -360.0);
+        }
+
+        /// <summary>
+        /// Compute the rotation matrix from the given Euler's angles. Theses angle are given in degrees.
+        /// </summary>
+        /// <param name="a">The angle A in degrees.</param>
+        /// <param name="b">The angle B in degrees.</param>
+        /// <param name="c">The angle C in degrees.</param>
+        /// <returns>The corresponding rotation matrix.</returns>
+        public static Matrix3D EulerAnglesZYXToMatrix3D(double a, double b, double c)
+        {
+            return CreateRotationMatrix(Axis.X, DegreeToRadian(c)) * CreateRotationMatrix(Axis.Y, DegreeToRadian(b)) * CreateRotationMatrix(Axis.Z, DegreeToRadian(a));
         }
     }
 }
