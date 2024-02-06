@@ -19,6 +19,7 @@ using ReScanVisualizer.Views.ItemTreeViews;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
+using ReScanVisualizer.Models.Pipes;
 
 #nullable enable
 
@@ -91,7 +92,7 @@ namespace ReScanVisualizer.Views
                 Vector3D up = new Vector3D(0.0, 0.0, 1.0);
                 if (Tools.AreVectorsColinear(cameraConfiguration.Direction, up))
                 {
-                    MessageBox.Show("Camera direction and camera up can't be colinear!\nGiven direction: " +  cameraConfiguration.Direction.ToString(), "Camera direction error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Camera direction and camera up can't be colinear!\nGiven direction: " + cameraConfiguration.Direction.ToString(), "Camera direction error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
@@ -768,6 +769,39 @@ namespace ReScanVisualizer.Views
                 ((MainViewModel)DataContext).UnselectMouseOverGeometry();
                 _geometryModel3DMouseOver = null;
             }
+        }
+
+        #endregion
+
+        #region Pipes
+
+        private void CommandLineMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CommandLineWindow commandLineWindow = new CommandLineWindow()
+            {
+                Owner = this,
+            };
+            CommandLineViewModel commandLineViewModel = new CommandLineViewModel(commandLineWindow, ((MainViewModel)DataContext).ModifierPipe);
+            commandLineWindow.DataContext = commandLineViewModel;
+            commandLineWindow.Show();
+            commandLineViewModel.Dispose();
+        }
+
+        private void NewUDPMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            OpenUDPPipeWindow openUDPPipeWindow = new OpenUDPPipeWindow()
+            {
+                Owner = this,
+            };
+            OpenUDPPipeViewModel openUDPPipeViewModel = new OpenUDPPipeViewModel(openUDPPipeWindow, (MainViewModel)DataContext);
+            openUDPPipeWindow.DataContext = openUDPPipeViewModel;
+            openUDPPipeWindow.Show();
+            openUDPPipeViewModel.Dispose();
+        }
+
+        private void UDPMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ((MainViewModel)DataContext).StopUDPPipe(((UDPPipe)((MenuItem)sender).DataContext).Port);
         }
 
         #endregion

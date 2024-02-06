@@ -154,6 +154,7 @@
     <Compile Include="Models\Pipes\CommandLinePipe.cs" />
     <Compile Include="Models\Pipes\PipeBase.cs" />
     <Compile Include="Models\Pipes\UDPPipe.cs" />
+    <Compile Include="ViewModels\CommandLineViewModel.cs" />
     <Compile Include="ViewModels\ImportBasesViewModel.cs" />
     <Compile Include="Models\CameraConfiguration.cs" />
     <Compile Include="Models\ICameraFocusable.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateRectangle2DBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\AddScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\EditScatterGraphViewModel.cs" />
+    <Compile Include="ViewModels\OpenUDPPipeViewModel.cs" />
     <Compile Include="ViewModels\Parts\RectanglePartViewModel.cs" />
     <Compile Include="ViewModels\PartVisualizerViewModel.cs" />
     <Compile Include="ViewModels\Samples\BarycenterViewModel.cs" />
@@ -218,6 +220,9 @@
     <Compile Include="Views\AddPartViews\RectanglePartBuilderView.xaml.cs">
       <DependentUpon>RectanglePartBuilderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CommandLineWindow.xaml.cs">
+      <DependentUpon>CommandLineWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DimensionsSelectedPart\RectanglePartDimensionsView.xaml.cs">
       <DependentUpon>RectanglePartDimensionsView.xaml</DependentUpon>
     </Compile>
@@ -238,6 +243,9 @@
     </Compile>
     <Compile Include="Views\ItemTreeViews\PartScatterGraphesTreeViewItemHeader.xaml.cs">
       <DependentUpon>PartScatterGraphesTreeViewItemHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OpenUDPPipeWindow.xaml.cs">
+      <DependentUpon>OpenUDPPipeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PartView.xaml.cs">
       <DependentUpon>PartView.xaml</DependentUpon>
@@ -346,6 +354,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CommandLineWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DimensionsSelectedPart\RectanglePartDimensionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -373,6 +385,10 @@
     <Page Include="Views\ItemTreeViews\PartScatterGraphesTreeViewItemHeader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\OpenUDPPipeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PartView.xaml">
       <SubType>Designer</SubType>

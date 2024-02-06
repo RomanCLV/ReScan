@@ -1,0 +1,56 @@
+﻿<Window x:Class="ReScanVisualizer.Views.CommandLineWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReScanVisualizer.Views"
+        mc:Ignorable="d"
+        Title="Command line" 
+        Height="450" Width="800"
+        MinHeight="450" MinWidth="800"
+        Background="{StaticResource backgroundColor}"
+        WindowStartupLocation="CenterOwner"
+        >
+    <Window.InputBindings>
+        <KeyBinding x:Name="SendCommandKey" 
+            Command="{Binding Path=SendCommand.Command}"  
+            Key="{Binding Path=SendCommand.Key}" 
+            Modifiers="{Binding Path=SendCommand.Modifiers}"
+            />
+        <KeyBinding x:Name="CancelCommandKey" 
+            Command="{Binding Path=CancelCommand.Command}"  
+            Key="{Binding Path=CancelCommand.Key}" 
+            Modifiers="{Binding Path=CancelCommand.Modifiers}"
+            />
+        <KeyBinding x:Name="HelpCommandKey" 
+            Command="{Binding Path=HelpCommand.Command}"  
+            Key="{Binding Path=HelpCommand.Key}" 
+            Modifiers="{Binding Path=HelpCommand.Modifiers}"
+            />
+        <KeyBinding x:Name="PreviousCommandKey" 
+            Command="{Binding Path=PreviousCommand.Command}"  
+            Key="{Binding Path=PreviousCommand.Key}" 
+            Modifiers="{Binding Path=PreviousCommand.Modifiers}"
+            />
+        <KeyBinding x:Name="NextCommandKey" 
+            Command="{Binding Path=NextCommand.Command}"  
+            Key="{Binding Path=NextCommand.Key}" 
+            Modifiers="{Binding Path=NextCommand.Modifiers}"
+            />
+
+    </Window.InputBindings>
+    <Grid Margin="50">
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Bottom">
+                <Button Style="{StaticResource myButton}" Content="Help" Command="{Binding ElementName=HelpCommandKey, Path=Command}" ToolTip="{Binding HelpCommand.Description}"/>
+
+                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource myButton}" Content="Send"    Command="{Binding ElementName=SendCommandKey, Path=Command}" ToolTip="{Binding SendCommand.Description}"/>
+                    <Button Style="{StaticResource myButton}" Content="Cancel"  Command="{Binding ElementName=CancelCommandKey, Path=Command}" ToolTip="{Binding CancelCommand.Description}"/>
+                </StackPanel>
+            </DockPanel>
+            <TextBlock Text="Command line:" DockPanel.Dock="Top" Style="{StaticResource myTextBlockLeft}" />
+            <TextBox Text="{Binding CommandLine, UpdateSourceTrigger=PropertyChanged}" Background="#404040" Foreground="{StaticResource foregroundColor}" PreviewKeyDown="TextBox_PreviewKeyDown" TextWrapping="Wrap" Margin="20"/>
+        </DockPanel>
+    </Grid>
+</Window>

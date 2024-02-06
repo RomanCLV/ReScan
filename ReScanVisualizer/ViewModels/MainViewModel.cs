@@ -111,6 +111,7 @@ namespace ReScanVisualizer.ViewModels
         public CommandLinePipe ModifierPipe { get; private set; }
 
         private readonly List<PipeBase> _pipes;
+        public IReadOnlyCollection<UDPPipe> UDPPipes => _pipes.OfType<UDPPipe>().ToList();
 
         private static readonly Lazy<MainViewModel> instance = new Lazy<MainViewModel>(() => new MainViewModel());
 
@@ -691,7 +692,7 @@ namespace ReScanVisualizer.ViewModels
             }
         }
 
-        public void StartUDPPipe(ushort port)
+        public bool StartUDPPipe(ushort port)
         {
             if (Tools.IsPortInUse(port, ProtocolType.Tcp) ||
                 Tools.IsPortInUse(port, ProtocolType.Udp))
@@ -706,12 +707,15 @@ namespace ReScanVisualizer.ViewModels
                     udpPipe.ErrorThrowed += Pipe_ErrorThrowed;
                     udpPipe.Start();
                     _pipes.Add(udpPipe);
+                    OnPropertyChanged(nameof(UDPPipes));
+                    return true;
                 }
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message, e.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+            return false;
         }
 
         public void StopUDPPipe(ushort port)
@@ -726,6 +730,7 @@ namespace ReScanVisualizer.ViewModels
                         udpPipe.Stop();
                         _pipes.RemoveAt(i);
                         i--;
+                        OnPropertyChanged(nameof(UDPPipes));
                     }
                     catch (Exception e)
                     {

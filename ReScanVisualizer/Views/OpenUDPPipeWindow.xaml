@@ -1,0 +1,39 @@
+﻿<Window x:Class="ReScanVisualizer.Views.OpenUDPPipeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReScanVisualizer.Views"
+        mc:Ignorable="d"
+        Title="New UDP pipe" 
+        Height="190" Width="260"
+        ResizeMode="NoResize"
+        Background="{StaticResource backgroundColor}"
+        WindowStartupLocation="CenterOwner"
+        >
+    <Window.InputBindings>
+        <KeyBinding x:Name="OpenCommandKey" 
+            Command="{Binding Path=OpenCommand.Command}"  
+            Key="{Binding Path=OpenCommand.Key}" 
+            Modifiers="{Binding Path=OpenCommand.Modifiers}"
+            />
+        <KeyBinding x:Name="CancelCommandKey" 
+            Command="{Binding Path=CancelCommand.Command}"  
+            Key="{Binding Path=CancelCommand.Key}" 
+            Modifiers="{Binding Path=CancelCommand.Modifiers}"
+            />
+    </Window.InputBindings>
+    
+    <Grid Margin="20">
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Open"   Style="{StaticResource myButton}" Command="{Binding ElementName=OpenCommandKey, Path=Command}"   ToolTip="{Binding OpenCommand.Description}" />
+                <Button Content="Cancel" Style="{StaticResource myButton}" Command="{Binding ElementName=CancelCommandKey, Path=Command}" ToolTip="{Binding CancelCommand.Description}" />
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Top">
+                <TextBlock Text="Port:" Style="{StaticResource myTextBlockLeft}" />
+                <TextBox Margin="50 20" Style="{StaticResource myTextBox}" Text="{Binding Port}" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

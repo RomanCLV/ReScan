@@ -52,7 +52,7 @@
             Key="{Binding Path=ImportBaseCommand.Key}" 
             Modifiers="{Binding Path=ImportBaseCommand.Modifiers}"
             />
-        
+
         <KeyBinding x:Name="ExportBaseCommandKey" 
             Command="{Binding Path=ExportBaseCommand.Command}"  
             Key="{Binding Path=ExportBaseCommand.Key}" 
@@ -252,6 +252,24 @@
                     <MenuItem Header="Camera" Style="{StaticResource menuItemItem}">
                         <MenuItem Header="Home position" Click="CameraHomePositionMenuItem_Click" />
                     </MenuItem>
+
+                </MenuItem>
+
+                <MenuItem Header="_Pipes" ToolTip="Global parameters" Style="{StaticResource menuItemTitle}">
+                    <MenuItem Header="Command line" Style="{StaticResource menuItemItem}" Click="CommandLineMenuItem_Click" />
+                    <MenuItem Header="UDP" Style="{StaticResource menuItemItem}">
+                        <MenuItem Header="Opened UDP pipes" ItemsSource="{Binding UDPPipes}" DisplayMemberPath="Port">
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="MenuItem">
+                                    <Setter Property="ToolTip" Value="Click to close" />
+                                    <EventSetter Event="Click" Handler="UDPMenuItem_Click"/>
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="New" Click="NewUDPMenuItem_Click"/>
+                    </MenuItem>
+
 
                 </MenuItem>
             </Menu>
