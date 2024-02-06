@@ -75,7 +75,7 @@ Available options:
 - UDP:
   - Open or close a UDP client: `-udp | --udp opt port`
     - `opt` can be: `o`, `open` to open a client, or `c`, `close` to close a client.
-    - `port` must be an integer between 0 and 65535.
+    - `port` must be an integer `from 0 to 65535`.
      
   Once a UDP client is opened, you can communicate and send it command lines to interract with the application without manipulate the mouse and keyboard.
 
@@ -83,7 +83,7 @@ Available options:
 - Max Points:
   - Set or reset the max points of graphs added by command lines: `-mp | --max-points opt`
     - To set the max points:
-      - `opt` must be an interger strictly greater than 0.
+      - `opt` must be an interger strictly `greater than 0`.
     - To reset the max points:
       -  `opt`must be `reset` or `0` (or a negative number)
 - Add graph:
@@ -130,7 +130,10 @@ Available options:
   Important: Add a huge file (e.g. 1000 points or more) can be hard to manage. That's why we recommand to set the max points to add with the command `max points`. See this command above in the file.
   
 - Add bases:
-  - `-abs | -add-bases filepath [containsHeader] [scaleFactor] [axisScaleFactor] [renderQuality]`
+  - `-abs | -add-bases filepath isCartesian [containsHeader] [scaleFactor] [axisScaleFactor] [renderQuality]`
+  - `isCartesian` indicates if the bases are expressed in Cartesian or with ZYX Euler's angles.
+        - Accepted values for true: `true`, `t`, `1`
+        - Accepted values for false: `false`, `f`, `0`
     - Required parameters:
       - `filepath` is the path of the file to open. Better if it's the absolute path.
     - Additionnal parameters:

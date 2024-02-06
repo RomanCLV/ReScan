@@ -44,9 +44,9 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _isCartesianMode, value))
                 {
-                    if (_isCartesianMode && _isEulerAnglesMode)
+                    if (_isEulerAnglesMode == _isCartesianMode)
                     {
-                        _isEulerAnglesMode = false;
+                        _isEulerAnglesMode = !_isCartesianMode;
                         OnPropertyChanged(nameof(IsEulerAnglesMode));
                     }
                 }
@@ -61,9 +61,9 @@ namespace ReScanVisualizer.ViewModels
             {
                 if (SetValue(ref _isEulerAnglesMode, value))
                 {
-                    if (_isEulerAnglesMode && _isCartesianMode)
+                    if (_isCartesianMode == _isEulerAnglesMode)
                     {
-                        _isCartesianMode = false;
+                        _isCartesianMode = !_isEulerAnglesMode;
                         OnPropertyChanged(nameof(IsEulerAnglesMode));
                     }
                 }
@@ -97,7 +97,7 @@ namespace ReScanVisualizer.ViewModels
         public List<RenderQuality> RenderQualities { get; }
 
         public CommandKey ValidateCommand { get; private set; }
-        
+
         public CommandKey CancelCommand { get; private set; }
 
         public ImportBasesViewModel(MainViewModel mainViewModel, ImportBasesWindow? importBasesWindow)
@@ -113,7 +113,7 @@ namespace ReScanVisualizer.ViewModels
             _importBasesWindow = importBasesWindow;
             RenderQualities = Tools.GetRenderQualitiesList();
             ValidateCommand = new CommandKey(new ValidateImportBasesCommand(this), Key.Enter, ModifierKeys.None, "Import");
-            CancelCommand =  new CommandKey(_importBasesWindow is null ?  ActionCommand.DoNothing : new ActionCommand(_importBasesWindow.Close), Key.Escape, ModifierKeys.None, "Cancel");
+            CancelCommand = new CommandKey(_importBasesWindow is null ? ActionCommand.DoNothing : new ActionCommand(_importBasesWindow.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
         ~ImportBasesViewModel()
@@ -166,7 +166,7 @@ namespace ReScanVisualizer.ViewModels
                             line = reader.ReadLine();
                         }
 
-                        while (!isError && (line = reader.ReadLine()) != null) 
+                        while (!isError && (line = reader.ReadLine()) != null)
                         {
                             lineIndex++;
 
@@ -210,7 +210,7 @@ namespace ReScanVisualizer.ViewModels
                         }
                     }
                 }
-                catch 
+                catch
                 {
                     isError = true;
                 }
@@ -229,7 +229,7 @@ namespace ReScanVisualizer.ViewModels
                             {
                                 Name = $"{Path.GetFileNameWithoutExtension(_filePath)} {i + 1}"
                             };
-                            _mainViewModel.Bases.Add(base3DViewModel); 
+                            _mainViewModel.Bases.Add(base3DViewModel);
                         }
                         _importBasesWindow?.Close();
                     }

@@ -16,9 +16,10 @@ namespace ReScanVisualizer.Models.Parser.Options
         public new static string FullKey => FULL_KEY;
         public new static string Keys => Key + " | " + FullKey;
         public new static string Description => "Read a CSV file and add the contained bases";
-        public new static uint MinimumParameters => 1;
-        public new static uint MaximumParameters => 5;
+        public new static uint MinimumParameters => 2;
+        public new static uint MaximumParameters => 6;
         public static CommandLineParameter<string> FilePathParameter { get; } = new CommandLineParameter<string>("filePath", "Path of the CSV file that contains bases (in cartesians) to load.");
+        public static CommandLineParameter<bool> IsCartesianParameter { get; } = new CommandLineParameter<bool>("isCartesian", "If the bases are expressed in cartesian: true|t|1 - or with ZYX Euler's angles: false|f|0");
         public static CommandLineParameter<bool> ContainsHeaderParameter { get; } = new CommandLineParameter<bool>("containsHeader", "If the file contains headers: true|t|1 - else: false|f|0", true);
         public static CommandLineParameter<double> ScaleFactorParameter { get; } = new CommandLineParameter<double>("scaleFactor", "Scale factor to apply. Must be greater than 0. Example: 0.02 | 1.5", 1.0);
         public static CommandLineParameter<double> AxisScaleFactorParameter { get; } = new CommandLineParameter<double>("axisScaleFactor", "Axis scale factor to apply. Must be greater than 0. Example: 0.5 | 2", 1.0);
@@ -26,10 +27,11 @@ namespace ReScanVisualizer.Models.Parser.Options
 
         public new static List<CommandLineParameterBase> Parameters { get; } = new List<CommandLineParameterBase>()
         {
-            FilePathParameter, ContainsHeaderParameter, ScaleFactorParameter, AxisScaleFactorParameter, RenderQualityParameter
+            FilePathParameter, IsCartesianParameter, ContainsHeaderParameter, ScaleFactorParameter, AxisScaleFactorParameter, RenderQualityParameter
         };
 
         public string FilePath { get; }
+        public bool IsCartesian { get; }
         public bool ContainsHeader { get; }
         public double ScaleFactor { get; }
         public double AxisScaleFactor { get; }
@@ -51,16 +53,24 @@ namespace ReScanVisualizer.Models.Parser.Options
             }
 
             FilePath = args[0];
-
-            if (args.Count >= 2)
+            if (Tools.TryParse(args[1], out bool isCartesian))
             {
-                if (Tools.TryParse(args[1], out bool tmp))
+                IsCartesian = isCartesian;
+            }
+            else
+            {
+                throw new ArgumentException(GetType().Name + ": Cannot parse " + args[1] + " into a boolean", IsCartesianParameter.Name);
+            }
+
+            if (args.Count >= 3)
+            {
+                if (Tools.TryParse(args[2], out bool tmp))
                 {
                     ContainsHeader = tmp;
                 }
                 else
                 {
-                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[1] + " into a boolean", ContainsHeaderParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[2] + " into a boolean", ContainsHeaderParameter.Name);
                 }
             }
             else
@@ -68,9 +78,9 @@ namespace ReScanVisualizer.Models.Parser.Options
                 ContainsHeader = ContainsHeaderParameter.DefaultValue;
             }
 
-            if (args.Count >= 3)
+            if (args.Count >= 4)
             {
-                if (Tools.TryParse(args[2], out double tmp))
+                if (Tools.TryParse(args[3], out double tmp))
                 {
                     ScaleFactor = tmp;
                     if (ScaleFactor <= 0.0)
@@ -80,7 +90,7 @@ namespace ReScanVisualizer.Models.Parser.Options
                 }
                 else
                 {
-                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[2] + " into a double", ScaleFactorParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[3] + " into a double", ScaleFactorParameter.Name);
                 }
             }
             else
@@ -88,9 +98,9 @@ namespace ReScanVisualizer.Models.Parser.Options
                 ScaleFactor = ScaleFactorParameter.DefaultValue;
             }
 
-            if (args.Count >= 4)
+            if (args.Count >= 5)
             {
-                if (Tools.TryParse(args[3], out double tmp))
+                if (Tools.TryParse(args[4], out double tmp))
                 {
                     AxisScaleFactor = tmp;
                     if (AxisScaleFactor <= 0.0)
@@ -100,7 +110,7 @@ namespace ReScanVisualizer.Models.Parser.Options
                 }
                 else
                 {
-                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[3] + " into a double", AxisScaleFactorParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[4] + " into a double", AxisScaleFactorParameter.Name);
                 }
             }
             else
@@ -108,15 +118,15 @@ namespace ReScanVisualizer.Models.Parser.Options
                 AxisScaleFactor = AxisScaleFactorParameter.DefaultValue;
             }
 
-            if (args.Count >= 5)
+            if (args.Count >= 6)
             {
-                if (Tools.TryParse(args[4], out RenderQuality tmp))
+                if (Tools.TryParse(args[5], out RenderQuality tmp))
                 {
                     RenderQuality = tmp;
                 }
                 else
                 {
-                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[4] + " into a RenderQuality", RenderQualityParameter.Name);
+                    throw new ArgumentException(GetType().Name + ": Cannot parse " + args[5] + " into a RenderQuality", RenderQualityParameter.Name);
                 }
             }
             else

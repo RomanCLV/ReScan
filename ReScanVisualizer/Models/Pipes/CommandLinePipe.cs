@@ -92,10 +92,6 @@ namespace ReScanVisualizer.Models.Pipes
                                 {
                                     ApplyHelp(help);
                                 }
-                                else if (item is CommandLineOptionAddBases abs)
-                                {
-                                    ApplyViewBases(abs);
-                                }
                                 else if (item is CommandLineOptionUDP udp)
                                 {
                                     ApplyUDP(udp);
@@ -107,6 +103,10 @@ namespace ReScanVisualizer.Models.Pipes
                                 else if (item is CommandLineOptionAddGraph ag)
                                 {
                                     ApplyAddGraph(ag);
+                                }
+                                else if (item is CommandLineOptionAddBases abs)
+                                {
+                                    ApplyAddBases(abs);
                                 }
                                 else if (item is CommandLineOptionClearGraphs)
                                 {
@@ -218,7 +218,7 @@ namespace ReScanVisualizer.Models.Pipes
             addScatterGraphViewModel.Dispose();
         }
 
-        private void ApplyViewBases(CommandLineOptionAddBases abs)
+        private void ApplyAddBases(CommandLineOptionAddBases abs)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -232,8 +232,9 @@ namespace ReScanVisualizer.Models.Pipes
                     ImportBasesViewModel importBasesViewModel = new ImportBasesViewModel(_mainViewModel, null)
                     {
                         FilePath = abs.FilePath,
-                        ScaleFactor = abs.ScaleFactor,
+                        IsCartesianMode = abs.IsCartesian,
                         ContainsHeader = abs.ContainsHeader,
+                        ScaleFactor = abs.ScaleFactor,
                         AxisScaleFactor = abs.AxisScaleFactor,
                         RenderQuality = abs.RenderQuality
                     };
