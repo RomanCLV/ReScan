@@ -36,7 +36,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Name" Style="{StaticResource myTextBlockLeft}" />
-                            <TextBox Style="{StaticResource myTextBox}" Width="250" IsEnabled="{Binding CanEditName}">
+                            <TextBox Style="{StaticResource myTextBox}" Width="300" IsEnabled="{Binding CanEditName}">
                                 <TextBox.Text>
                                     <Binding Path="Base.Name" UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
@@ -71,9 +71,9 @@
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}"/>
 
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding TranslateX, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TranslateY, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TranslateZ, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding TranslateX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TranslateY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TranslateZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
 
                         <Button Grid.Row="3" Grid.Column="1" Content="Translate" Style="{StaticResource myButton}" Click="TranslateButton_Click" />
                         <Button Grid.Row="4" Grid.Column="1" Content="Move to"   Style="{StaticResource myButton}" Click="MoveToButton_Click" />

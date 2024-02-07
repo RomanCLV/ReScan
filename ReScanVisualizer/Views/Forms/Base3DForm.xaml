@@ -21,29 +21,29 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="Origin" Style="{StaticResource myTextBlock}" />
-        <TextBlock Grid.Row="0" Grid.Column="2" Text="X axis" Style="{StaticResource myTextBlock}" />
-        <TextBlock Grid.Row="0" Grid.Column="3" Text="Y axis" Style="{StaticResource myTextBlock}" />
-        <TextBlock Grid.Row="0" Grid.Column="4" Text="Z axis" Style="{StaticResource myTextBlock}" />
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="X axis" Style="{StaticResource myTextBlock}" />
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="Y axis" Style="{StaticResource myTextBlock}" />
+        <TextBlock Grid.Row="0" Grid.Column="3" Text="Z axis" Style="{StaticResource myTextBlock}" />
+        <TextBlock Grid.Row="0" Grid.Column="4" Text="Origin" Style="{StaticResource myTextBlock}" />
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Y" Style="{StaticResource myTextBlock}" />
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Z" Style="{StaticResource myTextBlock}" />
 
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding OX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding OY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding OZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding XX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding XY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding XZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
 
-        <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding XX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding XY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-        <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding XZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding YX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding YY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding YZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
 
-        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding YX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding YY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding YZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding ZX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding ZY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding ZZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
 
-        <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding ZX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-        <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding ZY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
-        <TextBox Grid.Row="3" Grid.Column="4" Text="{Binding ZZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding OX, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding OY, StringFormat=N3}" Style="{StaticResource myTextBox}" />
+        <TextBox Grid.Row="3" Grid.Column="4" Text="{Binding OZ, StringFormat=N3}" Style="{StaticResource myTextBox}" />
     </Grid>
 </UserControl>

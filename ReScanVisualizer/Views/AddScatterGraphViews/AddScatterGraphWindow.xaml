@@ -69,20 +69,24 @@
             <TextBlock DockPanel.Dock="Top" Text="Add Scatter Graph" Style="{StaticResource helpWindowTitle}"/>
             <DockPanel Margin="50">
                 <DockPanel DockPanel.Dock="Top">
-                    <Button 
-                            DockPanel.Dock="Left" 
-                            Style="{StaticResource myButton}"
-                            VerticalAlignment="Bottom"
-                            Command="{Binding ElementName=AddScatterGraphBuilderCommandKey, Path=Command}"
-                            ToolTip="{Binding AddScatterGraphBuilderCommand.Description}"
-                            >
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{StaticResource add}" Width="25" Height="25" />
-                                <TextBlock Text="Add scatter graph builder" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
+                    <DockPanel DockPanel.Dock="Left">
+                        <Button 
+                                DockPanel.Dock="Top"
+                                Style="{StaticResource myButton}"
+                                VerticalAlignment="Bottom"
+                                Command="{Binding ElementName=AddScatterGraphBuilderCommandKey, Path=Command}"
+                                ToolTip="{Binding AddScatterGraphBuilderCommand.Description}"
+                                >
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource add}" Width="25" Height="25" />
+                                    <TextBlock Text="Add scatter graph builder" VerticalAlignment="Center" Style="{StaticResource myTextBlock}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Style="{StaticResource myButton}" Content="Remove empty graphs" Click="RemoveEmptyBuildersButton_Click" VerticalAlignment="Bottom"/>
+                    </DockPanel>
 
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                         <TextBlock Text="Common parameters:" Style="{StaticResource myTextBlockLeft}"/>
@@ -295,12 +299,17 @@
                                 ToolTip="{Binding CancelCommand.Description}"/>
                 </StackPanel>
 
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
-                    <TextBlock Text="Count of items to add:" Style="{StaticResource myTextBlock}" />
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock Text="Graphs:" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Text="{Binding Items.Count}" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Text="| Points to add:" Style="{StaticResource myTextBlock}" />
                     <TextBlock Text="{Binding ItemsToAddCount}" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Text="| Points displayed:" Style="{StaticResource myTextBlock}" />
+                    <TextBlock Text="{Binding ItemsToAddDisplayedCount}" Style="{StaticResource myTextBlock}" />
                 </StackPanel>
 
                 <ScrollViewer 
+                    Margin="0 20 0 0"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Auto">
                     <ListView 

@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
@@ -12,6 +13,7 @@ using ReScanVisualizer.Commands;
 using ReScanVisualizer.Models;
 using ReScanVisualizer.Service;
 using ReScanVisualizer.ViewModels.Parts;
+using ReScanVisualizer.Views.AddScatterGraphViews;
 
 #nullable enable
 
@@ -67,9 +69,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         public override string Details => $"{_builders.Count} file{(_builders.Count == 0 ? "" : "s")}";
 
-        public ScatterGraphFilesBuilder()
+        private readonly AddScatterGraphBuilderWindow _addScatterGraphView;
+        public ScatterGraphFilesBuilder(AddScatterGraphBuilderWindow addScatterGraphView)
         {
             _isDisposing = false;
+            _addScatterGraphView = addScatterGraphView;
             State = ScatterGraphBuilderState.Error;
             UpdateAddPartCommand();
             SelectFilesCommand = new SelectFilesCommand(this);
@@ -141,6 +145,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             };
             if (ofd.ShowDialog() != null)
             {
+                _addScatterGraphView?.Dispatcher.Invoke(() => _addScatterGraphView.Cursor = Cursors.Wait);
                 foreach (string file in ofd.FileNames)
                 {
                     ScatterGraphFileBuilder scatterGraphFileBuilder = new ScatterGraphFileBuilder(file, Colors.White, true)
@@ -150,6 +155,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                     };
                     _builders.Add(scatterGraphFileBuilder);
                 }
+                _addScatterGraphView?.Dispatcher.Invoke(() => _addScatterGraphView.Cursor = Cursors.Arrow);
             }
         }
 

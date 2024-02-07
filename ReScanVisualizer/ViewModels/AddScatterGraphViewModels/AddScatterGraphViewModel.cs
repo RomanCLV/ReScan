@@ -34,6 +34,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             set => SetValue(ref _itemsToAddCount, value);
         }
 
+        private uint _itemsToAddDisplayedCount;
+        public uint ItemsToAddDisplayedCount
+        {
+            get => _itemsToAddDisplayedCount;
+            set => SetValue(ref _itemsToAddDisplayedCount, value);
+        }
+
         private uint _maxPoints;
         public uint MaxPoints
         {
@@ -136,6 +143,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
         {
             _view = view;
             _mainViewModel = mainViewModel;
+            _itemsToAddCount = 0;
+            _itemsToAddDisplayedCount = 0;
             _commonScaleFactor = 1.0;
             _commonAxisScaleFactor = 1.0;
             _maxPoints = 0;
@@ -266,12 +275,27 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
         private void ComputeItemsToAddCount()
         {
             int count = 0;
+            int displayedCount = 0;
             foreach (var item in Items)
             {
                 //count += item.Value!.HasToReduce ? item.Value.ReducedCount : item.Value.Count;
                 count += item.Value!.ReducedCount;
+                displayedCount += item.Value!.MaxPointsToDisplay >= 0 && item.Value!.MaxPointsToDisplay < item.Value!.ReducedCount ? item.Value!.MaxPointsToDisplay : item.Value!.ReducedCount;
             }
             ItemsToAddCount = (uint)count;
+            ItemsToAddDisplayedCount = (uint)displayedCount;
+        }
+
+        public void RemoveEmptyBuilders()
+        {
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (Items[i].Value != null && Items[i].Value!.Count == 0)
+                {
+                    Items.RemoveAt(i);
+                    i--;
+                }
+            }
         }
 
         public void RandomizeColor()
@@ -413,9 +437,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         public void AddBuilder(ScatterGraphBuilderBase builder)
         {
+            if (_view != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => _view.Cursor = Cursors.Wait);
+            }
             if (!ContainsBuilder(builder))
             {
                 Items.Add(new KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult>(builder, new ScatterGraphBuildResult()));
+            }
+            if (_view != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => _view.Cursor = Cursors.Arrow);
             }
         }
 
@@ -437,12 +469,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         public void BuildAll()
         {
+            if (_view != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => _view.Cursor = Cursors.Wait);
+            }
             foreach (var item in Items)
             {
                 if (item.Value is null || !item.Value.IsSuccess)
                 {
                     Build(item);
                 }
+            }
+            if (_view != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => _view.Cursor = Cursors.Arrow);
             }
         }
 
@@ -463,6 +503,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         public async Task BuildAllAsync()
         {
+            _view?.Dispatcher.Invoke(() => _view.Cursor = Cursors.Wait);
             foreach (var item in Items)
             {
                 if (item.Value is null || !item.Value.IsSuccess || item.Key.State is ScatterGraphBuilderState.Ready)
@@ -470,6 +511,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                     await BuildAsync(item);
                 }
             }
+            _view?.Dispatcher.Invoke(() => _view.Cursor = Cursors.Arrow);
         }
 
         public async Task BuildAsync(KeyValueObservable<ScatterGraphBuilderBase, ScatterGraphBuildResult> item)
@@ -573,14 +615,23 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         public Task LoadAllAsync(bool closeWindow = false)
         {
+            _view?.Dispatcher.Invoke(() => _view.Cursor = Cursors.Arrow);
             return Task.Run(() => Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 try
                 {
                     LoadAll(closeWindow);
+                    if (_view != null)
+                    {
+                        _view.Cursor = Cursors.Arrow;
+                    }
                 }
                 catch (Exception e)
                 {
+                    if (_view != null)
+                    {
+                        _view.Cursor = Cursors.Arrow;
+                    }
                     MessageBox.Show(e.Message, e.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }));

@@ -164,7 +164,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             }
         }
 
-        private void BuildButton_Click(object sender, RoutedEventArgs e)
+        private async void BuildButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button b)
             {
@@ -172,7 +172,9 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 {
                     if (DataContext is AddScatterGraphViewModel model)
                     {
-                        model!.BuildAsync(item);
+                        Cursor = Cursors.Wait;
+                        await model!.BuildAsync(item);
+                        Cursor = Cursors.Arrow;
                     }
                 }
             }
@@ -208,7 +210,9 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 {
                     if (DataContext is AddScatterGraphViewModel model)
                     {
+                        Dispatcher.Invoke(() => Cursor = Cursors.Wait);
                         model.LoadAsync(item);
+                        Dispatcher.Invoke(() => Cursor = Cursors.Arrow);
                     }
                 }
             }
@@ -316,6 +320,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             }
         }
 
+        private void RemoveEmptyBuildersButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.RemoveEmptyBuilders();
+            }
+        }
+
         private void ApplyAllCommonParametersButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is AddScatterGraphViewModel viewModel)
@@ -329,6 +341,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 {
                     viewModel.ApplyCommonPointsToDisplay();
                 }
+                viewModel.ApplyCommonScaleFactor();
                 viewModel.ApplyCommonAxisScaleFactor();
                 viewModel.ApplyCommonPointRadius();
                 viewModel.ApplyCommonRenderQuality();

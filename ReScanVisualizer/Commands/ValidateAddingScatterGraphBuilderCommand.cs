@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels;
 using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 using ReScanVisualizer.Views.AddScatterGraphViews;
@@ -90,7 +91,9 @@ namespace ReScanVisualizer.Commands
         {
             if (CanExecute(parameter))
             {
+                _addScatterGraphBuilderView.Dispatcher.Invoke(() => _addScatterGraphBuilderView.Cursor = Cursors.Wait);
                 AddBuilder(_builder);
+                _addScatterGraphBuilderView.Dispatcher.Invoke(() => _addScatterGraphBuilderView.Cursor = Cursors.Arrow);
                 _addScatterGraphBuilderView.Close();
             }
             else

@@ -15,6 +15,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 {
     public class AddScatterGraphBuilderViewModel : ViewModelBase
     {
+        private readonly AddScatterGraphBuilderWindow _addScatterGraphView;
+
         private bool _isUnselectingAll;
 
         private bool _isEmptySelected;
@@ -54,7 +56,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                 UnselectAll();
                 if (SetValue(ref _isToOpenSelected, value))
                 {
-                    Builder = new ScatterGraphFilesBuilder();
+                    Builder = new ScatterGraphFilesBuilder(_addScatterGraphView);
                 }
             }
         }
@@ -102,14 +104,15 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         public AddScatterGraphBuilderViewModel(AddScatterGraphBuilderWindow addScatterGraphView, AddScatterGraphViewModel addScatterGraphViewModel)
         {
+            _addScatterGraphView = addScatterGraphView;
             _isUnselectingAll = false;
             _isEmptySelected = false;
             _isToPopulateSelected = false;
             _isToOpenSelected = false;
             _populateSelectedIndex = 0;
 
-            ValidateCommand = new CommandKey(new ValidateAddingScatterGraphBuilderCommand(addScatterGraphViewModel, addScatterGraphView, this), Key.Enter, ModifierKeys.None, "Add builder");
-            CancelCommand = new CommandKey(new ActionCommand(addScatterGraphView.Close), Key.Escape, ModifierKeys.None, "Cancel");
+            ValidateCommand = new CommandKey(new ValidateAddingScatterGraphBuilderCommand(addScatterGraphViewModel, _addScatterGraphView, this), Key.Enter, ModifierKeys.None, "Add builder");
+            CancelCommand = new CommandKey(new ActionCommand(_addScatterGraphView.Close), Key.Escape, ModifierKeys.None, "Cancel");
         }
 
         ~AddScatterGraphBuilderViewModel()
