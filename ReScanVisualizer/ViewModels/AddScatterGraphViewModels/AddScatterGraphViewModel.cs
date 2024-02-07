@@ -41,6 +41,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             set => SetValue(ref _maxPoints, value);
         }
 
+        private int _commonMaxPointsToDisplay;
+        public int CommonMaxPointsToDisplay
+        {
+            get => _commonMaxPointsToDisplay;
+            set
+            {
+                if (value < -1)
+                {
+                    value = -1;
+                }
+                SetValue(ref _commonMaxPointsToDisplay, value);
+            }
+        }
+
         private double _commonScaleFactor;
         public double CommonScaleFactor
         {
@@ -125,6 +139,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             _commonScaleFactor = 1.0;
             _commonAxisScaleFactor = 1.0;
             _maxPoints = 0;
+            _commonMaxPointsToDisplay = -1;
             _commonPointRadius = 0.25;
             _commonRenderQuality = RenderQuality.High;
             RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
@@ -253,7 +268,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             int count = 0;
             foreach (var item in Items)
             {
-                count += item.Value!.HasToReduce ? item.Value.ReducedCount : item.Value.Count;
+                //count += item.Value!.HasToReduce ? item.Value.ReducedCount : item.Value.Count;
+                count += item.Value!.ReducedCount;
             }
             ItemsToAddCount = (uint)count;
         }
@@ -303,6 +319,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
                         // on modifie légèrement le facteur de reduction pour arriver au nombre de points désiré
                         item.Value.ReductionFactor += 0.001 * factor;
                     }
+                }
+            }
+        }
+
+        public void ApplyCommonPointsToDisplay()
+        {
+            foreach (var item in Items)
+            {
+                if (item.Value != null)
+                {
+                    item.Value.MaxPointsToDisplay = _commonMaxPointsToDisplay;
                 }
             }
         }
@@ -463,14 +490,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
         {
             if (item.Key.State is ScatterGraphBuilderState.Success && item.Value != null && item.Value.IsSuccess && !item.Value.IsAdded)
             {
-                if (item.Value.HasToReduce && item.Value.ReductionFactor > 0)
+                if (/*item.Value.HasToReduce &&*/item.Value.ReductionFactor > 0)
                 {
                     item.Value.Reduce();
                 }
                 ScatterGraphViewModel? scatterGraphViewModel = null;
                 try
                 {
-                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Value.AxisScaleFactor, item.Key.PointRadius, item.Key.RenderQuality, !item.Key.DisplayBarycenter, !item.Key.DisplayAveragePlan, !item.Key.DisplayBase)
+                    scatterGraphViewModel = new ScatterGraphViewModel(item.Value.ScatterGraph!, item.Key.Color, item.Value.ScaleFactor, item.Value.AxisScaleFactor, item.Key.PointRadius, item.Key.RenderQuality, item.Value.MaxPointsToDisplay, !item.Key.DisplayBarycenter, !item.Key.DisplayAveragePlan, !item.Key.DisplayBase)
                     {
                         Name = item.Key.Name.Replace(" builder", ""),
                         Part = item.Key.Part

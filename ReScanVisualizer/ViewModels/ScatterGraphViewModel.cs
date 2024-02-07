@@ -14,6 +14,7 @@ using ReScanVisualizer.Models;
 using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
+using System.Data.SqlTypes;
 
 #nullable enable
 
@@ -42,6 +43,19 @@ namespace ReScanVisualizer.ViewModels
                     {
                         oc.CollectionChanged += SourceParts_CollectionChanged;
                     }
+                }
+            }
+        }
+
+        private int _maxPointsToDisplay;
+        public int MaxPointsToDisplay
+        {
+            get => _maxPointsToDisplay;
+            set
+            {
+                if (SetValue(ref _maxPointsToDisplay, value))
+                {
+                    UpdateModelGeometry();
                 }
             }
         }
@@ -101,7 +115,8 @@ namespace ReScanVisualizer.ViewModels
 
         public bool IsBaseHidden => Base3D.IsHidden;
 
-        public ObservableCollection<SampleViewModel> Samples { get; private set; }
+        public ObservableCollection<SampleViewModel> Samples { get; }
+        private readonly List<SampleViewModel> _displayedSamples;
 
         private BarycenterViewModel _barycenter;
         public BarycenterViewModel Barycenter
@@ -265,7 +280,7 @@ namespace ReScanVisualizer.ViewModels
         /// ScatterGraphViewModel constuctor.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double axisScaleFactor = 1.0, double pointRadius = 0.25, RenderQuality renderQuality = RenderQuality.High, bool hideBarycenter = false, bool hideAveragePlan = false, bool hideBase = false)
+        public ScatterGraphViewModel(ScatterGraph scatterGraph, Color color, double scaleFactor = 1.0, double axisScaleFactor = 1.0, double pointRadius = 0.25, RenderQuality renderQuality = RenderQuality.High, int pointToDisplay = -1, bool hideBarycenter = false, bool hideAveragePlan = false, bool hideBase = false)
         {
             if (scaleFactor <= 0.0)
             {
@@ -276,6 +291,7 @@ namespace ReScanVisualizer.ViewModels
             _scatterGraph = scatterGraph;
             _pointsRadius = pointRadius;
             _renderQuality = renderQuality;
+            _maxPointsToDisplay = pointToDisplay;
             _isSelected = false;
             _isMouseOver = false;
             RenderQualities = new List<RenderQuality>(Tools.GetRenderQualitiesList());
@@ -287,6 +303,7 @@ namespace ReScanVisualizer.ViewModels
 
             _model = new Model3DGroup();
             Samples = new ObservableCollection<SampleViewModel>();
+            _displayedSamples = new List<SampleViewModel>();
 
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
@@ -297,8 +314,10 @@ namespace ReScanVisualizer.ViewModels
                 sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
                 sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
                 Samples.Add(sampleViewModel);
-                _model.Children.Add(sampleViewModel.Model);
+                //_model.Children.Add(sampleViewModel.Model);
             }
+
+            UpdateModelGeometry();
 
             UpdateArePointsHidden();
 
@@ -389,7 +408,6 @@ namespace ReScanVisualizer.ViewModels
                         sampleViewModel.IsHidden = ArePointsHidden;
                         sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
                         sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
-                        _model.Children.Add(sampleViewModel.Model);
                     }
                     break;
 
@@ -400,12 +418,11 @@ namespace ReScanVisualizer.ViewModels
                         sampleViewModel.ScatterGraph = null;
                         sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
                         sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
-                        RemoveModelOfSample(sampleViewModel);
                     }
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    _model.Children.Clear();
+                    //_model.Children.Clear();
                     break;
 
                 default:
@@ -413,6 +430,7 @@ namespace ReScanVisualizer.ViewModels
             }
 
             OnPropertyChanged(nameof(ItemsCount));
+            UpdateModelGeometry();
         }
 
         public void Clear()
@@ -448,27 +466,14 @@ namespace ReScanVisualizer.ViewModels
             sampleViewModel.ScatterGraph = null;
             sampleViewModel.IsHiddenChanged -= SampleViewModel_IsHiddenChanged;
             sampleViewModel.Point.PropertyChanged -= Point_PropertyChanged;
-            RemoveModelOfSample(sampleViewModel);
             Samples.Remove(sampleViewModel);
-        }
-
-        private void RemoveModelOfSample(SampleViewModel sampleViewModel)
-        {
-            for (int i = 0; i < _model.Children.Count; i++)
-            {
-                if (sampleViewModel.Model.Equals(_model.Children[i]))
-                {
-                    _model.Children.RemoveAt(i);
-                    break;
-                }
-            }
         }
 
         public void SetFrom(ScatterGraph scatterGraph)
         {
             Samples.CollectionChanged -= Points_CollectionChanged;
             Clear();
-            _model.Children.Clear();
+            //_model.Children.Clear();
             _scatterGraph = scatterGraph;
             for (int i = 0; i < _scatterGraph.Count; i++)
             {
@@ -479,10 +484,11 @@ namespace ReScanVisualizer.ViewModels
                 sampleViewModel.IsHiddenChanged += SampleViewModel_IsHiddenChanged;
                 sampleViewModel.Point.PropertyChanged += Point_PropertyChanged;
                 Samples.Add(sampleViewModel);
-                _model.Children.Add(sampleViewModel.Model);
+                //_model.Children.Add(sampleViewModel.Model);
             }
             Samples.CollectionChanged += Points_CollectionChanged;
             RecomputeAll();
+            UpdateModelGeometry();
         }
 
         private void OnIsHiddenChanged()
@@ -516,11 +522,20 @@ namespace ReScanVisualizer.ViewModels
 
         public void ShowPoints()
         {
+            bool arePointsHidden = true;
             foreach (SampleViewModel sample in Samples)
             {
-                sample.Show();
+                if (_displayedSamples.Contains(sample))
+                {
+                    sample.Show();
+                    arePointsHidden = false;
+                }
+                else
+                {
+                    sample.Hide();
+                }
             }
-            ArePointsHidden = false;
+            ArePointsHidden = arePointsHidden;
         }
 
         public void Select()
@@ -794,7 +809,61 @@ namespace ReScanVisualizer.ViewModels
 
         public void UpdateModelGeometry()
         {
-            throw new InvalidOperationException("UpdateModelGeometry not allowed for a ScatterGraphViewModel.");
+            int insertIndex = 0;
+
+            if (Samples.Count == 0)
+            {
+                _displayedSamples.Clear();
+                _model.Children.Clear();
+            }
+            else
+            {
+                if (_maxPointsToDisplay < 0 || _maxPointsToDisplay > Samples.Count) // display all
+                {
+                    _displayedSamples.Clear();
+                    _model.Children.Clear();
+                    for (int i = 0; i < Samples.Count; i++)
+                    {
+                        Samples[i].Show();
+                        _displayedSamples.Add(Samples[i]);
+                        _model.Children.Add(Samples[i].Model);
+                    }
+                }
+                else if (_maxPointsToDisplay == 0) // hide all
+                {
+                    if (_displayedSamples.Count != 0)
+                    {
+                        _displayedSamples.Clear();
+                        _model.Children.Clear();
+                    }
+                }
+                else // take a few
+                {
+                    int increment = Samples.Count / _maxPointsToDisplay;
+                    for (int i = 0; i < Samples.Count; i++)
+                    {
+                        if (i % increment == 0) // point to display
+                        {
+                            if (!_displayedSamples.Contains(Samples[i]))
+                            {
+                                Samples[i].Show();
+                                _displayedSamples.Insert(insertIndex, Samples[i]);
+                                _model.Children.Insert(insertIndex, Samples[i].Model);
+                            }
+                            insertIndex++;
+                        }
+                        else // point to hide
+                        {
+                            if (_displayedSamples.Contains(Samples[i]))
+                            {
+                                _displayedSamples.RemoveAt(insertIndex);
+                                _model.Children.RemoveAt(insertIndex);
+                                Samples[i].IsHidden = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public void UpdateModelMaterial()

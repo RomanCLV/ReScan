@@ -207,7 +207,9 @@ namespace ReScanVisualizer.ViewModels
             double sinp = Tools.Sin(phi);
             double cosp = Tools.Cos(phi);
 
-            Bases.Add(Base3DViewModel.CreateCountedInstance(new Base3D(new Point3D(sint * cosp, sint * sinp, cost))));
+            Base3DViewModel base3DViewModel = Base3DViewModel.CreateCountedInstance(new Base3D(new Point3D(sint * cosp, sint * sinp, cost)));
+            Bases.Add(base3DViewModel);
+            SelectedViewModel = new BaseViewModel(base3DViewModel);
         }
 
         public void AddScatterGraph(ScatterGraphViewModel scatterGraphViewModel)

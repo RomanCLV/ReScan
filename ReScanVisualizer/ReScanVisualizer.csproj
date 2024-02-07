@@ -125,6 +125,8 @@
     <Compile Include="Converters\EnumerableNonEmptyConverter.cs" />
     <Compile Include="Converters\IsNotNullConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
+    <Compile Include="Converters\MaxPointsToDisplayToStringConvertercs.cs" />
+    <Compile Include="Converters\NullableMaxPointsToDisplayToStringConverter.cs" />
     <Compile Include="Converters\NullableObjectToStringConverter.cs" />
     <Compile Include="Converters\ReduceItemButtonEnabledMultiConverter.cs" />
     <Compile Include="Converters\LoadItemButtonEnabledMultiConverter.cs" />

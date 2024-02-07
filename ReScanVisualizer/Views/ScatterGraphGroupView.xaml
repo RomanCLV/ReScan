@@ -19,6 +19,7 @@
         <converters:EnumerableNonEmptyConverter x:Key="EnumerableNonEmptyConverter" />
         <converters:IsNullConverter x:Key="IsNullConverter" />
         <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+        <converters:NullableMaxPointsToDisplayToStringConverter x:Key="NullableMaxPointsToDisplayToStringConverter"/>
     </UserControl.Resources>
     <Grid>
         <TabControl Background="Transparent" SelectionChanged="TabControl_SelectionChanged">
@@ -41,6 +42,10 @@
                                     <Image Source="{StaticResource delete}" />
                                 </Button.Content>
                             </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Max points to display" Width="85" Style="{StaticResource myTextBlockLeft}" ToolTip="Show all points with -1 or show only few of them with a positive value."/>
+                            <TextBox   Style="{StaticResource myTextBox}" Width="100" Height="18" Text="{Binding MaxPointsToDisplay, Converter={StaticResource NullableMaxPointsToDisplayToStringConverter}}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Scale factor" Width="85" Style="{StaticResource myTextBlockLeft}"/>

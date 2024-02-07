@@ -18,6 +18,7 @@ namespace ReScanVisualizer.ViewModels
     {
         private readonly static string[] scatterGraphPropertyNames = new string[]
         {
+            nameof(ScatterGraphViewModel.MaxPointsToDisplay),
             nameof(ScatterGraphViewModel.ScaleFactor),
             nameof(ScatterGraphViewModel.Part),
             nameof(ScatterGraphViewModel.PointsRadius),
@@ -184,6 +185,24 @@ namespace ReScanVisualizer.ViewModels
                         part.EnableRecomputeAllAfterScatterGraphsChanged();
                         part.ComputeAll();
                     }
+                }
+            }
+        }
+
+        private int? _maxPointsToDisplay;
+        public int? MaxPointsToDisplay
+        {
+            get => _maxPointsToDisplay;
+            set
+            {
+                if (SetValue(ref _maxPointsToDisplay, value) && _maxPointsToDisplay != null)
+                {
+                    _inhibitUpdate = true;
+                    foreach (ScatterGraphViewModel item in _items)
+                    {
+                        item.MaxPointsToDisplay = (int)_maxPointsToDisplay;
+                    }
+                    _inhibitUpdate = false;
                 }
             }
         }
@@ -424,6 +443,7 @@ namespace ReScanVisualizer.ViewModels
         {
             _inhibitUpdate = false;
             _items = new List<ScatterGraphViewModel>();
+            _maxPointsToDisplay = null;
             _scaleFactor = null;
             _part = null;
             _axisScaleFactor = null;
@@ -659,6 +679,7 @@ namespace ReScanVisualizer.ViewModels
             }
             if (_items is null || _items.Count() == 0)
             {
+                MaxPointsToDisplay = null;
                 ScaleFactor = null;
                 Part = null;
                 AxisScaleFactor = null;
@@ -680,6 +701,7 @@ namespace ReScanVisualizer.ViewModels
                 return;
             }
 
+            UpdateProperty(x => x.MaxPointsToDisplay, ref _maxPointsToDisplay, nameof(MaxPointsToDisplay));
             UpdateProperty(x => x.ScaleFactor, ref _scaleFactor, nameof(ScaleFactor));
             UpdatePropertyPart(x => x.Part, ref _part, nameof(Part));
             UpdateProperty(x => x.Base3D.AxisScaleFactor, ref _axisScaleFactor, nameof(AxisScaleFactor));

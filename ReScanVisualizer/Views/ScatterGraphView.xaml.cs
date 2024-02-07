@@ -283,6 +283,7 @@ namespace ReScanVisualizer.Views
                     viewModel.Base3D.AxisScaleFactor,
                     viewModel.PointsRadius,
                     viewModel.RenderQuality,
+                    viewModel.MaxPointsToDisplay,
                     viewModel.IsBarycenterHidden,
                     viewModel.IsAveragePlanHidden,
                     viewModel.IsBarycenterHidden)

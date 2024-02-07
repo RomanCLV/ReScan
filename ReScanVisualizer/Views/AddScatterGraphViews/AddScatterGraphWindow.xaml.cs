@@ -252,6 +252,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             }
         }
 
+        private void ApplyCommonPointsToDisplayButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddScatterGraphViewModel viewModel)
+            {
+                viewModel.ApplyCommonPointsToDisplay();
+            }
+        }
+
         private void ApplyCommonScaleFactorButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is AddScatterGraphViewModel viewModel)
@@ -313,7 +321,14 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
             if (DataContext is AddScatterGraphViewModel viewModel)
             {
                 viewModel.ApplyCommonPart();
-                viewModel.ApplyMaxPoints();
+                if (viewModel.MaxPoints != 0)
+                {
+                    viewModel.ApplyMaxPoints();
+                }
+                if (viewModel.CommonMaxPointsToDisplay != 0)
+                {
+                    viewModel.ApplyCommonPointsToDisplay();
+                }
                 viewModel.ApplyCommonAxisScaleFactor();
                 viewModel.ApplyCommonPointRadius();
                 viewModel.ApplyCommonRenderQuality();

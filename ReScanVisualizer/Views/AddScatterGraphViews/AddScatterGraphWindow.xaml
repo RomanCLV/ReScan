@@ -30,6 +30,7 @@
         <converters:EnumerableNonEmptyConverter x:Key="EnumerableNonEmptyConverter"/>
         <converters:IsNullConverter x:Key="IsNullConverter"/>
         <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        <converters:MaxPointsToDisplayToStringConvertercs x:Key="MaxPointsToDisplayToStringConvertercs"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding x:Name="AddScatterGraphBuilderCommandKey" 
@@ -88,11 +89,11 @@
                         <Button Content="Apply all common parameters" Style="{StaticResource myButton}" Click="ApplyAllCommonParametersButton_Click" />
                     </StackPanel>
 
-                    <Border DockPanel.Dock="Left" BorderThickness="1 0 1 0" Margin="0 4 0 0" BorderBrush="{StaticResource backgroundListColor}">
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="1 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
                         <Button Content="Randomize colors" Style="{StaticResource myButton}" VerticalAlignment="Bottom" Click="RandomizeColorButton_Click"/>
                     </Border>
 
-                    <Border DockPanel.Dock="Left" BorderThickness="0 0 1 0" Margin="0 4 0 0" BorderBrush="{StaticResource backgroundListColor}">
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="Part" Style="{StaticResource myTextBlock}" HorizontalAlignment="Left"/>
                             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
@@ -129,6 +130,18 @@
                             <Button DockPanel.Dock="Top" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
                                     ToolTip="Find the reduction factor of all builded graphes to reach the specified max points."
                                     Click="ApplyMaxPointsButton_Click"/>
+                        </DockPanel>
+                    </Border>
+
+                    <Border DockPanel.Dock="Left" Margin="0 4 0 0" BorderThickness="0 0 1 0" BorderBrush="{StaticResource backgroundListColor}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Max points to display" Style="{StaticResource myTextBlock}"/>
+                            <TextBox DockPanel.Dock="Top" Text="{Binding CommonMaxPointsToDisplay, Converter={StaticResource MaxPointsToDisplayToStringConvertercs}}" Width="75"  Style="{StaticResource myTextBox}"
+                                GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+
+                            <Button DockPanel.Dock="Top" Content="Apply" Style="{StaticResource myButton}" VerticalAlignment="Bottom"
+                                    ToolTip="Indicates the total of displayed points. Indicate 'No limit' with a negative value (or void) or show only few of them with a zero-positive value."
+                                    Click="ApplyCommonPointsToDisplayButton_Click"/>        
                         </DockPanel>
                     </Border>
 
@@ -383,6 +396,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
+                                <!-- Colonne Part -->
                                 <GridViewColumn Header="Part" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -412,7 +426,7 @@
                                 </GridViewColumn>
 
                                 <!-- Colonne Reduction enabled -->
-                                <GridViewColumn Header="Reduction enabled" Width="120">
+                                <!--<GridViewColumn Header="Reduction enabled" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Value.HasToReduce}">
@@ -425,19 +439,19 @@
                                             </CheckBox>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                                </GridViewColumn>-->
 
                                 <!-- Colonne Reduction Factor -->
-                                <GridViewColumn Header="Reduction factor" Width="175">
+                                <GridViewColumn Header="Reduction factor" Width="195">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBox Style="{StaticResource myTextBox}" Width="50"
+                                                <TextBox Style="{StaticResource myTextBox}" Width="70"
                                                          IsEnabled="{Binding Value.IsSuccess}"
                                                          Text="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}"
                                                          GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
 
-                                                <Slider Minimum="{Binding Value.MinReductionFactor}" Maximum="100" Width="100" VerticalAlignment="Center"
+                                                <Slider Minimum="0" Maximum="100" Width="100" VerticalAlignment="Center"
                                                         IsEnabled="{Binding Value.IsSuccess}"
                                                         Value="{Binding Value.ReductionFactor, UpdateSourceTrigger=PropertyChanged}"/>
                                             </StackPanel>
@@ -450,6 +464,27 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Value.ReducedCount}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <!-- Colonne Points to display -->
+                                <GridViewColumn Width="175">
+                                    <GridViewColumn.Header>
+                                        <TextBlock Text="Max points to display" ToolTip="Indicates the total of displayed points. Indicate 'No limit' with a negative value (or void) or show only few of them with a zero-positive value."/>
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBox Style="{StaticResource myTextBox}" Width="50"
+                                                    IsEnabled="{Binding Value.IsSuccess}"
+                                                    Text="{Binding Value.MaxPointsToDisplay, Converter={StaticResource MaxPointsToDisplayToStringConvertercs}}"
+                                                    GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+
+                                                <Slider Minimum="-1" Maximum="{Binding Value.ReducedCount}" Width="100" VerticalAlignment="Center"
+                                                    IsEnabled="{Binding Value.IsSuccess}"
+                                                    Value="{Binding Value.MaxPointsToDisplay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
