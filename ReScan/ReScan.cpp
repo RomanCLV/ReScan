@@ -767,7 +767,7 @@ namespace ReScan
 
 				outputFile \
 					<< oxStr << ";" << oyStr << ";" << ozStr << ";" \
-					<< rxStr << ";" << ryStr << ";" << rzStr << ";" << std::endl;
+					<< rxStr << ";" << ryStr << ";" << rzStr << std::endl;
 			}
 		}
 
