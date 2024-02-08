@@ -223,6 +223,12 @@ namespace ReScanVisualizer.Models.Pipes
                 try
                 {
                     addScatterGraphViewModel.LoadAll();
+
+                    Rect3D bounds = _mainViewModel.ScatterGraphs.Last().Model.Bounds;
+                    if (!bounds.IsEmpty && !double.IsNaN(bounds.SizeX) && !double.IsNaN(bounds.SizeY) && !double.IsNaN(bounds.SizeZ))
+                    {
+                        Views.MainWindow.SetCamera(CameraHelper.GetCameraConfigurationToFocus(bounds));
+                    }
                 }
                 catch (Exception ex)
                 {
