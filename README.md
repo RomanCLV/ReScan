@@ -105,9 +105,9 @@ Available options:
       - `pointRadius` indicates the point's radius to apply for the visual representation of each point.
         - Must be a strictly positive number.
         - Default value if the parameter is not given: `0.25`
-      - `maxPointsDisplayed` inidcates the maximum number of points that will be displayed.
+      - `maxPointsDisplayed` indicates the maximum number of points that will be displayed.
         - `-1` (or a `negative value`) to set `no limit`
-        - `postive integer` (start from 0) to set a limit.
+        - `positive integer` (start from 0) to set a limit.
       - `displayBarycenter` show or hide the barycenter of a graph.
         - Accepted values for true: `true`, `t`, `1`
         - Accepted values for false: `false`, `f`, `0`
@@ -134,11 +134,11 @@ Available options:
   
 - Add bases:
   - `-abs | -add-bases filepath isCartesian [containsHeader] [scaleFactor] [axisScaleFactor] [renderQuality]`
-  - `isCartesian` indicates if the bases are expressed in Cartesian or with ZYX Euler's angles.
-        - Accepted values for true: `true`, `t`, `1`
-        - Accepted values for false: `false`, `f`, `0`
     - Required parameters:
       - `filepath` is the path of the file to open. Better if it's the absolute path.
+      - `isCartesian` indicates if the bases are expressed in Cartesian or with ZYX Euler's angles.
+        - Accepted values for true: `true`, `t`, `1`
+        - Accepted values for false: `false`, `f`, `0`
     - Additionnal parameters:
       - `containsHeader` indicates if the first line of the file is headers.
         - Accepted values for true: `true`, `t`, `1`
