@@ -347,7 +347,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             }
         }
 
-        public void ApplyCommonPointsToDisplay()
+        public void ApplyCommonMaxPointsToDisplay()
         {
             foreach (var item in Items)
             {

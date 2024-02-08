@@ -191,6 +191,7 @@ namespace ReScanVisualizer.Models.Pipes
             addScatterGraphViewModel.CommonScaleFactor = ag.ScaleFactor;
             addScatterGraphViewModel.CommonAxisScaleFactor = ag.AxisScaleFactor;
             addScatterGraphViewModel.CommonPointRadius = ag.PointRadius;
+            addScatterGraphViewModel.CommonMaxPointsToDisplay = ag.MaxPointsDisplayed;
             addScatterGraphViewModel.CommonDisplayBarycenter = ag.DisplayBarycenter;
             addScatterGraphViewModel.CommonDisplayAveragePlan = ag.DisplayAveragePlan;
             addScatterGraphViewModel.CommonDisplayBase = ag.DisplayBase;
@@ -199,6 +200,7 @@ namespace ReScanVisualizer.Models.Pipes
             addScatterGraphViewModel.ApplyCommonScaleFactor();
             addScatterGraphViewModel.ApplyCommonAxisScaleFactor();
             addScatterGraphViewModel.ApplyCommonPointRadius();
+            addScatterGraphViewModel.ApplyCommonMaxPointsToDisplay();
             addScatterGraphViewModel.ApplyCommonDisplayBarycenter();
             addScatterGraphViewModel.ApplyCommonDisplayAveragePlan();
             addScatterGraphViewModel.ApplyCommonDisplayBase();

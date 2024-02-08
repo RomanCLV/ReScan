@@ -260,7 +260,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
         {
             if (DataContext is AddScatterGraphViewModel viewModel)
             {
-                viewModel.ApplyCommonPointsToDisplay();
+                viewModel.ApplyCommonMaxPointsToDisplay();
             }
         }
 
@@ -339,7 +339,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
                 }
                 if (viewModel.CommonMaxPointsToDisplay != 0)
                 {
-                    viewModel.ApplyCommonPointsToDisplay();
+                    viewModel.ApplyCommonMaxPointsToDisplay();
                 }
                 viewModel.ApplyCommonScaleFactor();
                 viewModel.ApplyCommonAxisScaleFactor();
