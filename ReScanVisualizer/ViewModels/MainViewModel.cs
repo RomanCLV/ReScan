@@ -167,6 +167,11 @@ namespace ReScanVisualizer.ViewModels
                     pipe.Stop();
                 }
 
+                foreach (PartViewModelBase part in Parts)
+                {
+                    part.DisableRecomputeAllAfterScatterGraphsChanged();
+                }
+
                 if (_selectedViewModel is BaseViewModel baseViewModel)
                 {
                     baseViewModel.Dispose();
@@ -432,12 +437,20 @@ namespace ReScanVisualizer.ViewModels
 
         public void ClearScatterGraphs()
         {
+            foreach (PartViewModelBase part in Parts)
+            {
+                part.DisableRecomputeAllAfterScatterGraphsChanged();
+            }
             foreach (ScatterGraphViewModel item in ScatterGraphs)
             {
                 item.Samples.CollectionChanged -= Samples_CollectionChanged;
                 item.Dispose();
             }
             ScatterGraphs.Clear();
+            foreach (PartViewModelBase part in Parts)
+            {
+                part.EnableRecomputeAllAfterScatterGraphsChanged();
+            }
         }
 
         public void ClearBases()

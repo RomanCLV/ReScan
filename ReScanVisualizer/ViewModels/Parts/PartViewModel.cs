@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -25,6 +26,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         public event EventHandler<bool>? IsHiddenChanged;
 
         public event EventHandler? OriginChanged;
+        public event EventHandler? XYZChanged;
 
         private string _name;
         public string Name
@@ -133,6 +135,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         }
 
         public Base3DViewModel OriginBase { get; private set; }
+        private bool _isOriginBaseXYZChanging;
 
         private BarycenterViewModel _barycenter;
         public BarycenterViewModel Barycenter
@@ -275,6 +278,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             _isRecomputeAllOnScatterGraphsChangedEnalbed = true;
             _name = "Part " + InstanceCreated;
             _haveDimensions = false;
+            _isOriginBaseXYZChanging = false;
             _isHidden = false;
             _isPartVisualHidden = _isHidden;
             _areBasesHidden = _isHidden;
@@ -306,6 +310,8 @@ namespace ReScanVisualizer.ViewModels.Parts
             _scatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
             OriginBase.PropertyChanged += OriginBase_PropertyChanged;
             OriginBase.Base3D.OriginChanged += Base3D_OriginChanged;
+            OriginBase.PreviewXYZChanged += OriginBase_PreviewXYZChanged;
+            OriginBase.XYZChanged += OriginBase_XYZChanged;
         }
 
         ~PartViewModelBase()
@@ -319,8 +325,9 @@ namespace ReScanVisualizer.ViewModels.Parts
             {
                 OriginBase.PropertyChanged -= OriginBase_PropertyChanged;
                 OriginBase.Base3D.OriginChanged -= Base3D_OriginChanged;
+                OriginBase.PreviewXYZChanged -= OriginBase_PreviewXYZChanged;
+                OriginBase.XYZChanged -= OriginBase_XYZChanged; Clear();
                 _scatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
-                Clear();
                 ClearBases();
                 _modelGroup.Children.Clear();
                 _barycenter.Dispose();
@@ -380,12 +387,12 @@ namespace ReScanVisualizer.ViewModels.Parts
                 OnOriginChanged();
                 UpdateModelGeometry();
             }
-            else if (e.PropertyName == nameof(Base3DViewModel.X) ||
-                e.PropertyName == nameof(Base3DViewModel.Y) ||
-                e.PropertyName == nameof(Base3DViewModel.Z))
-            {
-                OnOriginChanged();
-            }
+            //else if (e.PropertyName == nameof(Base3DViewModel.X) ||
+            //    e.PropertyName == nameof(Base3DViewModel.Y) ||
+            //    e.PropertyName == nameof(Base3DViewModel.Z))
+            //{
+                
+            //}
         }
 
         private void Base3D_OriginChanged(object sender, PositionEventArgs e)
@@ -401,6 +408,22 @@ namespace ReScanVisualizer.ViewModels.Parts
                 item.Translate(translation);
                 item.CanTranslate = false;
             }
+        }
+
+        private void OriginBase_PreviewXYZChanged(object sender, EventArgs e)
+        {
+            _isOriginBaseXYZChanging = true;
+        }
+
+        private void OriginBase_XYZChanged(object sender, EventArgs e)
+        {
+            _isOriginBaseXYZChanging = false;
+            OnXYZChanged();
+        }
+
+        private void OnXYZChanged()
+        {
+            XYZChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void ScatterGraphs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -448,6 +471,7 @@ namespace ReScanVisualizer.ViewModels.Parts
             OnPropertyChanged(nameof(ItemsCount));
             if (_isRecomputeAllOnScatterGraphsChangedEnalbed)
             {
+                Trace.WriteLine("Part ScatterGraphs_CollectionChanged");
                 ComputeAll();
             }
         }
@@ -520,6 +544,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         {
             if (e.PropertyName == nameof(SampleViewModel.Point))
             {
+                Trace.WriteLine("Part ItemBarycenter_PropertyChanged");
                 ComputeAll();
             }
         }
@@ -599,6 +624,7 @@ namespace ReScanVisualizer.ViewModels.Parts
         /// <param name="setOriginToBarycenter">Set the origin of the part to the new barycenter.</param>
         public virtual void ComputeAll()
         {
+            Trace.WriteLine("Part compute all...");
             _barycenter.UpdatePoint(ComputeBarycenter());
             if (_originAttachedToBarycenter)
             {

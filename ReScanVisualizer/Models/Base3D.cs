@@ -14,9 +14,11 @@ namespace ReScanVisualizer.Models
     public class Base3D
     {
         public event EventHandler<PositionEventArgs>? OriginChanged;
+        public event EventHandler? PreviewXYZChanged;
         public event EventHandler<Vector3D>? XChanged;
         public event EventHandler<Vector3D>? YChanged;
         public event EventHandler<Vector3D>? ZChanged;
+        public event EventHandler? XYZChanged;
 
         #region Origin access properties
 
@@ -331,6 +333,16 @@ namespace ReScanVisualizer.Models
             OriginChanged?.Invoke(this, new PositionEventArgs(oldPosition, newPosition));
         }
 
+        private void OnPreviewXYZChanged()
+        {
+            PreviewXYZChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnXYZChanged()
+        {
+            XYZChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         private void OnXChanged()
         {
             XChanged?.Invoke(this, _x);
@@ -366,12 +378,14 @@ namespace ReScanVisualizer.Models
 
         public void Normalize()
         {
+            OnPreviewXYZChanged();
             _x.Normalize();
             _y.Normalize();
             _z.Normalize();
             OnXChanged();
             OnYChanged();
             OnZChanged();
+            OnXYZChanged();
         }
 
         public Matrix3D ToMatrix3D()
@@ -451,9 +465,11 @@ namespace ReScanVisualizer.Models
             y.Clamp();
             z.Clamp();
 
+            OnPreviewXYZChanged();
             X = x;
             Y = y;
             Z = z;
+            OnXYZChanged();
 
             if (autoCallEndRotate)
             {

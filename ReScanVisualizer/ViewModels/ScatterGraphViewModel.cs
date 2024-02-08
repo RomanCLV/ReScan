@@ -15,6 +15,7 @@ using ReScanVisualizer.ViewModels.Parts;
 using ReScanVisualizer.ViewModels.Samples;
 using HelixToolkit.Wpf;
 using System.Data.SqlTypes;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -254,6 +255,7 @@ namespace ReScanVisualizer.ViewModels
                 if (_part != null)
                 {
                     _part.OriginChanged -= Part_OriginChanged;
+                    _part.XYZChanged -= Part_XYZChanged;
                 }
                 if (SetValue(ref _part, value))
                 {
@@ -261,6 +263,7 @@ namespace ReScanVisualizer.ViewModels
                     if (_part != null)
                     {
                         _part.OriginChanged += Part_OriginChanged;
+                        _part.XYZChanged += Part_XYZChanged;
                         _part.Add(this);
                         ScaleFactor = _part.ScaleFactor;
                     }
@@ -393,7 +396,7 @@ namespace ReScanVisualizer.ViewModels
 
         private void Points_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RecomputeAll();
+            RecomputeAll("ScatterGraph Points_CollectionChanged:" + e.Action);
 
             switch (e.Action)
             {
@@ -458,7 +461,7 @@ namespace ReScanVisualizer.ViewModels
                 Samples.Add(item);
             }
             Samples.CollectionChanged += Points_CollectionChanged;
-            RecomputeAll();
+            RecomputeAll("ScatterGraph AddRange");
         }
 
         public void RemoveSample(SampleViewModel sampleViewModel)
@@ -487,7 +490,7 @@ namespace ReScanVisualizer.ViewModels
                 //_model.Children.Add(sampleViewModel.Model);
             }
             Samples.CollectionChanged += Points_CollectionChanged;
-            RecomputeAll();
+            RecomputeAll("ScatterGraph SetFrom");
             UpdateModelGeometry();
         }
 
@@ -568,16 +571,22 @@ namespace ReScanVisualizer.ViewModels
 
         private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            RecomputeAll();
+            RecomputeAll("ScatterGraph Point_PropertyChanged: " + e.PropertyName);
         }
 
         private void Part_OriginChanged(object sender, EventArgs e)
         {
-            RecomputeAll();
+            RecomputeAll("ScatterGraph Part_OriginChanged");
         }
 
-        private void RecomputeAll()
+        private void Part_XYZChanged(object sender, EventArgs e)
         {
+            RecomputeAll("ScatterGraph Part_XYZChanged");
+        }
+
+        private void RecomputeAll(string why)
+        {
+            Trace.WriteLine($"{Name} recomputing... : {why}");
             _scatterGraph.Clear();
             foreach (SampleViewModel item in Samples)
             {

@@ -9,6 +9,7 @@ using ReScanVisualizer.Models;
 using HelixToolkit.Wpf;
 using ReScanVisualizer.ViewModels.Parts;
 using System.Windows;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -17,6 +18,9 @@ namespace ReScanVisualizer.ViewModels
     public class Base3DViewModel : ViewModelBase, I3DElement, IScatterGraphElement, ICameraFocusable
     {
         public event EventHandler<bool>? IsHiddenChanged;
+
+        public event EventHandler? PreviewXYZChanged;
+        public event EventHandler? XYZChanged;
 
         private readonly Base3D _base3D;
         public Base3D Base3D => _base3D;
@@ -471,6 +475,16 @@ namespace ReScanVisualizer.ViewModels
             UpdateModelGeometry();
         }
 
+        private void OnPreviewXYZChanged()
+        {
+            PreviewXYZChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void OnXYZChanged()
+        {
+            XYZChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         private void OnIsHidenChanged()
         {
             IsHiddenChanged?.Invoke(this, _isHidden);
@@ -585,10 +599,13 @@ namespace ReScanVisualizer.ViewModels
         {
             if (_canRotate)
             {
+                OnPreviewXYZChanged();
                 _base3D.Rotate(rotationAxis, rotationAngle, autoCallEndRotate);
                 OnPropertyChanged(nameof(X));
                 OnPropertyChanged(nameof(Y));
                 OnPropertyChanged(nameof(Z));
+                OnXYZChanged();
+
                 UpdateModelGeometry();
             }
         }
