@@ -67,6 +67,10 @@ namespace ReScanVisualizer.Models.Pipes
                 {
                     CommandLineParser? commandLineParser = null;
                     string[] args = _args.Dequeue();
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        args[i] = args[i].Replace("\\\\", "\\").Replace('/', '\\');
+                    }
                     try
                     {
                         commandLineParser = CommandLineParser.Parse(args);
@@ -182,6 +186,14 @@ namespace ReScanVisualizer.Models.Pipes
             addScatterGraphViewModel.AddBuilder(scatterGraphFileBuilder);
 
             await addScatterGraphViewModel.BuildAllAsync();
+            foreach (var item in addScatterGraphViewModel.Items)
+            {
+                if (!item.Value!.IsSuccess)
+                {
+                    MessageBox.Show($"{item.Key!.Details}\n{item.Value.Exception!.Message}", item.Value.Exception.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
             if (_maxPoints > 0)
             {
                 addScatterGraphViewModel.MaxPoints = (uint)_maxPoints;
@@ -216,8 +228,8 @@ namespace ReScanVisualizer.Models.Pipes
                 {
                     MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+                addScatterGraphViewModel.Dispose();
             });
-            addScatterGraphViewModel.Dispose();
         }
 
         private void ApplyAddBases(CommandLineOptionAddBases abs)
