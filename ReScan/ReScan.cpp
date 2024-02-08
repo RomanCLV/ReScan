@@ -581,7 +581,7 @@ namespace ReScan
 		for (int i = 0; i < subDivisions.size(); i++)
 		{
 			const std::string path = basePath + "-" + to_string(i + 1) + ".csv";
-			if (ScatterGraph::saveCSV(path, subDivisions[i], true, true))
+			if (ScatterGraph::saveCSV(path, subDivisions[i], m_processData.getWriteHeaders(), m_processData.getDecimalCharIsDot()))
 			{
 				notifyObservers(FileType::Subdivision, path);
 			}
