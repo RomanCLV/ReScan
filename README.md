@@ -87,7 +87,7 @@ Available options:
     - To reset the max points:
       -  `opt`must be `reset` or `0` (or a negative number)
 - Add graph:
-  - `-ag | -add-graph type filepath [containsHeader] [scaleFactor] [axisScaleFactor] [pointRadius] [displayBarycenter] [displayAveragePlan] [displayBase] [renderQuality]`
+  - `-ag | -add-graph type filepath [containsHeader] [scaleFactor] [axisScaleFactor] [pointRadius] [maxPointsDisplayed] [displayBarycenter] [displayAveragePlan] [displayBase] [renderQuality]`
     - Required parameters:
       - `type` is the type of the file. Currently only `csv` is supported.
       - `filepath` is the path of the file to open. Better if it's the absolute path.
@@ -105,6 +105,9 @@ Available options:
       - `pointRadius` indicates the point's radius to apply for the visual representation of each point.
         - Must be a strictly positive number.
         - Default value if the parameter is not given: `0.25`
+      - `maxPointsDisplayed` inidcates the maximum number of points that will be displayed.
+        - `-1` (or a `negative value`) to set `no limit`
+        - `postive integer` (start from 0) to set a limit.
       - `displayBarycenter` show or hide the barycenter of a graph.
         - Accepted values for true: `true`, `t`, `1`
         - Accepted values for false: `false`, `f`, `0`
