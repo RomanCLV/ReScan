@@ -135,7 +135,6 @@ namespace ReScanVisualizer.ViewModels.Parts
         }
 
         public Base3DViewModel OriginBase { get; private set; }
-        private bool _isOriginBaseXYZChanging;
 
         private BarycenterViewModel _barycenter;
         public BarycenterViewModel Barycenter
@@ -278,7 +277,6 @@ namespace ReScanVisualizer.ViewModels.Parts
             _isRecomputeAllOnScatterGraphsChangedEnalbed = true;
             _name = "Part " + InstanceCreated;
             _haveDimensions = false;
-            _isOriginBaseXYZChanging = false;
             _isHidden = false;
             _isPartVisualHidden = _isHidden;
             _areBasesHidden = _isHidden;
@@ -310,7 +308,6 @@ namespace ReScanVisualizer.ViewModels.Parts
             _scatterGraphs.CollectionChanged += ScatterGraphs_CollectionChanged;
             OriginBase.PropertyChanged += OriginBase_PropertyChanged;
             OriginBase.Base3D.OriginChanged += Base3D_OriginChanged;
-            OriginBase.PreviewXYZChanged += OriginBase_PreviewXYZChanged;
             OriginBase.XYZChanged += OriginBase_XYZChanged;
         }
 
@@ -325,8 +322,8 @@ namespace ReScanVisualizer.ViewModels.Parts
             {
                 OriginBase.PropertyChanged -= OriginBase_PropertyChanged;
                 OriginBase.Base3D.OriginChanged -= Base3D_OriginChanged;
-                OriginBase.PreviewXYZChanged -= OriginBase_PreviewXYZChanged;
-                OriginBase.XYZChanged -= OriginBase_XYZChanged; Clear();
+                OriginBase.XYZChanged -= OriginBase_XYZChanged;
+                Clear();
                 _scatterGraphs.CollectionChanged -= ScatterGraphs_CollectionChanged;
                 ClearBases();
                 _modelGroup.Children.Clear();
@@ -410,14 +407,8 @@ namespace ReScanVisualizer.ViewModels.Parts
             }
         }
 
-        private void OriginBase_PreviewXYZChanged(object sender, EventArgs e)
-        {
-            _isOriginBaseXYZChanging = true;
-        }
-
         private void OriginBase_XYZChanged(object sender, EventArgs e)
         {
-            _isOriginBaseXYZChanging = false;
             OnXYZChanged();
         }
 

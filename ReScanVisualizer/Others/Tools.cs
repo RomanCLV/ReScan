@@ -606,7 +606,11 @@ namespace ReScanVisualizer
         /// <returns>The corresponding rotation matrix.</returns>
         public static Matrix3D EulerAnglesZYXToMatrix3D(double a, double b, double c)
         {
-            return CreateRotationMatrix(Axis.X, DegreeToRadian(c)) * CreateRotationMatrix(Axis.Y, DegreeToRadian(b)) * CreateRotationMatrix(Axis.Z, DegreeToRadian(a));
+            Matrix3D rotationX = CreateRotationMatrix(Axis.X, DegreeToRadian(c));
+            Matrix3D rotationY = CreateRotationMatrix(Axis.Y, DegreeToRadian(b));
+            Matrix3D rotationZ = CreateRotationMatrix(Axis.Z, DegreeToRadian(a));
+            Matrix3D rotationMatrix = rotationZ * rotationY * rotationX;
+            return rotationMatrix;
         }
     }
 }
