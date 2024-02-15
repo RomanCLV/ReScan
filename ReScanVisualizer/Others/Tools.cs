@@ -326,13 +326,20 @@ namespace ReScanVisualizer
             {
                 rotationAxis.Normalize();
 
-                Quaternion q = new Quaternion(rotationAxis, -angle);
-                rot.Rotate(q);
+                // version matrice
+                Matrix3D m = CreateRotationMatrix(rotationAxis, DegreeToRadian(angle));
+                m.Clamp();
+                base3D.X = new Vector3D(m.M11, m.M21, m.M31);
+                base3D.Y = new Vector3D(m.M12, m.M22, m.M32);
+                base3D.Z = new Vector3D(m.M13, m.M23, m.M33);
 
-                rot.Clamp();
-                base3D.X = new Vector3D(rot.M11, rot.M21, rot.M31);
-                base3D.Y = new Vector3D(rot.M12, rot.M22, rot.M32);
-                base3D.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
+                // version quaternion
+                //Quaternion q = new Quaternion(rotationAxis, -angle);
+                //rot.Rotate(q);
+                //rot.Clamp();
+                //base3D.X = new Vector3D(rot.M11, rot.M21, rot.M31);
+                //base3D.Y = new Vector3D(rot.M12, rot.M22, rot.M32);
+                //base3D.Z = new Vector3D(rot.M13, rot.M23, rot.M33);
             }
             return base3D;
         }
