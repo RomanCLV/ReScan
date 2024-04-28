@@ -10,10 +10,11 @@
              >
     <StackPanel>
         <TextBlock Text="Choose a method to populate the new graph" />
-        <ComboBox Margin="10" Width="150" HorizontalAlignment="Left" SelectedIndex="{Binding PopulateSelectedIndex}">
+        <ComboBox Margin="10" Width="200" HorizontalAlignment="Left" SelectedIndex="{Binding PopulateSelectedIndex}">
             <ComboBoxItem Content="Random" />
             <ComboBoxItem Content="Rectangle 2D" />
             <ComboBoxItem Content="Line" />
+            <ComboBoxItem Content="Mathematical surface: f(x, y) = z" />
         </ComboBox>
         <Separator Margin="10" />
     </StackPanel>

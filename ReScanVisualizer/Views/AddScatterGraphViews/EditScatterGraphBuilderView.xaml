@@ -57,7 +57,11 @@
                             <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateLineBuilder}">
                                 <local:ScatterGraphPopulateLineBuilderView />
                             </DataTemplate>
-                            
+
+                            <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateFunctionXYBuilder}">
+                                <local:ScatterGraphPopulateFunctionXYBuilderView Foreground="{StaticResource foregroundColor}"/>
+                            </DataTemplate>
+
                         </StackPanel.Resources>
 
                         <ContentControl Content="{Binding Builder}" />

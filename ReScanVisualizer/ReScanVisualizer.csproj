@@ -84,6 +84,10 @@
     <Reference Include="HelixToolkit.Wpf, Version=2.24.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.Wpf.2.24.0\lib\net462\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="MathEvaluatorNetFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\MathEvaluatorNetFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -156,7 +160,9 @@
     <Compile Include="Models\Pipes\CommandLinePipe.cs" />
     <Compile Include="Models\Pipes\PipeBase.cs" />
     <Compile Include="Models\Pipes\UDPPipe.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateFunctionXYBuilder.cs" />
     <Compile Include="ViewModels\CommandLineViewModel.cs" />
+    <Compile Include="ViewModels\ExpressionVariableRangeViewModel.cs" />
     <Compile Include="ViewModels\ImportBasesViewModel.cs" />
     <Compile Include="Models\CameraConfiguration.cs" />
     <Compile Include="Models\ICameraFocusable.cs" />
@@ -222,6 +228,9 @@
     <Compile Include="Views\AddPartViews\RectanglePartBuilderView.xaml.cs">
       <DependentUpon>RectanglePartBuilderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateFunctionXYBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphPopulateFunctionXYBuilderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CommandLineWindow.xaml.cs">
       <DependentUpon>CommandLineWindow.xaml</DependentUpon>
     </Compile>
@@ -230,6 +239,9 @@
     </Compile>
     <Compile Include="Views\Forms\Base3DForm.xaml.cs">
       <DependentUpon>Base3DForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Forms\ExpressionVariableRangeForm.xaml.cs">
+      <DependentUpon>ExpressionVariableRangeForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ImportBasesWindow.xaml.cs">
       <DependentUpon>ImportBasesWindow.xaml</DependentUpon>
@@ -356,6 +368,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateFunctionXYBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CommandLineWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -365,6 +381,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Forms\Base3DForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Forms\ExpressionVariableRangeForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -615,6 +635,5 @@
   <ItemGroup>
     <Resource Include="Resources\Images\eye_unknow.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

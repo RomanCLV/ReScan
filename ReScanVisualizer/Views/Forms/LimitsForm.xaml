@@ -48,13 +48,13 @@
             </Grid.RowDefinitions>
 
             <!-- X -->
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="Min X:" Margin="10" Style="{StaticResource myTextBlock}"/>
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="Max X:" Margin="10" Style="{StaticResource myTextBlock}"/>
             <TextBox   Grid.Column="1" Grid.Row="0" Text="{Binding MaxX, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
             <!-- Y -->
-            <TextBlock Grid.Column="0" Grid.Row="1" Text="Min Y:" Margin="10" Style="{StaticResource myTextBlock}"/>
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="Max Y:" Margin="10" Style="{StaticResource myTextBlock}"/>
             <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding MaxY, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
             <!-- Z -->
-            <TextBlock Grid.Column="0" Grid.Row="2" Text="Min Z:" Margin="10" Style="{StaticResource myTextBlock}"/>
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="Max Z:" Margin="10" Style="{StaticResource myTextBlock}"/>
             <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding MaxZ, StringFormat=N3}" Style="{StaticResource myTextBox}"/>
         </Grid>
     </Grid>

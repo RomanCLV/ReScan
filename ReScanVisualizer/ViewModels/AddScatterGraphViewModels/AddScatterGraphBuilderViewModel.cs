@@ -155,17 +155,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
 
         private void UpdatePopulateBuilder()
         {
-            if (_populateSelectedIndex == 0)
+            if (_populateSelectedIndex == 0) // Random
             {
                 Builder = new ScatterGraphPopulateRandomBuilder();
             }
-            else if (_populateSelectedIndex == 1)
+            else if (_populateSelectedIndex == 1) // Rectangle 2D
             {
                 Builder = new ScatterGraphPopulateRectangle2DBuilder();
             }
-            else if (_populateSelectedIndex == 2)
+            else if (_populateSelectedIndex == 2) // Line
             {
                 Builder = new ScatterGraphPopulateLineBuilder();
+            }
+            else if (_populateSelectedIndex == 3) // Mathematical surface: f(x, y) = z
+            {
+                Builder = new ScatterGraphPopulateFunctionXYBuilder();
             }
             else
             {
