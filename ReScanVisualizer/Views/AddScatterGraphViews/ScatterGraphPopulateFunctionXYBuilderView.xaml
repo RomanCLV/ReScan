@@ -11,30 +11,36 @@
              Foreground="{StaticResource foregroundColor}"
              DataContextChanged="UserControl_DataContextChanged"
              >
-    <StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="10">
-            <TextBlock Text="Num points:" Width="110" Margin="10" Style="{StaticResource myTextBlockLeft}" />
-            <TextBox Text="{Binding NumPoints, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Width="100" Style="{StaticResource myTextBox}" IsEnabled="False"/>
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Right" Margin="8">
+            <CheckBox IsChecked="{Binding AutoUpdateBuilderModel}" Content="Auto update" Foreground="{StaticResource foregroundColor}" ToolTip="Recommend to disable this option if the points count is greater than 1000."/>
+            <local:ScatterGraphBuilderVisualizerView DataContext="{Binding ScatterGraphBuilderVisualizerViewModel}" Height="500" Width="500" HorizontalAlignment="Right" />
         </StackPanel>
-
-        <StackPanel Orientation="Horizontal" Margin="10">
-            <TextBlock Text="Expression: f(x, y) = " Width="110" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
-            <TextBox Text="{Binding ExpressionString, UpdateSourceTrigger=PropertyChanged}" Width="300" Style="{StaticResource myTextBox}" />
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal" Margin="10">
-            <TextBlock Text="{Binding ExpressionErrorMessage}" Foreground="{StaticResource errorColor}" Style="{StaticResource myTextBlockLeft}" />
-        </StackPanel>
-
-        <GroupBox Header="Variables range" Margin="10">
-            <StackPanel>
-                <forms:ExpressionVariableRangeForm DataContext="{Binding XVariableRange}" HorizontalAlignment="Left" />
-                <forms:ExpressionVariableRangeForm DataContext="{Binding YVariableRange}" HorizontalAlignment="Left" />
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 10">
+                <TextBlock Text="Num points:" Width="110" Margin="10" Style="{StaticResource myTextBlockLeft}" />
+                <TextBox Text="{Binding NumPoints, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Width="100" Style="{StaticResource myTextBox}" IsEnabled="False"/>
             </StackPanel>
-        </GroupBox>
 
-        <GroupBox Header="Color" Margin="10">
-            <ctr:ColorSelector x:Name="ColorSelector" ColorChanged="ColorSelector_ColorChanged" Margin="30" />
-        </GroupBox>
-    </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 10">
+                <TextBlock Text="Expression: f(x, y) = " Width="110" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
+                <TextBox Text="{Binding ExpressionString, UpdateSourceTrigger=PropertyChanged}" Width="300" Style="{StaticResource myTextBox}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0 10">
+                <TextBlock Text="{Binding ExpressionErrorMessage}" Foreground="{StaticResource errorColor}" Style="{StaticResource myTextBlockLeft}" />
+            </StackPanel>
+
+            <GroupBox Header="Variables range" Margin="0 10">
+                <StackPanel>
+                    <forms:ExpressionVariableRangeForm DataContext="{Binding XVariableRange}" HorizontalAlignment="Left" />
+                    <forms:ExpressionVariableRangeForm DataContext="{Binding YVariableRange}" HorizontalAlignment="Left" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Color" Margin="0 10">
+                <ctr:ColorSelector x:Name="ColorSelector" ColorChanged="ColorSelector_ColorChanged" Margin="30" />
+            </GroupBox>
+        </StackPanel>
+    </DockPanel>
 </UserControl>

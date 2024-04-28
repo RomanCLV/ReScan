@@ -10,7 +10,7 @@ using ReScanVisualizer.ViewModels.Parts;
 
 #nullable enable
 
-namespace ReScanVisualizer.ViewModels
+namespace ReScanVisualizer.ViewModels.AddPartModelViews
 {
     public class PartVisualizerViewModel : ViewModelBase
     {

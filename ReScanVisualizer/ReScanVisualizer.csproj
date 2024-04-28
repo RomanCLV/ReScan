@@ -161,6 +161,7 @@
     <Compile Include="Models\Pipes\PipeBase.cs" />
     <Compile Include="Models\Pipes\UDPPipe.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateFunctionXYBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\ScatterGraphBuilderVisualizerViewModel.cs" />
     <Compile Include="ViewModels\CommandLineViewModel.cs" />
     <Compile Include="ViewModels\ExpressionVariableRangeViewModel.cs" />
     <Compile Include="ViewModels\ImportBasesViewModel.cs" />
@@ -202,7 +203,7 @@
     <Compile Include="ViewModels\AddScatterGraphViewModels\EditScatterGraphViewModel.cs" />
     <Compile Include="ViewModels\OpenUDPPipeViewModel.cs" />
     <Compile Include="ViewModels\Parts\RectanglePartViewModel.cs" />
-    <Compile Include="ViewModels\PartVisualizerViewModel.cs" />
+    <Compile Include="ViewModels\AddPartModelsViews\PartVisualizerViewModel.cs" />
     <Compile Include="ViewModels\Samples\BarycenterViewModel.cs" />
     <Compile Include="ViewModels\Base3DViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
@@ -227,6 +228,9 @@
     </Compile>
     <Compile Include="Views\AddPartViews\RectanglePartBuilderView.xaml.cs">
       <DependentUpon>RectanglePartBuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphBuilderVisualizerView.xaml.cs">
+      <DependentUpon>ScatterGraphBuilderVisualizerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateFunctionXYBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphPopulateFunctionXYBuilderView.xaml</DependentUpon>
@@ -365,6 +369,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddPartViews\RectanglePartBuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphBuilderVisualizerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
