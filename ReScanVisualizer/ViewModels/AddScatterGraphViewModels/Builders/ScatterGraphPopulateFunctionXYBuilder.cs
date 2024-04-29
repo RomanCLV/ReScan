@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using ReScanVisualizer.Models;
 using MathEvaluatorNetFramework;
@@ -218,10 +217,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             Variable[] vars = new Variable[2] { x, y };
             double z;
 
-            while (State != ScatterGraphBuilderState.Error && y.Value <= YVariableRange.Max)
+            while (y.Value <= YVariableRange.Max)
             {
                 x.Value = XVariableRange.Min;
-                while (State != ScatterGraphBuilderState.Error && x.Value <= XVariableRange.Max)
+                while (x.Value <= XVariableRange.Max)
                 {
                     z = _expression.Evaluate(vars);
                     scatterGraph.AddPoint((double)x.Value, (double)y.Value, z);
@@ -235,7 +234,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         public override ScatterGraphBuildResult Build()
         {
-            State = ScatterGraphBuilderState.Working;
+            Application.Current.Dispatcher.Invoke(() => State = ScatterGraphBuilderState.Working);
             ScatterGraphBuildResult result;
             try
             {

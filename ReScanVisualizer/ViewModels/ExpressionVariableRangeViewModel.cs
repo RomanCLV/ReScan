@@ -50,6 +50,10 @@ namespace ReScanVisualizer.ViewModels
                 {
                     value = 0.001;
                 }
+                else if (value > _max - _min)
+                {
+                    value = _max - _min;
+                }
                 SetValue(ref _step, value);
             }
         }

@@ -160,6 +160,7 @@
     <Compile Include="Models\Pipes\CommandLinePipe.cs" />
     <Compile Include="Models\Pipes\PipeBase.cs" />
     <Compile Include="Models\Pipes\UDPPipe.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateFunctionsXYZBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateFunctionXYBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\ScatterGraphBuilderVisualizerViewModel.cs" />
     <Compile Include="ViewModels\CommandLineViewModel.cs" />
