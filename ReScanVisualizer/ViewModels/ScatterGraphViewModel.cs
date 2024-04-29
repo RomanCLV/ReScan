@@ -396,7 +396,7 @@ namespace ReScanVisualizer.ViewModels
 
         private void Points_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RecomputeAll("ScatterGraph Points_CollectionChanged:" + e.Action);
+            RecomputeAll();
 
             switch (e.Action)
             {
@@ -461,7 +461,7 @@ namespace ReScanVisualizer.ViewModels
                 Samples.Add(item);
             }
             Samples.CollectionChanged += Points_CollectionChanged;
-            RecomputeAll("ScatterGraph AddRange");
+            RecomputeAll();
         }
 
         public void RemoveSample(SampleViewModel sampleViewModel)
@@ -490,7 +490,7 @@ namespace ReScanVisualizer.ViewModels
                 //_model.Children.Add(sampleViewModel.Model);
             }
             Samples.CollectionChanged += Points_CollectionChanged;
-            RecomputeAll("ScatterGraph SetFrom");
+            RecomputeAll();
             UpdateModelGeometry();
         }
 
@@ -571,22 +571,21 @@ namespace ReScanVisualizer.ViewModels
 
         private void Point_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            RecomputeAll("ScatterGraph Point_PropertyChanged: " + e.PropertyName);
+            RecomputeAll();
         }
 
         private void Part_OriginChanged(object sender, EventArgs e)
         {
-            RecomputeAll("ScatterGraph Part_OriginChanged");
+            RecomputeAll();
         }
 
         private void Part_XYZChanged(object sender, EventArgs e)
         {
-            RecomputeAll("ScatterGraph Part_XYZChanged");
+            RecomputeAll();
         }
 
-        private void RecomputeAll(string why)
+        private void RecomputeAll()
         {
-            Trace.WriteLine($"{Name} recomputing... : {why}");
             _scatterGraph.Clear();
             foreach (SampleViewModel item in Samples)
             {

@@ -442,7 +442,7 @@ namespace ReScanVisualizer.Models
                     int indexBestAngle = 2;
                     double bestAngle = 0.0;
                     double currentAngle;
-
+                    
                     for (int i = 2; i < size; i++)
                     {
                         y = _points[i] - _points[0];
@@ -450,6 +450,10 @@ namespace ReScanVisualizer.Models
                         if (Math.Abs(90.0 - currentAngle) < Math.Abs(90.0 - bestAngle))
                         {
                             indexBestAngle = i;
+                            if (currentAngle == 90.0)
+                            {
+                                break;
+                            }
                         }
                         //if (!Tools.AreVectorsColinear(x, y))
                         //{
@@ -457,7 +461,7 @@ namespace ReScanVisualizer.Models
                         //}
                     }
                     y = _points[indexBestAngle] - _points[0];
-
+                    
                     z = Vector3D.CrossProduct(x, y);
                 }
                 if (z.Z < 0)

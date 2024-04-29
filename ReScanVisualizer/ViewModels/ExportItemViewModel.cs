@@ -23,7 +23,7 @@ namespace ReScanVisualizer.ViewModels
 
         private readonly ViewModelBase _source;
         public ViewModelBase Source => _source;
-        public string SourceStr => _renderSource(_value);
+        public string SourceStr => _renderSource(_source);
 
         private readonly Func<T, string> _render;
         private readonly Func<ViewModelBase, string> _renderSource;
