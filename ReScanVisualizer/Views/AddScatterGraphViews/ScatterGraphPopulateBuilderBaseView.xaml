@@ -14,7 +14,8 @@
             <ComboBoxItem Content="Random" />
             <ComboBoxItem Content="Rectangle 2D" />
             <ComboBoxItem Content="Line" />
-            <ComboBoxItem Content="Mathematical surface: f(x, y) = z" />
+            <ComboBoxItem Content="Function f(x, y) = z" />
+            <ComboBoxItem Content="Parametrics equations" />
         </ComboBox>
         <Separator Margin="10" />
     </StackPanel>

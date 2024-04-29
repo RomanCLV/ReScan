@@ -167,9 +167,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             {
                 Builder = new ScatterGraphPopulateLineBuilder();
             }
-            else if (_populateSelectedIndex == 3) // Mathematical surface: f(x, y) = z
+            else if (_populateSelectedIndex == 3) // Function f(x, y) = z
             {
                 Builder = new ScatterGraphPopulateFunctionXYBuilder();
+            }
+            else if (_populateSelectedIndex == 4) // Parametrics equations
+            {
+                Builder = new ScatterGraphPopulateFunctionsXYZBuilder();
             }
             else
             {

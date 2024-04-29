@@ -62,6 +62,10 @@
                                 <local:ScatterGraphPopulateFunctionXYBuilderView Foreground="{StaticResource foregroundColor}"/>
                             </DataTemplate>
 
+                            <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateFunctionsXYZBuilder}">
+                                <local:ScatterGraphPopulateFunctionsXYZBuilderView Foreground="{StaticResource foregroundColor}"/>
+                            </DataTemplate>
+
                         </StackPanel.Resources>
 
                         <ContentControl Content="{Binding Builder}" />

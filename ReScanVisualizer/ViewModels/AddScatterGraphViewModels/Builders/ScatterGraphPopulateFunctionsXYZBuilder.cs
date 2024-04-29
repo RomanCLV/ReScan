@@ -9,6 +9,8 @@ using System.Windows.Media;
 using ReScanVisualizer.Models;
 using MathEvaluatorNetFramework;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     internal class ScatterGraphPopulateFunctionsXYZBuilder : ScatterGraphPopulateBuilderBase
@@ -83,6 +85,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             }
         }
 
+        private string _expressionXErrorMessage;
+        private string _expressionYErrorMessage;
+        private string _expressionZErrorMessage;
         private string _expressionErrorMessage;
         public string ExpressionErrorMessage
         {
@@ -134,6 +139,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             _expressionStringX = string.Empty;
             _expressionStringY = string.Empty;
             _expressionStringZ = string.Empty;
+            _expressionXErrorMessage = string.Empty;
+            _expressionYErrorMessage = string.Empty;
+            _expressionZErrorMessage = string.Empty;
             _expressionErrorMessage = string.Empty;
             _modelHasToUpdate = false;
             _autoUpdateBuilderModel = true;
@@ -146,9 +154,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             TVariableRange.PropertyChanged += VariableRange_PropertyChanged;
 
             ComputeNumPoints();
-            SetExpression(_expressionX, _expressionStringX);
-            SetExpression(_expressionY, _expressionStringY);
             SetExpression(_expressionZ, _expressionStringZ);
+            SetExpression(_expressionY, _expressionStringY);
+            SetExpression(_expressionX, _expressionStringX);
         }
 
         ~ScatterGraphPopulateFunctionsXYZBuilder()
@@ -188,17 +196,19 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         private void SetExpression(MathEvaluatorNetFramework.Expression expression, string expressionString)
         {
             _expressionErrorMessage = string.Empty;
-
-            if (expression.Equals(_expressionStringX))
+            if (expression.Equals(_expressionX))
             {
+                _expressionXErrorMessage = string.Empty;
                 _expressionXIsOnError = false;
             }
-            else if (expression.Equals(_expressionStringY))
+            else if (expression.Equals(_expressionY))
             {
+                _expressionYErrorMessage = string.Empty;
                 _expressionYIsOnError = false;
             }
-            else if (expression.Equals(_expressionStringZ))
+            else if (expression.Equals(_expressionZ))
             {
+                _expressionZErrorMessage = string.Empty;
                 _expressionZIsOnError = false;
             }
 
@@ -219,27 +229,48 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                     {
                         throw new ArgumentException("Expression " + expression.Name + "() must depend on t. Expression depends on: " + string.Join(", ", variables.ToArray()));
                     }
+                }
 
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                if (_autoUpdateBuilderModel)
+                {
+                    UpdateBuilderModel();
                 }
             }
             catch (Exception ex)
             {
-                _expressionErrorMessage = ex.GetType().Name + ": " + ex.Message;
-                if (expression.Equals(_expressionStringX))
+                string errorMessage = expression.Name + " expression - " + ex.GetType().Name + ": " + ex.Message;
+                if (expression.Equals(_expressionX))
                 {
+                    _expressionXErrorMessage = errorMessage;
+                    _expressionErrorMessage = _expressionXErrorMessage;
                     _expressionXIsOnError = true;
                 }
-                else if (expression.Equals(_expressionStringY))
+                else if (expression.Equals(_expressionY))
                 {
+                    _expressionYErrorMessage = errorMessage;
+                    _expressionErrorMessage = _expressionYErrorMessage;
                     _expressionYIsOnError = true;
                 }
-                else if (expression.Equals(_expressionStringZ))
+                else if (expression.Equals(_expressionZ))
                 {
+                    _expressionZErrorMessage = errorMessage;
+                    _expressionErrorMessage = _expressionZErrorMessage;
                     _expressionZIsOnError = true;
+                }
+            }
+            if (string.IsNullOrEmpty(_expressionErrorMessage))
+            {
+                if (!string.IsNullOrEmpty(_expressionXErrorMessage))
+                {
+                    _expressionErrorMessage = _expressionXErrorMessage;
+                }
+                else if (!string.IsNullOrEmpty(_expressionYErrorMessage))
+                {
+                    _expressionErrorMessage = _expressionYErrorMessage;
+                }
+                else if (!string.IsNullOrEmpty(_expressionZErrorMessage))
+                {
+                    _expressionErrorMessage = _expressionZErrorMessage;
                 }
             }
             State = _expressionXIsOnError || _expressionYIsOnError || _expressionZIsOnError ? ScatterGraphBuilderState.Error : ScatterGraphBuilderState.Ready;
@@ -248,14 +279,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private void UpdateBuilderModel()
         {
-            ScatterGraph scatterGraph = null;
+            ScatterGraph? scatterGraph = null;
             try
             {
-                scatterGraph = BuildScatterGraph();
+                if (_expressionX.IsSet && _expressionY.IsSet && _expressionZ.IsSet)
+                {
+                    scatterGraph = BuildScatterGraph();
+                }
             }
             finally
             {
-                if (scatterGraph != null)
+                if (scatterGraph == null)
+                {
+                    _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(new ScatterGraph(), 1.0);
+                }
+                else
                 {
                     double radius = Math.Max(0.25, Math.Min(0.05, 10 * TVariableRange.Step));
 

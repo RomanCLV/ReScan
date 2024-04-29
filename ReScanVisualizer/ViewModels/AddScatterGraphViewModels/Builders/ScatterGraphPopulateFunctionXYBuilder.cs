@@ -9,6 +9,8 @@ using System.Windows.Media;
 using ReScanVisualizer.Models;
 using MathEvaluatorNetFramework;
 
+#nullable enable
+
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
     internal class ScatterGraphPopulateFunctionXYBuilder : ScatterGraphPopulateBuilderBase
@@ -164,11 +166,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                     {
                         throw new ArgumentException("Expression must depend on x and/or y. Expression depends on: " + string.Join(", ", variables.ToArray()));
                     }
+                }
 
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                if (_autoUpdateBuilderModel)
+                {
+                    UpdateBuilderModel();
                 }
             }
             catch (Exception ex)
@@ -181,14 +183,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private void UpdateBuilderModel()
         {
-            ScatterGraph scatterGraph = null;
+            ScatterGraph? scatterGraph = null;
             try
             {
-                scatterGraph = BuildScatterGraph();
+                if (_expression.IsSet)
+                {
+                    scatterGraph = BuildScatterGraph();
+                }
             }
             finally
             {
-                if (scatterGraph != null)
+                if (scatterGraph == null)
+                {
+                    _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(new ScatterGraph(), 1.0);
+                }
+                else
                 {
                     double radius = Math.Max(0.25, Math.Min(0.05, 10 * (XVariableRange.Step + YVariableRange.Step) / 2.0));
 

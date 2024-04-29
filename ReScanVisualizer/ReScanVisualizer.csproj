@@ -233,6 +233,9 @@
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphBuilderVisualizerView.xaml.cs">
       <DependentUpon>ScatterGraphBuilderVisualizerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateFunctionsXYZBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphPopulateFunctionsXYZBuilderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateFunctionXYBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphPopulateFunctionXYBuilderView.xaml</DependentUpon>
     </Compile>
@@ -374,6 +377,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddScatterGraphViews\ScatterGraphBuilderVisualizerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateFunctionsXYZBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
