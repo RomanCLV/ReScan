@@ -359,6 +359,7 @@ healthchecksdb
 *.so
 *.dylib
 *.dll
+!ReScanVisualizer/MathEvaluatorNetFramework.dll
 
 # Fortran module files
 *.mod

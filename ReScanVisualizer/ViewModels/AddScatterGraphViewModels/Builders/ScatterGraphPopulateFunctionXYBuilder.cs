@@ -191,18 +191,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (scatterGraph != null)
                 {
+                    double radius = Math.Max(0.25, Math.Min(0.05, 10 * (XVariableRange.Step + YVariableRange.Step) / 2.0));
+
                     if (scatterGraph.Count > 5000)
                     {
                         if (MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                         {
                             _modelHasToUpdate = false;
-                            _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph);
+                            _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, radius);
                         }
                     }
                     else
                     {
                         _modelHasToUpdate = false;
-                        _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph);
+                        _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, radius);
                     }
                 }
             }

@@ -36,12 +36,35 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels
             Dispose();
         }
 
-        public void BuildBuilderModel(ScatterGraph scatterGraph)
+        public void BuildBuilderModel(ScatterGraph scatterGraph, double radius = 0.25)
         {
             _builderModel.Children.Clear();
-            for (int i = 0; i < scatterGraph.Count; i++)
+            RenderQuality renderQuality;
+            int count = scatterGraph.Count;
+            if (count <= 500)
             {
-                _builderModel.Children.Add(Helper3D.BuildSphereModel(scatterGraph[i], 0.25, Colors.White, RenderQuality.Medium));
+                renderQuality = RenderQuality.VeryHigh;
+            }
+            else if (count <= 1000)
+            {
+                renderQuality = RenderQuality.High;
+            }
+            else if (count <= 1500)
+            {
+                renderQuality = RenderQuality.Medium;
+            }
+            else if (count <= 2000)
+            {
+                renderQuality = RenderQuality.Low;
+            }
+            else
+            {
+                renderQuality = RenderQuality.VeryLow;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                _builderModel.Children.Add(Helper3D.BuildSphereModel(scatterGraph[i], radius, Colors.White, renderQuality));
             }
         }
     }

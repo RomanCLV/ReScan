@@ -643,5 +643,8 @@
   <ItemGroup>
     <Resource Include="Resources\Images\eye_unknow.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="MathEvaluatorNetFramework.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
