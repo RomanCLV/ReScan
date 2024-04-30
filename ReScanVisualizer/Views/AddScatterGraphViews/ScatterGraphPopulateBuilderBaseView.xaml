@@ -15,7 +15,8 @@
             <ComboBoxItem Content="Rectangle 2D" />
             <ComboBoxItem Content="Line" />
             <ComboBoxItem Content="Function f(x, y) = z" />
-            <ComboBoxItem Content="Parametrics equations" />
+            <ComboBoxItem Content="Parametrics functions : t" />
+            <ComboBoxItem Content="Parametrics functions : t1, t2" />
         </ComboBox>
         <Separator Margin="10" />
     </StackPanel>

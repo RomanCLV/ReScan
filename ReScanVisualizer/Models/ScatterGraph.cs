@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
+#nullable enable
+
 namespace ReScanVisualizer.Models
 {
     public class ScatterGraph
@@ -40,16 +42,21 @@ namespace ReScanVisualizer.Models
             _points = new List<Point3D>(pointsArray);
         }
 
-        public void AddPoint(Point3D point)
+        public void AddPoint(Point3D point, bool unique = false)
         {
-            _points.Add(point);
+            if (!unique || _points.FindIndex(p => p.X == point.X && p.Y == point.Y && p.Z == point.Z) == -1)
+            {
+                _points.Add(point);
+            }
         }
 
-        public Point3D AddPoint(double x, double y, double z)
+        public void AddPoint(double x, double y, double z, bool unique = true)
         {
             Point3D point = new Point3D(x, y, z);
-            _points.Add(point);
-            return point;
+            if (!unique || _points.FindIndex(p => p.X == point.X && p.Y == point.Y && p.Z == point.Z) == -1)
+            {
+                _points.Add(point);
+            }
         }
 
         public Point3D this[int index]
@@ -361,7 +368,7 @@ namespace ReScanVisualizer.Models
 
             return new Point3D(centerX, centerY, centerZ);
         }
-        
+
         public bool ArePointsColinear()
         {
             if (_points.Count <= 2)
@@ -442,7 +449,7 @@ namespace ReScanVisualizer.Models
                     int indexBestAngle = 2;
                     double bestAngle = 0.0;
                     double currentAngle;
-                    
+
                     for (int i = 2; i < size; i++)
                     {
                         y = _points[i] - _points[0];
@@ -461,7 +468,7 @@ namespace ReScanVisualizer.Models
                         //}
                     }
                     y = _points[indexBestAngle] - _points[0];
-                    
+
                     z = Vector3D.CrossProduct(x, y);
                 }
                 if (z.Z < 0)
@@ -622,7 +629,7 @@ namespace ReScanVisualizer.Models
                 double randomY = minY + (maxY - minY) * random.NextDouble();
                 double randomZ = minZ + (maxZ - minZ) * random.NextDouble();
 
-                scatterGraph.AddPoint(new Point3D(randomX, randomY, randomZ));
+                scatterGraph.AddPoint(randomX, randomY, randomZ);
             }
         }
 

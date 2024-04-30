@@ -62,8 +62,12 @@
                                 <local:ScatterGraphPopulateFunctionXYBuilderView Foreground="{StaticResource foregroundColor}"/>
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateFunctionsXYZBuilder}">
-                                <local:ScatterGraphPopulateFunctionsXYZBuilderView Foreground="{StaticResource foregroundColor}"/>
+                            <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateParametricsFunctionsBuilder}">
+                                <local:ScatterGraphPopulateParametricsFunctionsBuilderView Foreground="{StaticResource foregroundColor}"/>
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type builders:ScatterGraphPopulateParametrics2FunctionsBuilder}">
+                                <local:ScatterGraphPopulateParametrics2FunctionsBuilderView Foreground="{StaticResource foregroundColor}"/>
                             </DataTemplate>
 
                         </StackPanel.Resources>
