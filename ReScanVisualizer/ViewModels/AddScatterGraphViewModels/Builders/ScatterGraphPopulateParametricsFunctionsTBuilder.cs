@@ -9,6 +9,8 @@ using System.Windows.Media;
 using ReScanVisualizer.Models;
 using MathEvaluatorNetFramework;
 using System.Diagnostics;
+using System.Windows.Media.Media3D;
+using System.Windows.Media.Imaging;
 
 #nullable enable
 
@@ -157,7 +159,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 {
                     if (!_isRepeated && _repetitionMode != RepetitionMode.None)
                     {
-                        RepetitionMode = RepetitionMode.None;
+                        _repetitionMode = RepetitionMode.None;
+                        OnPropertyChanged(nameof(RepetitionMode));
+                    }
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
                     }
                 }
             }
@@ -171,10 +178,327 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _repetitionMode, value))
                 {
-
+                    //if (_repetitionMode == RepetitionMode.Rotation)
+                    //{
+                    //    if (_negativeRepetitionLength < -180.0)
+                    //    {
+                    //        _negativeRepetitionLength = -180.0;
+                    //        OnPropertyChanged(nameof(NegativeRepetitionLength));
+                    //    }
+                    //    if (_positiveTranslationLength > 180.0)
+                    //    {
+                    //        _positiveTranslationLength = 180.0;
+                    //        OnPropertyChanged(nameof(PositiveRepetitionLength));
+                    //    }
+                    //    if (_repetitionStep > _positiveTranslationLength - _negativeRepetitionLength)
+                    //    {
+                    //        _repetitionStep = _positiveTranslationLength - _negativeRepetitionLength;
+                    //        OnPropertyChanged(nameof(RepetitionStep));
+                    //    }
+                    //}
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
                 }
             }
         }
+
+        #region Translation repetition
+
+        private double _translationX;
+        public double TranslationX
+        {
+            get => _translationX;
+            set
+            {
+                if (SetValue(ref _translationX, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _translationY;
+        public double TranslationY
+        {
+            get => _translationY;
+            set
+            {
+                if (SetValue(ref _translationY, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _translationZ;
+        public double TranslationZ
+        {
+            get => _translationZ;
+            set
+            {
+                if (SetValue(ref _translationZ, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _positiveTranslationLength;
+        public double PositiveTranslationLength
+        {
+            get => _positiveTranslationLength;
+            set
+            {
+                if (value < 0.0)
+                {
+                    value = 0.0;
+                }
+                if (SetValue(ref _positiveTranslationLength, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _negativeTranslationLength;
+        public double NegativeTranslationLength
+        {
+            get => _negativeTranslationLength;
+            set
+            {
+                if (value > 0.0)
+                {
+                    value = 0.0;
+                }
+                if (SetValue(ref _negativeTranslationLength, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _translationStep;
+        public double TranslationStep
+        {
+            get => _translationStep;
+            set
+            {
+                if (value <= 0.0)
+                {
+                    value = 1.0;
+                }
+                else if (value < 0.001)
+                {
+                    value = 0.001;
+                }
+                else if (value > _positiveTranslationLength - _negativeTranslationLength)
+                {
+                    value = _positiveTranslationLength - _negativeTranslationLength;
+                }
+                if (SetValue(ref _translationStep, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Rotation repetition
+
+        private double _rotationX;
+        public double RotationX
+        {
+            get => _rotationX;
+            set
+            {
+                if (SetValue(ref _rotationX, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _rotationY;
+        public double RotationY
+        {
+            get => _rotationY;
+            set
+            {
+                if (SetValue(ref _rotationY, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _rotationZ;
+        public double RotationZ
+        {
+            get => _rotationZ;
+            set
+            {
+                if (SetValue(ref _rotationZ, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _rotationPointX;
+        public double RotationPointX
+        {
+            get => _rotationPointX;
+            set
+            {
+                if (SetValue(ref _rotationPointX, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _rotationPointY;
+        public double RotationPointY
+        {
+            get => _rotationPointY;
+            set
+            {
+                if (SetValue(ref _rotationPointY, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _rotationPointZ;
+        public double RotationPointZ
+        {
+            get => _rotationPointZ;
+            set
+            {
+                if (SetValue(ref _rotationPointZ, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _positiveRotationLength;
+        public double PositiveRotationLength
+        {
+            get => _positiveRotationLength;
+            set
+            {
+                if (value < 0.0)
+                {
+                    value = 0.0;
+                }
+                else if (value > 180.0)
+                {
+                    value = 180.0;
+                }
+                if (SetValue(ref _positiveRotationLength, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _negativeRotationLength;
+        public double NegativeRotationLength
+        {
+            get => _negativeRotationLength;
+            set
+            {
+                if (value > 0.0)
+                {
+                    value = 0.0;
+                }
+                else if (value < -180.0)
+                {
+                    value = -180.0;
+                }
+                if (SetValue(ref _negativeRotationLength, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        private double _rotationStep;
+        public double RotationStep
+        {
+            get => _rotationStep;
+            set
+            {
+                if (value <= 0.0)
+                {
+                    value = 1.0;
+                }
+                else if (value < 0.001)
+                {
+                    value = 0.001;
+                }
+                else if (value > _positiveRotationLength - _negativeRotationLength)
+                {
+                    value = _positiveRotationLength - _negativeRotationLength;
+                }
+                if (SetValue(ref _rotationStep, value))
+                {
+                    if (_autoUpdateBuilderModel)
+                    {
+                        UpdateBuilderModel();
+                    }
+                }
+            }
+        }
+
+        #endregion
 
         public ScatterGraphPopulateParametricsFunctionsTBuilder() : base(Colors.White)
         {
@@ -188,15 +512,38 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             _expressionYErrorMessage = string.Empty;
             _expressionZErrorMessage = string.Empty;
             _expressionErrorMessage = string.Empty;
-            _modelHasToUpdate = false;
-            _autoUpdateBuilderModel = true;
-            _isRepeated = false;
-            _repetitionMode = RepetitionMode.None;
             TVariableRange = new ExpressionVariableRangeViewModel("t");
             _expressionX = new MathEvaluatorNetFramework.Expression("x");
             _expressionY = new MathEvaluatorNetFramework.Expression("y");
             _expressionZ = new MathEvaluatorNetFramework.Expression("z");
             _scatterGraphBuilderVisualizerViewModel = new ScatterGraphBuilderVisualizerViewModel();
+
+            // visualizer
+            _modelHasToUpdate = false;
+            _autoUpdateBuilderModel = true;
+
+            // repetition
+            _isRepeated = false;
+            _repetitionMode = RepetitionMode.None;
+
+            // translation repetition
+            _translationX = 0.0;
+            _translationY = 0.0;
+            _translationZ = 1.0;
+            _positiveTranslationLength = 1.0;
+            _negativeTranslationLength = -1.0;
+            _translationStep = 1.0;
+
+            // rotation repetition
+            _rotationX = 0.0;
+            _rotationY = 0.0;
+            _rotationZ = 1.0;
+            _rotationPointX = 0.0;
+            _rotationPointY = 0.0;
+            _rotationPointZ = 0.0;
+            _positiveRotationLength = 90.0;
+            _negativeRotationLength = -90.0;
+            _rotationStep = 30.0;
 
             TVariableRange.PropertyChanged += VariableRange_PropertyChanged;
 
@@ -342,23 +689,39 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 else
                 {
-                    double radius = Math.Min(0.25, Math.Max(0.01, TVariableRange.Step / 3.0));
-
                     if (scatterGraph.Count > 5000)
                     {
                         if (MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                         {
                             _modelHasToUpdate = false;
-                            _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, radius);
+                            _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, BuildRadius());
                         }
                     }
                     else
                     {
                         _modelHasToUpdate = false;
-                        _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, radius);
+                        _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, BuildRadius());
                     }
                 }
             }
+        }
+
+        private double BuildRadius()
+        {
+            double radius;
+            if (_repetitionMode is RepetitionMode.None)
+            {
+                radius = TVariableRange.Step;
+            }
+            else if (_repetitionMode is RepetitionMode.Translation)
+            {
+                radius = Math.Min(TVariableRange.Step, _translationStep);
+            }
+            else // RepetitionMode.Rotation
+            {
+                radius = Math.Min(TVariableRange.Step, _rotationStep);
+            }
+            return Math.Min(0.25, Math.Max(0.01, radius / 3.0));
         }
 
         private ScatterGraph BuildScatterGraph()
@@ -378,7 +741,62 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 t.Value = Math.Round((double)t.Value + TVariableRange.Step, 9);
             }
 
+            if (_repetitionMode == RepetitionMode.Translation)
+            {
+                scatterGraph = ApplyTranslationRepetition(scatterGraph);
+            }
+            else if (_repetitionMode == RepetitionMode.Rotation)
+            {
+                scatterGraph = ApplyRotationRepetition(scatterGraph);
+            }
+
             return scatterGraph;
+        }
+
+        public ScatterGraph ApplyTranslationRepetition(ScatterGraph scatterGraph)
+        {
+            ScatterGraph translationGraph = new ScatterGraph();
+            int count = scatterGraph.Count;
+            Vector3D direction = new Vector3D(_translationX, _translationY, _translationZ);
+            direction.Normalize();
+
+            for (int i = 0; i < count; i++)
+            {
+                Point3D currentPoint = scatterGraph[i];
+                double t = _negativeTranslationLength;
+                while (t <= _positiveTranslationLength)
+                {
+                    translationGraph.AddPoint(
+                        direction.X * t + currentPoint.X,
+                        direction.Y * t + currentPoint.Y,
+                        direction.Z * t + currentPoint.Z
+                        );
+                    t = Math.Round(t + _translationStep, 9);
+                }
+            }
+            return translationGraph;
+        }
+
+        public ScatterGraph ApplyRotationRepetition(ScatterGraph scatterGraph)
+        {
+            ScatterGraph rotationGraph = new ScatterGraph();
+            int count = scatterGraph.Count;
+            Vector3D axisRotation = new Vector3D(_rotationX, _rotationY, _rotationZ);
+            axisRotation.Normalize();
+
+            for (int i = 0; i < count; i++)
+            {
+                Point3D currentPoint = scatterGraph[i];
+                double t = _negativeRotationLength;
+                while (t <= _positiveRotationLength)
+                {
+                    Quaternion quaternion = new Quaternion(axisRotation, t);
+                    RotateTransform3D rotateTransform = new RotateTransform3D(new QuaternionRotation3D(quaternion));
+                    rotationGraph.AddPoint(rotateTransform.Transform(currentPoint), true);
+                    t = Math.Round(t + _rotationStep, 9);
+                }
+            }
+            return rotationGraph;
         }
 
         public override ScatterGraphBuildResult Build()
@@ -388,7 +806,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             try
             {
                 result = new ScatterGraphBuildResult(BuildScatterGraph());
-                PointRadius = Math.Min(0.25, Math.Max(0.01, TVariableRange.Step / 3.0));
+                PointRadius = BuildRadius();
                 State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)

@@ -6,42 +6,265 @@
              xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
              xmlns:forms="clr-namespace:ReScanVisualizer.Views.Forms"
              xmlns:ctr="clr-namespace:ReScanVisualizer.UserControls"
-             xmlns:cvt="clr-namespace:ReScanVisualizer.Converters"
+             xmlns:converters="clr-namespace:ReScanVisualizer.Converters"
              xmlns:dtSelectors="clr-namespace:ReScanVisualizer.DataTemplateSelectors"
              xmlns:models="clr-namespace:ReScanVisualizer.Models"
+             xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Foreground="{StaticResource foregroundColor}"
              DataContextChanged="UserControl_DataContextChanged"
              >
     <UserControl.Resources>
-        <cvt:RepetitionModeToBooleanConverter x:Key="RepetitionModeToBooleanConverter" />
+        <converters:RepetitionModeToBooleanConverter x:Key="RepetitionModeToBooleanConverter" />
+        <converters:ExpressionToNumberConverter x:Key="ExpressionToNumberConverter" />
 
         <DataTemplate x:Key="SelectRepetitionModeTemplate">
-            <StackPanel Margin="0 10">
-                <RadioButton x:Name="TranslationRadioButton" 
-                 Content="Translation" 
-                 IsChecked="{Binding DataContext.RepetitionMode, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource RepetitionModeToBooleanConverter}, ConverterParameter={x:Static models:RepetitionMode.Translation}}" 
-                 Foreground="{StaticResource foregroundColor}" />
+            <StackPanel Margin="0 10" DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
 
-                <RadioButton x:Name="RotationRadioButton" 
-                 Content="Rotation" 
-                 IsChecked="{Binding DataContext.RepetitionMode, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource RepetitionModeToBooleanConverter}, ConverterParameter={x:Static models:RepetitionMode.Rotation}}" 
-                 Foreground="{StaticResource foregroundColor}" />
+                <RadioButton Content="Translation" 
+                     IsChecked="{Binding RepetitionMode, Converter={StaticResource RepetitionModeToBooleanConverter}, ConverterParameter={x:Static models:RepetitionMode.Translation}}" 
+                     Foreground="{StaticResource foregroundColor}" />
+
+                <RadioButton Content="Rotation" 
+                     IsChecked="{Binding RepetitionMode, Converter={StaticResource RepetitionModeToBooleanConverter}, ConverterParameter={x:Static models:RepetitionMode.Rotation}}" 
+                     Foreground="{StaticResource foregroundColor}" />
             </StackPanel>
         </DataTemplate>
 
         <DataTemplate x:Key="RepetitionNoneTemplate" />
 
         <DataTemplate x:Key="RepetitionTranslationTemplate">
-            <StackPanel>
-                <TextBlock Text="Translation" />
+            <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="35"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="35"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="35"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Direction:" Grid.ColumnSpan="6" />
+
+                    <!-- Translation X -->
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="TranslationX" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Translation Y -->
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Y" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="1" Grid.Column="3" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="TranslationY" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Translation Z -->
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="Z" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="1" Grid.Column="5" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="TranslationZ" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Length:" Grid.ColumnSpan="6" />
+
+                    <!-- Translation Length + -->
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="+" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="3" Grid.Column="1" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="PositiveTranslationLength" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Translation Length - -->
+                    <TextBlock Grid.Row="3" Grid.Column="2" Text="-" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="3" Grid.Column="3" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="NegativeTranslationLength" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Translation Step -->
+                    <TextBlock Grid.Row="3" Grid.Column="4" Text="Step" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="3" Grid.Column="5" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="TranslationStep" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </Grid>
             </StackPanel>
         </DataTemplate>
 
         <DataTemplate x:Key="RepetitionRotationTemplate">
-            <StackPanel>
-                <TextBlock Text="Rotation" />
+            <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Axis rotation:" Grid.ColumnSpan="6" />
+
+                    <!-- Rotation X -->
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="RotationX" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Rotation Y -->
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Y" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="1" Grid.Column="3" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="RotationY" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Rotation Z -->
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="Z" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="1" Grid.Column="5" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="RotationZ" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Point where the axis passes:" Grid.ColumnSpan="6" />
+
+                    <!-- Rotation Point X -->
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="X" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="3" Grid.Column="1" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="RotationPointX" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Rotation Point Y -->
+                    <TextBlock Grid.Row="3" Grid.Column="2" Text="Y" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="3" Grid.Column="3" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="RotationPointY" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Rotation Point Z -->
+                    <TextBlock Grid.Row="3" Grid.Column="4" Text="Z" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="3" Grid.Column="5" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="RotationPointZ" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Length:" Grid.ColumnSpan="6" />
+
+                    <!-- Rotation Length + -->
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="[0;180]°" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="5" Grid.Column="1" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="PositiveRotationLength" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Rotation Length - -->
+                    <TextBlock Grid.Row="5" Grid.Column="2" Text="[-180;0]°" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="5" Grid.Column="3" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="NegativeRotationLength" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+
+                    <!-- Rotation Step -->
+                    <TextBlock Grid.Row="5" Grid.Column="4" Text="Step" Style="{StaticResource myTextBlock}" />
+                    <TextBox   Grid.Row="5" Grid.Column="5" Style="{StaticResource myTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="RotationStep" StringFormat="N3" Converter="{StaticResource ExpressionToNumberConverter}">
+                                <Binding.ValidationRules>
+                                    <validators:ExpressionValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </Grid>
             </StackPanel>
         </DataTemplate>
 
@@ -52,7 +275,7 @@
             RotationTemplate="{StaticResource RepetitionRotationTemplate}" />
 
     </UserControl.Resources>
-    
+
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Right" Margin="8">
             <CheckBox IsChecked="{Binding AutoUpdateBuilderModel}" Content="Auto update" Foreground="{StaticResource foregroundColor}" ToolTip="Recommend to disable this option if the points count is greater than 1000."/>

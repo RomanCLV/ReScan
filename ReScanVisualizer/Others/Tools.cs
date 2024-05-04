@@ -292,7 +292,7 @@ namespace ReScanVisualizer
 
         public static Base3D ComputeOrientedBase(Vector3D direction, Axis axis)
         {
-            Matrix3D rot = Matrix3D.Identity;
+            //Matrix3D rot = Matrix3D.Identity;
             Vector3D rotationAxis;
             Base3D base3D = new Base3D();
             double angle;
