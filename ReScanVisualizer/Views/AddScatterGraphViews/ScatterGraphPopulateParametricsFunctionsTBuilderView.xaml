@@ -6,22 +6,53 @@
              xmlns:local="clr-namespace:ReScanVisualizer.Views.AddScatterGraphViews"
              xmlns:forms="clr-namespace:ReScanVisualizer.Views.Forms"
              xmlns:ctr="clr-namespace:ReScanVisualizer.UserControls"
+             xmlns:cvt="clr-namespace:ReScanVisualizer.Converters"
+             xmlns:dtSelectors="clr-namespace:ReScanVisualizer.DataTemplateSelectors"
+             xmlns:models="clr-namespace:ReScanVisualizer.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Foreground="{StaticResource foregroundColor}"
              DataContextChanged="UserControl_DataContextChanged"
              >
     <UserControl.Resources>
-        <DataTemplate x:Key="LinearTemplate">
-            <!-- Contenu à afficher pour Linear -->
-            <TextBlock Text="Mode de répétition : Linéaire" />
+        <cvt:RepetitionModeToBooleanConverter x:Key="RepetitionModeToBooleanConverter" />
+
+        <DataTemplate x:Key="SelectRepetitionModeTemplate">
+            <StackPanel Margin="0 10">
+                <RadioButton x:Name="TranslationRadioButton" 
+                 Content="Translation" 
+                 IsChecked="{Binding DataContext.RepetitionMode, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource RepetitionModeToBooleanConverter}, ConverterParameter={x:Static models:RepetitionMode.Translation}}" 
+                 Foreground="{StaticResource foregroundColor}" />
+
+                <RadioButton x:Name="RotationRadioButton" 
+                 Content="Rotation" 
+                 IsChecked="{Binding DataContext.RepetitionMode, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource RepetitionModeToBooleanConverter}, ConverterParameter={x:Static models:RepetitionMode.Rotation}}" 
+                 Foreground="{StaticResource foregroundColor}" />
+            </StackPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="CircularTemplate">
-            <!-- Contenu à afficher pour Circular -->
-            <TextBlock Text="Mode de répétition : Circulaire" />
+        <DataTemplate x:Key="RepetitionNoneTemplate" />
+
+        <DataTemplate x:Key="RepetitionTranslationTemplate">
+            <StackPanel>
+                <TextBlock Text="Translation" />
+            </StackPanel>
         </DataTemplate>
+
+        <DataTemplate x:Key="RepetitionRotationTemplate">
+            <StackPanel>
+                <TextBlock Text="Rotation" />
+            </StackPanel>
+        </DataTemplate>
+
+        <dtSelectors:RepetitionModeTemplateSelector 
+            x:Key="RepetitionModeTemplateSelector"
+            NoneTemplate="{StaticResource RepetitionNoneTemplate}"
+            TranslationTemplate="{StaticResource RepetitionTranslationTemplate}"
+            RotationTemplate="{StaticResource RepetitionRotationTemplate}" />
+
     </UserControl.Resources>
+    
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Right" Margin="8">
             <CheckBox IsChecked="{Binding AutoUpdateBuilderModel}" Content="Auto update" Foreground="{StaticResource foregroundColor}" ToolTip="Recommend to disable this option if the points count is greater than 1000."/>
@@ -59,6 +90,30 @@
             <GroupBox Header="Variables range" Margin="0 10">
                 <StackPanel>
                     <forms:ExpressionVariableRangeForm DataContext="{Binding TVariableRange}" HorizontalAlignment="Left" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Repetition" Margin="0 10">
+                <StackPanel Margin="10">
+                    <CheckBox IsChecked="{Binding IsRepeated}" Content="Repeat the pattern" Foreground="{StaticResource foregroundColor}" />
+
+                    <ContentControl Content="{Binding IsRepeated}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate />
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRepeated}" Value="True">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource SelectRepetitionModeTemplate}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                    <ContentControl Content="{Binding RepetitionMode}" ContentTemplateSelector="{StaticResource RepetitionModeTemplateSelector}" />
                 </StackPanel>
             </GroupBox>
 

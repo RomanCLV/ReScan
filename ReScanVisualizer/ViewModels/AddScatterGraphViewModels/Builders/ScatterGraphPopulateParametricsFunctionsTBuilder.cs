@@ -100,9 +100,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             }
         }
 
+        private bool _expressionXIsOnError;
+        private bool _expressionYIsOnError;
+        private bool _expressionZIsOnError;
+
         private string _expressionXErrorMessage;
         private string _expressionYErrorMessage;
         private string _expressionZErrorMessage;
+
         private string _expressionErrorMessage;
         public string ExpressionErrorMessage
         {
@@ -142,9 +147,34 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             get => _scatterGraphBuilderVisualizerViewModel;
         }
 
-        private bool _expressionXIsOnError;
-        private bool _expressionYIsOnError;
-        private bool _expressionZIsOnError;
+        private bool _isRepeated;
+        public bool IsRepeated
+        {
+            get => _isRepeated;
+            set
+            {
+                if (SetValue(ref _isRepeated, value))
+                {
+                    if (!_isRepeated && _repetitionMode != RepetitionMode.None)
+                    {
+                        RepetitionMode = RepetitionMode.None;
+                    }
+                }
+            }
+        }
+
+        private RepetitionMode _repetitionMode;
+        public RepetitionMode RepetitionMode
+        {
+            get => _repetitionMode;
+            set
+            {
+                if (SetValue(ref _repetitionMode, value))
+                {
+
+                }
+            }
+        }
 
         public ScatterGraphPopulateParametricsFunctionsTBuilder() : base(Colors.White)
         {
@@ -160,6 +190,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             _expressionErrorMessage = string.Empty;
             _modelHasToUpdate = false;
             _autoUpdateBuilderModel = true;
+            _isRepeated = false;
+            _repetitionMode = RepetitionMode.None;
             TVariableRange = new ExpressionVariableRangeViewModel("t");
             _expressionX = new MathEvaluatorNetFramework.Expression("x");
             _expressionY = new MathEvaluatorNetFramework.Expression("y");

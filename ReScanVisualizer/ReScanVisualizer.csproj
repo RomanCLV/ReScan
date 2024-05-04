@@ -124,6 +124,7 @@
     <Compile Include="Converters\BoolToFontWeightConverter.cs" />
     <Compile Include="Converters\BoolValuesORMultiConverter.cs" />
     <Compile Include="Converters\EnumEqualityToBoolConverter.cs" />
+    <Compile Include="Converters\RepetitionModeToBooleanConverter.cs" />
     <Compile Include="Converters\ExpressionToNumberConverter.cs" />
     <Compile Include="Converters\IsHiddenToOpacityConverter.cs" />
     <Compile Include="Converters\IsHiddenToImageConverter.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Converters\ScatterGraphBuilderResultReductionEnabledConverter.cs" />
     <Compile Include="Converters\ScatterGraphBuilderStateToBitmapImageConverter.cs" />
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
+    <Compile Include="DataTemplateSelectors\RepetitionModeTemplateSelector.cs" />
     <Compile Include="EventArgs\PositionEventArgs.cs" />
     <Compile Include="Models\Parser\CommandLineParameter.cs" />
     <Compile Include="Models\Parser\CommandLineParser.cs" />

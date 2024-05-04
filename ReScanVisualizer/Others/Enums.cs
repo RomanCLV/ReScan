@@ -30,4 +30,11 @@
         High,
         VeryHigh
     }
+
+    public enum RepetitionMode
+    {
+        None = 0,
+        Translation = 1,
+        Rotation = 2
+    }
 }
