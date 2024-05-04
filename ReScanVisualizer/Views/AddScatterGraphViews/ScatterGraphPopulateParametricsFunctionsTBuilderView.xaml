@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ReScanVisualizer.Views.AddScatterGraphViews.ScatterGraphPopulateParametricsFunctionsBuilderView"
+﻿<UserControl x:Class="ReScanVisualizer.Views.AddScatterGraphViews.ScatterGraphPopulateParametricsFunctionsTBuilderView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,6 +11,17 @@
              Foreground="{StaticResource foregroundColor}"
              DataContextChanged="UserControl_DataContextChanged"
              >
+    <UserControl.Resources>
+        <DataTemplate x:Key="LinearTemplate">
+            <!-- Contenu à afficher pour Linear -->
+            <TextBlock Text="Mode de répétition : Linéaire" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="CircularTemplate">
+            <!-- Contenu à afficher pour Circular -->
+            <TextBlock Text="Mode de répétition : Circulaire" />
+        </DataTemplate>
+    </UserControl.Resources>
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Right" Margin="8">
             <CheckBox IsChecked="{Binding AutoUpdateBuilderModel}" Content="Auto update" Foreground="{StaticResource foregroundColor}" ToolTip="Recommend to disable this option if the points count is greater than 1000."/>

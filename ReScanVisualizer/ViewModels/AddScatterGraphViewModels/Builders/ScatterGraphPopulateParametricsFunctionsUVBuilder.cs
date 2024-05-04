@@ -13,7 +13,7 @@ using MathEvaluatorNetFramework;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
-    internal class ScatterGraphPopulateParametrics2FunctionsBuilder : ScatterGraphPopulateBuilderBase
+    internal class ScatterGraphPopulateParametricsFunctionsUVBuilder : ScatterGraphPopulateBuilderBase
     {
         private uint _numPoints;
         public uint NumPoints
@@ -21,8 +21,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             get => _numPoints;
         }
 
-        public ExpressionVariableRangeViewModel T1VariableRange { get; }
-        public ExpressionVariableRangeViewModel T2VariableRange { get; }
+        public ExpressionVariableRangeViewModel UVariableRange { get; }
+        public ExpressionVariableRangeViewModel VVariableRange { get; }
 
         private readonly MathEvaluatorNetFramework.Expression _expressionX;
         private readonly MathEvaluatorNetFramework.Expression _expressionY;
@@ -95,13 +95,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             get => _expressionErrorMessage;
         }
 
-        public override string Name => "Functions x(t1, t2), y(t1, t2), z(t1, t2) builder";
+        public override string Name => "Functions x(u, v), y(u, v), z(u, v) builder";
 
         public override string Details =>
             $"{_expressionX.GetNameWithVariables()} = {_expressionX}\n" +
             $"{_expressionY.GetNameWithVariables()} = {_expressionY}\n" +
             $"{_expressionZ.GetNameWithVariables()} = {_expressionZ}\n" +
-            $"{T1VariableRange.Min} <= {T1VariableRange.VariableName} <= {T1VariableRange.Max} | step: {T1VariableRange.Step}\n" +
+            $"{UVariableRange.Min} <= {UVariableRange.VariableName} <= {UVariableRange.Max} | step: {UVariableRange.Step}\n" +
             $"Num points: {_numPoints}";
 
         private bool _modelHasToUpdate;
@@ -132,7 +132,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         private bool _expressionYIsOnError;
         private bool _expressionZIsOnError;
 
-        public ScatterGraphPopulateParametrics2FunctionsBuilder() : base(Colors.White)
+        public ScatterGraphPopulateParametricsFunctionsUVBuilder() : base(Colors.White)
         {
             _expressionXIsOnError = false;
             _expressionYIsOnError = false;
@@ -146,15 +146,15 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             _expressionErrorMessage = string.Empty;
             _modelHasToUpdate = false;
             _autoUpdateBuilderModel = true;
-            T1VariableRange = new ExpressionVariableRangeViewModel("t1");
-            T2VariableRange = new ExpressionVariableRangeViewModel("t2");
+            UVariableRange = new ExpressionVariableRangeViewModel("u");
+            VVariableRange = new ExpressionVariableRangeViewModel("v");
             _expressionX = new MathEvaluatorNetFramework.Expression("x");
             _expressionY = new MathEvaluatorNetFramework.Expression("y");
             _expressionZ = new MathEvaluatorNetFramework.Expression("z");
             _scatterGraphBuilderVisualizerViewModel = new ScatterGraphBuilderVisualizerViewModel();
 
-            T1VariableRange.PropertyChanged += VariableRange_PropertyChanged;
-            T2VariableRange.PropertyChanged += VariableRange_PropertyChanged;
+            UVariableRange.PropertyChanged += VariableRange_PropertyChanged;
+            VVariableRange.PropertyChanged += VariableRange_PropertyChanged;
 
             ComputeNumPoints();
             SetExpression(_expressionZ, _expressionStringZ);
@@ -162,7 +162,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             SetExpression(_expressionX, _expressionStringX);
         }
 
-        ~ScatterGraphPopulateParametrics2FunctionsBuilder()
+        ~ScatterGraphPopulateParametricsFunctionsUVBuilder()
         {
             Dispose();
         }
@@ -171,10 +171,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         {
             if (!IsDisposed)
             {
-                T1VariableRange.PropertyChanged -= VariableRange_PropertyChanged;
-                T2VariableRange.PropertyChanged -= VariableRange_PropertyChanged;
-                T1VariableRange.Dispose();
-                T2VariableRange.Dispose();
+                UVariableRange.PropertyChanged -= VariableRange_PropertyChanged;
+                VVariableRange.PropertyChanged -= VariableRange_PropertyChanged;
+                UVariableRange.Dispose();
+                VVariableRange.Dispose();
                 _scatterGraphBuilderVisualizerViewModel.Dispose();
                 base.Dispose();
             }
@@ -194,7 +194,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private void ComputeNumPoints()
         {
-            _numPoints = (uint)(((T1VariableRange.Max - T1VariableRange.Min) / T1VariableRange.Step) + 1);
+            _numPoints = (uint)(
+                (((UVariableRange.Max - UVariableRange.Min) / UVariableRange.Step) + 1) *
+                (((VVariableRange.Max - VVariableRange.Min) / VVariableRange.Step) + 1)
+                );
             OnPropertyChanged(nameof(NumPoints));
         }
 
@@ -226,21 +229,21 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                     variables.Sort();
                     if (variables.Count == 1)
                     {
-                        if (variables[0] != "t1" && variables[0] != "t2")
+                        if (variables[0] != "u" && variables[0] != "v")
                         {
-                            throw new ArgumentException("Expression " + expression.Name + "() must depend on t1 and/or t2. Expression depends on: " + variables[0]);
+                            throw new ArgumentException("Expression " + expression.Name + "() must depend on u and/or v. Expression depends on: " + variables[0]);
                         }
                     }
                     else if (variables.Count == 2)
                     {
-                        if (variables[0] != "t1" || variables[1] != "t2")
+                        if (variables[0] != "u" || variables[1] != "v")
                         {
-                            throw new ArgumentException("Expression must depend on t1 and/or t2. Expression depends on: " + string.Join(", ", variables.ToArray()));
+                            throw new ArgumentException("Expression must depend on u and/or v. Expression depends on: " + string.Join(", ", variables.ToArray()));
                         }
                     }
                     else
                     {
-                        throw new ArgumentException("Expression " + expression.Name + "() must depend on t1 and/or t2. Expression depends on: " + string.Join(", ", variables.ToArray()));
+                        throw new ArgumentException("Expression " + expression.Name + "() must depend on u and/or v. Expression depends on: " + string.Join(", ", variables.ToArray()));
                     }
                 }
 
@@ -308,7 +311,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 else
                 {
-                    double radius = (T1VariableRange.Step + T2VariableRange.Step) / 10.0;
+                    double radius = (UVariableRange.Step + VVariableRange.Step) / 10.0;
                     radius = Math.Max(0.25, Math.Min(0.05, radius));
 
                     if (scatterGraph.Count > 5000)
@@ -331,25 +334,25 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         private ScatterGraph BuildScatterGraph()
         {
             ScatterGraph scatterGraph = new ScatterGraph();
-            Variable t1 = new Variable("t1", T1VariableRange.Min);
-            Variable t2 = new Variable("t2", T2VariableRange.Min);
-            Variable[] vars = new Variable[2] { t1, t2 };
+            Variable u = new Variable("u", UVariableRange.Min);
+            Variable v = new Variable("v", VVariableRange.Min);
+            Variable[] vars = new Variable[2] { u, v };
             double x;
             double y;
             double z;
 
-            while (t1.Value < T1VariableRange.Max)
+            while (u.Value < UVariableRange.Max)
             {
-                t2.Value = T2VariableRange.Min;
-                while (t2.Value < T2VariableRange.Max)
+                v.Value = VVariableRange.Min;
+                while (v.Value < VVariableRange.Max)
                 {
                     x = _expressionX.Evaluate(vars);
                     y = _expressionY.Evaluate(vars);
                     z = _expressionZ.Evaluate(vars);
                     scatterGraph.AddPoint(x, y, z);
-                    t2.Value = Math.Round((double)t2.Value + T2VariableRange.Step, 4);
+                    v.Value = Math.Round((double)v.Value + VVariableRange.Step, 4);
                 }
-                t1.Value = Math.Round((double)t1.Value + T1VariableRange.Step, 4);
+                u.Value = Math.Round((double)u.Value + UVariableRange.Step, 4);
             }
 
             return scatterGraph;

@@ -162,8 +162,8 @@
     <Compile Include="Models\Pipes\PipeBase.cs" />
     <Compile Include="Models\Pipes\UDPPipe.cs" />
     <Compile Include="Validators\ExpressionValidator.cs" />
-    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateParametrics2FunctionsBuilder.cs" />
-    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateParametricsFunctionsBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateParametricsFunctionsUVBuilder.cs" />
+    <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateParametricsFunctionsTBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\Builders\ScatterGraphPopulateFunctionXYBuilder.cs" />
     <Compile Include="ViewModels\AddScatterGraphViewModels\ScatterGraphBuilderVisualizerViewModel.cs" />
     <Compile Include="ViewModels\CommandLineViewModel.cs" />
@@ -236,11 +236,11 @@
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphBuilderVisualizerView.xaml.cs">
       <DependentUpon>ScatterGraphBuilderVisualizerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateParametrics2FunctionsBuilderView.xaml.cs">
-      <DependentUpon>ScatterGraphPopulateParametrics2FunctionsBuilderView.xaml</DependentUpon>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateParametricsFunctionsUVBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphPopulateParametricsFunctionsUVBuilderView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateParametricsFunctionsBuilderView.xaml.cs">
-      <DependentUpon>ScatterGraphPopulateParametricsFunctionsBuilderView.xaml</DependentUpon>
+    <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateParametricsFunctionsTBuilderView.xaml.cs">
+      <DependentUpon>ScatterGraphPopulateParametricsFunctionsTBuilderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddScatterGraphViews\ScatterGraphPopulateFunctionXYBuilderView.xaml.cs">
       <DependentUpon>ScatterGraphPopulateFunctionXYBuilderView.xaml</DependentUpon>
@@ -386,11 +386,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateParametrics2FunctionsBuilderView.xaml">
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateParametricsFunctionsUVBuilderView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateParametricsFunctionsBuilderView.xaml">
+    <Page Include="Views\AddScatterGraphViews\ScatterGraphPopulateParametricsFunctionsTBuilderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -133,7 +133,10 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private void ComputeNumPoints()
         {
-            _numPoints = (uint)((((XVariableRange.Max - XVariableRange.Min) / XVariableRange.Step) + 1) * (((YVariableRange.Max - YVariableRange.Min) / YVariableRange.Step) + 1));
+            _numPoints = (uint)(
+                (((XVariableRange.Max - XVariableRange.Min) / XVariableRange.Step) + 1) *
+                (((YVariableRange.Max - YVariableRange.Min) / YVariableRange.Step) + 1)
+                );
             OnPropertyChanged(nameof(NumPoints));
         }
 

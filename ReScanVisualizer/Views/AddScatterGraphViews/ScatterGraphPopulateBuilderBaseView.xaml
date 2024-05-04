@@ -16,7 +16,7 @@
             <ComboBoxItem Content="Line" />
             <ComboBoxItem Content="Function f(x, y) = z" />
             <ComboBoxItem Content="Parametrics functions : t" />
-            <ComboBoxItem Content="Parametrics functions : t1, t2" />
+            <ComboBoxItem Content="Parametrics functions : u, v" />
         </ComboBox>
         <Separator Margin="10" />
     </StackPanel>

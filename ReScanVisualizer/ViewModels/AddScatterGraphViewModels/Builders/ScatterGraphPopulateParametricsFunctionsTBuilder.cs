@@ -13,7 +13,7 @@ using MathEvaluatorNetFramework;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
-    internal class ScatterGraphPopulateParametricsFunctionsBuilder : ScatterGraphPopulateBuilderBase
+    internal class ScatterGraphPopulateParametricsFunctionsTBuilder : ScatterGraphPopulateBuilderBase
     {
         private uint _numPoints;
         public uint NumPoints
@@ -131,7 +131,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         private bool _expressionYIsOnError;
         private bool _expressionZIsOnError;
 
-        public ScatterGraphPopulateParametricsFunctionsBuilder() : base(Colors.White)
+        public ScatterGraphPopulateParametricsFunctionsTBuilder() : base(Colors.White)
         {
             _expressionXIsOnError = false;
             _expressionYIsOnError = false;
@@ -159,7 +159,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             SetExpression(_expressionX, _expressionStringX);
         }
 
-        ~ScatterGraphPopulateParametricsFunctionsBuilder()
+        ~ScatterGraphPopulateParametricsFunctionsTBuilder()
         {
             Dispose();
         }

@@ -17,11 +17,11 @@ using ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders;
 namespace ReScanVisualizer.Views.AddScatterGraphViews
 {
     /// <summary>
-    /// Logique d'interaction pour ScatterGraphPopulateParametrics2FunctionsBuilderView.xaml
+    /// Logique d'interaction pour ScatterGraphPopulateParametricsFunctionsTBuilderView.xaml
     /// </summary>
-    public partial class ScatterGraphPopulateParametrics2FunctionsBuilderView : UserControl
+    public partial class ScatterGraphPopulateParametricsFunctionsTBuilderView : UserControl
     {
-        public ScatterGraphPopulateParametrics2FunctionsBuilderView()
+        public ScatterGraphPopulateParametricsFunctionsTBuilderView()
         {
             InitializeComponent();
         }
@@ -33,7 +33,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         private void UpdateColorSelectorColor()
         {
-            if (DataContext is ScatterGraphPopulateParametrics2FunctionsBuilder builder)
+            if (DataContext is ScatterGraphPopulateParametricsFunctionsTBuilder builder)
             {
                 ColorSelector.Color = builder.Color;
             }
@@ -41,7 +41,7 @@ namespace ReScanVisualizer.Views.AddScatterGraphViews
 
         public void ColorSelector_ColorChanged(object sender, Color c)
         {
-            if (DataContext is ScatterGraphPopulateParametrics2FunctionsBuilder builder)
+            if (DataContext is ScatterGraphPopulateParametricsFunctionsTBuilder builder)
             {
                 builder.Color = c;
             }

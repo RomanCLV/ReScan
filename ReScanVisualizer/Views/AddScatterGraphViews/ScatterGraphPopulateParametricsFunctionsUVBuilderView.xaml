@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ReScanVisualizer.Views.AddScatterGraphViews.ScatterGraphPopulateParametrics2FunctionsBuilderView"
+﻿<UserControl x:Class="ReScanVisualizer.Views.AddScatterGraphViews.ScatterGraphPopulateParametricsFunctionsUVBuilderView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,17 +23,17 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0 10">
-                <TextBlock Text="Expression: x(t1, t2) = " Width="115" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
+                <TextBlock Text="Expression: x(u, v) = " Width="115" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
                 <TextBox Text="{Binding ExpressionStringX, UpdateSourceTrigger=LostFocus}" Width="300" Style="{StaticResource myTextBox}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0 10">
-                <TextBlock Text="Expression: y(t1, t2) = " Width="115" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
+                <TextBlock Text="Expression: y(u, v) = " Width="115" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
                 <TextBox Text="{Binding ExpressionStringY, UpdateSourceTrigger=LostFocus}" Width="300" Style="{StaticResource myTextBox}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0 10">
-                <TextBlock Text="Expression: z(t1, t2) = " Width="115" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
+                <TextBlock Text="Expression: z(u, v) = " Width="115" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
                 <TextBox Text="{Binding ExpressionStringZ, UpdateSourceTrigger=LostFocus}" Width="300" Style="{StaticResource myTextBox}" />
             </StackPanel>
 
@@ -43,8 +43,8 @@
 
             <GroupBox Header="Variables range" Margin="0 10">
                 <StackPanel>
-                    <forms:ExpressionVariableRangeForm DataContext="{Binding T1VariableRange}" HorizontalAlignment="Left" />
-                    <forms:ExpressionVariableRangeForm DataContext="{Binding T2VariableRange}" HorizontalAlignment="Left" />
+                    <forms:ExpressionVariableRangeForm DataContext="{Binding UVariableRange}" HorizontalAlignment="Left" />
+                    <forms:ExpressionVariableRangeForm DataContext="{Binding VVariableRange}" HorizontalAlignment="Left" />
                 </StackPanel>
             </GroupBox>
 
