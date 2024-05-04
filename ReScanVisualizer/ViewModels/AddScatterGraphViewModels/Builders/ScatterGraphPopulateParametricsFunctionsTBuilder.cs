@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using ReScanVisualizer.Models;
 using MathEvaluatorNetFramework;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -19,6 +20,20 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         public uint NumPoints
         {
             get => _numPoints;
+        }
+
+        public bool AngleAreInDegrees
+        {
+            get => MathEvaluator.Parameters.AngleAreInDegrees;
+            set
+            {
+                if (MathEvaluator.Parameters.AngleAreInDegrees != value)
+                {
+                    MathEvaluator.Parameters.AngleAreInDegrees = value;
+                    OnPropertyChanged(nameof(AngleAreInDegrees));
+                    UpdateBuilderModel();
+                }
+            }
         }
 
         public ExpressionVariableRangeViewModel TVariableRange { get; }
@@ -100,7 +115,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             $"{_expressionX.GetNameWithVariables()} = {_expressionX}\n" +
             $"{_expressionY.GetNameWithVariables()} = {_expressionY}\n" +
             $"{_expressionZ.GetNameWithVariables()} = {_expressionZ}\n" +
-            $"{TVariableRange.Min} <= {TVariableRange.VariableName} <= {TVariableRange.Max} | step: {TVariableRange.Step}\n" +
+            $"{Math.Round(TVariableRange.Min, 4)} <= {TVariableRange.VariableName} <= {Math.Round(TVariableRange.Max, 4)} | step: {Math.Round(TVariableRange.Step, 4)}\n" +
             $"Num points: {_numPoints}";
 
         private bool _modelHasToUpdate;
@@ -295,7 +310,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 else
                 {
-                    double radius = Math.Max(0.25, Math.Min(0.05, 10 * TVariableRange.Step));
+                    double radius = Math.Min(0.25, Math.Max(0.01, TVariableRange.Step / 3.0));
 
                     if (scatterGraph.Count > 5000)
                     {
@@ -318,18 +333,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         {
             ScatterGraph scatterGraph = new ScatterGraph();
             Variable t = new Variable("t", TVariableRange.Min);
-            Variable[] vars = new Variable[1] { t };
             double x;
             double y;
             double z;
 
             while (t.Value < TVariableRange.Max)
             {
-                x = _expressionX.Evaluate(vars);
-                y = _expressionY.Evaluate(vars);
-                z = _expressionZ.Evaluate(vars);
+                x = _expressionX.Evaluate(t);
+                y = _expressionY.Evaluate(t);
+                z = _expressionZ.Evaluate(t);
                 scatterGraph.AddPoint(x, y, z);
-                t.Value = Math.Round((double)t.Value + TVariableRange.Step, 4);
+                t.Value = Math.Round((double)t.Value + TVariableRange.Step, 9);
             }
 
             return scatterGraph;
@@ -342,6 +356,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             try
             {
                 result = new ScatterGraphBuildResult(BuildScatterGraph());
+                PointRadius = Math.Min(0.25, Math.Max(0.01, TVariableRange.Step / 3.0));
                 State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)

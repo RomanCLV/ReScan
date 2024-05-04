@@ -22,6 +22,10 @@
                 <TextBox Text="{Binding NumPoints, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Width="100" Style="{StaticResource myTextBox}" IsEnabled="False"/>
             </StackPanel>
 
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <CheckBox IsChecked="{Binding AngleAreInDegrees}" Content="Angle are in degrees" Foreground="{StaticResource foregroundColor}"/>
+            </StackPanel>
+            
             <StackPanel Orientation="Horizontal" Margin="0 10">
                 <TextBlock Text="Expression: f(x, y) = " Width="110" Margin="10" Style="{StaticResource myTextBlockLeft}"/>
                 <TextBox Text="{Binding ExpressionString, UpdateSourceTrigger=PropertyChanged}" Width="300" Style="{StaticResource myTextBox}" />

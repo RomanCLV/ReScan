@@ -21,6 +21,19 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             get => _numPoints;
         }
 
+        public bool AngleAreInDegrees
+        {
+            get => MathEvaluator.Parameters.AngleAreInDegrees;
+            set
+            {
+                if (MathEvaluator.Parameters.AngleAreInDegrees != value)
+                {
+                    MathEvaluator.Parameters.AngleAreInDegrees = value;
+                    OnPropertyChanged(nameof(AngleAreInDegrees));
+                    UpdateBuilderModel();
+                }
+            }
+        }
         public ExpressionVariableRangeViewModel UVariableRange { get; }
         public ExpressionVariableRangeViewModel VVariableRange { get; }
 
@@ -101,7 +114,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             $"{_expressionX.GetNameWithVariables()} = {_expressionX}\n" +
             $"{_expressionY.GetNameWithVariables()} = {_expressionY}\n" +
             $"{_expressionZ.GetNameWithVariables()} = {_expressionZ}\n" +
-            $"{UVariableRange.Min} <= {UVariableRange.VariableName} <= {UVariableRange.Max} | step: {UVariableRange.Step}\n" +
+            $"{Math.Round(UVariableRange.Min, 4)} <= {UVariableRange.VariableName} <= {Math.Round(UVariableRange.Max, 4)} | step: {Math.Round(UVariableRange.Step, 4)}\n" +
+            $"{Math.Round(VVariableRange.Min, 4)} <= {VVariableRange.VariableName} <= {Math.Round(VVariableRange.Max, 4)} | step: {Math.Round(VVariableRange.Step, 4)}\n" +
             $"Num points: {_numPoints}";
 
         private bool _modelHasToUpdate;
@@ -311,8 +325,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 else
                 {
-                    double radius = (UVariableRange.Step + VVariableRange.Step) / 10.0;
-                    radius = Math.Max(0.25, Math.Min(0.05, radius));
+                    double radius = Math.Min(0.25, Math.Max(0.01, Math.Min(UVariableRange.Step, VVariableRange.Step) / 3.0));
 
                     if (scatterGraph.Count > 5000)
                     {
@@ -336,7 +349,6 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             ScatterGraph scatterGraph = new ScatterGraph();
             Variable u = new Variable("u", UVariableRange.Min);
             Variable v = new Variable("v", VVariableRange.Min);
-            Variable[] vars = new Variable[2] { u, v };
             double x;
             double y;
             double z;
@@ -346,13 +358,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 v.Value = VVariableRange.Min;
                 while (v.Value < VVariableRange.Max)
                 {
-                    x = _expressionX.Evaluate(vars);
-                    y = _expressionY.Evaluate(vars);
-                    z = _expressionZ.Evaluate(vars);
+                    x = _expressionX.Evaluate(u, v);
+                    y = _expressionY.Evaluate(u, v);
+                    z = _expressionZ.Evaluate(u, v);
                     scatterGraph.AddPoint(x, y, z);
-                    v.Value = Math.Round((double)v.Value + VVariableRange.Step, 4);
+                    v.Value = Math.Round((double)v.Value + VVariableRange.Step, 9);
                 }
-                u.Value = Math.Round((double)u.Value + UVariableRange.Step, 4);
+                u.Value = Math.Round((double)u.Value + UVariableRange.Step, 9);
             }
 
             return scatterGraph;
@@ -365,6 +377,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             try
             {
                 result = new ScatterGraphBuildResult(BuildScatterGraph());
+                PointRadius = Math.Min(0.25, Math.Max(0.01, Math.Min(UVariableRange.Step, VVariableRange.Step) / 3.0));
                 State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)
