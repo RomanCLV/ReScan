@@ -30,7 +30,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 {
                     MathEvaluator.Parameters.AngleAreInDegrees = value;
                     OnPropertyChanged(nameof(AngleAreInDegrees));
-                    UpdateBuilderModel();
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -74,6 +74,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             $"Num points: {_numPoints}";
 
         private bool _modelHasToUpdate;
+        private bool ModelHasToUpdate
+        {
+            set
+            {
+                _modelHasToUpdate = value;
+                if (_modelHasToUpdate && _autoUpdateBuilderModel)
+                {
+                    UpdateBuilderModel();
+                }
+            }
+        }
 
         private bool _autoUpdateBuilderModel;
         public bool AutoUpdateBuilderModel
@@ -81,12 +92,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             get => _autoUpdateBuilderModel;
             set
             {
-                if (SetValue(ref _autoUpdateBuilderModel, value))
+                if (SetValue(ref _autoUpdateBuilderModel, value) && _autoUpdateBuilderModel && _modelHasToUpdate)
                 {
-                    if (_autoUpdateBuilderModel && _modelHasToUpdate)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    UpdateBuilderModel();
                 }
             }
         }
@@ -135,14 +143,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private void VariableRange_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            _modelHasToUpdate = true;
             ComputeNumPoints();
             OnPropertyChanged(nameof(Details));
-
-            if (_autoUpdateBuilderModel)
-            {
-                UpdateBuilderModel();
-            }
+            ModelHasToUpdate = true;
         }
 
         private void ComputeNumPoints()
@@ -184,11 +187,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                         throw new ArgumentException("Expression must depend on x and/or y. Expression depends on: " + string.Join(", ", variables.ToArray()));
                     }
                 }
-
-                if (_autoUpdateBuilderModel)
-                {
-                    UpdateBuilderModel();
-                }
+                ModelHasToUpdate = true;
             }
             catch (Exception ex)
             {
@@ -200,38 +199,26 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private void UpdateBuilderModel()
         {
-            ScatterGraph? scatterGraph = null;
-            try
+            if (_expression.IsSet)
             {
-                if (_expression.IsSet)
+                try
                 {
-                    scatterGraph = BuildScatterGraph();
-                }
-            }
-            finally
-            {
-                if (scatterGraph == null)
-                {
-                    _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(new ScatterGraph(), 1.0);
-                }
-                else
-                {
-                    double radius = Math.Min(0.25, Math.Max(0.01, Math.Min(XVariableRange.Step, YVariableRange.Step) / 3.0));
-
-                    if (scatterGraph.Count > 5000)
+                    ScatterGraph scatterGraph = BuildScatterGraph();
+                    if (scatterGraph.Count <= 5000 || MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                     {
-                        if (MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                        {
-                            _modelHasToUpdate = false;
-                            _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, radius);
-                        }
-                    }
-                    else
-                    {
+                        double radius = Math.Min(0.25, Math.Max(0.01, Math.Min(XVariableRange.Step, YVariableRange.Step) / 3.0));
                         _modelHasToUpdate = false;
                         _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, radius);
                     }
                 }
+                catch
+                {
+                    _scatterGraphBuilderVisualizerViewModel.ClearBuilderModel();
+                }
+            }
+            else
+            {
+                _scatterGraphBuilderVisualizerViewModel.ClearBuilderModel();
             }
         }
 

@@ -10,27 +10,33 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Foreground="{StaticResource foregroundColor}"
              DataContextChanged="UserControl_DataContextChanged">
-    <StackPanel>
-        <GroupBox Header="Start" Margin="10" Padding="30">
-            <form:PointForm DataContext="{Binding Start}" Width="150" HorizontalAlignment="Left" />
-        </GroupBox>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Right" Margin="8">
+            <CheckBox IsChecked="{Binding AutoUpdateBuilderModel}" Content="Auto update" Foreground="{StaticResource foregroundColor}" ToolTip="Recommend to disable this option if the points count is greater than 1000."/>
+            <local:ScatterGraphBuilderVisualizerView DataContext="{Binding ScatterGraphBuilderVisualizerViewModel}" Height="500" Width="500" HorizontalAlignment="Right" />
+        </StackPanel>
+        <StackPanel>
+            <GroupBox Header="Start" Margin="10" Padding="30">
+                <form:PointForm DataContext="{Binding Start}" Width="150" HorizontalAlignment="Left" />
+            </GroupBox>
 
-        <GroupBox Header="End" Margin="10" Padding="30" >
-            <form:PointForm DataContext="{Binding End}" Width="150" HorizontalAlignment="Left"/>
-        </GroupBox>
+            <GroupBox Header="End" Margin="10" Padding="30" >
+                <form:PointForm DataContext="{Binding End}" Width="150" HorizontalAlignment="Left"/>
+            </GroupBox>
 
-        <Grid Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="125" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="Num points:" Margin="10" Style="{StaticResource myTextBlock}"/>
-            <TextBox   Grid.Column="1" Grid.Row="0" Text="{Binding NumPoints}" Style="{StaticResource myTextBox}"/>
-        </Grid>
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="125" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Num points:" Margin="10" Style="{StaticResource myTextBlock}"/>
+                <TextBox   Grid.Column="1" Grid.Row="0" Text="{Binding NumPoints}" Style="{StaticResource myTextBox}"/>
+            </Grid>
 
-        <GroupBox Header="Color" Margin="10">
-            <ctr:ColorSelector x:Name="ColorSelector" ColorChanged="ColorSelector_ColorChanged" Margin="30" />
-        </GroupBox>
+            <GroupBox Header="Color" Margin="10">
+                <ctr:ColorSelector x:Name="ColorSelector" ColorChanged="ColorSelector_ColorChanged" Margin="30" />
+            </GroupBox>
 
-    </StackPanel>
+        </StackPanel>
+    </DockPanel>
 </UserControl>

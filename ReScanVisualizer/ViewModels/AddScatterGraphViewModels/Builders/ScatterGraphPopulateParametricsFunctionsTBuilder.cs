@@ -11,6 +11,7 @@ using MathEvaluatorNetFramework;
 using System.Diagnostics;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Imaging;
+using System.Linq.Expressions;
 
 #nullable enable
 
@@ -33,7 +34,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 {
                     MathEvaluator.Parameters.AngleAreInDegrees = value;
                     OnPropertyChanged(nameof(AngleAreInDegrees));
-                    UpdateBuilderModel();
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -126,6 +127,17 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             $"Num points: {_numPoints}";
 
         private bool _modelHasToUpdate;
+        private bool ModelHasToUpdate
+        {
+            set
+            {
+                _modelHasToUpdate = value;
+                if (_modelHasToUpdate && _autoUpdateBuilderModel)
+                {
+                    UpdateBuilderModel();
+                }
+            }
+        }
 
         private bool _autoUpdateBuilderModel;
         public bool AutoUpdateBuilderModel
@@ -133,12 +145,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             get => _autoUpdateBuilderModel;
             set
             {
-                if (SetValue(ref _autoUpdateBuilderModel, value))
+                if (SetValue(ref _autoUpdateBuilderModel, value) && _autoUpdateBuilderModel && _modelHasToUpdate)
                 {
-                    if (_autoUpdateBuilderModel && _modelHasToUpdate)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    UpdateBuilderModel();
                 }
             }
         }
@@ -162,10 +171,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                         _repetitionMode = RepetitionMode.None;
                         OnPropertyChanged(nameof(RepetitionMode));
                     }
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -178,28 +184,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _repetitionMode, value))
                 {
-                    //if (_repetitionMode == RepetitionMode.Rotation)
-                    //{
-                    //    if (_negativeRepetitionLength < -180.0)
-                    //    {
-                    //        _negativeRepetitionLength = -180.0;
-                    //        OnPropertyChanged(nameof(NegativeRepetitionLength));
-                    //    }
-                    //    if (_positiveTranslationLength > 180.0)
-                    //    {
-                    //        _positiveTranslationLength = 180.0;
-                    //        OnPropertyChanged(nameof(PositiveRepetitionLength));
-                    //    }
-                    //    if (_repetitionStep > _positiveTranslationLength - _negativeRepetitionLength)
-                    //    {
-                    //        _repetitionStep = _positiveTranslationLength - _negativeRepetitionLength;
-                    //        OnPropertyChanged(nameof(RepetitionStep));
-                    //    }
-                    //}
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -214,10 +199,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _translationX, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -230,10 +212,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _translationY, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -246,10 +225,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _translationZ, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -266,10 +242,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 if (SetValue(ref _positiveTranslationLength, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -286,10 +259,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 if (SetValue(ref _negativeTranslationLength, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -314,10 +284,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 if (SetValue(ref _translationStep, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -334,10 +301,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _rotationX, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -350,10 +314,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _rotationY, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -366,10 +327,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _rotationZ, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -382,10 +340,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _rotationPointX, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -398,10 +353,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _rotationPointY, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -414,10 +366,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 if (SetValue(ref _rotationPointZ, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -438,10 +387,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 if (SetValue(ref _positiveRotationLength, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -462,10 +408,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 if (SetValue(ref _negativeRotationLength, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -490,10 +433,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 }
                 if (SetValue(ref _rotationStep, value))
                 {
-                    if (_autoUpdateBuilderModel)
-                    {
-                        UpdateBuilderModel();
-                    }
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -571,14 +511,9 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private void VariableRange_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            _modelHasToUpdate = true;
             ComputeNumPoints();
             OnPropertyChanged(nameof(Details));
-
-            if (_autoUpdateBuilderModel)
-            {
-                UpdateBuilderModel();
-            }
+            ModelHasToUpdate = true;
         }
 
         private void ComputeNumPoints()
@@ -673,36 +608,25 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 
         private void UpdateBuilderModel()
         {
-            ScatterGraph? scatterGraph = null;
-            try
+            if (_expressionX.IsSet && _expressionY.IsSet && _expressionZ.IsSet)
             {
-                if (_expressionX.IsSet && _expressionY.IsSet && _expressionZ.IsSet)
+                try
                 {
-                    scatterGraph = BuildScatterGraph();
-                }
-            }
-            finally
-            {
-                if (scatterGraph == null)
-                {
-                    _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(new ScatterGraph(), 1.0);
-                }
-                else
-                {
-                    if (scatterGraph.Count > 5000)
-                    {
-                        if (MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                        {
-                            _modelHasToUpdate = false;
-                            _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, BuildRadius());
-                        }
-                    }
-                    else
+                    ScatterGraph scatterGraph = BuildScatterGraph();
+                    if (scatterGraph.Count <= 5000 || MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                     {
                         _modelHasToUpdate = false;
                         _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, BuildRadius());
                     }
                 }
+                catch
+                {
+                    _scatterGraphBuilderVisualizerViewModel.ClearBuilderModel();
+                }
+            }
+            else
+            {
+                _scatterGraphBuilderVisualizerViewModel.ClearBuilderModel();
             }
         }
 

@@ -11,7 +11,7 @@
              xmlns:models="clr-namespace:ReScanVisualizer.Models"
              xmlns:validators="clr-namespace:ReScanVisualizer.Validators"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="720" d:DesignWidth="1280"
              Foreground="{StaticResource foregroundColor}"
              DataContextChanged="UserControl_DataContextChanged"
              >

@@ -11,7 +11,7 @@ using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
-    public class ScatterGraphPopulateRectangle2DBuilder : ScatterGraphPopulateBuilderBase
+    internal class ScatterGraphPopulateRectangle2DBuilder : ScatterGraphPopulateBuilderBase
     {
         public Point3DViewModel Center { get; private set; }
 
@@ -25,6 +25,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 {
                     OnPropertyChanged(nameof(Details));
                     State = ScatterGraphBuilderState.Ready;
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -48,6 +49,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                     NumPointsWidth = (uint)_width + 1;
                     OnPropertyChanged(nameof(Details));
                     State = ScatterGraphBuilderState.Ready;
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -71,6 +73,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                     NumPointsHeight = (uint)_height + 1;
                     OnPropertyChanged(nameof(Details));
                     State = ScatterGraphBuilderState.Ready;
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -93,6 +96,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 {
                     OnPropertyChanged(nameof(Details));
                     State = ScatterGraphBuilderState.Ready;
+                    ModelHasToUpdate = true;
                 }
             }
         }
@@ -115,19 +119,52 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 {
                     OnPropertyChanged(nameof(Details));
                     State = ScatterGraphBuilderState.Ready;
+                    ModelHasToUpdate = true;
                 }
             }
         }
 
         public override string Name => "Rectange2D builder";
 
-        public override string Details => 
+        public override string Details =>
             $"Plan: {_plan}\n" +
             $"Center ({Math.Round(Center.X, 2)}, {Math.Round(Center.Y, 2)}, {Math.Round(Center.Z, 2)})\n" +
             $"Width: {Math.Round(_width, 2)}\n" +
             $"Height: {Math.Round(_height, 2)}\n" +
             $"Num points width: {NumPointsWidth}\n" +
             $"Num points height: {NumPointsHeight}";
+
+        private bool _modelHasToUpdate;
+        private bool ModelHasToUpdate
+        {
+            set
+            {
+                _modelHasToUpdate = value;
+                if (_modelHasToUpdate && _autoUpdateBuilderModel)
+                {
+                    UpdateBuilderModel();
+                }
+            }
+        }
+
+        private bool _autoUpdateBuilderModel;
+        public bool AutoUpdateBuilderModel
+        {
+            get => _autoUpdateBuilderModel;
+            set
+            {
+                if (SetValue(ref _autoUpdateBuilderModel, value) && _autoUpdateBuilderModel && _modelHasToUpdate)
+                {
+                    UpdateBuilderModel();
+                }
+            }
+        }
+
+        private readonly ScatterGraphBuilderVisualizerViewModel _scatterGraphBuilderVisualizerViewModel;
+        public ScatterGraphBuilderVisualizerViewModel ScatterGraphBuilderVisualizerViewModel
+        {
+            get => _scatterGraphBuilderVisualizerViewModel;
+        }
 
         public ScatterGraphPopulateRectangle2DBuilder() : base(Colors.White)
         {
@@ -142,8 +179,12 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             _height = 10.0;
             _numPointsWidth = (uint)_width + 1;
             _numPointsHeight = (uint)_height + 1;
+            _scatterGraphBuilderVisualizerViewModel = new ScatterGraphBuilderVisualizerViewModel();
+            _modelHasToUpdate = false;
+            _autoUpdateBuilderModel = true;
 
             Center.PropertyChanged += Center_PropertyChanged;
+            UpdateBuilderModel();
         }
 
         ~ScatterGraphPopulateRectangle2DBuilder()
@@ -157,6 +198,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 Center.PropertyChanged -= Center_PropertyChanged;
                 Center.Dispose();
+                _scatterGraphBuilderVisualizerViewModel.Dispose();
                 base.Dispose();
             }
         }
@@ -165,6 +207,31 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         {
             OnPropertyChanged(nameof(Details));
             State = ScatterGraphBuilderState.Ready;
+            ModelHasToUpdate = true;
+        }
+
+        private ScatterGraph BuildScatterGraph()
+        {
+            ScatterGraph graph = new ScatterGraph();
+            ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _numPointsWidth, _numPointsHeight);
+            return graph;
+        }
+
+        private void UpdateBuilderModel()
+        {
+            try
+            {
+                ScatterGraph scatterGraph = BuildScatterGraph();
+                if (scatterGraph.Count <= 5000 || MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                {
+                    _modelHasToUpdate = false;
+                    _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph);
+                }
+            }
+            catch
+            {
+                _scatterGraphBuilderVisualizerViewModel.ClearBuilderModel();
+            }
         }
 
         /// <returns>Return a <see cref="ScatterGraphBuildResult"/> using the <see cref="ScatterGraph.PopulateRectangle2D(ScatterGraph, Point3D, Plan2D, double, double, uint, uint)"/> method.</returns>
@@ -174,9 +241,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             ScatterGraphBuildResult scatterGraphBuildResult;
             try
             {
-                ScatterGraph graph = new ScatterGraph();
-                ScatterGraph.PopulateRectangle2D(graph, Center.Point, _plan, _width, _height, _numPointsWidth, _numPointsHeight);
-                scatterGraphBuildResult = new ScatterGraphBuildResult(graph);
+                scatterGraphBuildResult = new ScatterGraphBuildResult(BuildScatterGraph());
                 State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)
