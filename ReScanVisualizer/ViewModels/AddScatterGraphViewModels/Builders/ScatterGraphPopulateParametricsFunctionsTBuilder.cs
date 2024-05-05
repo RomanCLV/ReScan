@@ -711,12 +711,14 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             for (int i = 0; i < count; i++)
             {
                 Point3D currentPoint = scatterGraph[i];
+                Point3D translatedPoint = new Point3D(currentPoint.X - _rotationPointX, currentPoint.Y - _rotationPointY, currentPoint.Z - _rotationPointZ);
                 double t = _negativeRotationLength;
                 while (t <= _positiveRotationLength)
                 {
                     Quaternion quaternion = new Quaternion(axisRotation, t);
                     RotateTransform3D rotateTransform = new RotateTransform3D(new QuaternionRotation3D(quaternion));
-                    rotationGraph.AddPoint(rotateTransform.Transform(currentPoint), true);
+                    Point3D rotatedPoint = rotateTransform.Transform(translatedPoint);
+                    rotationGraph.AddPoint(new Point3D(rotatedPoint.X + _rotationPointX, rotatedPoint.Y + _rotationPointY, rotatedPoint.Z + _rotationPointZ), true);
                     t = Math.Round(t + _rotationStep, 9);
                 }
             }
