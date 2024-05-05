@@ -13,7 +13,7 @@ using MathEvaluatorNetFramework;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
-    internal class ScatterGraphPopulateFunctionXYBuilder : ScatterGraphPopulateBuilderBase
+    internal class ScatterGraphPopulateFunctionXYBuilder : ScatterGraphPopulateBuilderBase, IModelisableBuilder
     {
         private uint _numPoints;
         public uint NumPoints
@@ -74,7 +74,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             $"Num points: {_numPoints}";
 
         private bool _modelHasToUpdate;
-        private bool ModelHasToUpdate
+        public bool ModelHasToUpdate
         {
             set
             {
@@ -206,9 +206,8 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                     ScatterGraph scatterGraph = BuildScatterGraph();
                     if (scatterGraph.Count <= 5000 || MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                     {
-                        double radius = Math.Min(0.25, Math.Max(0.01, Math.Min(XVariableRange.Step, YVariableRange.Step) / 3.0));
                         _modelHasToUpdate = false;
-                        _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, radius);
+                        _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, Color, BuildRadius());
                     }
                 }
                 catch
@@ -220,6 +219,11 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             {
                 _scatterGraphBuilderVisualizerViewModel.ClearBuilderModel();
             }
+        }
+
+        private double BuildRadius()
+        {
+            return Math.Min(0.25, Math.Max(0.01, Math.Min(XVariableRange.Step, YVariableRange.Step) / 3.0));
         }
 
         private ScatterGraph BuildScatterGraph()
@@ -251,7 +255,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             try
             {
                 result = new ScatterGraphBuildResult(BuildScatterGraph());
-                PointRadius = Math.Min(0.25, Math.Max(0.01, Math.Min(XVariableRange.Step, YVariableRange.Step) / 3.0));
+                PointRadius = BuildRadius();
                 State = ScatterGraphBuilderState.Success;
             }
             catch (Exception e)

@@ -148,6 +148,7 @@
     <Compile Include="Converters\StringConcaterMultiConverter.cs" />
     <Compile Include="DataTemplateSelectors\RepetitionModeTemplateSelector.cs" />
     <Compile Include="EventArgs\PositionEventArgs.cs" />
+    <Compile Include="Models\IModelisableBuilder.cs" />
     <Compile Include="Models\Parser\CommandLineParameter.cs" />
     <Compile Include="Models\Parser\CommandLineParser.cs" />
     <Compile Include="Models\Parser\CommandLineUnknowOptionException.cs" />

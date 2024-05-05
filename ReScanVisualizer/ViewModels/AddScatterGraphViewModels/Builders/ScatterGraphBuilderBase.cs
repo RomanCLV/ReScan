@@ -45,7 +45,13 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
         public Color Color
         {
             get => _color;
-            set => SetValue(ref _color, value);
+            set
+            {
+                if (SetValue(ref _color, value) && this is IModelisableBuilder modelisableBuilder)
+                {
+                    modelisableBuilder.ModelHasToUpdate = true;
+                }
+            }
         }
 
         private ScatterGraphBuilderState _state;

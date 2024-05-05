@@ -17,7 +17,7 @@ using System.Linq.Expressions;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
-    internal class ScatterGraphPopulateParametricsFunctionsTBuilder : ScatterGraphPopulateBuilderBase
+    internal class ScatterGraphPopulateParametricsFunctionsTBuilder : ScatterGraphPopulateBuilderBase, IModelisableBuilder
     {
         private uint _numPoints;
         public uint NumPoints
@@ -127,7 +127,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             $"Num points: {_numPoints}";
 
         private bool _modelHasToUpdate;
-        private bool ModelHasToUpdate
+        public bool ModelHasToUpdate
         {
             set
             {
@@ -616,7 +616,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                     if (scatterGraph.Count <= 5000 || MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                     {
                         _modelHasToUpdate = false;
-                        _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, BuildRadius());
+                        _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, Color, BuildRadius());
                     }
                 }
                 catch

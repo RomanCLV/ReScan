@@ -11,7 +11,7 @@ using ReScanVisualizer.Models;
 
 namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
 {
-    internal class ScatterGraphPopulateRectangle2DBuilder : ScatterGraphPopulateBuilderBase
+    internal class ScatterGraphPopulateRectangle2DBuilder : ScatterGraphPopulateBuilderBase, IModelisableBuilder
     {
         public Point3DViewModel Center { get; private set; }
 
@@ -135,7 +135,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
             $"Num points height: {NumPointsHeight}";
 
         private bool _modelHasToUpdate;
-        private bool ModelHasToUpdate
+        public bool ModelHasToUpdate
         {
             set
             {
@@ -225,7 +225,7 @@ namespace ReScanVisualizer.ViewModels.AddScatterGraphViewModels.Builders
                 if (scatterGraph.Count <= 5000 || MessageBox.Show($"Warning: Are you sure to display {scatterGraph.Count} points? It will take some time to display.", "Huge points to display", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     _modelHasToUpdate = false;
-                    _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph);
+                    _scatterGraphBuilderVisualizerViewModel.BuildBuilderModel(scatterGraph, Color);
                 }
             }
             catch
