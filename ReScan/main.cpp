@@ -30,57 +30,58 @@ int main(int argc, char* argv[])
 		if (vm.count("help"))
 		{
 			std::cout << desc << std::endl;
-			return 0;
 		}
-
-		bool cancelProcess = false;
-		bool isConfigSpecified = vm.count("config") ? true : false;
-		bool isFileSpecified = vm.count("file") ? true : false;
-
-		if (vm.count("create-config"))
+		else
 		{
-			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig(), "config.ini");
-			cancelProcess = true;
-		}
+			bool cancelProcess = false;
+			bool isConfigSpecified = vm.count("config") ? true : false;
+			bool isFileSpecified = vm.count("file") ? true : false;
 
-		if (vm.count("create-config-icnde-frontal"))
-		{
-			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createFrontalICNDEConfig(), "configFrontal.ini");
-			cancelProcess = true;
-		}
-
-		if (vm.count("create-config-icnde-lateral"))
-		{
-			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createLateralICNDEConfig(), "configLateral.ini");
-			cancelProcess = true;
-		}
-
-		if (!cancelProcess)
-		{
-			ReScan::ReScan reScan;
-			if (isConfigSpecified)
+			if (vm.count("create-config"))
 			{
-				std::string config = vm["config"].as<std::string>();
-				result = reScan.process(config);
-			}
-			else if (isFileSpecified)
-			{
-				std::string file = vm["file"].as<std::string>();
-				result = reScan.process(file, true);
-			}
-			else
-			{
-				std::string filename;
-				std::cout << "obj filename: ";
-				std::getline(std::cin, filename);
-
-				result = reScan.process(filename, true);
+				ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig(), "config.ini");
+				cancelProcess = true;
 			}
 
-			if (result != SUCCESS_CODE)
+			if (vm.count("create-config-icnde-frontal"))
 			{
-				std::cout << std::endl << "Press enter to exit..." << std::endl;
-				std::cin.get();
+				ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createFrontalICNDEConfig(), "configFrontal.ini");
+				cancelProcess = true;
+			}
+
+			if (vm.count("create-config-icnde-lateral"))
+			{
+				ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createLateralICNDEConfig(), "configLateral.ini");
+				cancelProcess = true;
+			}
+
+			if (!cancelProcess)
+			{
+				ReScan::ReScan reScan;
+				if (isConfigSpecified)
+				{
+					std::string config = vm["config"].as<std::string>();
+					result = reScan.process(config);
+				}
+				else if (isFileSpecified)
+				{
+					std::string file = vm["file"].as<std::string>();
+					result = reScan.process(file, true);
+				}
+				else
+				{
+					std::string filename;
+					std::cout << "obj filename: ";
+					std::getline(std::cin, filename);
+
+					result = reScan.process(filename, true);
+				}
+
+				if (result != SUCCESS_CODE)
+				{
+					std::cout << std::endl << "Press enter to exit..." << std::endl;
+					std::cin.get();
+				}
 			}
 		}
 	}
