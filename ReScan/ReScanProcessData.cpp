@@ -24,7 +24,6 @@ namespace ReScan
 		m_basesCartesianDefaultFileName(""),
 		m_basesEulerAnglesDefaultFileName(""),
 		m_detailsDefaultFileName("")
-
 	{
 	}
 
@@ -103,8 +102,6 @@ namespace ReScan
 		m_distance2 = 0.0;
 		m_axis1Name = '?';
 		m_axis2Name = '?';
-		m_distance1 = 0.0;
-		m_distance2 = 0.0;
 		m_subDivision1 =0;
 		m_subDivision2 =0;
 		m_objFile = "";

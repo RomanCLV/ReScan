@@ -114,5 +114,3 @@ namespace ReScan
 }
 
 #endif // !RESCAN_RESCANPROCESSDATA_H
-
-
