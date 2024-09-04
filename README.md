@@ -36,9 +36,14 @@ Global directories work & project
         |-- eigen
 ```
 
---> Additionnal Include Directories: `..\..\ReScanAdditionnals\eigen`;`..\..\ReScanAdditionnals\boost`;`%(AdditionalIncludeDirectories)`
+--> C/C++ > Additionnal Include Directories: `..\..\ReScanAdditionnals\eigen`;`..\..\ReScanAdditionnals\boost`;`%(AdditionalIncludeDirectories)`
 
-- C/C++ > Preprocessor: Add `BOOST_ALL_NO_LIB` to all your configurations
+--> C/C++ > Preprocessor: Add `BOOST_ALL_NO_LIB` to all your configurations
+
+--> Linker > Additionnal Include Directories: ..\..\ReScanAdditionnals\boost\stage\lib;%(AdditionalLibraryDirectories)
+
+--> Linker > Input : Additionnal Dependencies : Add `libboost_program_options-vc143-mt-x64-1_84.lib` (for Release x64) or `libboost_program_options-vc143-mt-gd-x64-1_84.lib` (for Debug x64)
+End can change depending on your boost version.
 
 ## ReScanVisualize C#
 
@@ -52,14 +57,23 @@ Package `HelixToolkit.Wpf.2.24.0` is used. You can download it with NuGet Packet
 
 Available options:
 
-- Help: `-h | --help`
-- Config file is specified: `-c | --config config.ini`
-- Obj file is specified: `-f | --file objFile.obj`
-- Create a new default config file: config.ini: `-cc | --create-config`
-- Create a new config file adapted for ICNDE (frontal): configFrontal.ini: `-ccif | --create-config-icnde-frontal`
-- Create a new config file adapted for ICNDE (lateral): configLateral.ini: `-ccil | --create-config-icnde-lateral`
+  -h [ --help ]                         produce help message
+  -d [ --create-config-default ]        create a new default config file:
+                                        config.ini
+  -k [ --create-config-icnde-frontal ]  create a new config file adapted for
+                                        ICNDE (frontal): configFrontal.ini
+  -l [ --create-config-icnde-lateral ]  create a new config file adapted for
+                                        ICNDE (lateral): configLateral.ini
+  -c [ --config ] config.ini            specify config file
+  -f [ --file ] file.obj                specify obj file
+Voici la version corrigée du texte :
 
-Use only one command at a time.
+If a `create-config...` option is used, the process is aborted.
+
+You can use `ReScan.exe -d -k -l` to create all configuration files simultaneously. 
+
+If a config file (`-c`) and an obj file (`-f`) are both specified, the config file takes priority. 
+If neither is provided, the filename will be requested automatically.
 
 ## ReScanVisualizer C#
 

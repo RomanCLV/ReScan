@@ -4,86 +4,91 @@
 #include <string>
 #include "Tools.h"
 
-static void help()
-{
-	std::cout << std::endl;
-	std::cout << "Usage:" << std::endl;
-	std::cout << "ReScan.exe	                                     Basic usage" << std::endl << std::endl;
-	std::cout << "ReScan.exe [-h|--help]                             Help" << std::endl << std::endl;
-	std::cout << "ReScan.exe [-c|--config] config.ini                Config file is specified" << std::endl << std::endl;
-	std::cout << "ReScan.exe [-f|--file] objFile.obj                 Obj file is specified" << std::endl << std::endl;
-	std::cout << "ReScan.exe [-cc|--create-config]                   Create a new default config file: config.ini" << std::endl;
-	std::cout << "ReScan.exe [-ccif|--create-config-icnde-frontal]   Create a new config file adapted for ICNDE (frontal): configFrontal.ini" << std::endl << std::endl;
-	std::cout << "ReScan.exe [-ccil|--create-config-icnde-lateral]   Create a new config file adapted for ICNDE (lateral): configLateral.ini" << std::endl << std::endl;
-	std::cout << std::endl;
-}
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
 
 int main(int argc, char* argv[])
 {
 	int result = SUCCESS_CODE;
+	try {
+		// Declare the supported options
+		po::options_description desc("*** ReScan Command Line Parser ***");
+		desc.add_options()
+			("help,h", "produce help message")
+			("create-config-default,d", "create a new default config file: config.ini")
+			("create-config-icnde-frontal,k", "create a new config file adapted for ICNDE (frontal): configFrontal.ini")
+			("create-config-icnde-lateral,l", "create a new config file adapted for ICNDE (lateral): configLateral.ini")
+			("config,c", po::value<std::string>()->value_name("config.ini"), "specify config file")
+			("file,f", po::value<std::string>()->value_name("file.obj"), "specify obj file")
+			;
 
-	if (argc == 1)
-	{
-		ReScan::ReScan rescan;
-		std::string filename;
-		std::cout << "filename: ";
-		std::getline(std::cin, filename);
+		po::variables_map vm;
+		po::store(po::parse_command_line(argc, argv, desc), vm);
+		po::notify(vm);
 
-		rescan.process(filename, true);
-	}
-	else if (argc == 2)
-	{
-		std::string arg1(argv[1]);
-		if (arg1 == "-h" || arg1 == "--help")
+		if (vm.count("help"))
 		{
-			help();
+			std::cout << desc << std::endl;
+			return 0;
 		}
-		else if (arg1 == "-cc" || arg1 == "--create-config")
+
+		bool cancelProcess = false;
+		bool isConfigSpecified = vm.count("config") ? true : false;
+		bool isFileSpecified = vm.count("file") ? true : false;
+
+		if (vm.count("create-config"))
 		{
 			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig(), "config.ini");
+			cancelProcess = true;
 		}
-		else if (arg1 == "-ccif" || arg1 == "--create-config-icnde-frontal")
+
+		if (vm.count("create-config-icnde-frontal"))
 		{
 			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createFrontalICNDEConfig(), "configFrontal.ini");
+			cancelProcess = true;
 		}
-		else if (arg1 == "-ccil" || arg1 == "--create-config-icnde-lateral")
+
+		if (vm.count("create-config-icnde-lateral"))
 		{
 			ReScan::ReScanConfig::saveConfigToFile(ReScan::ReScanConfig::createLateralICNDEConfig(), "configLateral.ini");
+			cancelProcess = true;
 		}
-		else
+
+		if (!cancelProcess)
 		{
-			ReScan::mout << "Unknow option: " << arg1 << std::endl;
-			help();
+			ReScan::ReScan reScan;
+			if (isConfigSpecified)
+			{
+				std::string config = vm["config"].as<std::string>();
+				result = reScan.process(config);
+			}
+			else if (isFileSpecified)
+			{
+				std::string file = vm["file"].as<std::string>();
+				result = reScan.process(file, true);
+			}
+			else
+			{
+				std::string filename;
+				std::cout << "obj filename: ";
+				std::getline(std::cin, filename);
+
+				result = reScan.process(filename, true);
+			}
+
+			if (result != SUCCESS_CODE)
+			{
+				std::cout << std::endl << "Press enter to exit..." << std::endl;
+				std::cin.get();
+			}
 		}
 	}
-	else if (argc == 3)
+	catch (std::exception& e)
 	{
-		std::string arg1(argv[1]);
-		std::string arg2(argv[2]);
-		ReScan::ReScan reScan;
-		if (arg1 == "-c" || arg1 == "--config")
-		{
-			result = reScan.process(arg2);
-		}
-		else if (arg1 == "-f" || arg1 == "--file")
-		{
-			result = reScan.process(arg2, true);
-		}
-		else
-		{
-			ReScan::mout << "Unknow option: " << arg1 << std::endl;
-			help();
-		}
-	}
-	else
-	{
-		help();
+		std::cout << e.what() << "\n";
+		result = 1;
 	}
 
-	if (result != SUCCESS_CODE)
-	{
-		std::cout << std::endl << "Press enter to exit..." << std::endl;
-		std::cin.get();
-	}
-	return 0;
+	return result;
 }
