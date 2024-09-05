@@ -40,7 +40,7 @@ Global directories work & project
 
 --> C/C++ > Preprocessor: Add `BOOST_ALL_NO_LIB` to all your configurations
 
---> Linker > Additionnal Include Directories: ..\..\ReScanAdditionnals\boost\stage\lib;%(AdditionalLibraryDirectories)
+--> Linker > Additionnal Include Directories: `..\..\ReScanAdditionnals\boost\stage\lib`;`%(AdditionalLibraryDirectories)`
 
 --> Linker > Input : Additionnal Dependencies : Add `libboost_program_options-vc143-mt-x64-1_84.lib` (for Release x64) or `libboost_program_options-vc143-mt-gd-x64-1_84.lib` (for Debug x64)
 End can change depending on your boost version.
