@@ -18,14 +18,24 @@ namespace ReScan
 
 	ReScan::ReScan() :
 		m_processData(),
-		m_subscribers()
+		m_subscribers(),
+		m_bases(nullptr)
 	{
 	}
 
 	ReScan::ReScan(const ReScan& reScan) :
 		m_processData(reScan.m_processData),
-		m_subscribers()
+		m_subscribers(),
+		m_bases(nullptr)
 	{
+		if (reScan.m_bases)
+		{
+			m_bases = new vector<Base3D*>(reScan.m_bases->size(), nullptr);
+			for (size_t i = 0; i < m_bases->size(); i++)
+			{
+				(*m_bases)[i] = new Base3D(*((*reScan.m_bases)[i]));
+			}
+		}
 	}
 
 	// destructor
@@ -38,6 +48,23 @@ namespace ReScan
 #pragma endregion
 
 #pragma region private functions
+	void ReScan::clearBases()
+	{
+		if (m_bases)
+		{
+			for (int i = 0; i < m_bases->size(); i++)
+			{
+				if ((*m_bases)[i] != nullptr)
+				{
+					delete (*m_bases)[i];
+					(*m_bases)[i] = nullptr;
+				}
+			}
+			m_bases->clear();
+			delete m_bases;
+			m_bases = nullptr;
+		}
+	}
 
 	void ReScan::notifyObservers(const FileType fileType, const std::string& path) const
 	{
@@ -417,7 +444,11 @@ namespace ReScan
 
 		mout << "Computing base..." << endl;
 
-		vector<Base3D*> bases(subDivisions.size(), nullptr);
+		if (m_bases)
+		{
+			clearBases();
+		}
+		m_bases = new vector<Base3D*>(subDivisions.size(), nullptr);
 
 		Base3D refBase = Base3D(*m_processData.getReferenceBase());
 		const Eigen::Vector3d refZ = *(refBase.getZ());
@@ -455,7 +486,7 @@ namespace ReScan
 						mout << "WARNING: base " << (i + 1) << " has a wrong correction: z angle diff.: " << angleZ << "°   |   x angle diff.: " << angleX << "°" << std::endl;
 					}
 				}
-				bases[i] = base;
+				(*m_bases)[i] = base;
 			}
 		}
 
@@ -477,7 +508,7 @@ namespace ReScan
 				}
 			}
 			mout << endl << "Exporting bases (cartesian)..." << endl;
-			if (exportBasesCartesianToCSV(path, bases, "0;0;0;0;0;0;0;0;0;0;0;0"))
+			if (exportBasesCartesianToCSV(path, *m_bases, "0;0;0;0;0;0;0;0;0;0;0;0"))
 			{
 				mout << "Bases (cartesian) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesCartesian, path);
@@ -504,7 +535,7 @@ namespace ReScan
 				}
 			}
 			mout << endl << "Exporting bases (Euler angles)..." << endl;
-			if (exportBasesEulerAnglesToCSV(path, bases, "0;0;0;0;0;0"))
+			if (exportBasesEulerAnglesToCSV(path, *m_bases, "0;0;0;0;0;0"))
 			{
 				mout << "Bases (Euler angles) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesEulerAngles, path);
@@ -539,15 +570,6 @@ namespace ReScan
 			else
 			{
 				mout << "Details not saved." << std::endl;
-			}
-		}
-
-		for (int i = 0; i < bases.size(); i++)
-		{
-			if (bases[i] != nullptr)
-			{
-				delete bases[i];
-				bases[i] = nullptr;
 			}
 		}
 
@@ -879,6 +901,7 @@ namespace ReScan
 
 	int ReScan::process(const ReScanConfig& config)
 	{
+		resetProcessData();
 		m_processData.setFromConfig(config);
 		return internalProcess();
 	}
@@ -910,6 +933,11 @@ namespace ReScan
 		m_processData.setWriteHeaders(writeHeaders);
 		m_processData.setDecimalCharIsDot(decimalCharIsDot);
 		return internalProcess();
+	}
+
+	std::vector<Base3D*>* ReScan::getResutlt()
+	{
+		return m_bases;
 	}
 
 	bool ReScan::isValidNameFile(const std::string& filename, const std::string& extention)

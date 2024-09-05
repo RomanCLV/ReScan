@@ -27,7 +27,7 @@ namespace ReScan::PreScan
 		PreScan();
 		PreScan(const PreScan& preScan);
 		~PreScan();
-
+		
 		void subscribe(ReScan::EventCallback callback);
 		void unsubscribe(ReScan::EventCallback callback);
 
@@ -57,6 +57,7 @@ namespace ReScan::PreScan
 
 	private:
 		void clearBases();
+
 		void notifyObservers(const FileType fileType, const std::string& path) const;
 
 		void resetProcessData();

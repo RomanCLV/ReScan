@@ -320,7 +320,7 @@ namespace ReScan::PreScan
 				catch (const std::exception& e)
 				{
 					result = SET_CONFIG_ERROR_CODE;
-					ReScan::mout << "error occured when setting config from file:" << std::endl << e.what() << std::endl;
+					ReScan::mout << std::endl << "error occured when setting config from file:" << std::endl << e.what() << std::endl;
 				}
 			}
 		}
@@ -350,13 +350,12 @@ namespace ReScan::PreScan
 		int result = SUCCESS_CODE;
 		boost::property_tree::ptree pt;
 
-
 		pt.put("General.xyAxisStep", config.m_xyAxisStep);
 		pt.put("General.zAxisStep", config.m_zAxisStep);
 		pt.put("General.decimalCharIsDot", config.m_decimalCharIsDot);
 		pt.put("General.enableUserInput", config.m_enableUserInput);
-		pt.put("General.point1", config.m_point1.toStr());
-		pt.put("General.point2", config.m_point2.toStr());
+		pt.put("General.point1", config.m_point1.toStr("", "", ";"));
+		pt.put("General.point2", config.m_point2.toStr("", "", ";"));
 		pt.put("General.planOffset", config.m_planOffset);
 
 		pt.put("Export.exportBasesCartesian", config.m_exportBasesCartesian);
@@ -375,7 +374,7 @@ namespace ReScan::PreScan
 		catch (const std::exception& e)
 		{
 			result = SAVE_CONFIG_ERROR_CODE;
-			ReScan::mout << "error occured when writing config file:" << std::endl << e.what() << std::endl;
+			ReScan::mout << std::endl << "error occured when writing config file:" << std::endl << e.what() << std::endl;
 		}
 		return result;
 	}
@@ -384,8 +383,6 @@ namespace ReScan::PreScan
 	{
 		PreScanConfig config;
 		config.m_enableUserInput = false;
-		config.m_exportBasesCartesian = false;
-		config.m_writeHeaders = false;
 		return config;
 	}
 }

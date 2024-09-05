@@ -280,7 +280,7 @@ namespace ReScan
 				catch (const std::exception& e)
 				{
 					result = SET_CONFIG_ERROR_CODE;
-					ReScan::mout << "error occured when setting config from file:" << std::endl << e.what() << std::endl;
+					ReScan::mout << std::endl << "error occured when setting config from file:" << std::endl << e.what() << std::endl;
 				}
 			}
 		}
@@ -338,7 +338,7 @@ namespace ReScan
 		catch (const std::exception& e)
 		{
 			result = SAVE_CONFIG_ERROR_CODE;
-			ReScan::mout << "error occured when writing config file:" << std::endl << e.what() << std::endl;
+			ReScan::mout << std::endl << "error occured when writing config file:" << std::endl << e.what() << std::endl;
 		}
 		return result;
 	}

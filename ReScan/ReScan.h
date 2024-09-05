@@ -22,6 +22,7 @@ namespace ReScan
 	private:
 		ReScanProcessData m_processData;
 		std::vector<std::function<void(const FileType, const std::string&)>> m_subscribers;
+		std::vector<Base3D*>* m_bases;
 
 	public:
 		using EventCallback = std::function<void(const FileType, const std::string&)>;
@@ -57,9 +58,13 @@ namespace ReScan
 			const bool writeHeaders = true,
 			const bool decimalCharIsDot = true);
 
+		std::vector<Base3D*>* getResutlt();
+
 		static bool isValidNameFile(const std::string& filename, const std::string& extention);
 
 	private:
+		void clearBases();
+
 		void notifyObservers(const FileType fileType, const std::string& path) const;
 
 		void resetProcessData();
