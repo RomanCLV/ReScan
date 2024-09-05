@@ -6,8 +6,8 @@ namespace ReScan::PreScan
 {
 	PreScanConfig::PreScanConfig() :
 		m_enableUserInput(true),
-		m_xAxisStep(100),
-		m_yAxisStep(100),
+		m_xyAxisStep(100),
+		m_zAxisStep(100),
 		m_point1(Point3D(0., 0., 0.)),
 		m_point2(Point3D(100., 0., 0.)),
 		m_planOffset(0),
@@ -24,8 +24,8 @@ namespace ReScan::PreScan
 
 	PreScanConfig::PreScanConfig(const PreScanConfig& config) :
 		m_enableUserInput(config.m_enableUserInput),
-		m_xAxisStep(config.m_xAxisStep),
-		m_yAxisStep(config.m_yAxisStep),
+		m_xyAxisStep(config.m_xyAxisStep),
+		m_zAxisStep(config.m_zAxisStep),
 		m_point1(config.m_point1),
 		m_point2(config.m_point2),
 		m_planOffset(config.m_planOffset),
@@ -51,14 +51,14 @@ namespace ReScan::PreScan
 		return m_enableUserInput;
 	}
 
-	unsigned int PreScanConfig::getStepAxis1() const
+	unsigned int PreScanConfig::getStepAxisXY() const
 	{
-		return m_xAxisStep;
+		return m_xyAxisStep;
 	}
 
-	unsigned int PreScanConfig::getStepAxis2() const
+	unsigned int PreScanConfig::getStepAxisZ() const
 	{
-		return m_yAxisStep;
+		return m_zAxisStep;
 	}
 
 	const Point3D* PreScanConfig::getPoint1() const
@@ -123,14 +123,14 @@ namespace ReScan::PreScan
 		m_enableUserInput = enableUserInput;
 	}
 
-	void PreScanConfig::setStepAxis1(const unsigned int xAxisStep)
+	void PreScanConfig::setStepAxisXY(const unsigned int xyAxisStep)
 	{
-		m_xAxisStep = xAxisStep;
+		m_xyAxisStep = xyAxisStep;
 	}
 
-	void PreScanConfig::setStepAxis2(const unsigned int yAxisStep)
+	void PreScanConfig::setStepAxisZ(const unsigned int zAxisStep)
 	{
-		m_yAxisStep = yAxisStep;
+		m_zAxisStep = zAxisStep;
 	}
 
 	void PreScanConfig::setPoint1(const Point3D& point1)
@@ -188,6 +188,24 @@ namespace ReScan::PreScan
 		m_detailsDefaultFileName = detailsDefaultFileName;
 	}
 
+	void PreScanConfig::findPlanOffset(const Point3D& point)
+	{
+		double p1x = m_point1.getX();
+		double p1y = m_point1.getY();
+		double p2x = m_point2.getX();
+		double p2y = m_point2.getY();
+
+		if (p1x == p2x && p1y == p2y)
+		{
+			return;
+		}
+
+		double angle = atan2(p2y - p1y, p2x - p1x);
+
+		double toto = 0;
+
+	}
+
 	/* Static */
 
 	bool PreScanConfig::isFileValid(const std::string& filename)
@@ -227,8 +245,8 @@ namespace ReScan::PreScan
 			{
 				try
 				{
-					config->m_xAxisStep = getConfigNode<unsigned int>(pt, "General.xAxisStep");
-					config->m_yAxisStep = getConfigNode<unsigned int>(pt, "General.yAxisStep");
+					config->m_xyAxisStep = getConfigNode<unsigned int>(pt, "General.xyAxisStep");
+					config->m_zAxisStep = getConfigNode<unsigned int>(pt, "General.zAxisStep");
 					config->m_decimalCharIsDot = getConfigNode<bool>(pt, "General.decimalCharIsDot");
 					config->m_enableUserInput = getConfigNode<bool>(pt, "General.enableUserInput");
 					std::string point1Str = getConfigNode<std::string>(pt, "General.point1");
@@ -305,8 +323,8 @@ namespace ReScan::PreScan
 		boost::property_tree::ptree pt;
 
 
-		pt.put("General.xAxisStep", config.m_xAxisStep);
-		pt.put("General.yAxisStep", config.m_yAxisStep);
+		pt.put("General.xyAxisStep", config.m_xyAxisStep);
+		pt.put("General.zAxisStep", config.m_zAxisStep);
 		pt.put("General.decimalCharIsDot", config.m_decimalCharIsDot);
 		pt.put("General.enableUserInput", config.m_enableUserInput);
 		pt.put("General.point1", config.m_point1.toStr());
@@ -334,7 +352,7 @@ namespace ReScan::PreScan
 		return result;
 	}
 
-	PreScanConfig PreScanConfig::createICNDEConfig()
+	PreScanConfig PreScanConfig::createConfig()
 	{
 		PreScanConfig config;
 		config.m_enableUserInput = false;

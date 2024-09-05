@@ -56,24 +56,46 @@ Package `HelixToolkit.Wpf.2.24.0` is used. You can download it with NuGet Packet
 - Basic usage: `ReScan.exe`
 
 Available options:
+```
+General Options:
+  -h [ --help ]               Produce help message
 
-  -h [ --help ]                         produce help message
-  -d [ --create-config-default ]        create a new default config file:
-                                        config.ini
-  -k [ --create-config-icnde-frontal ]  create a new config file adapted for
-                                        ICNDE (frontal): configFrontal.ini
-  -l [ --create-config-icnde-lateral ]  create a new config file adapted for
-                                        ICNDE (lateral): configLateral.ini
-  -c [ --config ] config.ini            specify config file
-  -f [ --file ] file.obj                specify obj file
-Voici la version corrigée du texte :
+Run Process Options:
+  -c [ --config ] config.ini  Specify a config file
+  -f [ --file ] file.obj      Specify an obj file
+  -p [ --prescan ]            Indicates to run the PreScan process
 
-If a `create-config...` option is used, the process is aborted.
+Configuration Options:
+  --ccd                       Create a new default config file: config.ini
+  --ccif                      Create a new config file adapted for ICNDE
+                              (frontal): configFrontal.ini
+  --ccil                      Create a new config file adapted for ICNDE
+                              (lateral): configLateral.ini
+  --ccp                       Create a new default config file for PreScan
+                              process: prescan-config.ini
+  ```
 
-You can use `ReScan.exe -d -k -l` to create all configuration files simultaneously. 
+If a `create-config` (`--cc_`) option is used, the process is aborted.
 
-If a config file (`-c`) and an obj file (`-f`) are both specified, the config file takes priority. 
-If neither is provided, the filename will be requested automatically.
+You can use `ReScan.exe --ccd --ccif --ccil --ccp` to create all configuration files simultaneously. You can then edit them and use them.
+
+### `ReScan`
+
+Executes the `ReScan process` program. 
+If no filename is specified, the `.obj file` name will be requested automatically. 
+This step is skipped if you specify it using the `-f filename` option. 
+After providing some required information, the process will start.
+
+You can customize the output (e.g., export or not certain files) based on your preferences 
+using the `-c config` option, which specifies the configuration file to use. 
+This option also allows you to automate the process.
+
+### `PreScan`
+
+You must use the `-p` option to indicate that you want to run the `PreScan process`.
+
+Similar to the ReScan process, you can also specify a configuration file (e.g., `ReScan.exe -p -c prescan-config.ini`) to automate the process,
+or input the values during program execution.
 
 ## ReScanVisualizer C#
 

@@ -143,6 +143,9 @@
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Base3D.cpp" />
+    <ClCompile Include="PreScan.cpp" />
+    <ClCompile Include="PreScanConfig.cpp" />
+    <ClCompile Include="PreScanProcessData.cpp" />
     <ClCompile Include="ReScan.cpp" />
     <ClCompile Include="ReScanConfig.cpp" />
     <ClCompile Include="ReScanProcessData.cpp" />
@@ -160,6 +163,9 @@
     <ClInclude Include="Plan2D.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="Base3D.h" />
+    <ClInclude Include="PreScan.h" />
+    <ClInclude Include="PreScanConfig.h" />
+    <ClInclude Include="PreScanProcessData.h" />
     <ClInclude Include="ReScan.h" />
     <ClInclude Include="ReScanConfig.h" />
     <ClInclude Include="ReScanFileType.h" />

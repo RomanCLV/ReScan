@@ -12,15 +12,15 @@ namespace ReScan::PreScan
 	{
 	private:
 		bool m_enableUserInput;
-		unsigned int* m_stepAxis1;
-		unsigned int* m_stepAxis2;
+		unsigned int* m_stepAxisXY;
+		unsigned int* m_stepAxisZ;
 		Point3D* m_point1;
 		Point3D* m_point2;
 		int* m_planOffset;
-		double m_distance1;
-		double m_distance2;
-		unsigned int m_subDivision1;
-		unsigned int m_subDivision2;
+		double m_distanceXY;
+		double m_distanceZ;
+		unsigned int m_pointsNumberXY;
+		unsigned int m_pointsNumberZ;
 		bool m_exportBasesCartesian;
 		bool m_exportBasesEulerAngles;
 		bool m_exportDetailsFile;
@@ -46,20 +46,20 @@ namespace ReScan::PreScan
 		void resetPoint2();
 		void setPoint2(const Point3D* point);
 
-		void resetStepAxis1();
-		void setStepAxis1(const unsigned int value);
+		void resetStepAxisXY();
+		void setStepAxisXY(const unsigned int value);
 
-		void resetStepAxis2();
-		void setStepAxis2(const unsigned int value);
+		void resetStepAxisZ();
+		void setStepAxisZ(const unsigned int value);
 
 		void resetPlanOffset();
 		void setPlanOffset(const int value);
 
-		void setDistance1(const double value);
-		void setDistance2(const double value);
+		void setDistanceXY(const double value);
+		void setDistanceZ(const double value);
 
-		void setSubDivision1(const unsigned int value);
-		void setSubDivision2(const unsigned int value);
+		void setPointsNumberXY(const unsigned int value);
+		void setPointsNumberZ(const unsigned int value);
 
 		void setExportBasesCartesian(const bool value);
 		void setExportBasesEulerAngles(const bool value);
@@ -78,14 +78,14 @@ namespace ReScan::PreScan
 		bool getEnableUserInput() const;
 		const Point3D* getPoint1() const;
 		const Point3D* getPoint2() const;
-		const unsigned int* getStepAxis1() const;
-		const unsigned int* getStepAxis2() const;
+		const unsigned int* getStepAxisXY() const;
+		const unsigned int* getStepAxisZ() const;
 		const int* getPlanOffset() const;
-		double getDistance1() const;
-		double getDistance2() const;
-		unsigned int getSubDivisions1() const;
-		unsigned int getSubDivisions2() const;
-		unsigned int getTotalSubDivisions() const;
+		double getDistanceXY() const;
+		double getDistanceZ() const;
+		unsigned int getSubDivisionsXY() const;
+		unsigned int getSubDivisionsZ() const;
+		unsigned int getTotalPointsNumber() const;
 		bool getExportBasesCartesian() const;
 		bool getExportBasesEulerAngles() const;
 		bool getExportDetailsFile() const;
@@ -97,8 +97,8 @@ namespace ReScan::PreScan
 
 		/* End - Getters */
 
-		bool isStep1Valid(unsigned int min) const;
-		bool isStep2Valid(unsigned int min) const;
+		bool isStepXYValid(unsigned int min) const;
+		bool isStepZValid(unsigned int min) const;
 	};
 }
 

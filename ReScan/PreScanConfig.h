@@ -20,8 +20,8 @@ namespace ReScan::PreScan
 	{
 	private:
 		bool m_enableUserInput;
-		unsigned int m_xAxisStep;
-		unsigned int m_yAxisStep;
+		unsigned int m_xyAxisStep;
+		unsigned int m_zAxisStep;
 		Point3D m_point1;
 		Point3D m_point2;
 		int m_planOffset;
@@ -112,8 +112,8 @@ namespace ReScan::PreScan
 		/* Getters */
 
 		bool getEnableUserInput() const;
-		unsigned int getStepAxis1() const;
-		unsigned int getStepAxis2() const;
+		unsigned int getStepAxisXY() const;
+		unsigned int getStepAxisZ() const;
 		const Point3D* getPoint1() const;
 		const Point3D* getPoint2() const;
 		int getPlanOffset() const;
@@ -129,8 +129,8 @@ namespace ReScan::PreScan
 		/* Setters */
 
 		void setEnableUserInput(const bool enableUserInput);
-		void setStepAxis1(const unsigned int xAxisStep);
-		void setStepAxis2(const unsigned int yAxisStep);
+		void setStepAxisXY(const unsigned int xyAxisStep);
+		void setStepAxisZ(const unsigned int zAxisStep);
 		void setPoint1(const Point3D& point1);
 		void setPoint2(const Point3D& point2);
 		void setPlanOffset(const int distance);
@@ -143,11 +143,13 @@ namespace ReScan::PreScan
 		void setBasesEulerAnglesDefaultFileName(const std::string& basesEulerAnglesDefaultFileName);
 		void setDetailsDefaultFileName(const std::string& detailsDefaultFileName);
 
+		void findPlanOffset(const Point3D& point);
+
 		static bool isFileValid(const std::string& filename);
 		static int loadConfigFromFile(const std::string& filePath, PreScanConfig* config);
 		static int saveConfigToFile(const PreScanConfig& config, const std::string& filePath);
 		
-		static PreScanConfig createICNDEConfig();
+		static PreScanConfig createConfig();
 	};
 }
 

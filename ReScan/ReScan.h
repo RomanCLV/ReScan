@@ -57,6 +57,8 @@ namespace ReScan
 			const bool writeHeaders = true,
 			const bool decimalCharIsDot = true);
 
+		static bool isValidNameFile(const std::string& filename, const std::string& extention);
+
 	private:
 		void notifyObservers(const FileType fileType, const std::string& path) const;
 
@@ -77,8 +79,6 @@ namespace ReScan
 		bool exportBasesCartesianToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "") const;
 		bool exportBasesEulerAnglesToCSV(const std::string& basePath, const std::vector<Base3D*>& bases, const std::string& nullText = "") const;
 		bool exportTrajectoryDetailsFile(const std::string& filename) const;
-
-		static bool isValidNameFile(const std::string& filename, const std::string& extention);
 	};
 }
 

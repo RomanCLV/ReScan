@@ -4,15 +4,15 @@ namespace ReScan::PreScan
 {
 	PreScanProcessData::PreScanProcessData() :
 		m_enableUserInput(true),
-		m_stepAxis1(nullptr),
-		m_stepAxis2(nullptr),
+		m_stepAxisXY(nullptr),
+		m_stepAxisZ(nullptr),
 		m_point1(nullptr),
 		m_point2(nullptr),
 		m_planOffset(nullptr),
-		m_distance1(0.0),
-		m_distance2(0.0),
-		m_subDivision1(0),
-		m_subDivision2(0),
+		m_distanceXY(0.0),
+		m_distanceZ(0.0),
+		m_pointsNumberXY(0),
+		m_pointsNumberZ(0),
 		m_exportBasesCartesian(true),
 		m_exportBasesEulerAngles(true),
 		m_exportDetailsFile(true),
@@ -26,15 +26,15 @@ namespace ReScan::PreScan
 
 	PreScanProcessData::PreScanProcessData(const PreScanProcessData& preScanProcessData) :
 		m_enableUserInput(preScanProcessData.m_enableUserInput),
-		m_stepAxis1(nullptr),
-		m_stepAxis2(nullptr),
+		m_stepAxisXY(nullptr),
+		m_stepAxisZ(nullptr),
 		m_point1(nullptr),
 		m_point2(nullptr),
 		m_planOffset(nullptr),
-		m_distance1(preScanProcessData.m_distance1),
-		m_distance2(preScanProcessData.m_distance2),
-		m_subDivision1(preScanProcessData.m_subDivision1),
-		m_subDivision2(preScanProcessData.m_subDivision2),
+		m_distanceXY(preScanProcessData.m_distanceXY),
+		m_distanceZ(preScanProcessData.m_distanceZ),
+		m_pointsNumberXY(preScanProcessData.m_pointsNumberXY),
+		m_pointsNumberZ(preScanProcessData.m_pointsNumberZ),
 		m_exportBasesCartesian(preScanProcessData.m_exportBasesCartesian),
 		m_exportBasesEulerAngles(preScanProcessData.m_exportBasesEulerAngles),
 		m_exportDetailsFile(preScanProcessData.m_exportDetailsFile),
@@ -52,13 +52,13 @@ namespace ReScan::PreScan
 		{
 			m_point2 = new Point3D(*preScanProcessData.m_point2);
 		}
-		if (preScanProcessData.m_stepAxis1)
+		if (preScanProcessData.m_stepAxisXY)
 		{
-			m_stepAxis1 = new unsigned int(*preScanProcessData.m_stepAxis1);
+			m_stepAxisXY = new unsigned int(*preScanProcessData.m_stepAxisXY);
 		}
-		if (preScanProcessData.m_stepAxis2)
+		if (preScanProcessData.m_stepAxisZ)
 		{
-			m_stepAxis2 = new unsigned int(*preScanProcessData.m_stepAxis2);
+			m_stepAxisZ = new unsigned int(*preScanProcessData.m_stepAxisZ);
 		}
 		if (preScanProcessData.m_planOffset)
 		{
@@ -77,8 +77,8 @@ namespace ReScan::PreScan
 	{
 		reset();
 		m_enableUserInput = config.getEnableUserInput();
-		setStepAxis1(config.getStepAxis1());
-		setStepAxis2(config.getStepAxis2());
+		setStepAxisXY(config.getStepAxisXY());
+		setStepAxisZ(config.getStepAxisZ());
 		setPoint1(config.getPoint1());
 		setPoint2(config.getPoint2());
 		setPlanOffset(config.getPlanOffset());
@@ -97,13 +97,13 @@ namespace ReScan::PreScan
 		m_enableUserInput = true;
 		resetPoint1();
 		resetPoint2();
-		resetStepAxis1();
-		resetStepAxis2();
+		resetStepAxisXY();
+		resetStepAxisZ();
 		resetPlanOffset();
-		m_distance1 = 0.0;
-		m_distance2 = 0.0;
-		m_subDivision1 = 0;
-		m_subDivision2 = 0;
+		m_distanceXY = 0.0;
+		m_distanceZ = 0.0;
+		m_pointsNumberXY = 0;
+		m_pointsNumberZ = 0;
 		m_exportBasesCartesian = true;
 		m_exportBasesEulerAngles = true;
 		m_exportDetailsFile = true;
@@ -150,40 +150,40 @@ namespace ReScan::PreScan
 		*m_point2 = *point;
 	}
 
-	void PreScanProcessData::resetStepAxis1()
+	void PreScanProcessData::resetStepAxisXY()
 	{
-		if (m_stepAxis1)
+		if (m_stepAxisXY)
 		{
-			delete m_stepAxis1;
-			m_stepAxis1 = nullptr;
+			delete m_stepAxisXY;
+			m_stepAxisXY = nullptr;
 		}
 	}
 
-	void PreScanProcessData::setStepAxis1(const unsigned int value)
+	void PreScanProcessData::setStepAxisXY(const unsigned int value)
 	{
-		if (!m_stepAxis1)
+		if (!m_stepAxisXY)
 		{
-			m_stepAxis1 = new unsigned int(0);
+			m_stepAxisXY = new unsigned int(0);
 		}
-		*m_stepAxis1 = value;
+		*m_stepAxisXY = value;
 	}
 
-	void PreScanProcessData::resetStepAxis2()
+	void PreScanProcessData::resetStepAxisZ()
 	{
-		if (m_stepAxis2)
+		if (m_stepAxisZ)
 		{
-			delete m_stepAxis2;
-			m_stepAxis2 = nullptr;
+			delete m_stepAxisZ;
+			m_stepAxisZ = nullptr;
 		}
 	}
 
-	void PreScanProcessData::setStepAxis2(const unsigned int value)
+	void PreScanProcessData::setStepAxisZ(const unsigned int value)
 	{
-		if (!m_stepAxis2)
+		if (!m_stepAxisZ)
 		{
-			m_stepAxis2 = new unsigned int(0);
+			m_stepAxisZ = new unsigned int(0);
 		}
-		*m_stepAxis2 = value;
+		*m_stepAxisZ = value;
 	}
 
 
@@ -205,24 +205,24 @@ namespace ReScan::PreScan
 		*m_planOffset = value;
 	}
 
-	void PreScanProcessData::setDistance1(const double value)
+	void PreScanProcessData::setDistanceXY(const double value)
 	{
-		m_distance1 = value;
+		m_distanceXY = value;
 	}
 
-	void PreScanProcessData::setDistance2(const double value)
+	void PreScanProcessData::setDistanceZ(const double value)
 	{
-		m_distance2 = value;
+		m_distanceZ = value;
 	}
 
-	void PreScanProcessData::setSubDivision1(const unsigned int value)
+	void PreScanProcessData::setPointsNumberXY(const unsigned int value)
 	{
-		m_subDivision1 = value;
+		m_pointsNumberXY = value;
 	}
 
-	void PreScanProcessData::setSubDivision2(const unsigned int value)
+	void PreScanProcessData::setPointsNumberZ(const unsigned int value)
 	{
-		m_subDivision2 = value;
+		m_pointsNumberZ = value;
 	}
 
 	void PreScanProcessData::setExportBasesCartesian(const bool value)
@@ -285,14 +285,14 @@ namespace ReScan::PreScan
 		return m_point2;
 	}
 
-	const unsigned int* PreScanProcessData::getStepAxis1() const
+	const unsigned int* PreScanProcessData::getStepAxisXY() const
 	{
-		return m_stepAxis1;
+		return m_stepAxisXY;
 	}
 
-	const unsigned int* PreScanProcessData::getStepAxis2() const
+	const unsigned int* PreScanProcessData::getStepAxisZ() const
 	{
-		return m_stepAxis2;
+		return m_stepAxisZ;
 	}
 
 	const int* PreScanProcessData::getPlanOffset() const
@@ -300,29 +300,29 @@ namespace ReScan::PreScan
 		return m_planOffset;
 	}
 
-	double PreScanProcessData::getDistance1() const
+	double PreScanProcessData::getDistanceXY() const
 	{
-		return m_distance1;
+		return m_distanceXY;
 	}
 
-	double PreScanProcessData::getDistance2() const
+	double PreScanProcessData::getDistanceZ() const
 	{
-		return m_distance2;
+		return m_distanceZ;
 	}
 
-	unsigned int PreScanProcessData::getSubDivisions1() const
+	unsigned int PreScanProcessData::getSubDivisionsXY() const
 	{
-		return m_subDivision1;
+		return m_pointsNumberXY;
 	}
 
-	unsigned int PreScanProcessData::getSubDivisions2() const
+	unsigned int PreScanProcessData::getSubDivisionsZ() const
 	{
-		return m_subDivision2;
+		return m_pointsNumberZ;
 	}
 
-	unsigned int PreScanProcessData::getTotalSubDivisions() const
+	unsigned int PreScanProcessData::getTotalPointsNumber() const
 	{
-		return m_subDivision1 * m_subDivision2;
+		return m_pointsNumberXY * m_pointsNumberZ;
 	}
 
 	bool PreScanProcessData::getExportBasesCartesian() const
@@ -368,13 +368,13 @@ namespace ReScan::PreScan
 
 #pragma endregion
 
-	bool PreScanProcessData::isStep1Valid(unsigned int min) const
+	bool PreScanProcessData::isStepXYValid(unsigned int min) const
 	{
-		return min > m_distance1 ? false : ((min <= *m_stepAxis1) && (*m_stepAxis1 <= m_distance1));
+		return min > m_distanceXY ? false : ((min <= *m_stepAxisXY) && (*m_stepAxisXY <= m_distanceXY));
 	}
 
-	bool PreScanProcessData::isStep2Valid(unsigned int min) const
+	bool PreScanProcessData::isStepZValid(unsigned int min) const
 	{
-		return min > m_distance2 ? false : ((min <= *m_stepAxis2) && (*m_stepAxis2 <= m_distance2));
+		return min > m_distanceZ ? false : ((min <= *m_stepAxisZ) && (*m_stepAxisZ <= m_distanceZ));
 	}
 }

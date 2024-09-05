@@ -1,6 +1,5 @@
 #include "ReScan.h"
 #include "Tools.h"
-#include "MultiOStream.h"
 
 #include <iostream>   // for reading / writing files
 #include <fstream>    // for reading / writing files
@@ -29,7 +28,7 @@ namespace ReScan
 	{
 	}
 
-	// desconstructor
+	// destructor
 
 	ReScan::~ReScan()
 	{
@@ -196,29 +195,6 @@ namespace ReScan
 		return ifs ? true : false;
 	}
 
-	bool ReScan::isValidNameFile(const std::string& filename, const std::string& extention)
-	{
-		size_t extentionLength = extention.length();
-		std::string extentionLower = extention;
-
-		std::transform(extentionLower.begin(), extentionLower.end(), extentionLower.begin(), ::tolower);
-
-		if (filename.length() - extentionLength - 1 <= 0)
-		{
-			mout << "Filename is empty" << std::endl;
-			return false;
-		}
-		std::string filenameExtentionLower = filename.substr(filename.length() - extentionLength);
-		std::transform(filenameExtentionLower.begin(), filenameExtentionLower.end(), filenameExtentionLower.begin(), ::tolower);
-
-		if (filenameExtentionLower != extentionLower)
-		{
-			mout << "File " << filename << " is not ." << extentionLower << std::endl;
-			return false;
-		}
-		return true;
-	}
-
 	int ReScan::internalProcess()
 	{
 		// declarations
@@ -237,20 +213,20 @@ namespace ReScan
 		vector<ScatterGraph> subDivisions;
 
 		// END - declarations
+		string filename = m_processData.getObjFile();
 
-		if (m_processData.getObjFile().length() == 0)
+		if (filename.length() == 0)
 		{
-			mout << "No obj file specified" << std::endl;
+			mout << "No obj file specified." << std::endl;
 			return INVALID_FILE_ERROR_CODE;
 		}
 
-		if (!fileExists(m_processData.getObjFile()))
+		if (!fileExists(filename))
 		{
-			mout << "File " << m_processData.getObjFile() << " not found" << std::endl;
+			mout << "File " << filename << " not found." << std::endl;
 			return FILE_NOT_FOUND_ERROR_CODE;
 		}
 
-		string filename = m_processData.getObjFile();
 		string filenameWithoutExtention = removeFileExtension(filename);
 
 		if (isValidNameFile(filename, "obj"))
@@ -279,6 +255,7 @@ namespace ReScan
 				}
 				else
 				{
+					mout << "No selected plan." << std::endl;
 					return NO_PLAN_SELECTED_ERROR_CODE;
 				}
 			}
@@ -305,7 +282,7 @@ namespace ReScan
 				getters[1] = &Point3D::getZ;
 				break;
 			default:
-				mout << "Unexpected plan." << std::endl;
+				mout << "Unexpected selected plan." << std::endl;
 				return INVALID_PLAN_ERROR_CODE;
 			}
 
@@ -335,20 +312,20 @@ namespace ReScan
 				}
 				else
 				{
-					mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
+					mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected." << std::endl;
 					return NO_STEP_AXIS_1_SELECTED_ERROR_CODE;
 				}
 			}
 			else if (!m_processData.isStep1Valid(MIN_DISTANCE))
 			{
-				mout << m_processData.getAxis1Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance1() << endl;
+				mout << m_processData.getAxis1Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance1() << '.' << endl;
 				if (m_processData.getEnableUserInput())
 				{
 					m_processData.setStepAxis1(selectStep(m_processData.getAxis1Name(), MIN_DISTANCE, int(m_processData.getDistance1())));
 				}
 				else
 				{
-					mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected" << std::endl;
+					mout << "No (or invalid) " << m_processData.getAxis1Name() << " step axis selected." << std::endl;
 					return NO_STEP_AXIS_1_SELECTED_ERROR_CODE;
 				}
 			}
@@ -362,20 +339,20 @@ namespace ReScan
 				}
 				else
 				{
-					mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
+					mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected." << std::endl;
 					return NO_STEP_AXIS_2_SELECTED_ERROR_CODE;
 				}
 			}
 			else if (!m_processData.isStep2Valid(MIN_DISTANCE))
 			{
-				mout << m_processData.getAxis2Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance2() << endl;
+				mout << m_processData.getAxis2Name() << " is not between " << MIN_DISTANCE << " and " << m_processData.getDistance2() << '.' << endl;
 				if (m_processData.getEnableUserInput())
 				{
 					m_processData.setStepAxis2(selectStep(m_processData.getAxis2Name(), MIN_DISTANCE, int(m_processData.getDistance2())));
 				}
 				else
 				{
-					mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected" << std::endl;
+					mout << "No (or invalid) " << m_processData.getAxis2Name() << " step axis selected." << std::endl;
 					return NO_STEP_AXIS_2_SELECTED_ERROR_CODE;
 				}
 			}
@@ -456,6 +433,7 @@ namespace ReScan
 				Base3D* base = new Base3D();
 				if (base == nullptr)
 				{
+					mout << "Memory allocation error." << endl;
 					return MEMORY_ALLOCATION_ERROR_CODE;
 				}
 				ScatterGraph::computeBase3D(subDivisions[i], base);
@@ -495,18 +473,18 @@ namespace ReScan
 				}
 				else
 				{
-					mout << "Default file name for bases cartesian invalid." << std::endl;
+					mout << "Default file name for cartesian bases invalid." << std::endl;
 				}
 			}
 			mout << endl << "Exporting bases (cartesian)..." << endl;
 			if (exportBasesCartesianToCSV(path, bases, "0;0;0;0;0;0;0;0;0;0;0;0"))
 			{
-				mout << "Bases (cartesians) saved into:" << std::endl << path << std::endl;
+				mout << "Bases (cartesian) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesCartesian, path);
 			}
 			else
 			{
-				mout << "Bases (cartesians) not saved" << std::endl;
+				mout << "Bases (cartesian) not saved." << std::endl;
 			}
 		}
 
@@ -522,7 +500,7 @@ namespace ReScan
 				}
 				else
 				{
-					mout << "Default file name for bases Euler angles invalid." << std::endl;
+					mout << "Default file name for Euler angles bases invalid." << std::endl;
 				}
 			}
 			mout << endl << "Exporting bases (Euler angles)..." << endl;
@@ -533,7 +511,7 @@ namespace ReScan
 			}
 			else
 			{
-				mout << "Bases (Euler angles) not saved" << std::endl;
+				mout << "Bases (Euler angles) not saved." << std::endl;
 			}
 		}
 
@@ -560,7 +538,7 @@ namespace ReScan
 			}
 			else
 			{
-				mout << "Details not saved" << std::endl;
+				mout << "Details not saved." << std::endl;
 			}
 		}
 
@@ -883,7 +861,7 @@ namespace ReScan
 			if (choice == 1)
 			{
 				ReScanConfig::saveConfigToFile(ReScanConfig(), configFile);
-				mout << "You now have to edit this new file to set the obj file." << std::endl;
+				mout << "You now have to edit this new file to set the .obj file." << std::endl;
 			}
 			else if (choice == 2 || choice == 3)
 			{
@@ -932,6 +910,29 @@ namespace ReScan
 		m_processData.setWriteHeaders(writeHeaders);
 		m_processData.setDecimalCharIsDot(decimalCharIsDot);
 		return internalProcess();
+	}
+
+	bool ReScan::isValidNameFile(const std::string& filename, const std::string& extention)
+	{
+		size_t extentionLength = extention.length();
+		std::string extentionLower = extention;
+
+		std::transform(extentionLower.begin(), extentionLower.end(), extentionLower.begin(), ::tolower);
+
+		if (filename.length() - extentionLength - 1 <= 0)
+		{
+			mout << "Filename is empty." << std::endl;
+			return false;
+		}
+		std::string filenameExtentionLower = filename.substr(filename.length() - extentionLength);
+		std::transform(filenameExtentionLower.begin(), filenameExtentionLower.end(), filenameExtentionLower.begin(), ::tolower);
+
+		if (filenameExtentionLower != extentionLower)
+		{
+			mout << "File " << filename << " is not ." << extentionLower << std::endl;
+			return false;
+		}
+		return true;
 	}
 
 #pragma endregion
