@@ -834,5 +834,10 @@ namespace ReScan::PreScan
 		return m_bases;
 	}
 
+	PreScanResultDetails* PreScan::getResutltDetails()
+	{
+		return m_details;
+	}
+
 #pragma endregion
 }
