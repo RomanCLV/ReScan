@@ -21,6 +21,7 @@ namespace ReScan::PreScan
 	private:
 		PreScanProcessData m_processData;
 		std::vector<std::function<void(const FileType, const std::string&)>> m_subscribers;
+		std::vector<Base3D*>* m_bases;
 
 	public:
 		PreScan();
@@ -52,7 +53,10 @@ namespace ReScan::PreScan
 			const bool writeHeaders = true,
 			const bool decimalCharIsDot = true);
 
+		std::vector<Base3D*>* getResutlt();
+
 	private:
+		void clearBases();
 		void notifyObservers(const FileType fileType, const std::string& path) const;
 
 		void resetProcessData();

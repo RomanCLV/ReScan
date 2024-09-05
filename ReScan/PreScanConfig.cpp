@@ -71,7 +71,7 @@ namespace ReScan::PreScan
 		return &m_point2;
 	}
 
-	int PreScanConfig::getPlanOffset() const
+	double PreScanConfig::getPlanOffset() const
 	{
 		return m_planOffset;
 	}
@@ -143,7 +143,7 @@ namespace ReScan::PreScan
 		m_point2 = point2;
 	}
 
-	void PreScanConfig::setPlanOffset(const int distance)
+	void PreScanConfig::setPlanOffset(const double distance)
 	{
 		m_planOffset = distance;
 	}
@@ -200,10 +200,36 @@ namespace ReScan::PreScan
 			return;
 		}
 
-		double angle = atan2(p2y - p1y, p2x - p1x);
+		// direction
+		//double ux = p2x - p1x;
+		//double uy = p2y - p1y;
 
-		double toto = 0;
+		// normal
+		//double nx = -uy;
+		//double ny = ux;
 
+		// angle
+		//double angle = atan2(ny, nx);
+		double angle = atan2(p2x - p1x, p1y - p2y);
+
+		double cosa = cos(angle);
+		double sina = sin(angle);
+
+		// p1 rotated = Rot(-angle) * P1
+		// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
+		// p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
+
+		//double p1rx = p1x * cosa + p1y * sina;
+
+		// point rotated
+		//double p3rx = point.getX() * cosa + point.getY() * sina;
+
+		//double distance = p3rx - p1rx;
+
+		//double distance = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
+		//setPlanOffset(distance);
+
+		setPlanOffset((point.getX() - p1x) * cosa + (point.getY() - p1y) * sina);
 	}
 
 	/* Static */
@@ -280,6 +306,8 @@ namespace ReScan::PreScan
 						std::string message(e.what());
 						throw std::runtime_error(message + " - Value: " + point2Str);
 					}
+
+					config->m_planOffset = getConfigNode<int>(pt, "General.planOffset");
 
 					config->m_exportBasesCartesian = getConfigNode<bool>(pt, "Export.exportBasesCartesian");
 					config->m_exportBasesEulerAngles = getConfigNode<bool>(pt, "Export.exportBasesEulerAngles");

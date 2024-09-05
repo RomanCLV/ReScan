@@ -10,6 +10,8 @@
 #include <functional>
 #include <filesystem> // for create_directory
 
+#include <Eigen/Dense>
+
 using namespace std;
 
 namespace ReScan::PreScan
@@ -18,14 +20,24 @@ namespace ReScan::PreScan
 
 	PreScan::PreScan() :
 		m_processData(),
-		m_subscribers()
+		m_subscribers(),
+		m_bases(nullptr)
 	{
 	}
 
 	PreScan::PreScan(const PreScan& preScan) :
 		m_processData(preScan.m_processData),
-		m_subscribers()
+		m_subscribers(),
+		m_bases(nullptr)
 	{
+		if (preScan.m_bases)
+		{
+			m_bases = new vector<Base3D*>(preScan.m_bases->size(), nullptr);
+			for (size_t i = 0; i < m_bases->size(); i++)
+			{
+				(*m_bases)[i] = new Base3D(*((*preScan.m_bases)[i]));
+			}
+		}
 	}
 
 	// destructor
@@ -38,6 +50,24 @@ namespace ReScan::PreScan
 #pragma endregion
 
 #pragma region private functions
+	void PreScan::clearBases()
+	{
+		if (m_bases)
+		{
+			for (int i = 0; i < m_bases->size(); i++)
+			{
+				if ((*m_bases)[i] != nullptr)
+				{
+					delete (*m_bases)[i];
+					(*m_bases)[i] = nullptr;
+				}
+			}
+			m_bases->clear();
+			delete m_bases;
+			m_bases = nullptr;
+		}
+	}
+
 	void PreScan::notifyObservers(const FileType fileType, const std::string& path) const
 	{
 		for (const auto& subscriber : m_subscribers)
@@ -48,12 +78,13 @@ namespace ReScan::PreScan
 
 	void PreScan::resetProcessData()
 	{
+		clearBases();
 		m_processData.reset();
 	}
 
 	void PreScan::selectPoint(std::string name, Point3D* point) const
 	{
-		mout << endl << "Input coordinates of " << name << " in mm:" << endl << endl;
+		mout << "Input coordinates of " << name << " in mm:" << endl;
 		point->setX((double)selectPointValue('X'));
 		point->setY((double)selectPointValue('Y'));
 		point->setZ((double)selectPointValue('Z'));
@@ -86,7 +117,7 @@ namespace ReScan::PreScan
 		{
 			div++;
 		}
-		return div;
+		return div + 1;
 	}
 
 	bool PreScan::fileExists(const std::string& filename) const
@@ -97,10 +128,85 @@ namespace ReScan::PreScan
 
 	void PreScan::fillBases(std::vector<Base3D*>* bases) const
 	{
+		// détails de l'algo :
+		// on souhaite créer un plan / une surface incurvée entre p1 et p2
+		// on trouve l'angle du vecteur normal à la droite P1P2 projeté sur XY
+		// on applique la rotation de p1 et p2 pour les recentrer sur l'axe X du W0
+		// on fait notre surface dans ce repere la
+		// on applique la rotation inverse sur chaque base pour les remettre correctement dans le W0
 
+		const Point3D* p1 = m_processData.getPoint1();
+		const Point3D* p2 = m_processData.getPoint2();
+
+		double planOffset = *m_processData.getPlanOffset();
+
+		double p1x = p1->getX();
+		double p1y = p1->getY();
+		double p2x = p2->getX();
+		double p2y = p2->getY();
+
+		double angle = atan2(p2x - p1x, p1y - p2y);
+		double cosa = cos(angle);
+		double sina = sin(angle);
+
+		// p1 rotated = Rot(-angle) * p1
+		// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
+		// p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
+
+		double p1rx = p1x * cosa + p1y * sina;
+		double p1ry = p1y * cosa - p1x * sina;
+		double p1rz = p1->getZ();
+
+		double p2rx = p2x * cosa + p2y * sina;
+		double p2ry = p2y * cosa - p2x * sina;
+		double p2rz = p2->getZ();
+
+		double prx = p1rx + planOffset;
+		double pry;
+		double prz = p1rz;
+
+		double stepY = (double)*m_processData.getStepAxisXY();
+		double stepZ = (double)*m_processData.getStepAxisZ();
+		int baseIndex = 0;
+
+		Eigen::Matrix4d rotation_matrix = Eigen::Matrix4d::Identity();
+		rotation_matrix(0, 0) = cos(angle);
+		rotation_matrix(0, 1) = -sin(angle);
+		rotation_matrix(1, 0) = sin(angle);
+		rotation_matrix(1, 1) = cos(angle);
+
+		Eigen::Matrix4d br;
+		Eigen::Matrix4d b0;
+
+		while (prz <= p2rz)
+		{
+			pry = p1ry;
+			while (pry >= p2ry)
+			{
+				// ajout des bases sur la ligne
+				br = Base3D(prx, pry, prz, 0., -1., 0., 0., 0., 1., -1., 0., 0.).toMatrix4d();
+				b0 = rotation_matrix * br;
+				Base3D* b = new Base3D();
+				b->setFromMatrix4d(b0);
+				(*bases)[baseIndex++] = b;
+
+				if (pry == p2ry)
+				{
+					break;
+				}
+
+				pry = pry - stepY < p2ry ? p2ry : pry - stepY;
+			}
+
+			if (prz == p2rz)
+			{
+				break;
+			}
+			prz = prz + stepZ > p2rz ? p2rz : prz + stepZ;
+		}
 	}
 
-	int PreScan::internalProcess() 
+	int PreScan::internalProcess()
 	{
 		const unsigned int MIN_DISTANCE = 1;
 
@@ -134,22 +240,6 @@ namespace ReScan::PreScan
 			}
 		}
 
-		// Select planOffset if needed
-		if (m_processData.getPlanOffset() == nullptr)
-		{
-			if (m_processData.getEnableUserInput())
-			{
-				int planOffset;
-				mout << "Input plan offset in mm: ";
-				std::cin >> planOffset;
-				m_processData.setPlanOffset(planOffset);
-			}
-			else
-			{
-				return NO_PLAN_OFFSET_SELECTED_ERROR_CODE;
-			}
-		}
-
 		const Point3D* processP1 = m_processData.getPoint1();
 		const Point3D* processP2 = m_processData.getPoint2();
 
@@ -178,7 +268,27 @@ namespace ReScan::PreScan
 			mout << "point 2: " << *processP2 << endl;
 		}
 
-		mout << "plan offset: " << m_processData.getPlanOffset() << endl;
+		//m_processData.setPoint1(&Point3D(500, -200, 200));
+		//m_processData.setPoint2(&Point3D(400, -400, 500));
+		//m_processData.findPlanOffset(Point3D(356, -266, 35));
+
+		// Select planOffset if needed
+		if (m_processData.getPlanOffset() == nullptr)
+		{
+			if (m_processData.getEnableUserInput())
+			{
+				int planOffset;
+				mout << "Input plan offset in mm: ";
+				std::cin >> planOffset;
+				m_processData.setPlanOffset(planOffset);
+			}
+			else
+			{
+				return NO_PLAN_OFFSET_SELECTED_ERROR_CODE;
+			}
+		}
+
+		mout << "plan offset: " << *m_processData.getPlanOffset() << endl;
 
 		m_processData.setDistanceXY(sqrt(pow((double)processP2->getX() - processP1->getX(), 2) + pow((double)processP2->getY() - processP1->getY(), 2)));
 		m_processData.setDistanceZ(m_processData.getPoint2()->getZ() - m_processData.getPoint1()->getZ());
@@ -257,8 +367,12 @@ namespace ReScan::PreScan
 		mout << "Total of points: " << (m_processData.getTotalPointsNumber()) << endl << endl;
 
 		// fill bases
-		vector<Base3D*> bases = vector<Base3D*>(m_processData.getTotalPointsNumber(), nullptr);
-		fillBases(&bases);
+		if (m_bases)
+		{
+			clearBases();
+		}
+		m_bases = new vector<Base3D*>(m_processData.getTotalPointsNumber(), nullptr);
+		fillBases(m_bases);
 
 		std::string basePath = "prescan_bases_" + getDate();
 
@@ -278,7 +392,7 @@ namespace ReScan::PreScan
 				}
 			}
 			mout << endl << "Exporting bases (cartesian)..." << endl;
-			if (exportBasesCartesianToCSV(path, bases, "0;0;0;0;0;0;0;0;0;0;0;0"))
+			if (exportBasesCartesianToCSV(path, *m_bases, "0;0;0;0;0;0;0;0;0;0;0;0"))
 			{
 				mout << "Bases (cartesians) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesCartesian, path);
@@ -305,7 +419,7 @@ namespace ReScan::PreScan
 				}
 			}
 			mout << endl << "Exporting bases (Euler angles)..." << endl;
-			if (exportBasesEulerAnglesToCSV(path, bases, "0;0;0;0;0;0"))
+			if (exportBasesEulerAnglesToCSV(path, *m_bases, "0;0;0;0;0;0"))
 			{
 				mout << "Bases (Euler angles) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesEulerAngles, path);
@@ -340,15 +454,6 @@ namespace ReScan::PreScan
 			else
 			{
 				mout << "Details not saved" << std::endl;
-			}
-		}
-
-		for (int i = 0; i < bases.size(); i++)
-		{
-			if (bases[i] != nullptr)
-			{
-				delete bases[i];
-				bases[i] = nullptr;
 			}
 		}
 
@@ -656,6 +761,7 @@ namespace ReScan::PreScan
 
 	int PreScan::process(const PreScanConfig& config)
 	{
+		resetProcessData();
 		m_processData.setFromConfig(config);
 		return internalProcess();
 	}
@@ -700,6 +806,11 @@ namespace ReScan::PreScan
 		m_processData.setWriteHeaders(writeHeaders);
 		m_processData.setDecimalCharIsDot(decimalCharIsDot);
 		return internalProcess();
+	}
+
+	std::vector<Base3D*>* PreScan::getResutlt()
+	{
+		return m_bases;
 	}
 
 #pragma endregion

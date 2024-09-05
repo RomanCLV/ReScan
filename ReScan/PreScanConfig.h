@@ -24,7 +24,7 @@ namespace ReScan::PreScan
 		unsigned int m_zAxisStep;
 		Point3D m_point1;
 		Point3D m_point2;
-		int m_planOffset;
+		double m_planOffset;
 		bool m_exportBasesCartesian;
 		bool m_exportBasesEulerAngles;
 		bool m_exportDetailsFile;
@@ -116,7 +116,7 @@ namespace ReScan::PreScan
 		unsigned int getStepAxisZ() const;
 		const Point3D* getPoint1() const;
 		const Point3D* getPoint2() const;
-		int getPlanOffset() const;
+		double getPlanOffset() const;
 		bool getExportBasesCartesian() const;
 		bool getExportBasesEulerAngles() const;
 		bool getExportDetailsFile() const;
@@ -133,7 +133,7 @@ namespace ReScan::PreScan
 		void setStepAxisZ(const unsigned int zAxisStep);
 		void setPoint1(const Point3D& point1);
 		void setPoint2(const Point3D& point2);
-		void setPlanOffset(const int distance);
+		void setPlanOffset(const double distance);
 		void setExportBasesCartesian(const bool exportBasesCartesian);
 		void setExportBasesEulerAngles(const bool exportBasesEulerAngles);
 		void setExportDetailsFile(const bool exportDetailsFile);

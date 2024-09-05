@@ -62,7 +62,7 @@ namespace ReScan::PreScan
 		}
 		if (preScanProcessData.m_planOffset)
 		{
-			m_planOffset = new int(*preScanProcessData.m_planOffset);
+			m_planOffset = new double(*preScanProcessData.m_planOffset);
 		}
 	}
 
@@ -196,11 +196,11 @@ namespace ReScan::PreScan
 		}
 	}
 
-	void PreScanProcessData::setPlanOffset(const int value)
+	void PreScanProcessData::setPlanOffset(const double value)
 	{
 		if (!m_planOffset)
 		{
-			m_planOffset = new int(0);
+			m_planOffset = new double(0.);
 		}
 		*m_planOffset = value;
 	}
@@ -295,7 +295,7 @@ namespace ReScan::PreScan
 		return m_stepAxisZ;
 	}
 
-	const int* PreScanProcessData::getPlanOffset() const
+	const double* PreScanProcessData::getPlanOffset() const
 	{
 		return m_planOffset;
 	}
@@ -367,6 +367,50 @@ namespace ReScan::PreScan
 
 
 #pragma endregion
+
+	void PreScanProcessData::findPlanOffset(const Point3D& point)
+	{
+		double p1x = m_point1->getX();
+		double p1y = m_point1->getY();
+		double p2x = m_point2->getX();
+		double p2y = m_point2->getY();
+
+		if (p1x == p2x && p1y == p2y)
+		{
+			return;
+		}
+
+		// direction
+		//double ux = p2x - p1x;
+		//double uy = p2y - p1y;
+
+		// normal
+		//double nx = -uy;
+		//double ny = ux;
+
+		// angle
+		//double angle = atan2(ny, nx);
+		double angle = atan2(p2x - p1x, p1y - p2y);
+
+		double cosa = cos(angle);
+		double sina = sin(angle);
+
+		// p1 rotated = Rot(-angle) * P1
+		// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
+		// p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
+
+		//double p1rx = p1x * cosa + p1y * sina;
+
+		// point rotated
+		//double p3rx = point.getX() * cosa + point.getY() * sina;
+
+		//double distance = p3rx - p1rx;
+
+		//double distance = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
+		//setPlanOffset(distance);
+
+		setPlanOffset((point.getX() - p1x) * cosa + (point.getY() - p1y) * sina);
+	}
 
 	bool PreScanProcessData::isStepXYValid(unsigned int min) const
 	{

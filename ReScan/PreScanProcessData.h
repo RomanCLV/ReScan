@@ -16,7 +16,7 @@ namespace ReScan::PreScan
 		unsigned int* m_stepAxisZ;
 		Point3D* m_point1;
 		Point3D* m_point2;
-		int* m_planOffset;
+		double* m_planOffset;
 		double m_distanceXY;
 		double m_distanceZ;
 		unsigned int m_pointsNumberXY;
@@ -53,7 +53,7 @@ namespace ReScan::PreScan
 		void setStepAxisZ(const unsigned int value);
 
 		void resetPlanOffset();
-		void setPlanOffset(const int value);
+		void setPlanOffset(const double value);
 
 		void setDistanceXY(const double value);
 		void setDistanceZ(const double value);
@@ -80,7 +80,7 @@ namespace ReScan::PreScan
 		const Point3D* getPoint2() const;
 		const unsigned int* getStepAxisXY() const;
 		const unsigned int* getStepAxisZ() const;
-		const int* getPlanOffset() const;
+		const double* getPlanOffset() const;
 		double getDistanceXY() const;
 		double getDistanceZ() const;
 		unsigned int getSubDivisionsXY() const;
@@ -96,6 +96,8 @@ namespace ReScan::PreScan
 		std::string getDetailsDefaultFileName() const;
 
 		/* End - Getters */
+
+		void findPlanOffset(const Point3D& point);
 
 		bool isStepXYValid(unsigned int min) const;
 		bool isStepZValid(unsigned int min) const;
