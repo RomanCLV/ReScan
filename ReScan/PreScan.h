@@ -9,6 +9,7 @@
 #include "Point3D.h"
 #include "macros.h"
 #include "ReScanFileType.h"
+#include "PreScanResultDetails.h"
 
 #include <Eigen/Dense>
 #include <string>
@@ -22,6 +23,7 @@ namespace ReScan::PreScan
 		PreScanProcessData m_processData;
 		std::vector<std::function<void(const FileType, const std::string&)>> m_subscribers;
 		std::vector<Base3D*>* m_bases;
+		PreScanResultDetails* m_details;
 
 	public:
 		PreScan();
@@ -54,8 +56,10 @@ namespace ReScan::PreScan
 			const bool decimalCharIsDot = true);
 
 		std::vector<Base3D*>* getResutlt();
+		PreScanResultDetails* getResutltDetails();
 
 	private:
+		void clearResults();
 		void clearBases();
 
 		void notifyObservers(const FileType fileType, const std::string& path) const;

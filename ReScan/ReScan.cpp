@@ -19,14 +19,16 @@ namespace ReScan
 	ReScan::ReScan() :
 		m_processData(),
 		m_subscribers(),
-		m_bases(nullptr)
+		m_bases(nullptr),
+		m_details(nullptr)
 	{
 	}
 
 	ReScan::ReScan(const ReScan& reScan) :
 		m_processData(reScan.m_processData),
 		m_subscribers(),
-		m_bases(nullptr)
+		m_bases(nullptr),
+		m_details(nullptr)
 	{
 		if (reScan.m_bases)
 		{
@@ -36,6 +38,10 @@ namespace ReScan
 				(*m_bases)[i] = new Base3D(*((*reScan.m_bases)[i]));
 			}
 		}
+		if (reScan.m_details)
+		{
+			m_details = new ReScanResultDetails(*reScan.m_details);
+		}
 	}
 
 	// destructor
@@ -43,11 +49,23 @@ namespace ReScan
 	ReScan::~ReScan()
 	{
 		m_subscribers.clear();
+		clearResults();
 	}
 
 #pragma endregion
 
 #pragma region private functions
+
+	void ReScan::clearResults()
+	{
+		if (m_details)
+		{
+			delete m_details;
+			m_details = nullptr;
+		}
+		clearBases();
+	}
+
 	void ReScan::clearBases()
 	{
 		if (m_bases)
@@ -76,6 +94,7 @@ namespace ReScan
 
 	void ReScan::resetProcessData()
 	{
+		clearResults();
 		m_processData.reset();
 	}
 
@@ -444,11 +463,12 @@ namespace ReScan
 
 		mout << "Computing base..." << endl;
 
-		if (m_bases)
+		if (m_bases || m_details)
 		{
-			clearBases();
+			clearResults();
 		}
 		m_bases = new vector<Base3D*>(subDivisions.size(), nullptr);
+		m_details = new ReScanResultDetails();
 
 		Base3D refBase = Base3D(*m_processData.getReferenceBase());
 		const Eigen::Vector3d refZ = *(refBase.getZ());
@@ -489,6 +509,8 @@ namespace ReScan
 				(*m_bases)[i] = base;
 			}
 		}
+
+		m_details->setFromProcessData(m_processData);
 
 		std::string basePath = filenameWithoutExtention + "_bases_" + getDate();
 
@@ -938,6 +960,11 @@ namespace ReScan
 	std::vector<Base3D*>* ReScan::getResutlt()
 	{
 		return m_bases;
+	}
+
+	ReScanResultDetails* ReScan::getResutltDetails()
+	{
+		return m_details;
 	}
 
 	bool ReScan::isValidNameFile(const std::string& filename, const std::string& extention)

@@ -310,12 +310,12 @@ namespace ReScan::PreScan
 		return m_distanceZ;
 	}
 
-	unsigned int PreScanProcessData::getSubDivisionsXY() const
+	unsigned int PreScanProcessData::getPointsNumberXY() const
 	{
 		return m_pointsNumberXY;
 	}
 
-	unsigned int PreScanProcessData::getSubDivisionsZ() const
+	unsigned int PreScanProcessData::getPointsNumberZ() const
 	{
 		return m_pointsNumberZ;
 	}

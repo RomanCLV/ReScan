@@ -10,6 +10,7 @@
 #include "Point3D.h"
 #include "macros.h"
 #include "ReScanFileType.h"
+#include "ReScanResultDetails.h"
 
 #include <Eigen/Dense>
 #include <string>
@@ -23,6 +24,7 @@ namespace ReScan
 		ReScanProcessData m_processData;
 		std::vector<std::function<void(const FileType, const std::string&)>> m_subscribers;
 		std::vector<Base3D*>* m_bases;
+		ReScanResultDetails* m_details;
 
 	public:
 		using EventCallback = std::function<void(const FileType, const std::string&)>;
@@ -59,10 +61,12 @@ namespace ReScan
 			const bool decimalCharIsDot = true);
 
 		std::vector<Base3D*>* getResutlt();
+		ReScanResultDetails* getResutltDetails();
 
 		static bool isValidNameFile(const std::string& filename, const std::string& extention);
 
 	private:
+		void clearResults();
 		void clearBases();
 
 		void notifyObservers(const FileType fileType, const std::string& path) const;

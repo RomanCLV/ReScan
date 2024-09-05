@@ -21,14 +21,16 @@ namespace ReScan::PreScan
 	PreScan::PreScan() :
 		m_processData(),
 		m_subscribers(),
-		m_bases(nullptr)
+		m_bases(nullptr),
+		m_details(nullptr)
 	{
 	}
 
 	PreScan::PreScan(const PreScan& preScan) :
 		m_processData(preScan.m_processData),
 		m_subscribers(),
-		m_bases(nullptr)
+		m_bases(nullptr),
+		m_details(nullptr)
 	{
 		if (preScan.m_bases)
 		{
@@ -38,6 +40,10 @@ namespace ReScan::PreScan
 				(*m_bases)[i] = new Base3D(*((*preScan.m_bases)[i]));
 			}
 		}
+		if (preScan.m_details)
+		{
+			m_details = new PreScanResultDetails(*preScan.m_details);
+		}
 	}
 
 	// destructor
@@ -45,11 +51,23 @@ namespace ReScan::PreScan
 	PreScan::~PreScan()
 	{
 		m_subscribers.clear();
+		clearResults();
 	}
 
 #pragma endregion
 
 #pragma region private functions
+
+	void PreScan::clearResults()
+	{
+		if (m_details)
+		{
+			delete m_details;
+			m_details = nullptr;
+		}
+		clearBases();
+	}
+
 	void PreScan::clearBases()
 	{
 		if (m_bases)
@@ -78,7 +96,7 @@ namespace ReScan::PreScan
 
 	void PreScan::resetProcessData()
 	{
-		clearBases();
+		clearResults();
 		m_processData.reset();
 	}
 
@@ -362,17 +380,20 @@ namespace ReScan::PreScan
 
 		// display infos about subdivisions
 		mout << endl;
-		mout << "Number of points on XY: " << m_processData.getSubDivisionsXY() << endl;
-		mout << "Number of points on Z : " << m_processData.getSubDivisionsZ() << endl;
+		mout << "Number of points on XY: " << m_processData.getPointsNumberXY() << endl;
+		mout << "Number of points on Z : " << m_processData.getPointsNumberZ() << endl;
 		mout << "Total of points: " << (m_processData.getTotalPointsNumber()) << endl << endl;
 
 		// fill bases
-		if (m_bases)
+		if (m_bases || m_details)
 		{
-			clearBases();
+			clearResults();
 		}
+
 		m_bases = new vector<Base3D*>(m_processData.getTotalPointsNumber(), nullptr);
+		m_details = new PreScanResultDetails();
 		fillBases(m_bases);
+		m_details->setFromProcessData(m_processData);
 
 		std::string basePath = "prescan_bases_" + getDate();
 
@@ -394,12 +415,12 @@ namespace ReScan::PreScan
 			mout << endl << "Exporting bases (cartesian)..." << endl;
 			if (exportBasesCartesianToCSV(path, *m_bases, "0;0;0;0;0;0;0;0;0;0;0;0"))
 			{
-				mout << "Bases (cartesians) saved into:" << std::endl << path << std::endl;
+				mout << "Bases (cartesian) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesCartesian, path);
 			}
 			else
 			{
-				mout << "Bases (cartesians) not saved" << std::endl;
+				mout << "Bases (cartesian) not saved" << std::endl;
 			}
 		}
 
@@ -675,13 +696,13 @@ namespace ReScan::PreScan
 			Tools::strReplace(distance2Str, '.', ',');
 		}
 
-		outputFile << "X dimensions (mm);" << distance1Str << std::endl;
-		outputFile << "Y dimensions (mm);" << distance2Str << std::endl;
-		outputFile << "X step (mm);" << to_string(*m_processData.getStepAxisXY()) << std::endl;
-		outputFile << "Y step (mm);" << to_string(*m_processData.getStepAxisZ()) << std::endl;
-		outputFile << "X divisions;" << to_string(m_processData.getSubDivisionsXY()) << std::endl;
-		outputFile << "Y divisions;" << to_string(m_processData.getSubDivisionsZ()) << std::endl;
-		outputFile << "total divisions;" << to_string(m_processData.getTotalPointsNumber()) << std::endl;
+		outputFile << "XY dimensions (mm);" << distance1Str << std::endl;
+		outputFile << "Z dimensions (mm);" << distance2Str << std::endl;
+		outputFile << "XY step (mm);" << to_string(*m_processData.getStepAxisXY()) << std::endl;
+		outputFile << "Z step (mm);" << to_string(*m_processData.getStepAxisZ()) << std::endl;
+		outputFile << "XY points;" << to_string(m_processData.getPointsNumberXY()) << std::endl;
+		outputFile << "Z points;" << to_string(m_processData.getPointsNumberZ()) << std::endl;
+		outputFile << "total points;" << to_string(m_processData.getTotalPointsNumber()) << std::endl;
 
 		outputFile.close();
 		return true;
