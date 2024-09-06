@@ -71,7 +71,7 @@ namespace ReScan
 
 #pragma region Setters
 
-	void ReScanProcessData::setFromConfig(const ReScanConfig& config) 
+	void ReScanProcessData::setFromConfig(const ReScanConfig& config)
 	{
 		reset();
 		m_enableUserInput = config.getEnableUserInput();
@@ -102,8 +102,8 @@ namespace ReScan
 		m_distance2 = 0.0;
 		m_axis1Name = '?';
 		m_axis2Name = '?';
-		m_subDivision1 =0;
-		m_subDivision2 =0;
+		m_subDivision1 = 0;
+		m_subDivision2 = 0;
 		m_objFile = "";
 		m_exportSubDivisions = false;
 		m_exportBasesCartesian = true;
@@ -374,7 +374,6 @@ namespace ReScan
 	{
 		return m_detailsDefaultFileName;
 	}
-
 
 #pragma endregion
 

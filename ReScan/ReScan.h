@@ -50,13 +50,13 @@ namespace ReScan
 
 		int process(
 			const std::string& objFile,
-			const Plan2D plan2D, 
-			const unsigned int stepAxis1, 
-			const unsigned int stepAxis2, 
-			const bool exportSubDivisions, 
-			const bool exportBasesCartesian = true, 
-			const bool exportBasesEulerAngles = true, 
-			const bool exportDetailsFile = true, 
+			const Plan2D plan2D,
+			const unsigned int stepAxis1,
+			const unsigned int stepAxis2,
+			const bool exportSubDivisions,
+			const bool exportBasesCartesian = true,
+			const bool exportBasesEulerAngles = true,
+			const bool exportDetailsFile = true,
 			const bool writeHeaders = true,
 			const bool decimalCharIsDot = true);
 

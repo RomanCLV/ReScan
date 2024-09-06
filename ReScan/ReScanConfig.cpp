@@ -292,13 +292,13 @@ namespace ReScan
 		return result;
 	}
 
-	std::vector<double> ReScanConfig::splitAndConvert(const std::string& inputString) 
+	std::vector<double> ReScanConfig::splitAndConvert(const std::string& inputString)
 	{
 		std::vector<double> doubleValues;
 		std::istringstream ss(inputString);
 		std::string token;
 
-		while (std::getline(ss, token, ';')) 
+		while (std::getline(ss, token, ';'))
 		{
 			doubleValues.push_back(std::stod(token));
 		}

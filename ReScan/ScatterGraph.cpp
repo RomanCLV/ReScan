@@ -393,7 +393,7 @@ namespace ReScan
 			return;
 		}
 
-		const double pi = std::numbers::pi;
+		const double pi = EIGEN_PI;
 
 		switch (plane) {
 		case Plan2D::XY:
@@ -758,7 +758,7 @@ namespace ReScan
 			}
 			else
 			{
-				Vector3d y(0.0, 1.0, 0.0);
+				Vector3d y;
 				size_t indexBestAngle = 2;
 				double bestAngle = 0.0;
 				double currentAngle;
@@ -777,7 +777,6 @@ namespace ReScan
 					//}
 				}
 				y = *scatterGraph.at(indexBestAngle) - *p0;
-
 				z = x.cross(y);
 			}
 			if (z.z() == -0.0)
@@ -869,9 +868,9 @@ namespace ReScan
 			}
 			if (c < 0)
 			{
-				a *= -1;
-				b *= -1;
-				c *= -1;
+				a *= -1.0;
+				b *= -1.0;
+				c *= -1.0;
 			}
 			if (a == -0.0)
 			{
@@ -1119,7 +1118,7 @@ namespace ReScan
 						minNewXY = newXY;
 						minA = a;
 					}
-					if (a >= 360.0)
+					if (a >= 360.0)		// patch dans le cas ou il arriverait pas a atteindre le 0 et qu'il vient de faire un tour complet
 					{
 						a = minA;
 						break;

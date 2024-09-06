@@ -380,10 +380,14 @@ namespace ReScan::PreScan
 		return result;
 	}
 
-	PreScanConfig PreScanConfig::createConfig()
+	PreScanConfig PreScanConfig::createICNDEConfig()
 	{
 		PreScanConfig config;
 		config.m_enableUserInput = false;
+		config.m_exportBasesCartesian = false;
+		config.m_exportBasesEulerAngles = false;
+		config.m_exportDetailsFile = false;
+		config.m_writeHeaders = false;
 		return config;
 	}
 }

@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
 
 			if (vm.count("ccp"))
 			{
-				ReScan::PreScan::PreScanConfig::saveConfigToFile(ReScan::PreScan::PreScanConfig::createConfig(), "prescan-config.ini");
+				ReScan::PreScan::PreScanConfig::saveConfigToFile(ReScan::PreScan::PreScanConfig::createICNDEConfig(), "prescan-config.ini");
 				cancelProcess = true;
 			}
 

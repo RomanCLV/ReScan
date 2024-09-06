@@ -458,6 +458,7 @@ namespace ReScan
 		}
 		else
 		{
+			mout << "Invalid file type: " << filename << std::endl;
 			return INVALID_FILE_ERROR_CODE;
 		}
 
@@ -503,7 +504,7 @@ namespace ReScan
 					}
 					if (angleZ >= 90.0 || angleX >= 90.0)
 					{
-						mout << "WARNING: base " << (i + 1) << " has a wrong correction: z angle diff.: " << angleZ << "°   |   x angle diff.: " << angleX << "°" << std::endl;
+						mout << "WARNING: base " << (i + 1) << " has a wrong correction: Z angle diff.: " << angleZ << "°   |   X angle diff.: " << angleX << "°" << std::endl;
 					}
 				}
 				(*m_bases)[i] = base;
@@ -530,7 +531,7 @@ namespace ReScan
 				}
 			}
 			mout << endl << "Exporting bases (cartesian)..." << endl;
-			if (exportBasesCartesianToCSV(path, *m_bases, "0;0;0;0;0;0;0;0;0;0;0;0"))
+			if (exportBasesCartesianToCSV(path, *m_bases, "0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0"))
 			{
 				mout << "Bases (cartesian) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesCartesian, path);
@@ -557,7 +558,7 @@ namespace ReScan
 				}
 			}
 			mout << endl << "Exporting bases (Euler angles)..." << endl;
-			if (exportBasesEulerAnglesToCSV(path, *m_bases, "0;0;0;0;0;0"))
+			if (exportBasesEulerAnglesToCSV(path, *m_bases, "0.0;0.0;0.0;0.0;0.0;0.0"))
 			{
 				mout << "Bases (Euler angles) saved into:" << std::endl << path << std::endl;
 				notifyObservers(FileType::BasesEulerAngles, path);

@@ -149,7 +149,7 @@ namespace ReScan::PreScan
 		static int loadConfigFromFile(const std::string& filePath, PreScanConfig* config);
 		static int saveConfigToFile(const PreScanConfig& config, const std::string& filePath);
 		
-		static PreScanConfig createConfig();
+		static PreScanConfig createICNDEConfig();
 	};
 }
 
