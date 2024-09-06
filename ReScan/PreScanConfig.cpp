@@ -256,6 +256,7 @@ namespace ReScan::PreScan
 
 		if (isFileValid(filePath))
 		{
+			mout << std::endl << "Reading " << filePath << std::endl;
 			boost::property_tree::ptree pt;
 			try
 			{
@@ -271,10 +272,10 @@ namespace ReScan::PreScan
 			{
 				try
 				{
+					config->m_enableUserInput = getConfigNode<bool>(pt, "General.enableUserInput");
 					config->m_xyAxisStep = getConfigNode<unsigned int>(pt, "General.xyAxisStep");
 					config->m_zAxisStep = getConfigNode<unsigned int>(pt, "General.zAxisStep");
 					config->m_decimalCharIsDot = getConfigNode<bool>(pt, "General.decimalCharIsDot");
-					config->m_enableUserInput = getConfigNode<bool>(pt, "General.enableUserInput");
 					std::string point1Str = getConfigNode<std::string>(pt, "General.point1");
 					try
 					{
@@ -350,10 +351,10 @@ namespace ReScan::PreScan
 		int result = SUCCESS_CODE;
 		boost::property_tree::ptree pt;
 
+		pt.put("General.enableUserInput", config.m_enableUserInput);
 		pt.put("General.xyAxisStep", config.m_xyAxisStep);
 		pt.put("General.zAxisStep", config.m_zAxisStep);
 		pt.put("General.decimalCharIsDot", config.m_decimalCharIsDot);
-		pt.put("General.enableUserInput", config.m_enableUserInput);
 		pt.put("General.point1", config.m_point1.toStr("", "", ";"));
 		pt.put("General.point2", config.m_point2.toStr("", "", ";"));
 		pt.put("General.planOffset", config.m_planOffset);

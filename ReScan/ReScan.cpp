@@ -857,18 +857,19 @@ namespace ReScan
 		}
 	}
 
-	int ReScan::process(std::string& configFile)
+	int ReScan::process(const std::string& configFile)
 	{
 		int result;
+		std::string configFileName = configFile;
 
 		resetProcessData();
 
 		ReScanConfig config;
-		result = ReScanConfig::loadConfigFromFile(configFile, &config);
+		result = ReScanConfig::loadConfigFromFile(configFileName, &config);
+		m_processData.setFromConfig(config);
 
 		if (result == SUCCESS_CODE)
 		{
-			m_processData.setFromConfig(config);
 			result = internalProcess();
 		}
 		else if (result == FILE_NOT_FOUND_ERROR_CODE || result == READ_CONFIG_ERROR_CODE || result == SET_CONFIG_ERROR_CODE)
@@ -877,16 +878,16 @@ namespace ReScan
 			{
 				return result;
 			}
-			if (configFile.size() == 0)
+			if (configFileName.size() == 0)
 			{
-				configFile = "config.ini";
+				configFileName = "config.ini";
 			}
-			if (!configFile.ends_with(".ini"))
+			if (!configFileName.ends_with(".ini"))
 			{
-				configFile += ".ini";
+				configFileName += ".ini";
 			}
 
-			mout << "Would you like to create a new config file (" << configFile << ") ? " << std::endl;
+			mout << std::endl << "Would you like to create a new config file (" << configFileName << ") ? " << std::endl;
 			mout << "0: No" << std::endl;
 			mout << "1: Create a new config file" << std::endl;
 			mout << "2: Create a new config file adapated for ICNDE (frontal) and use it" << std::endl;
@@ -904,8 +905,8 @@ namespace ReScan
 
 			if (choice == 1)
 			{
-				ReScanConfig::saveConfigToFile(ReScanConfig(), configFile);
-				mout << "You now have to edit this new file to set the .obj file." << std::endl;
+				ReScanConfig::saveConfigToFile(ReScanConfig(), configFileName);
+				mout << std::endl << "You now have to edit this new file to set the .obj file." << std::endl;
 			}
 			else if (choice == 2 || choice == 3)
 			{
@@ -913,7 +914,7 @@ namespace ReScan
 					ReScanConfig::createFrontalICNDEConfig() :
 					ReScanConfig::createLateralICNDEConfig();
 
-				ReScanConfig::saveConfigToFile(config, configFile);
+				ReScanConfig::saveConfigToFile(config, configFileName);
 				m_processData.setFromConfig(config);
 				result = internalProcess();
 			}

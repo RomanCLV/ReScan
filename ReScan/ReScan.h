@@ -36,7 +36,7 @@ namespace ReScan
 		void subscribe(EventCallback callback);
 		void unsubscribe(EventCallback callback);
 
-		int process(std::string& configFile);
+		int process(const std::string& configFile);
 		int process(const ReScanConfig& config);
 
 		int process(

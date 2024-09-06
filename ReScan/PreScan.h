@@ -33,7 +33,7 @@ namespace ReScan::PreScan
 		void subscribe(ReScan::EventCallback callback);
 		void unsubscribe(ReScan::EventCallback callback);
 
-		int process(std::string& configFile);
+		int process(const std::string& configFile);
 		int process(const PreScanConfig& config);
 
 		int process(

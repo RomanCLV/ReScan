@@ -224,6 +224,7 @@ namespace ReScan
 
 		if (isFileValid(filePath))
 		{
+			mout << std::endl << "Reading " << filePath << std::endl;
 			boost::property_tree::ptree pt;
 			try
 			{
@@ -239,6 +240,7 @@ namespace ReScan
 			{
 				try
 				{
+					config->m_enableUserInput = getConfigNode<bool>(pt, "General.enableUserInput");
 					config->m_objFile = getConfigNode<std::string>(pt, "General.objFile");
 					std::string planStr = getConfigNode<std::string>(pt, "General.plan2D");
 					Plan2D plan2D;
@@ -250,7 +252,6 @@ namespace ReScan
 					config->m_xAxisStep = getConfigNode<unsigned int>(pt, "General.xAxisStep");
 					config->m_yAxisStep = getConfigNode<unsigned int>(pt, "General.yAxisStep");
 					config->m_decimalCharIsDot = getConfigNode<bool>(pt, "General.decimalCharIsDot");
-					config->m_enableUserInput = getConfigNode<bool>(pt, "General.enableUserInput");
 					std::string fixBaseStr = getConfigNode<std::string>(pt, "General.referenceBase");
 
 					try
@@ -313,12 +314,12 @@ namespace ReScan
 		std::string planStr;
 		Tools::plan2DToString(config.m_plan2D, planStr);
 
+		pt.put("General.enableUserInput", config.m_enableUserInput);
 		pt.put("General.objFile", config.m_objFile);
 		pt.put("General.plan2D", planStr);
 		pt.put("General.xAxisStep", config.m_xAxisStep);
 		pt.put("General.yAxisStep", config.m_yAxisStep);
 		pt.put("General.decimalCharIsDot", config.m_decimalCharIsDot);
-		pt.put("General.enableUserInput", config.m_enableUserInput);
 		pt.put("General.referenceBase", config.m_referenceBase.toStr());
 
 		pt.put("Export.exportSubDivisions", config.m_exportSubDivisions);

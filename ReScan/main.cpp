@@ -23,8 +23,10 @@ int main(int argc, char* argv[])
 		// Catégorie: Exécution du processus
 		po::options_description runProcessOptions("Run Process Options");
 		runProcessOptions.add_options()
-			("config,c", po::value<std::string>()->value_name("config.ini"), "Specify a config file")
-			("file,f", po::value<std::string>()->value_name("file.obj"), "Specify an obj file")
+			//("config,c", po::value<std::string>()->value_name("config.ini"), "Specify a config file")
+			//("file,f", po::value<std::string>()->value_name("file.obj"), "Specify an obj file")
+			("config,c", po::value<std::vector<std::string>>()->multitoken()->value_name("config.ini"), "Specify one or more config files")
+			("file,f", po::value<std::vector<std::string>>()->multitoken()->value_name("file.obj"), "Specify one or more obj files")
 			("prescan,p", "Indicates to run the PreScan process");
 
 		// Catégorie: Options de configuration
@@ -85,7 +87,12 @@ int main(int argc, char* argv[])
 					ReScan::PreScan::PreScan preScan;
 					if (isConfigSpecified)
 					{
-						std::string config = vm["config"].as<std::string>();
+						//std::string config = vm["config"].as<std::string>();
+						std::vector<std::string> configFiles = vm["config"].as<std::vector<std::string>>();
+						for (const std::string& file : configFiles)
+						{
+							result += preScan.process(file);
+						}
 					}
 					else
 					{
@@ -97,13 +104,23 @@ int main(int argc, char* argv[])
 					ReScan::ReScan reScan;
 					if (isConfigSpecified)
 					{
-						std::string config = vm["config"].as<std::string>();
-						result = reScan.process(config);
+						//std::string config = vm["config"].as<std::string>();
+						//result = reScan.process(config);
+						std::vector<std::string> configFiles = vm["config"].as<std::vector<std::string>>();
+						for (const std::string& file : configFiles)
+						{
+							result += reScan.process(file);
+						}
 					}
 					else if (isFileSpecified)
 					{
-						std::string file = vm["file"].as<std::string>();
-						result = reScan.process(file, true);
+						//std::string file = vm["file"].as<std::string>();
+						//result = reScan.process(file, true);
+						std::vector<std::string> objFiles = vm["file"].as<std::vector<std::string>>();
+						for (const std::string& file : objFiles)
+						{
+							result += reScan.process(file, true);
+						}
 					}
 					else
 					{
