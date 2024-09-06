@@ -86,7 +86,6 @@ int main(int argc, char* argv[])
 					if (isConfigSpecified)
 					{
 						std::string config = vm["config"].as<std::string>();
-						result = preScan.process(config);
 					}
 					else
 					{

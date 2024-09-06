@@ -146,9 +146,11 @@
     <ClCompile Include="PreScan.cpp" />
     <ClCompile Include="PreScanConfig.cpp" />
     <ClCompile Include="PreScanProcessData.cpp" />
+    <ClCompile Include="PreScanResultDetails.cpp" />
     <ClCompile Include="ReScan.cpp" />
     <ClCompile Include="ReScanConfig.cpp" />
     <ClCompile Include="ReScanProcessData.cpp" />
+    <ClCompile Include="ReScanResultDetails.cpp" />
     <ClCompile Include="ScatterGraph.cpp" />
     <ClCompile Include="MultiOStream.cpp" />
     <ClCompile Include="StreamHelperExamples.cpp" />
@@ -166,10 +168,12 @@
     <ClInclude Include="PreScan.h" />
     <ClInclude Include="PreScanConfig.h" />
     <ClInclude Include="PreScanProcessData.h" />
+    <ClInclude Include="PreScanResultDetails.h" />
     <ClInclude Include="ReScan.h" />
     <ClInclude Include="ReScanConfig.h" />
     <ClInclude Include="ReScanFileType.h" />
     <ClInclude Include="ReScanProcessData.h" />
+    <ClInclude Include="ReScanResultDetails.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScatterGraph.h" />
     <ClInclude Include="MultiOStream.h" />

@@ -163,15 +163,46 @@ namespace ReScan::PreScan
 		double p2x = p2->getX();
 		double p2y = p2->getY();
 
-		double angle = atan2(p2x - p1x, p1y - p2y);
+		if (p1x > p2x)
+		{
+			// p1 takes (x,y) from p2 and p2 takes (x,y) from p1
+			double tmp = p1x;
+			p1x = p2x;
+			p2x = tmp;
+
+			tmp = p1y;
+			p1y = p2y;
+			p2y = tmp;
+		}
+		
+		double angle = atan2(p2x - p1x, p1y - p2y); // angle of the normal
 		double cosa = cos(angle);
 		double sina = sin(angle);
+
+		//bool isFront = abs(angle) <= EIGEN_PI / 2.;
 
 		// p1 rotated = Rot(-angle) * p1
 		// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
 		// p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
 
 		double p1rx = p1x * cosa + p1y * sina;
+		if (p1rx < 0)
+		{
+			angle += EIGEN_PI;
+			cosa = cos(angle);
+			sina = sin(angle);
+
+			double tmp = p1x;
+			p1x = p2x;
+			p2x = tmp;
+
+			tmp = p1y;
+			p1y = p2y;
+			p2y = tmp;
+
+			p1rx = p1x * cosa + p1y * sina;
+		}
+
 		double p1ry = p1y * cosa - p1x * sina;
 		double p1rz = p1->getZ();
 
@@ -201,7 +232,6 @@ namespace ReScan::PreScan
 			pry = p1ry;
 			while (pry >= p2ry)
 			{
-				// ajout des bases sur la ligne
 				br = Base3D(prx, pry, prz, 0., -1., 0., 0., 0., 1., -1., 0., 0.).toMatrix4d();
 				b0 = rotation_matrix * br;
 				Base3D* b = new Base3D();

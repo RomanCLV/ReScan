@@ -83,8 +83,8 @@ namespace ReScan::PreScan
 		const double* getPlanOffset() const;
 		double getDistanceXY() const;
 		double getDistanceZ() const;
-		unsigned int getSubDivisionsXY() const;
-		unsigned int getSubDivisionsZ() const;
+		unsigned int getPointsNumberXY() const;
+		unsigned int getPointsNumberZ() const;
 		unsigned int getTotalPointsNumber() const;
 		bool getExportBasesCartesian() const;
 		bool getExportBasesEulerAngles() const;
