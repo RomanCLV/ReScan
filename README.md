@@ -61,8 +61,8 @@ General Options:
   -h [ --help ]               Produce help message
 
 Run Process Options:
-  -c [ --config ] config.ini  Specify a config file
-  -f [ --file ] file.obj      Specify an obj file
+  -c [ --config ] config.ini  Specify one or more config files
+  -f [ --file ] file.obj      Specify one or more obj files
   -p [ --prescan ]            Indicates to run the PreScan process
 
 Configuration Options:
@@ -73,7 +73,7 @@ Configuration Options:
                               (lateral): configLateral.ini
   --ccp                       Create a new default config file for PreScan
                               process: prescan-config.ini
-  ```
+```
 
 If a `create-config` (`--cc_`) option is used, the process is aborted.
 
@@ -86,9 +86,13 @@ If no filename is specified, the `.obj file` name will be requested automaticall
 This step is skipped if you specify it using the `-f filename` option. 
 After providing some required information, the process will start.
 
+You can also run process many times in a row by specifying many .obj files `-f file1.obj file2.obj`.
+
 You can customize the output (e.g., export or not certain files) based on your preferences 
 using the `-c config` option, which specifies the configuration file to use. 
 This option also allows you to automate the process.
+
+You can also run process many times in a row by specifying many config files `-c config1.ini config2.ini`.
 
 ### `PreScan`
 
