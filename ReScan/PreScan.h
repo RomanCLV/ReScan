@@ -77,6 +77,8 @@ namespace ReScan::PreScan
 		unsigned int getPointsNumber(double distance, int step) const;
 		void fillBases(std::vector<Base3D*>* bases) const;
 		void fillBasesDefault(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const;
+		void fillBasesHorizontal(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const;
+		void fillBasesVertical(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const;
 
 		int internalProcess();
 

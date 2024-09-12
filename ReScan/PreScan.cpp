@@ -287,14 +287,15 @@ namespace ReScan::PreScan
 		
 		switch (*m_processData.getPreScanMode())
 		{
-		case PreScanMode::Default:
-			fillBasesDefault(bases, p1rx, p1ry, p1->getZ(), p2rx, p2ry, p2->getZ(), rotationMatrix);
-			break;
 		case PreScanMode::Horizontal:
+			fillBasesHorizontal(bases, p1rx, p1ry, p1->getZ(), p2rx, p2ry, p2->getZ(), rotationMatrix);
 			break;
 		case PreScanMode::Vertical:
+			fillBasesVertical(bases, p1rx, p1ry, p1->getZ(), p2rx, p2ry, p2->getZ(), rotationMatrix);
 			break;
+		//case PreScanMode::Default:
 		default:
+			fillBasesDefault(bases, p1rx, p1ry, p1->getZ(), p2rx, p2ry, p2->getZ(), rotationMatrix);
 			break;
 		}
 	}
@@ -331,7 +332,7 @@ namespace ReScan::PreScan
 				{
 					break;
 				}
-				nextPry = pry + stepY;
+				nextPry += stepY;
 				pry = nextPry > p2ry ? p2ry : nextPry;
 			}
 
@@ -339,9 +340,86 @@ namespace ReScan::PreScan
 			{
 				break;
 			}
-			nextPrz = prz + stepZ;
+			nextPrz += stepZ;
 			prz = nextPrz > p2rz ? p2rz : nextPrz;
 		}
+	}
+
+	void PreScan::fillBasesHorizontal(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
+	{
+		double planOffset = *m_processData.getPlanOffset();
+		double peakRatio = *m_processData.getPeakRatio();
+		double distance = p2ry - p1ry;
+		double peakDistance = (1. - peakRatio) * distance;
+
+		double prx = p1rx + planOffset;
+		double pry = p1ry;
+		double prz;
+
+		double nextPry = pry;
+		double nextPrz;
+
+		double stepY = (double)*m_processData.getStepAxisXY();
+		double stepZ = (double)*m_processData.getStepAxisZ();
+		int baseIndex = 0;
+
+		double alpha = atan2(-planOffset, peakDistance);
+		double beta = atan2(-planOffset, ((1. - peakRatio) * distance));
+
+		double cosa = cos(alpha);
+		double sina = sin(alpha);
+		double cosb = cos(-beta);
+		double sinb = sin(-beta);
+
+		Eigen::Matrix4d br;
+		Eigen::Matrix4d b0;
+
+		while (pry <= p2ry)
+		{
+			prz = p1rz;
+			nextPrz = prz;
+			while (prz <= p2rz)
+			{
+				br = (pry - p1ry) < peakDistance ?
+					Base3D(prx, pry, prz, sina, -cosa, 0., 0., 0., 1., -cosa, -sina, 0.).toMatrix4d() :
+					Base3D(prx, pry, prz, sinb, -cosb, 0., 0., 0., 1., -cosb, -sinb, 0.).toMatrix4d();
+				b0 = rotationMatrix * br;
+				Base3D* b = new Base3D();
+				b->setFromMatrix4d(b0);
+				(*bases)[baseIndex++] = b;
+
+				if (prz == p2rz)
+				{
+					break;
+				}
+				nextPrz += stepZ;
+				prz = nextPrz > p2rz ? p2rz : nextPrz;
+			}
+
+			if (pry == p2ry)
+			{
+				break;
+			}
+			nextPry += stepY;
+			pry = nextPry > p2ry ? p2ry : nextPry;
+		}
+	}
+
+	void PreScan::fillBasesVertical(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
+	{
+		//double prx = p1rx + *m_processData.getPlanOffset();
+		//double pry;
+		//double prz = p1rz;
+
+		//double nextPry;
+		//double nextPrz = prz;
+
+		//double stepY = (double)*m_processData.getStepAxisXY();
+		//double stepZ = (double)*m_processData.getStepAxisZ();
+		//int baseIndex = 0;
+
+		//Eigen::Matrix4d br;
+		//Eigen::Matrix4d b0;
 	}
 
 	/*Base3D PreScan::fillBaseDefault()
@@ -418,17 +496,17 @@ namespace ReScan::PreScan
 			mout << "point 2: " << *processP2 << endl;
 		}
 
-		//double planOffset;
-		//double peakRatio;
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(445, -105, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio: -0.25 -> INVALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(410, -157, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.00 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(385, -205, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.25 -> VALIDE 
+		double planOffset;
+		double peakRatio;
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(285, -405, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio: -0.25 -> INVALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(310, -355, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.00 -> VALIDE 
+		m_processData.findPlanOffsetAndPeakRatio(Point3D(335, -305, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.25 -> VALIDE 
 		//m_processData.findPlanOffsetAndPeakRatio(Point3D(360, -255, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.50 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(335, -305, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.75 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(310, -355, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  1.00 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(285, -405, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  1.25 -> INVALIDE 
-		//m_processData.setPlanOffset(planOffset);
-		//m_processData.setPeakRatio(peakRatio);
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(385, -205, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.75 -> VALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(410, -157, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  1.00 -> VALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(445, -105, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio: 1.25 -> INVALIDE 
+		m_processData.setPlanOffset(planOffset);
+		m_processData.setPeakRatio(peakRatio);
 
 		// Select planOffset if needed
 		if (m_processData.getPlanOffset() == nullptr)
