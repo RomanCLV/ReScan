@@ -167,6 +167,7 @@
     <ClInclude Include="Base3D.h" />
     <ClInclude Include="PreScan.h" />
     <ClInclude Include="PreScanConfig.h" />
+    <ClInclude Include="PreScanMode.h" />
     <ClInclude Include="PreScanProcessData.h" />
     <ClInclude Include="PreScanResultDetails.h" />
     <ClInclude Include="ReScan.h" />

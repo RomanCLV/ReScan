@@ -5,6 +5,7 @@
 #include "ReScan.h"
 #include "PreScanProcessData.h"
 #include "PreScanConfig.h"
+#include "PreScanMode.h"
 #include "ScatterGraph.h"
 #include "Point3D.h"
 #include "macros.h"
@@ -67,11 +68,15 @@ namespace ReScan::PreScan
 		void resetProcessData();
 		bool fileExists(const std::string& filename) const;
 
-		void selectPoint(std::string name, Point3D* point) const;
+		void selectPoint(std::string& name, Point3D* point) const;
 		int selectPointValue(char axisName) const;
-		unsigned int selectStep(std::string axisName, unsigned int min, unsigned int max) const;
+		double selectPeakRatio() const;
+		int selectPreScanMode(PreScanMode* mode) const;
+
+		unsigned int selectStep(std::string& axisName, unsigned int min, unsigned int max) const;
 		unsigned int getPointsNumber(double distance, int step) const;
 		void fillBases(std::vector<Base3D*>* bases) const;
+		void fillBasesDefault(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const;
 
 		int internalProcess();
 

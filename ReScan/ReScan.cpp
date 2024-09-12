@@ -284,7 +284,7 @@ namespace ReScan
 			ScatterGraph::populateFromVectorXYZ(&vertices, graph);
 
 			// Select plan if needed
-			if (!m_processData.getPlan2D())
+			if (m_processData.getPlan2D() == nullptr)
 			{
 				if (m_processData.getEnableUserInput())
 				{

@@ -2,6 +2,7 @@
 #define RESCAN_PRESCAN_PRESCANPROCESSDATA_H
 
 #include "PreScanConfig.h"
+#include "PreScanMode.h"
 #include "Point3D.h"
 
 #include <string>
@@ -17,6 +18,8 @@ namespace ReScan::PreScan
 		Point3D* m_point1;
 		Point3D* m_point2;
 		double* m_planOffset;
+		double* m_peakRatio;
+		PreScanMode* m_preScanMode;
 		double m_distanceXY;
 		double m_distanceZ;
 		unsigned int m_pointsNumberXY;
@@ -55,6 +58,12 @@ namespace ReScan::PreScan
 		void resetPlanOffset();
 		void setPlanOffset(const double value);
 
+		void resetPeakRatio();
+		void setPeakRatio(const double value);
+
+		void resetPreScanMode();
+		void setPreScanMode(const PreScanMode value);
+
 		void setDistanceXY(const double value);
 		void setDistanceZ(const double value);
 
@@ -81,6 +90,8 @@ namespace ReScan::PreScan
 		const unsigned int* getStepAxisXY() const;
 		const unsigned int* getStepAxisZ() const;
 		const double* getPlanOffset() const;
+		const double* getPeakRatio() const;
+		const PreScanMode* getPreScanMode() const;
 		double getDistanceXY() const;
 		double getDistanceZ() const;
 		unsigned int getPointsNumberXY() const;
@@ -97,7 +108,7 @@ namespace ReScan::PreScan
 
 		/* End - Getters */
 
-		void findPlanOffset(const Point3D& point);
+		int findPlanOffsetAndPeakRatio(const Point3D& point, double& planOffset, double& peakRatio);
 
 		bool isStepXYValid(unsigned int min) const;
 		bool isStepZValid(unsigned int min) const;

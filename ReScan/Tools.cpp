@@ -30,7 +30,7 @@ namespace ReScan
 			return r;
 		}
 
-		int stringToPlan2D(const std::string planStr, Plan2D& plan2D)
+		int stringToPlan2D(const std::string& planStr, Plan2D& plan2D)
 		{
 			int r = SUCCESS_CODE;
 
@@ -49,6 +49,54 @@ namespace ReScan
 			else
 			{
 				r = INVALID_PLAN_ERROR_CODE;
+			}
+
+			return r;
+		}
+
+
+		int preScanModeToString(const PreScan::PreScanMode& mode, std::string& result, bool shortName)
+		{
+			int r = SUCCESS_CODE;
+
+			switch (mode)
+			{
+			case PreScan::PreScanMode::Default:
+				result = shortName ? "D" : "Default";
+				break;
+			case PreScan::PreScanMode::Horizontal:
+				result = shortName ? "H" : "Horizontal";
+				break;
+			case PreScan::PreScanMode::Vertical:
+				result = shortName ? "V" : "Vertical";
+				break;
+			default:
+				result = "Unknow";
+				r = INVALID_PRESCAN_MODE_ERROR_CODE;
+				break;
+			}
+			return r;
+		}
+
+		int stringToPreScanMode(const std::string& modeStr, PreScan::PreScanMode& mode)
+		{
+			int r = SUCCESS_CODE;
+
+			if (modeStr == "D" || modeStr == "Default")
+			{
+				mode = PreScan::PreScanMode::Default;
+			}
+			else if (modeStr == "H" || modeStr == "Horizontal")
+			{
+				mode = PreScan::PreScanMode::Horizontal;
+			}
+			else if (modeStr == "V" || modeStr == "Vertical")
+			{
+				mode = PreScan::PreScanMode::Vertical;
+			}
+			else
+			{
+				r = INVALID_PRESCAN_MODE_ERROR_CODE;
 			}
 
 			return r;

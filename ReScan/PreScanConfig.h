@@ -3,6 +3,7 @@
 
 #include "macros.h"
 #include "Point3D.h"
+#include "PreScanMode.h"
 
 #include <vector>
 #include <string>
@@ -25,6 +26,8 @@ namespace ReScan::PreScan
 		Point3D m_point1;
 		Point3D m_point2;
 		double m_planOffset;
+		double m_peakRatio;
+		PreScanMode m_preScanMode;
 		bool m_exportBasesCartesian;
 		bool m_exportBasesEulerAngles;
 		bool m_exportDetailsFile;
@@ -117,6 +120,8 @@ namespace ReScan::PreScan
 		const Point3D* getPoint1() const;
 		const Point3D* getPoint2() const;
 		double getPlanOffset() const;
+		double getPeakRatio() const;
+		PreScanMode getPreScanMode() const;
 		bool getExportBasesCartesian() const;
 		bool getExportBasesEulerAngles() const;
 		bool getExportDetailsFile() const;
@@ -134,6 +139,8 @@ namespace ReScan::PreScan
 		void setPoint1(const Point3D& point1);
 		void setPoint2(const Point3D& point2);
 		void setPlanOffset(const double distance);
+		void setPeakRatio(const double peakRatio);
+		void setPreScanMode(const PreScanMode mode);
 		void setExportBasesCartesian(const bool exportBasesCartesian);
 		void setExportBasesEulerAngles(const bool exportBasesEulerAngles);
 		void setExportDetailsFile(const bool exportDetailsFile);
@@ -143,7 +150,7 @@ namespace ReScan::PreScan
 		void setBasesEulerAnglesDefaultFileName(const std::string& basesEulerAnglesDefaultFileName);
 		void setDetailsDefaultFileName(const std::string& detailsDefaultFileName);
 
-		void findPlanOffset(const Point3D& point);
+		int findPlanOffsetAndPeakRatio(const Point3D& point);
 
 		static bool isFileValid(const std::string& filename);
 		static int loadConfigFromFile(const std::string& filePath, PreScanConfig* config);

@@ -9,6 +9,8 @@ namespace ReScan::PreScan
 		m_point1(nullptr),
 		m_point2(nullptr),
 		m_planOffset(nullptr),
+		m_peakRatio(nullptr),
+		m_preScanMode(nullptr),
 		m_distanceXY(0.0),
 		m_distanceZ(0.0),
 		m_pointsNumberXY(0),
@@ -31,6 +33,8 @@ namespace ReScan::PreScan
 		m_point1(nullptr),
 		m_point2(nullptr),
 		m_planOffset(nullptr),
+		m_peakRatio(nullptr),
+		m_preScanMode(nullptr),
 		m_distanceXY(preScanProcessData.m_distanceXY),
 		m_distanceZ(preScanProcessData.m_distanceZ),
 		m_pointsNumberXY(preScanProcessData.m_pointsNumberXY),
@@ -63,6 +67,14 @@ namespace ReScan::PreScan
 		if (preScanProcessData.m_planOffset)
 		{
 			m_planOffset = new double(*preScanProcessData.m_planOffset);
+		}
+		if (preScanProcessData.m_peakRatio)
+		{
+			m_peakRatio = new double(*preScanProcessData.m_peakRatio);
+		}
+		if (preScanProcessData.m_preScanMode)
+		{
+			m_preScanMode = new PreScanMode(*preScanProcessData.m_preScanMode);
 		}
 	}
 
@@ -100,6 +112,8 @@ namespace ReScan::PreScan
 		resetStepAxisXY();
 		resetStepAxisZ();
 		resetPlanOffset();
+		resetPeakRatio();
+		resetPreScanMode();
 		m_distanceXY = 0.0;
 		m_distanceZ = 0.0;
 		m_pointsNumberXY = 0;
@@ -205,6 +219,42 @@ namespace ReScan::PreScan
 		*m_planOffset = value;
 	}
 
+	void PreScanProcessData::resetPeakRatio()
+	{
+		if (m_peakRatio)
+		{
+			delete m_peakRatio;
+			m_peakRatio = nullptr;
+		}
+	}
+
+	void PreScanProcessData::setPeakRatio(const double value)
+	{
+		if (!m_peakRatio)
+		{
+			m_peakRatio = new double(0.);
+		}
+		*m_peakRatio = (value < 0.0 || value > 1.0) ? 0.5 : value;
+	}
+
+	void PreScanProcessData::resetPreScanMode()
+	{
+		if (m_preScanMode)
+		{
+			delete m_preScanMode;
+			m_preScanMode = nullptr;
+		}
+	}
+
+	void PreScanProcessData::setPreScanMode(const PreScanMode value)
+	{
+		if (!m_preScanMode)
+		{
+			m_preScanMode = new PreScanMode();
+		}
+		*m_preScanMode = value;
+	}
+
 	void PreScanProcessData::setDistanceXY(const double value)
 	{
 		m_distanceXY = value;
@@ -300,6 +350,16 @@ namespace ReScan::PreScan
 		return m_planOffset;
 	}
 
+	const double* PreScanProcessData::getPeakRatio() const
+	{
+		return m_peakRatio;
+	}
+
+	const PreScanMode* PreScanProcessData::getPreScanMode() const
+	{
+		return m_preScanMode;
+	}
+
 	double PreScanProcessData::getDistanceXY() const
 	{
 		return m_distanceXY;
@@ -368,8 +428,11 @@ namespace ReScan::PreScan
 
 #pragma endregion
 
-	void PreScanProcessData::findPlanOffset(const Point3D& point)
+	int PreScanProcessData::findPlanOffsetAndPeakRatio(const Point3D& point, double& planOffset, double& peakRatio)
 	{
+		planOffset = 0.0;
+		peakRatio = 0.0;
+
 		double p1x = m_point1->getX();
 		double p1y = m_point1->getY();
 		double p2x = m_point2->getX();
@@ -377,8 +440,10 @@ namespace ReScan::PreScan
 
 		if (p1x == p2x && p1y == p2y)
 		{
-			return;
+			return IDENTICAL_POINTS_ERROR_CODE;
 		}
+
+		// Find plan offset
 
 		// direction
 		//double ux = p2x - p1x;
@@ -395,6 +460,8 @@ namespace ReScan::PreScan
 		double cosa = cos(angle);
 		double sina = sin(angle);
 
+		// Find plan offset
+
 		// p1 rotated = Rot(-angle) * P1
 		// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
 		// p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
@@ -407,9 +474,38 @@ namespace ReScan::PreScan
 		//double distance = p3rx - p1rx;
 
 		//double distance = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
-		//setPlanOffset(distance);
 
-		setPlanOffset((point.getX() - p1x) * cosa + (point.getY() - p1y) * sina);
+		planOffset = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
+
+		// Find peak ratio
+		//p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
+		double p1ry = p1y * cosa - p1x * sina;
+		double p2ry = p2y * cosa - p2x * sina;
+		double p3ry = point.getY() * cosa - point.getX() * sina;
+		bool swaped = false;
+		if (p2ry < p1ry)
+		{
+			p2ry += p1ry;
+			p1ry = p2ry - p1ry;
+			p2ry -= p1ry;
+			swaped = true;
+		}
+
+		if (p3ry < p1ry || p3ry > p2ry)
+		{
+			return INVALID_PEAK_RATIO_ERROR_CODE;
+		}
+		else
+		{
+			double ratio = abs(p3ry - p1ry) / abs(p2ry - p1ry);
+			if (swaped)
+			{
+				ratio = 1.0 - ratio;
+			}
+
+			peakRatio = ratio;
+		}
+		return SUCCESS_CODE;
 	}
 
 	bool PreScanProcessData::isStepXYValid(unsigned int min) const

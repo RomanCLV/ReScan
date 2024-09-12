@@ -3,6 +3,7 @@
 
 #include "Base3D.h"
 #include "Plan2D.h"
+#include "PreScanMode.h"
 
 #include <string>
 #include <iostream>
@@ -14,7 +15,10 @@ namespace ReScan
 	namespace Tools
 	{
 		int plan2DToString(const Plan2D& plan2D, std::string& result);
-		int stringToPlan2D(const std::string planStr, Plan2D& plan2D);
+		int stringToPlan2D(const std::string& planStr, Plan2D& plan2D);
+
+		int preScanModeToString(const PreScan::PreScanMode& mode, std::string& result, bool shortName=false);
+		int stringToPreScanMode(const std::string& modeStr, PreScan::PreScanMode& mode);
 
 		void strReplace(std::string& s, char oldChar, char newChar);
 

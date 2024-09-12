@@ -11,6 +11,8 @@ namespace ReScan::PreScan
 		m_point1(Point3D(0., 0., 0.)),
 		m_point2(Point3D(100., 0., 0.)),
 		m_planOffset(0),
+		m_peakRatio(0.5),
+		m_preScanMode(PreScanMode::Default),
 		m_exportBasesCartesian(true),
 		m_exportBasesEulerAngles(true),
 		m_exportDetailsFile(true),
@@ -29,6 +31,8 @@ namespace ReScan::PreScan
 		m_point1(config.m_point1),
 		m_point2(config.m_point2),
 		m_planOffset(config.m_planOffset),
+		m_peakRatio(config.m_peakRatio),
+		m_preScanMode(config.m_preScanMode),
 		m_exportBasesCartesian(config.m_exportBasesCartesian),
 		m_exportBasesEulerAngles(config.m_exportBasesEulerAngles),
 		m_exportDetailsFile(config.m_exportDetailsFile),
@@ -74,6 +78,16 @@ namespace ReScan::PreScan
 	double PreScanConfig::getPlanOffset() const
 	{
 		return m_planOffset;
+	}
+
+	double PreScanConfig::getPeakRatio() const
+	{
+		return m_peakRatio;
+	}
+
+	PreScanMode PreScanConfig::getPreScanMode() const
+	{
+		return m_preScanMode;
 	}
 
 	bool PreScanConfig::getExportBasesCartesian() const
@@ -145,7 +159,17 @@ namespace ReScan::PreScan
 
 	void PreScanConfig::setPlanOffset(const double distance)
 	{
-		m_planOffset = distance;
+		m_planOffset = (distance < 0.0 || distance > 1.0) ? 0.5 : distance;
+	}
+
+	void PreScanConfig::setPeakRatio(const double peakRatio)
+	{
+		m_peakRatio = peakRatio;
+	}
+
+	void PreScanConfig::setPreScanMode(const PreScanMode mode)
+	{
+		m_preScanMode = mode;
 	}
 
 	void PreScanConfig::setExportBasesCartesian(const bool exportBasesCartesian)
@@ -188,7 +212,7 @@ namespace ReScan::PreScan
 		m_detailsDefaultFileName = detailsDefaultFileName;
 	}
 
-	void PreScanConfig::findPlanOffset(const Point3D& point)
+	int PreScanConfig::findPlanOffsetAndPeakRatio(const Point3D& point)
 	{
 		double p1x = m_point1.getX();
 		double p1y = m_point1.getY();
@@ -197,7 +221,7 @@ namespace ReScan::PreScan
 
 		if (p1x == p2x && p1y == p2y)
 		{
-			return;
+			return IDENTICAL_POINTS_ERROR_CODE;
 		}
 
 		// direction
@@ -215,21 +239,41 @@ namespace ReScan::PreScan
 		double cosa = cos(angle);
 		double sina = sin(angle);
 
+		// Find plan offset
+
 		// p1 rotated = Rot(-angle) * P1
 		// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
-		// p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
 
 		//double p1rx = p1x * cosa + p1y * sina;
+		//double p1ry = p1y * cosa - p1x * sina;
 
 		// point rotated
 		//double p3rx = point.getX() * cosa + point.getY() * sina;
 
 		//double distance = p3rx - p1rx;
-
 		//double distance = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
 		//setPlanOffset(distance);
 
 		setPlanOffset((point.getX() - p1x) * cosa + (point.getY() - p1y) * sina);
+
+		// Find peak ratio
+		//p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
+		double p1ry = p1y * cosa - p1x * sina;
+		double p2ry = p2y * cosa - p2x * sina;
+		double p3ry = point.getY() * cosa - point.getX() * sina;
+
+		if (p3ry < p1ry || p3ry > p2ry)
+		{
+			double ratio = abs(p3ry - p1ry) / abs(p2ry - p1ry);
+			return INVALID_PEAK_RATIO_ERROR_CODE;
+		}
+		else
+		{
+			double ratio = abs(p3ry - p1ry) / abs(p2ry - p1ry);
+			setPeakRatio(ratio);
+		}
+
+		return SUCCESS_CODE;
 	}
 
 	/* Static */
@@ -309,6 +353,20 @@ namespace ReScan::PreScan
 					}
 
 					config->m_planOffset = getConfigNode<int>(pt, "General.planOffset");
+					double peakRatio = getConfigNode<double>(pt, "General.peakRatio");
+					if (peakRatio < 0.0 || peakRatio > 1.0)
+					{
+						throw std::runtime_error("Invalid value for peak ratio - Value " + std::to_string(peakRatio));
+					}
+					config->m_peakRatio = peakRatio;
+
+					std::string modeStr = getConfigNode<std::string>(pt, "General.mode");
+					PreScan::PreScanMode preScanMode;
+					if (Tools::stringToPreScanMode(modeStr, preScanMode) != SUCCESS_CODE)
+					{
+						throw std::runtime_error("Invalid value for Mode - Value " + modeStr);
+					}
+					config->m_preScanMode = preScanMode;
 
 					config->m_exportBasesCartesian = getConfigNode<bool>(pt, "Export.exportBasesCartesian");
 					config->m_exportBasesEulerAngles = getConfigNode<bool>(pt, "Export.exportBasesEulerAngles");
@@ -351,6 +409,9 @@ namespace ReScan::PreScan
 		int result = SUCCESS_CODE;
 		boost::property_tree::ptree pt;
 
+		std::string modeStr;
+		Tools::preScanModeToString(config.m_preScanMode, modeStr);
+
 		pt.put("General.enableUserInput", config.m_enableUserInput);
 		pt.put("General.xyAxisStep", config.m_xyAxisStep);
 		pt.put("General.zAxisStep", config.m_zAxisStep);
@@ -358,6 +419,8 @@ namespace ReScan::PreScan
 		pt.put("General.point1", config.m_point1.toStr("", "", ";"));
 		pt.put("General.point2", config.m_point2.toStr("", "", ";"));
 		pt.put("General.planOffset", config.m_planOffset);
+		pt.put("General.peakRatio", config.m_peakRatio);
+		pt.put("General.mode", modeStr);
 
 		pt.put("Export.exportBasesCartesian", config.m_exportBasesCartesian);
 		pt.put("Export.exportBasesEulerAngles", config.m_exportBasesEulerAngles);

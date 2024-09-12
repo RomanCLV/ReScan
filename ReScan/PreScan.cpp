@@ -100,7 +100,7 @@ namespace ReScan::PreScan
 		m_processData.reset();
 	}
 
-	void PreScan::selectPoint(std::string name, Point3D* point) const
+	void PreScan::selectPoint(std::string& name, Point3D* point) const
 	{
 		mout << "Input coordinates of " << name << " in mm:" << endl;
 		point->setX((double)selectPointValue('X'));
@@ -117,7 +117,69 @@ namespace ReScan::PreScan
 		return step;
 	}
 
-	unsigned int PreScan::selectStep(std::string axisName, unsigned int min, unsigned int max) const
+	double PreScan::selectPeakRatio() const
+	{
+		int peakRatio;
+		do
+		{
+			mout << endl << "Input peak ratio (0-100): ";
+			std::cin >> peakRatio;
+
+			if (peakRatio < 0 || peakRatio > 100) {
+				mout << "Invalide peakRatio." << endl;
+			}
+
+		} while (peakRatio < 0 || peakRatio > 100);
+		return ((double)peakRatio) / 100.0;
+	}
+
+	int PreScan::selectPreScanMode(PreScanMode* mode) const
+	{
+		int choice;
+		int result = SUCCESS_CODE;
+
+		// Choix des axes
+		do
+		{
+			mout << endl << "Select the PreScan mode:" << endl;
+			mout << "1) Default" << endl;
+			mout << "2) Horizontal" << endl;
+			mout << "3) Vertical" << endl << endl;
+
+			std::cin >> choice;
+
+			if (choice < 1 || choice > 3) {
+				mout << "Invalide choice." << endl;
+			}
+
+		} while (choice < 1 || choice > 3);
+
+		switch (choice)
+		{
+		case 1:
+			mout << "Default mode selected" << endl << endl;
+			*mode = PreScanMode::Default;
+			break;
+		case 2:
+			mout << "Horizontal mode selected" << endl << endl;
+			*mode = PreScanMode::Horizontal;
+			break;
+
+		case 3:
+			mout << "Vertical mode selected" << endl << endl;
+			*mode = PreScanMode::Vertical;
+			break;
+
+		default:
+			mout << "Unexpected prescan mode choice." << std::endl;
+			result = INVALID_PRESCAN_MODE_ERROR_CODE;
+			break;
+		}
+
+		return result;
+	}
+	
+	unsigned int PreScan::selectStep(std::string& axisName, unsigned int min, unsigned int max) const
 	{
 		unsigned int step;
 		do
@@ -156,8 +218,6 @@ namespace ReScan::PreScan
 		const Point3D* p1 = m_processData.getPoint1();
 		const Point3D* p2 = m_processData.getPoint2();
 
-		double planOffset = *m_processData.getPlanOffset();
-
 		double p1x = p1->getX();
 		double p1y = p1->getY();
 		double p2x = p2->getX();
@@ -174,7 +234,7 @@ namespace ReScan::PreScan
 			p1y = p2y;
 			p2y = tmp;
 		}
-		
+
 		double angle = atan2(p2x - p1x, p1y - p2y); // angle of the normal
 		double cosa = cos(angle);
 		double sina = sin(angle);
@@ -192,37 +252,65 @@ namespace ReScan::PreScan
 			cosa = cos(angle);
 			sina = sin(angle);
 
-			double tmp = p1x;
-			p1x = p2x;
-			p2x = tmp;
+			// swap x
+			p2x += p1x;
+			p1x = p2x - p1x;
+			p2x -= p1x;
+			
+			// swap y
+			p2y += p1y;
+			p1y = p2y - p1y;
+			p2y -= p1y;
 
-			tmp = p1y;
-			p1y = p2y;
-			p2y = tmp;
-
-			p1rx = p1x * cosa + p1y * sina;
+			//p1rx = p1x * cosa + p1y * sina;
+			p1rx = -p1rx;
 		}
 
 		double p1ry = p1y * cosa - p1x * sina;
-		double p1rz = p1->getZ();
 
 		double p2rx = p2x * cosa + p2y * sina;
 		double p2ry = p2y * cosa - p2x * sina;
-		double p2rz = p2->getZ();
 
-		double prx = p1rx + planOffset;
+		if (p2ry < p1ry)
+		{
+			// swap y
+			p2ry += p1ry;
+			p1ry = p2ry - p1ry;
+			p2ry -= p1ry;
+		}
+
+		Eigen::Matrix4d rotationMatrix = Eigen::Matrix4d::Identity();
+		rotationMatrix(0, 0) = cosa;
+		rotationMatrix(0, 1) = -sina;
+		rotationMatrix(1, 0) = sina;
+		rotationMatrix(1, 1) = cosa;
+		
+		switch (*m_processData.getPreScanMode())
+		{
+		case PreScanMode::Default:
+			fillBasesDefault(bases, p1rx, p1ry, p1->getZ(), p2rx, p2ry, p2->getZ(), rotationMatrix);
+			break;
+		case PreScanMode::Horizontal:
+			break;
+		case PreScanMode::Vertical:
+			break;
+		default:
+			break;
+		}
+	}
+
+	void PreScan::fillBasesDefault(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
+	{
+		double prx = p1rx + *m_processData.getPlanOffset();
 		double pry;
 		double prz = p1rz;
+
+		double nextPry;
+		double nextPrz = prz;
 
 		double stepY = (double)*m_processData.getStepAxisXY();
 		double stepZ = (double)*m_processData.getStepAxisZ();
 		int baseIndex = 0;
-
-		Eigen::Matrix4d rotation_matrix = Eigen::Matrix4d::Identity();
-		rotation_matrix(0, 0) = cos(angle);
-		rotation_matrix(0, 1) = -sin(angle);
-		rotation_matrix(1, 0) = sin(angle);
-		rotation_matrix(1, 1) = cos(angle);
 
 		Eigen::Matrix4d br;
 		Eigen::Matrix4d b0;
@@ -230,10 +318,11 @@ namespace ReScan::PreScan
 		while (prz <= p2rz)
 		{
 			pry = p1ry;
-			while (pry >= p2ry)
+			nextPry = pry;
+			while (pry <= p2ry)
 			{
 				br = Base3D(prx, pry, prz, 0., -1., 0., 0., 0., 1., -1., 0., 0.).toMatrix4d();
-				b0 = rotation_matrix * br;
+				b0 = rotationMatrix * br;
 				Base3D* b = new Base3D();
 				b->setFromMatrix4d(b0);
 				(*bases)[baseIndex++] = b;
@@ -242,21 +331,32 @@ namespace ReScan::PreScan
 				{
 					break;
 				}
-
-				pry = pry - stepY < p2ry ? p2ry : pry - stepY;
+				nextPry = pry + stepY;
+				pry = nextPry > p2ry ? p2ry : nextPry;
 			}
 
 			if (prz == p2rz)
 			{
 				break;
 			}
-			prz = prz + stepZ > p2rz ? p2rz : prz + stepZ;
+			nextPrz = prz + stepZ;
+			prz = nextPrz > p2rz ? p2rz : nextPrz;
 		}
 	}
+
+	/*Base3D PreScan::fillBaseDefault()
+	{
+
+	}*/
 
 	int PreScan::internalProcess()
 	{
 		const unsigned int MIN_DISTANCE = 1;
+
+		Point3D p1 = Point3D(500, -200, 200); // apres rotation: (536, -045, 200)
+		Point3D p2 = Point3D(400, -400, 500); // apres rotation: (536, -179, 500)
+		m_processData.setPoint1(&p1);
+		m_processData.setPoint2(&p2);
 
 		// Select point1 if needed
 		if (!m_processData.getPoint1())
@@ -264,7 +364,8 @@ namespace ReScan::PreScan
 			if (m_processData.getEnableUserInput())
 			{
 				Point3D point1;
-				selectPoint("Point 1", &point1);
+				std::string pName = "Point 1";
+				selectPoint(pName, &point1);
 				m_processData.setPoint1(&point1);
 			}
 			else
@@ -279,7 +380,8 @@ namespace ReScan::PreScan
 			if (m_processData.getEnableUserInput())
 			{
 				Point3D point2;
-				selectPoint("Point 2", &point2);
+				std::string pName = "Point 2";
+				selectPoint(pName, &point2);
 				m_processData.setPoint2(&point2);
 			}
 			else
@@ -316,9 +418,17 @@ namespace ReScan::PreScan
 			mout << "point 2: " << *processP2 << endl;
 		}
 
-		//m_processData.setPoint1(&Point3D(500, -200, 200));
-		//m_processData.setPoint2(&Point3D(400, -400, 500));
-		//m_processData.findPlanOffset(Point3D(356, -266, 35));
+		//double planOffset;
+		//double peakRatio;
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(445, -105, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio: -0.25 -> INVALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(410, -157, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.00 -> VALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(385, -205, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.25 -> VALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(360, -255, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.50 -> VALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(335, -305, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.75 -> VALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(310, -355, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  1.00 -> VALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(285, -405, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  1.25 -> INVALIDE 
+		//m_processData.setPlanOffset(planOffset);
+		//m_processData.setPeakRatio(peakRatio);
 
 		// Select planOffset if needed
 		if (m_processData.getPlanOffset() == nullptr)
@@ -326,19 +436,34 @@ namespace ReScan::PreScan
 			if (m_processData.getEnableUserInput())
 			{
 				int planOffset;
-				mout << "Input plan offset in mm: ";
+				mout << endl << "Input plan offset in mm: ";
 				std::cin >> planOffset;
 				m_processData.setPlanOffset(planOffset);
 			}
 			else
 			{
+				mout << "No plan offset selected" << endl;
 				return NO_PLAN_OFFSET_SELECTED_ERROR_CODE;
 			}
 		}
-
 		mout << "plan offset: " << *m_processData.getPlanOffset() << endl;
 
-		m_processData.setDistanceXY(sqrt(pow((double)processP2->getX() - processP1->getX(), 2) + pow((double)processP2->getY() - processP1->getY(), 2)));
+		// Select peakRatio if needed
+		if (m_processData.getPeakRatio() == nullptr)
+		{
+			if (m_processData.getEnableUserInput())
+			{
+				m_processData.setPeakRatio(selectPeakRatio());
+			}
+			else
+			{
+				mout << "No plan offset selected" << endl;
+				return NO_PEAK_RATIO_SELECTED_ERROR_CODE;
+			}
+		}
+		mout << "peak ratio: " << *m_processData.getPeakRatio() << endl;
+
+		m_processData.setDistanceXY(sqrt(pow(processP2->getX() - processP1->getX(), 2) + pow(processP2->getY() - processP1->getY(), 2)));
 		m_processData.setDistanceZ(m_processData.getPoint2()->getZ() - m_processData.getPoint1()->getZ());
 
 		// display infos about distances
@@ -351,7 +476,8 @@ namespace ReScan::PreScan
 		{
 			if (m_processData.getEnableUserInput())
 			{
-				m_processData.setStepAxisXY(selectStep("XY", MIN_DISTANCE, int(m_processData.getDistanceXY())));
+				std::string aName = "XY";
+				m_processData.setStepAxisXY(selectStep(aName, MIN_DISTANCE, int(m_processData.getDistanceXY())));
 			}
 			else
 			{
@@ -364,7 +490,8 @@ namespace ReScan::PreScan
 			mout << "XY step is not between " << MIN_DISTANCE << " and " << m_processData.getDistanceXY() << endl;
 			if (m_processData.getEnableUserInput())
 			{
-				m_processData.setStepAxisXY(selectStep("XY", MIN_DISTANCE, int(m_processData.getDistanceXY())));
+				std::string aName = "XY";
+				m_processData.setStepAxisXY(selectStep(aName, MIN_DISTANCE, int(m_processData.getDistanceXY())));
 			}
 			else
 			{
@@ -378,7 +505,8 @@ namespace ReScan::PreScan
 		{
 			if (m_processData.getEnableUserInput())
 			{
-				m_processData.setStepAxisZ(selectStep("Z", MIN_DISTANCE, int(m_processData.getDistanceZ())));
+				std::string aName = "Z";
+				m_processData.setStepAxisZ(selectStep(aName, MIN_DISTANCE, int(m_processData.getDistanceZ())));
 			}
 			else
 			{
@@ -391,7 +519,8 @@ namespace ReScan::PreScan
 			mout << "Z is not between " << MIN_DISTANCE << " and " << m_processData.getDistanceZ() << endl;
 			if (m_processData.getEnableUserInput())
 			{
-				m_processData.setStepAxisZ(selectStep("Z", MIN_DISTANCE, int(m_processData.getDistanceZ())));
+				std::string aName = "Z";
+				m_processData.setStepAxisZ(selectStep(aName, MIN_DISTANCE, int(m_processData.getDistanceZ())));
 			}
 			else
 			{
@@ -413,6 +542,29 @@ namespace ReScan::PreScan
 		mout << "Number of points on XY: " << m_processData.getPointsNumberXY() << endl;
 		mout << "Number of points on Z : " << m_processData.getPointsNumberZ() << endl;
 		mout << "Total of points: " << (m_processData.getTotalPointsNumber()) << endl << endl;
+
+		// select preScan mode if needed
+		if (m_processData.getPreScanMode() == nullptr)
+		{
+			if (m_processData.getEnableUserInput())
+			{
+				PreScanMode prescanMode;
+				int result = selectPreScanMode(&prescanMode);
+				if (result == SUCCESS_CODE)
+				{
+					m_processData.setPreScanMode(prescanMode);
+				}
+				else
+				{
+					return result;
+				}
+			}
+			else
+			{
+				mout << "No selected prescan mode." << std::endl;
+				return NO_PRESCAN_MODE_SELECTED_ERROR_CODE;
+			}
+		}
 
 		// fill bases
 		if (m_bases || m_details)
