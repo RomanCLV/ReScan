@@ -417,19 +417,74 @@ namespace ReScan::PreScan
 
 	void PreScan::fillBasesVertical(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
 	{
-		//double prx = p1rx + *m_processData.getPlanOffset();
-		//double pry;
-		//double prz = p1rz;
+		double planOffset = *m_processData.getPlanOffset();
+		double peakRatio = *m_processData.getPeakRatio();
+		double distance = p2rz - p1rz;
+		double peakDistance = peakRatio * distance;
+		double peakDistance2 = (1. - peakRatio) * distance;
 
-		//double nextPry;
-		//double nextPrz = prz;
+		double prx;
+		double pry;
+		double prz = p1rz;
 
-		//double stepY = (double)*m_processData.getStepAxisXY();
-		//double stepZ = (double)*m_processData.getStepAxisZ();
-		//int baseIndex = 0;
+		double nextPry;
+		double nextPrz = prz;
 
-		//Eigen::Matrix4d br;
-		//Eigen::Matrix4d b0;
+		double stepY = (double)*m_processData.getStepAxisXY();
+		double stepZ = (double)*m_processData.getStepAxisZ();
+		int baseIndex = 0;
+
+		double alpha = -atan2(planOffset, peakDistance);
+		double beta = atan2(planOffset, peakDistance2);
+
+		double cosa = cos(alpha);
+		double sina = sin(alpha);
+		double cosb = cos(beta);
+		double sinb = sin(beta);
+
+		Eigen::Matrix4d br;
+		Eigen::Matrix4d b0;
+		bool isBeforePeak = false;
+		double currentDistance;
+
+		while (prz <= p2rz)
+		{
+			pry = p1ry;
+			nextPry = pry;
+
+			currentDistance = prz - p1rz;
+			isBeforePeak = currentDistance <= peakDistance && peakRatio;
+
+			prx = isBeforePeak ?
+				p1rx + planOffset * (1. + (currentDistance / peakDistance)) :
+				p1rx + planOffset * (1. + ((distance - currentDistance) / peakDistance2));
+
+			while (pry <= p2ry)
+			{
+				br = isBeforePeak ?
+					Base3D(prx, pry, prz, 0, -1., 0., -sina, 0., cosa, -cosa, 0., -sina).toMatrix4d() :
+					Base3D(prx, pry, prz, 0, -1., 0., -sinb, 0., cosb, -cosb, 0., -sinb).toMatrix4d();
+
+				b0 = rotationMatrix * br;
+				Base3D* b = new Base3D();
+				b->setFromMatrix4d(b0);
+				(*bases)[baseIndex++] = b;
+
+				if (pry == p2ry)
+				{
+					break;
+				}
+				nextPry += stepY;
+				pry = nextPry > p2ry ? p2ry : nextPry;
+			}
+
+			if (prz == p2rz)
+			{
+				break;
+			}
+			nextPrz += stepZ;
+			prz = nextPrz > p2rz ? p2rz : nextPrz;
+		}
 	}
 
 	int PreScan::internalProcess()
