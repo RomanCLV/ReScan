@@ -35,7 +35,8 @@ int main(int argc, char* argv[])
 			("ccd", "Create a new default config file: config.ini")
 			("ccif", "Create a new config file adapted for ICNDE (frontal): configFrontal.ini")
 			("ccil", "Create a new config file adapted for ICNDE (lateral): configLateral.ini")
-			("ccp", "Create a new default config file for PreScan process: prescan-config.ini");
+			("ccpd", "Create a new default config file for PreScan process: prescan-config.ini")
+			("ccpi", "Create a new config file for PreScan process adapted for ICNDE: prescan-config-icnde.ini");
 
 		// Groupement des catégories
 		po::options_description allOptions("*** ReScan Command Line Parser ***");
@@ -74,9 +75,15 @@ int main(int argc, char* argv[])
 				cancelProcess = true;
 			}
 
-			if (vm.count("ccp"))
+			if (vm.count("ccpd"))
 			{
-				ReScan::PreScan::PreScanConfig::saveConfigToFile(ReScan::PreScan::PreScanConfig::createICNDEConfig(), "prescan-config.ini");
+				ReScan::PreScan::PreScanConfig::saveConfigToFile(ReScan::PreScan::PreScanConfig(), "prescan-config.ini");
+				cancelProcess = true;
+			}
+
+			if (vm.count("ccpi"))
+			{
+				ReScan::PreScan::PreScanConfig::saveConfigToFile(ReScan::PreScan::PreScanConfig::createICNDEConfig(), "prescan-config-icnde.ini");
 				cancelProcess = true;
 			}
 

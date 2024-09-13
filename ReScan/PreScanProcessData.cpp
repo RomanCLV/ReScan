@@ -94,6 +94,8 @@ namespace ReScan::PreScan
 		setPoint1(config.getPoint1());
 		setPoint2(config.getPoint2());
 		setPlanOffset(config.getPlanOffset());
+		setPeakRatio(config.getPeakRatio());
+		setPreScanMode(config.getPreScanMode());
 		setExportBasesCartesian(config.getExportBasesCartesian());
 		setExportBasesEulerAngles(config.getExportBasesEulerAngles());
 		setExportDetailsFile(config.getExportDetailsFile());

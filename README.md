@@ -71,13 +71,15 @@ Configuration Options:
                               (frontal): configFrontal.ini
   --ccil                      Create a new config file adapted for ICNDE
                               (lateral): configLateral.ini
-  --ccp                       Create a new default config file for PreScan
+  --ccpd                      Create a new default config file for PreScan
                               process: prescan-config.ini
+  --ccpi                      Create a new config file for PreScan process
+                              adapted for ICNDE: prescan-config-icnde.ini
 ```
 
 If a `create-config` (`--cc_`) option is used, the process is aborted.
 
-You can use `ReScan.exe --ccd --ccif --ccil --ccp` to create all configuration files simultaneously. You can then edit them and use them.
+You can use `ReScan.exe --ccd --ccif --ccil --ccpd --ccpi` to create all configuration files simultaneously. You can then edit them and use them.
 
 ### `ReScan`
 

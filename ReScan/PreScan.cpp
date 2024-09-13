@@ -239,8 +239,6 @@ namespace ReScan::PreScan
 		double cosa = cos(angle);
 		double sina = sin(angle);
 
-		//bool isFront = abs(angle) <= EIGEN_PI / 2.;
-
 		// p1 rotated = Rot(-angle) * p1
 		// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
 		// p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
@@ -268,7 +266,7 @@ namespace ReScan::PreScan
 
 		double p1ry = p1y * cosa - p1x * sina;
 
-		double p2rx = p2x * cosa + p2y * sina;
+		//double p2rx = p2x * cosa + p2y * sina;
 		double p2ry = p2y * cosa - p2x * sina;
 
 		if (p2ry < p1ry)
@@ -288,19 +286,19 @@ namespace ReScan::PreScan
 		switch (*m_processData.getPreScanMode())
 		{
 		case PreScanMode::Horizontal:
-			fillBasesHorizontal(bases, p1rx, p1ry, p1->getZ(), p2rx, p2ry, p2->getZ(), rotationMatrix);
+			fillBasesHorizontal(bases, p1rx, p1ry, p1->getZ(), p2ry, p2->getZ(), rotationMatrix);
 			break;
 		case PreScanMode::Vertical:
-			fillBasesVertical(bases, p1rx, p1ry, p1->getZ(), p2rx, p2ry, p2->getZ(), rotationMatrix);
+			fillBasesVertical(bases, p1rx, p1ry, p1->getZ(), p2ry, p2->getZ(), rotationMatrix);
 			break;
 		//case PreScanMode::Default:
 		default:
-			fillBasesDefault(bases, p1rx, p1ry, p1->getZ(), p2rx, p2ry, p2->getZ(), rotationMatrix);
+			fillBasesDefault(bases, p1rx, p1ry, p1->getZ(), p2ry, p2->getZ(), rotationMatrix);
 			break;
 		}
 	}
 
-	void PreScan::fillBasesDefault(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
+	void PreScan::fillBasesDefault(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
 	{
 		double prx = p1rx + *m_processData.getPlanOffset();
 		double pry;
@@ -345,14 +343,15 @@ namespace ReScan::PreScan
 		}
 	}
 
-	void PreScan::fillBasesHorizontal(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
+	void PreScan::fillBasesHorizontal(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
 	{
 		double planOffset = *m_processData.getPlanOffset();
 		double peakRatio = *m_processData.getPeakRatio();
 		double distance = p2ry - p1ry;
-		double peakDistance = (1. - peakRatio) * distance;
+		double peakDistance = peakRatio * distance;
+		double peakDistance2 = (1. - peakRatio) * distance;
 
-		double prx = p1rx + planOffset;
+		double prx;
 		double pry = p1ry;
 		double prz;
 
@@ -363,26 +362,37 @@ namespace ReScan::PreScan
 		double stepZ = (double)*m_processData.getStepAxisZ();
 		int baseIndex = 0;
 
-		double alpha = atan2(-planOffset, peakDistance);
-		double beta = atan2(-planOffset, ((1. - peakRatio) * distance));
+		double alpha = -atan2(planOffset, peakDistance);
+		double beta = atan2(planOffset, peakDistance2);
 
 		double cosa = cos(alpha);
 		double sina = sin(alpha);
-		double cosb = cos(-beta);
-		double sinb = sin(-beta);
+		double cosb = cos(beta);
+		double sinb = sin(beta);
 
 		Eigen::Matrix4d br;
 		Eigen::Matrix4d b0;
+		bool isBeforePeak = false;
+		double currentDistance;
 
 		while (pry <= p2ry)
 		{
 			prz = p1rz;
 			nextPrz = prz;
+
+			currentDistance = pry - p1ry;
+			isBeforePeak = currentDistance <= peakDistance && peakRatio;
+
+			prx = isBeforePeak ?
+				p1rx + planOffset * (1. + (currentDistance / peakDistance)) :
+				p1rx + planOffset * (1. + ((distance - currentDistance) / peakDistance2));
+
 			while (prz <= p2rz)
 			{
-				br = (pry - p1ry) < peakDistance ?
+				br = isBeforePeak ?
 					Base3D(prx, pry, prz, sina, -cosa, 0., 0., 0., 1., -cosa, -sina, 0.).toMatrix4d() :
 					Base3D(prx, pry, prz, sinb, -cosb, 0., 0., 0., 1., -cosb, -sinb, 0.).toMatrix4d();
+
 				b0 = rotationMatrix * br;
 				Base3D* b = new Base3D();
 				b->setFromMatrix4d(b0);
@@ -405,7 +415,7 @@ namespace ReScan::PreScan
 		}
 	}
 
-	void PreScan::fillBasesVertical(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2rx, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
+	void PreScan::fillBasesVertical(std::vector<Base3D*>* bases, const double p1rx, const double p1ry, const double p1rz, const double p2ry, const double p2rz, const Eigen::Matrix4Xd& rotationMatrix) const
 	{
 		//double prx = p1rx + *m_processData.getPlanOffset();
 		//double pry;
@@ -422,19 +432,16 @@ namespace ReScan::PreScan
 		//Eigen::Matrix4d b0;
 	}
 
-	/*Base3D PreScan::fillBaseDefault()
-	{
-
-	}*/
-
 	int PreScan::internalProcess()
 	{
 		const unsigned int MIN_DISTANCE = 1;
 
-		Point3D p1 = Point3D(500, -200, 200); // apres rotation: (536, -045, 200)
-		Point3D p2 = Point3D(400, -400, 500); // apres rotation: (536, -179, 500)
-		m_processData.setPoint1(&p1);
-		m_processData.setPoint2(&p2);
+		//m_processData.setExportBasesEulerAngles(false);
+		//m_processData.setExportDetailsFile(false);
+		//Point3D p1 = Point3D(500, -200, 200); // apres rotation: (536, -045, 200)
+		//Point3D p2 = Point3D(400, -400, 500); // apres rotation: (536, -179, 500)
+		//m_processData.setPoint1(&p1);
+		//m_processData.setPoint2(&p2);
 
 		// Select point1 if needed
 		if (!m_processData.getPoint1())
@@ -496,17 +503,17 @@ namespace ReScan::PreScan
 			mout << "point 2: " << *processP2 << endl;
 		}
 
-		double planOffset;
-		double peakRatio;
+		//double planOffset;
+		//double peakRatio;
 		//m_processData.findPlanOffsetAndPeakRatio(Point3D(285, -405, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio: -0.25 -> INVALIDE 
 		//m_processData.findPlanOffsetAndPeakRatio(Point3D(310, -355, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.00 -> VALIDE 
-		m_processData.findPlanOffsetAndPeakRatio(Point3D(335, -305, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.25 -> VALIDE 
+		//m_processData.findPlanOffsetAndPeakRatio(Point3D(335, -305, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.25 -> VALIDE 
 		//m_processData.findPlanOffsetAndPeakRatio(Point3D(360, -255, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.50 -> VALIDE 
 		//m_processData.findPlanOffsetAndPeakRatio(Point3D(385, -205, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.75 -> VALIDE 
 		//m_processData.findPlanOffsetAndPeakRatio(Point3D(410, -157, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  1.00 -> VALIDE 
 		//m_processData.findPlanOffsetAndPeakRatio(Point3D(445, -105, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio: 1.25 -> INVALIDE 
-		m_processData.setPlanOffset(planOffset);
-		m_processData.setPeakRatio(peakRatio);
+		//m_processData.setPlanOffset(planOffset);
+		//m_processData.setPeakRatio(peakRatio);
 
 		// Select planOffset if needed
 		if (m_processData.getPlanOffset() == nullptr)
@@ -524,22 +531,7 @@ namespace ReScan::PreScan
 				return NO_PLAN_OFFSET_SELECTED_ERROR_CODE;
 			}
 		}
-		mout << "plan offset: " << *m_processData.getPlanOffset() << endl;
-
-		// Select peakRatio if needed
-		if (m_processData.getPeakRatio() == nullptr)
-		{
-			if (m_processData.getEnableUserInput())
-			{
-				m_processData.setPeakRatio(selectPeakRatio());
-			}
-			else
-			{
-				mout << "No plan offset selected" << endl;
-				return NO_PEAK_RATIO_SELECTED_ERROR_CODE;
-			}
-		}
-		mout << "peak ratio: " << *m_processData.getPeakRatio() << endl;
+		mout << "plan offset: " << *m_processData.getPlanOffset() << " mm" << endl;
 
 		m_processData.setDistanceXY(sqrt(pow(processP2->getX() - processP1->getX(), 2) + pow(processP2->getY() - processP1->getY(), 2)));
 		m_processData.setDistanceZ(m_processData.getPoint2()->getZ() - m_processData.getPoint1()->getZ());
@@ -639,9 +631,28 @@ namespace ReScan::PreScan
 			}
 			else
 			{
-				mout << "No selected prescan mode." << std::endl;
+				mout << "No mode selected." << std::endl;
 				return NO_PRESCAN_MODE_SELECTED_ERROR_CODE;
 			}
+		}
+
+		std::string modeStr;
+		Tools::preScanModeToString(*m_processData.getPreScanMode(), modeStr);
+		mout << "Mode: " << modeStr << std::endl;
+
+		// Select peakRatio if needed
+		if (*m_processData.getPreScanMode() != PreScanMode::Default && m_processData.getPeakRatio() == nullptr)
+		{
+			if (m_processData.getEnableUserInput())
+			{
+				m_processData.setPeakRatio(selectPeakRatio());
+			}
+			else
+			{
+				mout << "No plan offset selected" << endl;
+				return NO_PEAK_RATIO_SELECTED_ERROR_CODE;
+			}
+			mout << "Peak ratio: " << *m_processData.getPeakRatio() << endl;
 		}
 
 		// fill bases
