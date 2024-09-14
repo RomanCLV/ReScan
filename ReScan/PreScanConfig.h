@@ -150,7 +150,7 @@ namespace ReScan::PreScan
 		void setBasesEulerAnglesDefaultFileName(const std::string& basesEulerAnglesDefaultFileName);
 		void setDetailsDefaultFileName(const std::string& detailsDefaultFileName);
 
-		int findPlanOffsetAndPeakRatio(const Point3D& point);
+		int findPlanOffsetAndPeakRatio(const Point3D& point, double& planOffset, double& peakRatio) const;
 
 		static bool isFileValid(const std::string& filename);
 		static int loadConfigFromFile(const std::string& filePath, PreScanConfig* config);

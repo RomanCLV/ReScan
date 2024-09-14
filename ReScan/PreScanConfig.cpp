@@ -159,12 +159,12 @@ namespace ReScan::PreScan
 
 	void PreScanConfig::setPlanOffset(const double distance)
 	{
-		m_planOffset = (distance < 0.0 || distance > 1.0) ? 0.5 : distance;
+		m_planOffset = distance;
 	}
 
 	void PreScanConfig::setPeakRatio(const double peakRatio)
 	{
-		m_peakRatio = peakRatio;
+		m_peakRatio = (peakRatio < 0.0 || peakRatio > 1.0) ? 0.5 : peakRatio;
 	}
 
 	void PreScanConfig::setPreScanMode(const PreScanMode mode)
@@ -212,8 +212,11 @@ namespace ReScan::PreScan
 		m_detailsDefaultFileName = detailsDefaultFileName;
 	}
 
-	int PreScanConfig::findPlanOffsetAndPeakRatio(const Point3D& point)
+	int PreScanConfig::findPlanOffsetAndPeakRatio(const Point3D& point, double& planOffset, double& peakRatio) const
 	{
+		planOffset = 0.0;
+		peakRatio = 0.0;
+
 		double p1x = m_point1.getX();
 		double p1y = m_point1.getY();
 		double p2x = m_point2.getX();
@@ -254,7 +257,7 @@ namespace ReScan::PreScan
 		//double distance = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
 		//setPlanOffset(distance);
 
-		setPlanOffset((point.getX() - p1x) * cosa + (point.getY() - p1y) * sina);
+		planOffset = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
 
 		// Find peak ratio
 		//p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
@@ -269,8 +272,7 @@ namespace ReScan::PreScan
 		}
 		else
 		{
-			double ratio = abs(p3ry - p1ry) / abs(p2ry - p1ry);
-			setPeakRatio(ratio);
+			peakRatio = abs(p3ry - p1ry) / abs(p2ry - p1ry);
 		}
 
 		return SUCCESS_CODE;
