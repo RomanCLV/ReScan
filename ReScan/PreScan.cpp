@@ -558,15 +558,43 @@ namespace ReScan::PreScan
 			mout << "point 2: " << *processP2 << endl;
 		}
 
+		// select preScan mode if needed
+		if (m_processData.getPreScanMode() == nullptr)
+		{
+			if (m_processData.getEnableUserInput())
+			{
+				PreScanMode prescanMode;
+				int result = selectPreScanMode(&prescanMode);
+				if (result == SUCCESS_CODE)
+				{
+					m_processData.setPreScanMode(prescanMode);
+				}
+				else
+				{
+					return result;
+				}
+			}
+			else
+			{
+				mout << "No mode selected." << std::endl;
+				return NO_PRESCAN_MODE_SELECTED_ERROR_CODE;
+			}
+		}
+
+		std::string modeStr;
+		Tools::preScanModeToString(*m_processData.getPreScanMode(), modeStr);
+		mout << "Mode: " << modeStr << std::endl;
+
+
 		//double planOffset;
 		//double peakRatio;
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(285, -405, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio: -0.25 -> INVALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(310, -355, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.00 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(335, -305, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.25 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(360, -255, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.50 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(385, -205, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.75 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(410, -157, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio:  1.00 -> VALIDE 
-		//m_processData.findPlanOffsetAndPeakRatio(Point3D(445, -105, 350), planOffset, peakRatio); // planOffset: -100 | peakRatio: 1.25 -> INVALIDE 
+		//PreScanProcessData::findPlanOffsetAndPeakRatio(*m_processData.getPoint1(), *m_processData.getPoint2(), Point3D(285, -405, 350), *m_processData.getPreScanMode(), planOffset, peakRatio); // planOffset: -100 | peakRatio: -0.25 -> INVALIDE 
+		//PreScanProcessData::findPlanOffsetAndPeakRatio(*m_processData.getPoint1(), *m_processData.getPoint2(), Point3D(310, -355, 350), *m_processData.getPreScanMode(), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.00 -> VALIDE 
+		//PreScanProcessData::findPlanOffsetAndPeakRatio(*m_processData.getPoint1(), *m_processData.getPoint2(), Point3D(335, -305, 350), *m_processData.getPreScanMode(), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.25 -> VALIDE 
+		//PreScanProcessData::findPlanOffsetAndPeakRatio(*m_processData.getPoint1(), *m_processData.getPoint2(), Point3D(360, -255, 350), *m_processData.getPreScanMode(), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.50 -> VALIDE 
+		//PreScanProcessData::findPlanOffsetAndPeakRatio(*m_processData.getPoint1(), *m_processData.getPoint2(), Point3D(385, -205, 350), *m_processData.getPreScanMode(), planOffset, peakRatio); // planOffset: -100 | peakRatio:  0.75 -> VALIDE 
+		//PreScanProcessData::findPlanOffsetAndPeakRatio(*m_processData.getPoint1(), *m_processData.getPoint2(), Point3D(410, -157, 350), *m_processData.getPreScanMode(), planOffset, peakRatio); // planOffset: -100 | peakRatio:  1.00 -> VALIDE 
+		//PreScanProcessData::findPlanOffsetAndPeakRatio(*m_processData.getPoint1(), *m_processData.getPoint2(), Point3D(445, -105, 350), *m_processData.getPreScanMode(), planOffset, peakRatio); // planOffset: -100 | peakRatio: 1.25 -> INVALIDE 
 		//m_processData.setPlanOffset(planOffset);
 		//m_processData.setPeakRatio(peakRatio);
 
@@ -667,33 +695,6 @@ namespace ReScan::PreScan
 		mout << "Number of points on XY: " << m_processData.getPointsNumberXY() << endl;
 		mout << "Number of points on Z : " << m_processData.getPointsNumberZ() << endl;
 		mout << "Total of points: " << (m_processData.getTotalPointsNumber()) << endl << endl;
-
-		// select preScan mode if needed
-		if (m_processData.getPreScanMode() == nullptr)
-		{
-			if (m_processData.getEnableUserInput())
-			{
-				PreScanMode prescanMode;
-				int result = selectPreScanMode(&prescanMode);
-				if (result == SUCCESS_CODE)
-				{
-					m_processData.setPreScanMode(prescanMode);
-				}
-				else
-				{
-					return result;
-				}
-			}
-			else
-			{
-				mout << "No mode selected." << std::endl;
-				return NO_PRESCAN_MODE_SELECTED_ERROR_CODE;
-			}
-		}
-
-		std::string modeStr;
-		Tools::preScanModeToString(*m_processData.getPreScanMode(), modeStr);
-		mout << "Mode: " << modeStr << std::endl;
 
 		// Select peakRatio if needed
 		if (*m_processData.getPreScanMode() != PreScanMode::Default && m_processData.getPeakRatio() == nullptr)

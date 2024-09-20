@@ -430,84 +430,101 @@ namespace ReScan::PreScan
 
 #pragma endregion
 
-	int PreScanProcessData::findPlanOffsetAndPeakRatio(const Point3D& point, double& planOffset, double& peakRatio)
+	int PreScanProcessData::findPlanOffsetAndPeakRatio(const Point3D& point1, const Point3D& point2, const Point3D& point3, const PreScan::PreScanMode& mode, double& planOffset, double& peakRatio)
 	{
+		int code = SUCCESS_CODE;
 		planOffset = 0.0;
 		peakRatio = 0.0;
 
-		double p1x = m_point1->getX();
-		double p1y = m_point1->getY();
-		double p2x = m_point2->getX();
-		double p2y = m_point2->getY();
+		double p1x = point1.getX();
+		double p1y = point1.getY();
+		double p2x = point2.getX();
+		double p2y = point2.getY();
 
 		if (p1x == p2x && p1y == p2y)
 		{
-			return IDENTICAL_POINTS_ERROR_CODE;
-		}
-
-		// Find plan offset
-
-		// direction
-		//double ux = p2x - p1x;
-		//double uy = p2y - p1y;
-
-		// normal
-		//double nx = -uy;
-		//double ny = ux;
-
-		// angle
-		//double angle = atan2(ny, nx);
-		double angle = atan2(p2x - p1x, p1y - p2y);
-
-		double cosa = cos(angle);
-		double sina = sin(angle);
-
-		// Find plan offset
-
-		// p1 rotated = Rot(-angle) * P1
-		// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
-		// p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
-
-		//double p1rx = p1x * cosa + p1y * sina;
-
-		// point rotated
-		//double p3rx = point.getX() * cosa + point.getY() * sina;
-
-		//double distance = p3rx - p1rx;
-
-		//double distance = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
-
-		planOffset = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
-
-		// Find peak ratio
-		//p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
-		double p1ry = p1y * cosa - p1x * sina;
-		double p2ry = p2y * cosa - p2x * sina;
-		double p3ry = point.getY() * cosa - point.getX() * sina;
-		bool swaped = false;
-		if (p2ry < p1ry)
-		{
-			p2ry += p1ry;
-			p1ry = p2ry - p1ry;
-			p2ry -= p1ry;
-			swaped = true;
-		}
-
-		if (p3ry < p1ry || p3ry > p2ry)
-		{
-			return INVALID_PEAK_RATIO_ERROR_CODE;
+			code = IDENTICAL_POINTS_XY_ERROR_CODE;
 		}
 		else
 		{
-			double ratio = abs(p3ry - p1ry) / abs(p2ry - p1ry);
-			if (swaped)
+			// direction
+			//double ux = p2x - p1x;
+			//double uy = p2y - p1y;
+
+			// normal
+			//double nx = -uy;
+			//double ny = ux;
+
+			// angle
+			//double angle = atan2(ny, nx);
+			double angle = atan2(p2x - p1x, p1y - p2y);
+
+			double cosa = cos(angle);
+			double sina = sin(angle);
+
+			// Find plan offset
+
+			// p1 rotated = Rot(-angle) * P1
+			// p1rx = x*cos(-a) - y*sin(-a) = x*cos(a)+y*sin(a)
+
+			//double p1rx = p1x * cosa + p1y * sina;
+			//double p1ry = p1y * cosa - p1x * sina;
+
+			// point rotated
+			//double p3rx = point.getX() * cosa + point.getY() * sina;
+
+			//double distance = p3rx - p1rx;
+			//double distance = (point.getX() - p1x) * cosa + (point.getY() - p1y) * sina;
+			//setPlanOffset(distance);
+
+			if (p1x * cosa + p1y * sina < 0)
 			{
-				ratio = 1.0 - ratio;
+				angle += EIGEN_PI;
+				cosa = cos(angle);
+				sina = sin(angle);
 			}
 
-			peakRatio = ratio;
+			planOffset = (point3.getX() - p1x) * cosa + (point3.getY() - p1y) * sina;
+
+			// Find peak ratio
+			if (mode == PreScanMode::Horizontal)
+			{
+				//p1ry = x*sin(-a) + y*cos(-a) = y*cos(a)-x*sin(a)
+				double p1ry = p1y * cosa - p1x * sina;
+				double p2ry = p2y * cosa - p2x * sina;
+				double p3ry = point3.getY() * cosa - point3.getX() * sina;
+
+				peakRatio = abs(p3ry - p1ry) / abs(p2ry - p1ry);
+				if (p3ry < p1ry || p3ry > p2ry)
+				{
+					code = INVALID_PEAK_RATIO_ERROR_CODE;
+				}
+			}
+			else if (mode == PreScanMode::Vertical)
+			{
+				double p1z = (point1.getZ() <= point2.getZ()) ? point1.getZ() : point2.getZ();
+				double p2z = (point1.getZ() <= point2.getZ()) ? point2.getZ() : point1.getZ();
+				if (p1z == p2z)
+				{
+					code = IDENTICAL_POINTS_Z_ERROR_CODE;
+				}
+				else
+				{
+					double p3z = point3.getZ();
+					peakRatio = (p3z - p1z) / (p2z - p1z);
+					if (p3z < p1z || p3z > p2z)
+					{
+						code = INVALID_PEAK_RATIO_ERROR_CODE;
+					}
+				}
+			}
+			else // PreScanMode::Default
+			{
+				peakRatio = 0.5;
+			}
 		}
-		return SUCCESS_CODE;
+
+		return code;
 	}
 
 	bool PreScanProcessData::isStepXYValid(unsigned int min) const

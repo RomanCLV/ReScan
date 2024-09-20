@@ -108,7 +108,7 @@ namespace ReScan::PreScan
 
 		/* End - Getters */
 
-		int findPlanOffsetAndPeakRatio(const Point3D& point, double& planOffset, double& peakRatio);
+		static int findPlanOffsetAndPeakRatio(const Point3D& point1, const Point3D& point2, const Point3D& point3, const PreScan::PreScanMode& mode, double& planOffset, double& peakRatio);
 
 		bool isStepXYValid(unsigned int min) const;
 		bool isStepZValid(unsigned int min) const;
